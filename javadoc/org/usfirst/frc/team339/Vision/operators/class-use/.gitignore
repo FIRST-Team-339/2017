@@ -1,0 +1,11 @@
+/ConvexHullOperator.html
+/CriteriaArrayOperator.html
+/DilateOperator.html
+/HSLColorThresholdOperator.html
+/LoadColorImageJPEGOperator.html
+/NullOperator.html
+/RemoveLargeObjectsOperator.html
+/RemoveSmallObjectsOperator.html
+/SaveBinaryImagePNGOperator.html
+/SaveColorImageJPEGOperator.html
+/VisionOperatorInterface.html
