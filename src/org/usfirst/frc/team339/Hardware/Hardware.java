@@ -12,7 +12,6 @@
 // NOTE: Please do not release this code without permission from
 // Team 339.
 // ====================================================================
-
 package org.usfirst.frc.team339.Hardware;
 
 import edu.wpi.first.wpilibj.DriverStation;
