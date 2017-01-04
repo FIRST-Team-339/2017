@@ -37,12 +37,10 @@ public class Hardware
 // Public Constants
 // ------------------------------------
 
-// ---------------------------------
-// denote whether we are running in
-// the lab or not. This will allow
-// us to test in the lab once the
-// robot is bagged
-// ---------------------------------
+/**
+ * denote whether we are running in the lab or not. This will allow us to test
+ * in the lab once the robot is bagged
+ */
 public static boolean runningInLab = false;
 // -------------------------------------
 // Private Constants
@@ -97,8 +95,14 @@ public static TalonSRX leftRearMotor = new TalonSRX(3);
 // ------------------------------------
 // Encoders
 // ------------------------------------
+/**
+ * Default motor encoder
+ */
 public static Encoder leftRearEncoder = new Encoder(10, 11);
 
+/**
+ * Default motor encoder
+ */
 public static Encoder rightRearEncoder = new Encoder(12, 13);
 
 // -----------------------
@@ -185,18 +189,33 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // ------------------------------------
 // DriverStations class
 // ------------------------------------
+/**
+ * The software object representing the driver station.
+ */
 public static final DriverStation driverStation = DriverStation
         .getInstance();
 
 // ------------------------------------
 // Joystick classes
 // ------------------------------------
+/**
+ * The left joystick controlling the drive train.
+ */
 public static Joystick leftDriver = new Joystick(0);
 
+/**
+ * The right joystick controlling the drive train.
+ */
 public static Joystick rightDriver = new Joystick(1);
 
+/**
+ * The left joystick controlling misc operations on the robot.
+ */
 public static Joystick leftOperator = new Joystick(2);
 
+/**
+ * The right joystick controlling misc operations on the robot.
+ */
 public static Joystick rightOperator = new Joystick(3);
 
 // **********************************************************
@@ -229,11 +248,20 @@ public static Joystick rightOperator = new Joystick(3);
 // ------------------------------------
 // Utility classes
 // ------------------------------------
+/**
+ * Default timer.
+ */
 public static final Timer kilroyTimer = new Timer();
 
+/**
+ * Default motor safety
+ */
 public static final MotorSafetyHelper leftRearMotorSafety = new MotorSafetyHelper(
         leftRearMotor);
 
+/**
+ * Default motor safety
+ */
 public static final MotorSafetyHelper rightRearMotorSafety = new MotorSafetyHelper(
         rightRearMotor);
 
