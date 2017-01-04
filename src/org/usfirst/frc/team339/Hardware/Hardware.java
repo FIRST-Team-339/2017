@@ -65,8 +65,14 @@ public static boolean runningInLab = false;
 // Talon classes
 // ------------------------------------
 
+/**
+ * Default motor controller.
+ */
 public static TalonSRX rightRearMotor = new TalonSRX(2);
 
+/**
+ * Default motor controller.
+ */
 public static TalonSRX leftRearMotor = new TalonSRX(3);
 
 // ------------------------------------
