@@ -3,27 +3,39 @@ package org.usfirst.frc.team339.HardwareInterfaces;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 // import java.util.ArrayList;
-/// **
-// * NOTE: THIS CODE IS NOT COMPLETE! THERE ARE STILL ERRORS
-// */
-/// **
-// * @author Daniel Resio, Becky Button, and Cole Ramos
-// */
+
+/**
+ * NOTE: THIS CODE IS NOT COMPLETE! THERE ARE STILL ERRORS
+ * 
+ * @author Daniel Resio, Becky Button, and Cole Ramos
+ */
 //
 //// TODO search for more than one item for CAN id
 //// TODO add CANUtils.getFaults() in robot init or something
-//// Line 14 had a static in it, but was removed, do't change back unless
+//// Line 14 had a static in it, but was removed, don't change back unless
 // necessary
+
 public class CANNetwork
 {
 
 private PowerDistributionPanel pdp = null;
 
+/**
+ * 
+ * @param pdp
+ *            The power distribution panel in the network.
+ */
 public CANNetwork (PowerDistributionPanel pdp)
 {
     this.pdp = pdp;
 }
 
+/**
+ * Prints out the current currently flowing through the provided pin.
+ * 
+ * @param pinNumber
+ *            The PDP port to print out the current for.
+ */
 public void pinCurrent (int pinNumber)
 {
 
@@ -32,9 +44,6 @@ public void pinCurrent (int pinNumber)
 
 }
 
-
-
-public int PDPportNumber;
 
 // public void printPDPChannel()
 // {
