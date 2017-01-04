@@ -4,7 +4,6 @@ import java.util.Comparator;
 import java.util.Vector;
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
-import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
@@ -17,7 +16,6 @@ import edu.wpi.first.wpilibj.image.NIVisionException;
 // TODO a processImageNoUpdate
 // TODO getLargetsBlob, getSmallestBlob,getNthBlob, etc.
 // TODO getXDistance to target, etc.
-// TODO KILL HARDWARE
 // TODO prints under debug switch
 /**
  * A class to capture and process images. Provides information on the pictures
@@ -150,6 +148,8 @@ public ParticleReport[] reports = new ParticleReport[0];
 
 private boolean newImageIsFresh = false;// TODO @AHK use to determine if we
                                         // actually process an image
+
+private double visionGoalHeightFt = 0.0;// TODO setters and Getters.
 
 /**
  * Creates an ImageProcessor object with camera <camera> and a default
@@ -622,17 +622,17 @@ public double getZDistanceToTarget (ParticleReport target)
         double pitch = this.getPitchAngleToTarget(target);
         System.out.println("Yaw angle: " + Math.toDegrees(yaw));
         System.out.println("Pitch angle: " + Math.toDegrees(pitch));
-        System.out.println(
-                "Old Distance: " + Hardware.VISION_GOAL_HEIGHT_FT
-                        * Math.cos(yaw)
-                        / Math.tan(pitch));
-        System.out.println("New Distance: " +
-                (Math.sin(getPitchAngleToTarget(target)
-                        / Hardware.VISION_GOAL_HEIGHT_FT)
-                        * Math.cos(this.getPitchAngleToTarget(target))
-                        * Math.sin(this.getYawAngleToTarget(target))));
+        // System.out.println(
+        // "Old Distance: " + this.visionGoalHeight
+        // * Math.cos(yaw)
+        // / Math.tan(pitch));
+        // System.out.println("New Distance: " +
+        // (Math.sin(getPitchAngleToTarget(target)
+        // / this.visionGoalHeight)
+        // * Math.cos(this.getPitchAngleToTarget(target))
+        // * Math.sin(this.getYawAngleToTarget(target))));
         // TODO generalize. No more hardware!
-        return (Hardware.VISION_GOAL_HEIGHT_FT
+        return (this.visionGoalHeightFt
                 * Math.cos(yaw)
                 / Math.tan(pitch))/* * 2.0 */;
         }

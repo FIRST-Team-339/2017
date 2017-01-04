@@ -6,7 +6,6 @@ import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
 import com.ni.vision.NIVision.ImageType;
 import com.ni.vision.NIVision.ParticleFilterCriteria2;
-import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import edu.wpi.first.wpilibj.image.ColorImage;
 import edu.wpi.first.wpilibj.image.NIVisionException;
@@ -419,7 +418,6 @@ public int getXOffsetOfYellowTote ()
             System.out
                     .println(
                             "We found no blobs! (Or we haven't yet processed the image)");
-            Hardware.errorMessage.printError("No blobs were found");
             }
         return 0;
         }

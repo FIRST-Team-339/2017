@@ -48,9 +48,7 @@ package org.usfirst.frc.team339.HardwareInterfaces.transmission;
  *          -------------------------------------------------------
  */
 import java.util.Vector;
-import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.HardwareInterfaces.PIDVelocityController;
-import org.usfirst.frc.team339.Utils.ErrorMessage.PrintsTo;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Relay;
@@ -1876,13 +1874,6 @@ private void controlSpeedController (
             {
             controllerSide = 'R';
             }
-        // TODO: remove errorMessage. Actually, burn ErrorMessages, and let
-        // it rise like a pheonix.
-        Hardware.errorMessage.printError(
-                joystickSide + controllerSide + " Joy = " +
-                        joystickInputValue,
-                PrintsTo.roboRIO,
-                false);
         System.out
                 .println(joystickSide + controllerSide + " Joy = " +
                         joystickInputValue);
@@ -4279,11 +4270,11 @@ public brakeReturns stop ()
     // station
 
     System.out.println("isStopped left/right front encoders: "
-            + isStopped(Hardware.transmission.leftMotorEncoder,
-                    Hardware.transmission.oneOrRightMotorEncoder));
+            + isStopped(this.leftMotorEncoder,
+                    this.oneOrRightMotorEncoder));
     System.out.println("isStopped left/right rear encoders: "
-            + isStopped(Hardware.transmission.leftRearMotorEncoder,
-                    Hardware.transmission.rightRearMotorEncoder));
+            + isStopped(this.leftRearMotorEncoder,
+                    this.rightRearMotorEncoder));
     // if timer is at 0, start it
     if (stopTimer.get() == 0)
         {

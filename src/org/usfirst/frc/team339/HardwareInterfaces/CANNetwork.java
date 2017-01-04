@@ -1,6 +1,6 @@
 package org.usfirst.frc.team339.HardwareInterfaces;
 
-import org.usfirst.frc.team339.Hardware.Hardware;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
 // import java.util.ArrayList;
 /// **
@@ -17,11 +17,18 @@ import org.usfirst.frc.team339.Hardware.Hardware;
 public class CANNetwork
 {
 
-public static void pinCurrent (int pinNumber)
+private PowerDistributionPanel pdp = null;
+
+public CANNetwork (PowerDistributionPanel pdp)
+{
+    this.pdp = pdp;
+}
+
+public void pinCurrent (int pinNumber)
 {
 
     System.out.println("Current on port " + pinNumber + ": "
-            + Hardware.pdp.getCurrent(pinNumber));
+            + this.pdp.getCurrent(pinNumber));
 
 }
 
@@ -49,7 +56,7 @@ public void printAllPDPChannels ()
 {
     for (int i = 0; i < 16; i++)
         {
-        if (Hardware.pdp.getCurrent(i) > 0)
+        if (this.pdp.getCurrent(i) > 0)
             {
             pinCurrent(i);
             }
