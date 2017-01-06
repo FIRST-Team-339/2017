@@ -13,9 +13,7 @@ import org.usfirst.frc.team339.Vision.operators.SaveBinaryImagePNGOperator;
 import org.usfirst.frc.team339.Vision.operators.VisionOperatorInterface;
 import edu.wpi.first.wpilibj.image.NIVisionException;
 
-// TODO a processImageNoUpdate
-// TODO getLargetsBlob, getSmallestBlob,getNthBlob, etc.
-// TODO getXDistance to target, etc.
+
 // TODO prints under debug switch
 /**
  * A class to capture and process images. Provides information on the pictures
@@ -100,10 +98,12 @@ public int compareTo (ParticleReport r)
 }
 }
 
-private enum DebugMode
+public enum DebugMode
     {
-
+    DEBUG_NONE, DEBUG_ALL, DEBUG_ONLY_NON_ZERO, DEBUG_ABSOLUTE_LOCATION;
     }
+
+private DebugMode debug = DebugMode.DEBUG_NONE;
 
 private KilroyCamera camera = null;
 
@@ -141,7 +141,6 @@ private double cameraXRes;
 
 private double cameraYRes;
 
-// TODO should this be public? Use a getter, methinks
 public ParticleReport[] reports = new ParticleReport[0];
 
 private boolean newImageIsFresh = false;
@@ -355,7 +354,6 @@ public void removeOperator (int index)
  *            Boolean to determine if all occurrences of <operatorToRemove>.
  *            True removes all, false removes first.
  */
-// TODO why is this here?
 public void removeOperator (VisionOperatorInterface operatorToRemove,
         boolean removeAllInstances)
 {
@@ -440,10 +438,18 @@ public void processImage ()
         if (this.newImageIsFresh == true)
             {
             this.applyOperators();
-            this.updateParticalAnalysisReports();// TODO test for mem usage and
-                                                 // time
+            this.updateParticalAnalysisReports();
             }
         }
+}
+
+/**
+ * Processes the saved image without updating it.
+ */
+private void processImageNoUpdate ()
+{
+    this.applyOperators();
+    this.updateParticalAnalysisReports();
 }
 
 /**
@@ -551,7 +557,6 @@ public void updateParticalAnalysisReports ()
         }
 }
 
-// TODO document the null handling
 /**
  * Finds the angle to the target to the right of center from the position of the
  * camera.
@@ -560,16 +565,25 @@ public void updateParticalAnalysisReports ()
  *            The blob we're targeting
  * @return
  *         The yaw angle between the blob and the camera to the right of center
- *         (left is negative), in radians.
+ *         (left is negative), in radians, or zero if the target is null.
  * 
  */
 public double getYawAngleToTarget (ParticleReport target)
 {
+    double retVal;
     if (target != null)
-        return Math.atan((target.center_mass_x
+        retVal = Math.atan((target.center_mass_x
                 - ((this.cameraXRes / 2) - .5))
                 / this.cameraFocalLengthPixels);
-    return 0.0;
+    else
+        retVal = 0.0;
+    if (this.debug == DebugMode.DEBUG_ALL
+            || this.debug == DebugMode.DEBUG_ABSOLUTE_LOCATION)
+        {
+        System.out.println("Yaw Angle to target: " + retVal);
+        }
+
+    return retVal;
 }
 
 /**
@@ -628,7 +642,6 @@ public double getZDistanceToTarget (ParticleReport target)
         // / this.visionGoalHeight)
         // * Math.cos(this.getPitchAngleToTarget(target))
         // * Math.sin(this.getYawAngleToTarget(target))));
-        // TODO generalize. No more hardware!
         return (this.visionGoalHeightFt
                 * Math.cos(yaw)
                 / Math.tan(pitch))/* * 2.0 */;
@@ -700,7 +713,6 @@ public double getPitchAngleToTarget (int targetIndex)
  *         See getZDistanceToTarget (ParticleReport) for more information on the
  *         return.
  */
-// TODO return ultrasonic value if we have one.
 @Deprecated
 public double getZDistanceToTargetFT (int targetIndex)
 {

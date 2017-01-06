@@ -110,6 +110,4 @@ public boolean isOn ()
     return (!super.get());
 } // end isOn
 
-// TODO: add a setReversed(boolean) method to software-reverse the switch
-
 } // end class

@@ -41,8 +41,6 @@ package org.usfirst.frc.team339.robot;
  * of the
  * match, namely, the Init and Periodic code
  * 
- * TODO: "make it worky".
- * 
  * 
  * @author Michael Andrzej Klaczynski
  * @written at the eleventh stroke of midnight, the 28th of January,

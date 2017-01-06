@@ -276,7 +276,6 @@ protected void usePIDOutput (double output)
 
     this.setSpeed = this.motor.get() + this.limit(output);
 
-    // TODO: Debug flag
     System.out
             .println("MOTOR.GET " + this.motor.get() + " / " + "OUT: " +
                     output);

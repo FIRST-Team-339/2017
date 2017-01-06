@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 /**
  * NOTE: THIS CODE IS NOT COMPLETE! THERE ARE STILL ERRORS
  */
-//TODO Create new imports for solenoids
+// TODO Create new imports for solenoids
 
 /*
  * This is a wrapper object for the various types of CANs we know we can get
@@ -29,32 +29,39 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 public class CANObject
 {
 
-//If true, activates debug print statements throughout the class
+// If true, activates debug print statements throughout the class
 private boolean useDebug = true;
 
 /**
- * Prints values of the significant variables/methods in CANObject if useDebug is true
+ * Prints values of the significant variables/methods in CANObject if useDebug
+ * is true
  */
-private void DebugCANUtils()
-{ 
-    if(useDebug == true)
-    {
+private void DebugCANUtils ()
+{
+    if (useDebug == true)
+        {
         System.out.println("The type Id is " + typeId);
-        System.out.println("The value of the getFault method is " + getFault());
-    }
+        System.out.println(
+                "The value of the getFault method is " + getFault());
+        }
 }
 
-//add object info 
+// add object info
 private int canId;
-//id for the CAN type
+
+// id for the CAN type
 private int typeId;
-//type id 1
+
+// type id 1
 private static CANTalon talon = null;
-//type id 2
+
+// type id 2
 private static CANJaguar jaguar = null;
-//type id 3
+
+// type id 3
 private static DoubleSolenoid doubleSolenoid = null;
-//type id 4
+
+// type id 4
 private static PowerDistributionPanel pdp = null;
 
 /**
@@ -62,7 +69,7 @@ private static PowerDistributionPanel pdp = null;
  */
 private CANObject ()
 {
-    //can not use this
+    // can not use this
 }
 
 /**
@@ -78,14 +85,13 @@ public CANObject (final CANTalon newTalon, int newCanId)
     talon = newTalon;
     canId = newCanId;
     typeId = 1;
-    
-    //TODO undo comments if the following code is necessary
-    if(useDebug == true)
-    {
+
+    if (useDebug == true)
+        {
         System.out.println("The talon is " + talon);
         System.out.println("The canId of the CANTalon is " + canId);
         System.out.println("The type Id of the CANTalon is " + typeId);
-    }
+        }
 }
 
 /**
@@ -101,14 +107,13 @@ public CANObject (final CANJaguar newJaguar, int newCanId)
     jaguar = newJaguar;
     canId = newCanId;
     typeId = 2;
-    
-    //TODO undo comments if the following code is necessary
-//    if(useDebug == true)
-//    {
-//        System.out.println("The jaguar is " + jaguar);
-//        System.out.println("The canId of the CANJaguar is " + canId);
-//        System.out.println("The type Id of the CANJaguar is " + typeId);
-//    }
+
+    // if(useDebug == true)
+    // {
+    // System.out.println("The jaguar is " + jaguar);
+    // System.out.println("The canId of the CANJaguar is " + canId);
+    // System.out.println("The type Id of the CANJaguar is " + typeId);
+    // }
 }
 
 
@@ -125,14 +130,13 @@ public CANObject (final PowerDistributionPanel newPdp, int newCanId)
     pdp = newPdp;
     canId = newCanId;
     typeId = 4;
-    
-    //TODO undo comments if the following code is necessary
-//    if(useDebug == true)
-//    {
-//        System.out.println("The pdp is " + talon);
-//        System.out.println("The canId of the CANJaguar is " + canId);
-//        System.out.println("The type Id of the CANJaguar is " + typeId);
-//    }
+
+    // if(useDebug == true)
+    // {
+    // System.out.println("The pdp is " + talon);
+    // System.out.println("The canId of the CANJaguar is " + canId);
+    // System.out.println("The type Id of the CANJaguar is " + typeId);
+    // }
 }
 
 
@@ -149,15 +153,14 @@ public CANObject (final DoubleSolenoid newdoubleSolenoid, int newCanId)
     doubleSolenoid = newdoubleSolenoid;
     canId = newCanId;
     typeId = 3;
-    
-    // TODO undo comments if the following code is necessary
-//    if(useDebug == true)
-//    {
-//        System.out.println("The Double Solenoid is " + doubleSolenoid);
-//        System.out.println("The canId of the DoubleSolenoid is " + canId);
-//        System.out.println("The type Id of the DoubleSolenoid is " + typeId);
-//    }
-    
+
+    // if(useDebug == true)
+    // {
+    // System.out.println("The Double Solenoid is " + doubleSolenoid);
+    // System.out.println("The canId of the DoubleSolenoid is " + canId);
+    // System.out.println("The type Id of the DoubleSolenoid is " + typeId);
+    // }
+
 }
 
 /**
@@ -247,9 +250,9 @@ public int getType ()
 public CANTalon getCANTalon ()
 {
     if (typeId == 1)
-    {
+        {
         return talon;
-    }
+        }
     return null;
 }
 
@@ -261,9 +264,9 @@ public CANTalon getCANTalon ()
 public CANJaguar getCANJaguar ()
 {
     if (typeId == 2)
-    {
+        {
         return jaguar;
-    }
+        }
     return null;
 }
 
@@ -275,9 +278,9 @@ public CANJaguar getCANJaguar ()
 public DoubleSolenoid getdoubleSolenoid ()
 {
     if (typeId == 3)
-    {
+        {
         return doubleSolenoid;
-    }
+        }
     return null;
 }
 
@@ -291,9 +294,9 @@ public DoubleSolenoid getdoubleSolenoid ()
 public PowerDistributionPanel getPDP ()
 {
     if (typeId == 4)
-    {
+        {
         return pdp;
-    }
+        }
     return null;
 }
 
@@ -306,17 +309,18 @@ public PowerDistributionPanel getPDP ()
 public boolean getFault ()
 {
     switch (typeId)
-    {
+        {
         case 1:
-//            System.out.println("Fault Foward Limit: " + talon.getFaultForLim() + 
-//                    "\nFault Forward Soft Limit: " + talon.getFaultForSoftLim() +
-//                    "\nFault Over Temperature: " + talon.getFaultOverTemp() +
-//                    "\nFault Hardware Failure: " + talon.getFaultHardwareFailure() + 
-//                    "\nFault Reverse Limit: " + talon.getFaultRevLim() +
-//                    "\nFault Reverse Soft Limit: " + talon.getFaultRevSoftLim() +
-//                    "\nFault Under Voltage: " + talon.getFaultUnderVoltage()
-//                    );
-            //0 is no fault, greater than 0 if there is a fault
+            // System.out.println("Fault Foward Limit: " +
+            // talon.getFaultForLim() +
+            // "\nFault Forward Soft Limit: " + talon.getFaultForSoftLim() +
+            // "\nFault Over Temperature: " + talon.getFaultOverTemp() +
+            // "\nFault Hardware Failure: " + talon.getFaultHardwareFailure() +
+            // "\nFault Reverse Limit: " + talon.getFaultRevLim() +
+            // "\nFault Reverse Soft Limit: " + talon.getFaultRevSoftLim() +
+            // "\nFault Under Voltage: " + talon.getFaultUnderVoltage()
+            // );
+            // 0 is no fault, greater than 0 if there is a fault
             if (talon.getFaultForLim() > 0
                     || talon.getFaultForSoftLim() > 0
                     || talon.getFaultOverTemp() > 0
@@ -324,26 +328,26 @@ public boolean getFault ()
                     || talon.getFaultRevLim() > 0
                     || talon.getFaultRevSoftLim() > 0
                     || talon.getFaultUnderVoltage() > 0)
-            {
+                {
                 return true;
-            }
+                }
             return false;
         case 2:
             System.out.println("Jaguar Fault: " + jaguar.getFaults());
             if (jaguar.getFaults() > 0)
-            {
+                {
                 return true;
-            }
+                }
             return false;
         case 3:
-            System.out.println("Double Solenoid: " + doubleSolenoid.getPCMSolenoidVoltageStickyFault());
-            //TODO the exit line is a problem
+            System.out.println("Double Solenoid: " + doubleSolenoid
+                    .getPCMSolenoidVoltageStickyFault());
             return doubleSolenoid.getPCMSolenoidVoltageStickyFault();
         case 4:
-            //pdp can hold sticky faults but cannot be accessed with code
+            // pdp can hold sticky faults but cannot be accessed with code
             return false;
-    }
-    //object does not exist
+        }
+    // object does not exist
     return false;
 }
 }
