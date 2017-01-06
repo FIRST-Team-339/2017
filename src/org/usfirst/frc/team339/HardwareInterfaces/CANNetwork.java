@@ -10,8 +10,6 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
  * @author Daniel Resio, Becky Button, and Cole Ramos
  */
 //
-//// TODO search for more than one item for CAN id
-//// TODO add CANUtils.getFaults() in robot init or something
 //// Line 14 had a static in it, but was removed, don't change back unless
 // necessary
 

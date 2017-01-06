@@ -19,7 +19,6 @@ boolean useConnectivity8 = true;
 public ConvexHullOperator (boolean useConnectivity8)
 {
     this.useConnectivity8 = useConnectivity8;
-    // TODO Auto-generated constructor stub
 }
 
 /*

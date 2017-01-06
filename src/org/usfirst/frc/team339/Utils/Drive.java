@@ -308,7 +308,6 @@ public boolean driveByInches (final double distance,
     if (this.debugOn == true)
         {
         // PRINT STATEMENTS:
-        // TODO: remove
         // Prints out encoder values and the values we are sending to the
         // motors.
         System.out.println("Left Distance: " +
@@ -1303,7 +1302,7 @@ public boolean turnRightDegrees (final double degrees,
 // this.cameraTimer.start();
 // //TODO removed to minimize problems with the method in the
 // //future
-// // savedCameraValue = Hardware.cameraSolenoid.get(); //TODO delete this for
+// // savedCameraValue = Hardware.cameraSolenoid.get();
 // more elegant flow
 // // //TODO don't reference hardware in general purpose class.
 // // Hardware.cameraSolenoid
@@ -1734,7 +1733,7 @@ public boolean turnRightDegrees (final double degrees,
 // case CHECK_X_AXIS_CORRECTNESS:
 // // if the center of our largest blob is to the left of our desired
 // // deadzone
-// // TODO: This is wrong. Fix. --MAK
+//
 // // if (Hardware.imageProcessor
 // // .getParticleAnalysisReports().length > 0
 // // && getRelativeXCoordinate(
@@ -2047,7 +2046,6 @@ private enum alignByCameraStates
 // // over and
 // // over again until the blob is within the
 // // acceptable zone)
-// // TODO check and make sure this still doesn't work,
 // // then
 // // change it back or write turn continuous method
 // this.driveContinuous(
@@ -2367,7 +2365,7 @@ int dupImages = 0;
 // this.cameraTimer.stop();
 // this.cameraTimer.reset();
 // this.transmission.setGear(savedGear);
-// // Hardware.cameraSolenoid.set(savedCameraValue);//TODO
+// // Hardware.cameraSolenoid.set(savedCameraValue);
 // // hardware reference.
 //
 // // stop the robot

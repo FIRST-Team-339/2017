@@ -426,7 +426,6 @@ public int getXOffsetOfYellowTote ()
         {
         // if our blob has a center of mass in the bottom quarter of the
         // image
-        // TODO: replace the center of mass with the bounding rect. bottom
         // once we have learned how to exclude the top part of the image
         // from processing (see teh Find Lower Yellow Totes Preliminary
         // Script2.vascr image processing script on the desktop for the
@@ -668,7 +667,6 @@ public boolean updateParticleAnalysisReports ()
         }
     catch (final NIVisionException e1)
         {
-        // TODO Auto-generated catch block
         e1.printStackTrace();
         return false;
         }

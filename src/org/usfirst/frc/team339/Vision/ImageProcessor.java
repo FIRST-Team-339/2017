@@ -59,8 +59,6 @@ public class ImageProcessor
 public class ParticleReport implements Comparator<ParticleReport>,
         Comparable<ParticleReport>
 {
-// TODO: actually initialize these values
-// TODO add boundingRectHeight (and aspect ratio?)
 public double area;
 
 // double BoundingRectLeft;
@@ -146,8 +144,7 @@ private double cameraYRes;
 // TODO should this be public? Use a getter, methinks
 public ParticleReport[] reports = new ParticleReport[0];
 
-private boolean newImageIsFresh = false;// TODO @AHK use to determine if we
-                                        // actually process an image
+private boolean newImageIsFresh = false;
 
 private double visionGoalHeightFt = 0.0;// TODO setters and Getters.
 
@@ -465,7 +462,7 @@ public void updateImage ()
             {
             this.newImageIsFresh = false;
             }
-        }// TODO @AHK only process new images
+        }
     catch (final NIVisionException e)
         {
         // Auto-generated catch block

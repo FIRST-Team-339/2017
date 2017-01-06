@@ -387,7 +387,6 @@ public void saveImage (String fileName)
         }
     catch (final IOException e)
         {
-        // TODO Auto-generated catch block
         e.printStackTrace();
         }
     // Erases any pre-existing files that have previously been created
@@ -400,7 +399,6 @@ public void saveImage (String fileName)
         }
     catch (final IOException e)
         {
-        // TODO Auto-generated catch block
         e.printStackTrace();
         }
     // Creates new image, keep a log of the creation of the file
@@ -415,7 +413,6 @@ public void saveImage (String fileName)
         }
     catch (final IOException e)
         {
-        // TODO Auto-generated catch block
         e.printStackTrace();
         }
 }

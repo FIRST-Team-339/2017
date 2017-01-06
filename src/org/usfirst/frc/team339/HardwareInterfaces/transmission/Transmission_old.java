@@ -4459,7 +4459,6 @@ private double MAX_STOPPING_TIME = 5;
 public boolean isStopped (Encoder leftEncoder, Encoder rightEncoder)
 {
     // Print statements for current distance brakePreviousDistance_ variables
-    // TODO comment out the print statements
     // System.out.println("left encoder current distance is: " +
     // leftEncoder.getDistance());
     // System.out.println("brakePreviousDistanceL is: " +
