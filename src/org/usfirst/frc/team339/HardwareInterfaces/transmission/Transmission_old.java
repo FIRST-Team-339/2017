@@ -2262,7 +2262,6 @@ public void resetAllEncoders ()
 }
 
 // TODO put in order
-// TODO consider get encoder methods
 /**
  * Returns the total distance on the right rear motor encoder.
  * 
@@ -4265,7 +4264,6 @@ public brakeReturns stopMovement ()
 // This function is used by Left Drive Button 7
 public brakeReturns stop ()
 {
-    // TODO TEACH THE FUTURE MINIONS TO COMMENT THEIR UGLY CODE
     // prints out the motor encoder that we are using to the driver
     // station
 

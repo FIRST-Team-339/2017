@@ -14,7 +14,6 @@ import org.usfirst.frc.team339.Vision.operators.VisionOperatorInterface;
 import edu.wpi.first.wpilibj.image.NIVisionException;
 
 // TODO a processImageNoUpdate
-// TODO getLargetsBlob, getSmallestBlob,getNthBlob, etc.
 // TODO getXDistance to target, etc.
 // TODO prints under debug switch
 /**
@@ -141,7 +140,6 @@ private double cameraXRes;
 
 private double cameraYRes;
 
-// TODO should this be public? Use a getter, methinks
 public ParticleReport[] reports = new ParticleReport[0];
 
 private boolean newImageIsFresh = false;
@@ -355,7 +353,6 @@ public void removeOperator (int index)
  *            Boolean to determine if all occurrences of <operatorToRemove>.
  *            True removes all, false removes first.
  */
-// TODO why is this here?
 public void removeOperator (VisionOperatorInterface operatorToRemove,
         boolean removeAllInstances)
 {
@@ -440,8 +437,7 @@ public void processImage ()
         if (this.newImageIsFresh == true)
             {
             this.applyOperators();
-            this.updateParticalAnalysisReports();// TODO test for mem usage and
-                                                 // time
+            this.updateParticalAnalysisReports();
             }
         }
 }
@@ -551,7 +547,6 @@ public void updateParticalAnalysisReports ()
         }
 }
 
-// TODO document the null handling
 /**
  * Finds the angle to the target to the right of center from the position of the
  * camera.
@@ -560,7 +555,7 @@ public void updateParticalAnalysisReports ()
  *            The blob we're targeting
  * @return
  *         The yaw angle between the blob and the camera to the right of center
- *         (left is negative), in radians.
+ *         (left is negative), in radians, or zero if the target is null.
  * 
  */
 public double getYawAngleToTarget (ParticleReport target)
@@ -628,7 +623,6 @@ public double getZDistanceToTarget (ParticleReport target)
         // / this.visionGoalHeight)
         // * Math.cos(this.getPitchAngleToTarget(target))
         // * Math.sin(this.getYawAngleToTarget(target))));
-        // TODO generalize. No more hardware!
         return (this.visionGoalHeightFt
                 * Math.cos(yaw)
                 / Math.tan(pitch))/* * 2.0 */;
@@ -700,7 +694,6 @@ public double getPitchAngleToTarget (int targetIndex)
  *         See getZDistanceToTarget (ParticleReport) for more information on the
  *         return.
  */
-// TODO return ultrasonic value if we have one.
 @Deprecated
 public double getZDistanceToTargetFT (int targetIndex)
 {

@@ -1911,8 +1911,6 @@ public static enum alignByCameraReturn
     DONE;
     }
 
-// TODO rewrite alignByCamera to use a state machine, the way it is right
-// now is pretty messy.
 private enum alignByCameraStates
     {
     // Sets up everything to align
@@ -1990,7 +1988,7 @@ private enum alignByCameraStates
 // // turn down the lights
 // this.camera.writeBrightness(
 // Hardware.MINIMUM_AXIS_CAMERA_BRIGHTNESS);
-// this.savedGear = this.transmission.getGear(); // TODO shared
+// this.savedGear = this.transmission.getGear();
 // // var
 // this.transmission.setGear(2);
 // // Woah, that's too dark! Someone turn on the ringlight!
@@ -2603,9 +2601,6 @@ public void setYResolution (double res)
     this.cameraYResolution = res;
 }
 
-public void getYawAngleToGoal ()
-{
-}// TODO write.
 
 /**
  * enum which describes which way to turn
@@ -2690,9 +2685,7 @@ private double defaultTurnSpeed = .5;
 // and ranges from 0 to 1.0 (100%)
 // ------------------------------------
 // Changed because an encoder broke.
-private double drivingCorrectionFactor = 1.0;// 0.75;// 0.6;// TODO: changed
-                                             // around #
-// :0.75;
+private double drivingCorrectionFactor = .75;// 0.75;// 0.6;
 
 // -------------------------------------
 // minimum motor speed allowed. This represents

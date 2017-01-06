@@ -57,7 +57,7 @@ public int boundingRectRight;
 
 public int boundingRectBottom;
 
-public int center_mass_x;// TODO: actually initialize these values
+public int center_mass_x;
 
 public int center_mass_y;
 
@@ -246,13 +246,6 @@ public void addCriteria (NIVision.MeasurementType type, float lower,
 public void clearCriteriaCollection ()
 {
     this.criteriaArray = new ParticleFilterCriteria2[0];
-}
-
-// TODO temporary code to find the center of a bounding rectangle.
-// We really need to clean this up
-public double getCenterOfBoundingRectangleX (ParticleReport desiredBlob)
-{
-    return 0.0;
 }
 
 /**
@@ -693,7 +686,7 @@ public boolean updateParticleAnalysisReports ()
                 this.image.image,
                 255,
                 NIVision.ColorMode.HSL,
-                new NIVision.Range(this.hueLow,// TODO set colormode to HSL
+                new NIVision.Range(this.hueLow,
                         this.hueHigh),
                 new NIVision.Range(this.saturationLow,
                         this.saturationHigh),

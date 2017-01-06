@@ -119,7 +119,6 @@ public void clearAllImages ()
         }  // end try
     catch (final IOException e)
         {
-        // TODO Auto-generated catch block
         e.printStackTrace();
         } // catch any errors
 
@@ -416,46 +415,6 @@ public void saveImage (String fileName)
         e.printStackTrace();
         }
 }
-
-// public void saveImageWithTypeName (String typeName)
-// {
-// int typeNameIndex = hasUsedTypeName(typeName);
-// if (typeNameIndex == -1)
-// {
-// if (numOfUsedTypes < 10)
-// {
-// usedNameTypes[numOfUsedTypes - 1] = typeName;
-// numOfUsedTypes++;
-// }
-// }
-// if (numOfUsedTypes < 10)
-// saveImage(typeName
-// + ((usedNameCounts[typeNameIndex + 1] % 25)
-// + 1));
-// usedNameCounts[typeNameIndex + 1]++;
-// }
-//
-// private int hasUsedTypeName (String typename)// TODO String destructed after
-// // return
-// {
-// for (int i = 0; i < numOfUsedTypes; i++)
-// {
-// if (usedNameTypes[i].equals(typename))
-// {
-// return i;
-// }
-// }
-// return -1;
-// }
-//
-// private String[] usedNameTypes =
-// {"", "", "", "", "", "", "", "", "", ""};// TODO magic number
-//
-// private int[] usedNameCounts =
-// {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-//
-// int numOfUsedTypes = 0;
-
 
 /**
  * calls up saveImage method and labels pictures Image0 through Image9
