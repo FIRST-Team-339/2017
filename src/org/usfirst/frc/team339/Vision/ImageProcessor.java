@@ -13,8 +13,7 @@ import org.usfirst.frc.team339.Vision.operators.SaveBinaryImagePNGOperator;
 import org.usfirst.frc.team339.Vision.operators.VisionOperatorInterface;
 import edu.wpi.first.wpilibj.image.NIVisionException;
 
-// TODO a processImageNoUpdate
-// TODO getXDistance to target, etc.
+
 // TODO prints under debug switch
 /**
  * A class to capture and process images. Provides information on the pictures
@@ -99,10 +98,12 @@ public int compareTo (ParticleReport r)
 }
 }
 
-private enum DebugMode
+public enum DebugMode
     {
-
+    DEBUG_NONE, DEBUG_ALL, DEBUG_ONLY_NON_ZERO, DEBUG_ABSOLUTE_LOCATION;
     }
+
+private DebugMode debug = DebugMode.DEBUG_NONE;
 
 private KilroyCamera camera = null;
 
@@ -443,6 +444,15 @@ public void processImage ()
 }
 
 /**
+ * Processes the saved image without updating it.
+ */
+private void processImageNoUpdate ()
+{
+    this.applyOperators();
+    this.updateParticalAnalysisReports();
+}
+
+/**
  * Captures an image from the camera given to the class.
  */
 public void updateImage ()
@@ -560,11 +570,20 @@ public void updateParticalAnalysisReports ()
  */
 public double getYawAngleToTarget (ParticleReport target)
 {
+    double retVal;
     if (target != null)
-        return Math.atan((target.center_mass_x
+        retVal = Math.atan((target.center_mass_x
                 - ((this.cameraXRes / 2) - .5))
                 / this.cameraFocalLengthPixels);
-    return 0.0;
+    else
+        retVal = 0.0;
+    if (this.debug == DebugMode.DEBUG_ALL
+            || this.debug == DebugMode.DEBUG_ABSOLUTE_LOCATION)
+        {
+        System.out.println("Yaw Angle to target: " + retVal);
+        }
+
+    return retVal;
 }
 
 /**
