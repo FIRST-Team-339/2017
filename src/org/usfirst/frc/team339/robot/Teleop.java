@@ -33,6 +33,7 @@ package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
 
+
 /**
  * This class contains all of the user code for the Autonomous
  * part of the match, namely, the Init and Periodic code
@@ -71,6 +72,7 @@ public static void init ()
  * @author Nathanial Lydick
  * @written Jan 13, 2015
  */
+
 public static void periodic ()
 {
     // Print out any data we want from the hardware elements.
@@ -135,8 +137,8 @@ public static void printStatements ()
     // System.out.println(
     // "Left Rear Encoder Tics: "
     // // + Hardware.leftRearEncoder.get());
-    // System.out.println(
-    // "RR distance = " + Hardware.rightRearEncoder.getDistance());
+  //  System.out.println(
+    //        "RR distance = " + Hardware.rightRearEncoder.getDistance());
     // System.out.println(
     // "LR distance = " + Hardware.leftRearEncoder.getDistance());
 

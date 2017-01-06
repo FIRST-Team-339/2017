@@ -28,26 +28,30 @@ public CANNetwork (PowerDistributionPanel pdp)
     this.pdp = pdp;
 }
 
+
+
 /**
  * Prints out the current currently flowing through the provided pin.
  * 
  * @param pinNumber
  *            The PDP port to print out the current for.
+ * @author Becky Button
  */
-public void pinCurrent (int pinNumber)
+public void pinCurrentPrint (int pinNumber)
 {
 
-    System.out.println("Current on port " + pinNumber + ": "
-            + this.pdp.getCurrent(pinNumber));
+    System.out.println(
+            "Port " + String.format("%1$02d", pinNumber) + " Amps "
+                    + this.pdp.getCurrent(pinNumber));
 
 }
 
 
-// public void printPDPChannel()
-// {
-// System.out.println("The amperage of PDP Port" + PDPportNumber +
-// "is" + getPDPChannelCurrent(PDPportNumber, ));
-// }
+public double pinValue (int pinNumber)
+{
+    // int pinInt = (int) this.pdp.getCurrent(pinNumber);
+    return this.pdp.getCurrent(pinNumber);
+}
 
 
 /**
@@ -63,9 +67,10 @@ public void printAllPDPChannels ()
 {
     for (int i = 0; i < 16; i++)
         {
-        if (this.pdp.getCurrent(i) > 0)
+        if (this.pinValue(i) != 0)
             {
-            pinCurrent(i);
+            pinCurrentPrint(i);
+            
             }
         }
 }
