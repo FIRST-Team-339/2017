@@ -14,6 +14,9 @@
 // ====================================================================
 package org.usfirst.frc.team339.Hardware;
 
+import org.usfirst.frc.team339.HardwareInterfaces.RaspberryPi;
+import org.usfirst.frc.team339.Vision.VisionProcessor;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
@@ -183,6 +186,11 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // -------------------------------------
 // Axis/USB Camera class
 // -------------------------------------
+
+public static RaspberryPi visionController = new RaspberryPi();
+
+public static VisionProcessor visionProcessor;
+
 // -------------------------------------
 // declare the USB camera server and the
 // USB camera it serves
