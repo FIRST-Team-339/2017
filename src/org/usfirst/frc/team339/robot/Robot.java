@@ -60,6 +60,8 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
+import org.usfirst.frc.team339.Vision.VisionProcessor;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 
 /**
@@ -241,7 +243,17 @@ public void robotInit ()
     // =========================================================
     Hardware.leftRearEncoder.reset();
     Hardware.rightRearEncoder.reset();
+    
+    //--------------------------------------
+    // Vision Initialization
+    //--------------------------------------
 
+    Hardware.visionProcessor = new VisionProcessor(Hardware.visionController.port);
+    Hardware.visionController.requestNewThread();
+    
+    // Set the Operations for the VIsion Processor to perform
+    
+    
     // -------------------------------------
     // motor initialization
     // -------------------------------------
