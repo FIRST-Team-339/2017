@@ -1,7 +1,6 @@
 package org.usfirst.frc.team339.HardwareInterfaces;
 
-import edu.wpi.first.wpilibj.CANJaguar;
-import edu.wpi.first.wpilibj.CANTalon;
+import com.ctre.CANTalon;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 
@@ -55,8 +54,6 @@ private int typeId;
 // type id 1
 private static CANTalon talon = null;
 
-// type id 2
-private static CANJaguar jaguar = null;
 
 // type id 3
 private static DoubleSolenoid doubleSolenoid = null;
@@ -102,19 +99,6 @@ public CANObject (final CANTalon newTalon, int newCanId)
  * @param newCanId
  *            the ID of the CAN object
  */
-public CANObject (final CANJaguar newJaguar, int newCanId)
-{
-    jaguar = newJaguar;
-    canId = newCanId;
-    typeId = 2;
-
-    // if(useDebug == true)
-    // {
-    // System.out.println("The jaguar is " + jaguar);
-    // System.out.println("The canId of the CANJaguar is " + canId);
-    // System.out.println("The type Id of the CANJaguar is " + typeId);
-    // }
-}
 
 
 /**
@@ -202,11 +186,7 @@ public void setCAN (final CANTalon talon)
  * @param jaguar
  *            jaguar object to change to
  */
-public void setCAN (final CANJaguar jaguar)
-{
-    CANObject.jaguar = jaguar;
-    typeId = 2;
-}
+
 
 /**
  * Sets the object to a Pneumatics Control Module
@@ -256,19 +236,8 @@ public CANTalon getCANTalon ()
     return null;
 }
 
-/**
- * Checks if the CAN Device is a Jaguar
- * 
- * @return Returns Jaguar if type ID is 2, if not returns null
- */
-public CANJaguar getCANJaguar ()
-{
-    if (typeId == 2)
-        {
-        return jaguar;
-        }
-    return null;
-}
+
+
 
 /**
  * Checks if the CAN Device is a Pnuematic Control Module
@@ -333,11 +302,7 @@ public boolean getFault ()
                 }
             return false;
         case 2:
-            System.out.println("Jaguar Fault: " + jaguar.getFaults());
-            if (jaguar.getFaults() > 0)
-                {
-                return true;
-                }
+            System.out.println("NO LONGER AVAILABLE");
             return false;
         case 3:
             System.out.println("Double Solenoid: " + doubleSolenoid

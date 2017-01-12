@@ -85,10 +85,10 @@ public RelativeSpeedController (final SpeedController speedController, // The
         // velocity
         // commands
         final double maxSpeed) // The maximum speed that a command of 1.0
-						        // should represent
+                               // should represent
 {
-	this.speedController = speedController;
-	this.maxSpeed = maxSpeed;
+    this.speedController = speedController;
+    this.maxSpeed = maxSpeed;
 } // end DoubleSolenoid
 
 // -------------------------------------------------------
@@ -103,7 +103,7 @@ public RelativeSpeedController (final SpeedController speedController, // The
 @Override
 public void disable ()
 {
-	this.speedController.disable();
+    this.speedController.disable();
 } // end disable
 
 // -------------------------------------------------------
@@ -120,7 +120,7 @@ public void disable ()
 @Override
 public double get ()
 {
-	return this.speedController.get() / this.maxSpeed;
+    return this.speedController.get() / this.maxSpeed;
 } // end get
 
 // -------------------------------------------------------
@@ -140,7 +140,7 @@ public double get ()
 @Override
 public void pidWrite (final double output)
 {
-	this.set(output);
+    this.set(output);
 } // end set
 
 // -------------------------------------------------------
@@ -159,29 +159,9 @@ public void pidWrite (final double output)
 @Override
 public void set (final double speed)
 {
-	this.speedController.set(speed * this.maxSpeed);
+    this.speedController.set(speed * this.maxSpeed);
 } // end set
 
-// -------------------------------------------------------
-/**
- * sets tbe speed of the controller in the sync group as
- * a fraction of the max speed (-1.0 to 1.0)
- *
- * @method set
- * @param speed
- *            The speed to send to the speed controller as
- *            a fraction of the maximum speed (-1.0 to 1.0)
- * @param syncGroup
- *            The sync group for this set()
- * @author Josh Shields
- * @written Jan 15, 2011
- *          -------------------------------------------------------
- */
-@Override
-public void set (final double speed, final byte syncGroup)
-{
-	this.speedController.set(speed * this.maxSpeed, syncGroup);
-} // end set
 
 /**
  * @description Gets whether or not this speed controller's motor is inverted.
@@ -191,7 +171,7 @@ public void set (final double speed, final byte syncGroup)
 @Override
 public boolean getInverted ()
 {
-	return this.isInverted;
+    return this.isInverted;
 }
 
 /**
@@ -202,14 +182,14 @@ public boolean getInverted ()
 @Override
 public void setInverted (boolean val)
 {
-	this.isInverted = val;
+    this.isInverted = val;
 }
 
 
-//@Override
+// @Override
 public void stopMotor ()
 {
-	// TODO Auto-generated method stub
+    // TODO Auto-generated method stub
 
 }
 } // end class
