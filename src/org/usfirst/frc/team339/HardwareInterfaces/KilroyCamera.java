@@ -21,7 +21,6 @@ package org.usfirst.frc.team339.HardwareInterfaces;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import edu.wpi.first.wpilibj.image.ColorImage;
 import edu.wpi.first.wpilibj.image.HSLImage;
 import edu.wpi.first.wpilibj.image.NIVisionException;
 import edu.wpi.first.wpilibj.vision.AxisCamera;
@@ -206,12 +205,13 @@ public boolean gethaveCamera ()
  * @method getCameraInstance()
  * @return ColorImage - Camera.getImage() or a 0x0 hsl image
  * @author Nathan Lydick
+ * @return
  * @throws NIVisionException
  *             - throws exception when fails
  * @written Oct 16, 2014
  *          -------------------------------------------------------
  */
-public ColorImage getImage () throws NIVisionException
+public HSLImage ColorImage () throws NIVisionException
 {
     if (this.haveCamera)
         return this.camera.getImage();
