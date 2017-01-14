@@ -32,7 +32,8 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
-
+import org.usfirst.frc.team339.HardwareInterfaces.CANNetwork;
+import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 
 /**
  * This class contains all of the user code for the Autonomous
@@ -75,8 +76,34 @@ public static void init ()
 
 public static void periodic ()
 {
+    CANNetwork CAN = new CANNetwork(Hardware.pdp);
     // Print out any data we want from the hardware elements.
     printStatements();
+    CAN.printAllPDPChannels();
+    // creating new instance of Transmission Mecanum
+    TransmissionMecanum mecanumDrive = new TransmissionMecanum(
+            Hardware.rightFrontMotor, Hardware.rightRearMotor,
+            Hardware.leftFrontMotor, Hardware.leftRearMotor);
+
+    // Transmission tankDrive = new Transmission(
+    // Hardware.rightFrontMotor, Hardware.rightRearMotor,
+    // Hardware.leftFrontMotor, Hardware.leftRearMotor);
+
+    // if (Hardware.usingMecanum = true)
+    // {
+    mecanumDrive.drive(Hardware.rightDriver.getMagnitude(),
+            Hardware.rightDriver.getDirectionDegrees(),
+            Hardware.rightDriver.getTwist());
+    // }
+    // else {
+    //
+    // }
+    // remove this; just meant to test roboRio
+    if (Hardware.rightOperator.getRawButton(8) == true)
+        {
+        Hardware.cameraServoBase.set(1);
+        Hardware.cameraServoBase.set(0);
+        }
 
 
 } // end Periodic
@@ -137,8 +164,8 @@ public static void printStatements ()
     // System.out.println(
     // "Left Rear Encoder Tics: "
     // // + Hardware.leftRearEncoder.get());
-  //  System.out.println(
-    //        "RR distance = " + Hardware.rightRearEncoder.getDistance());
+    // System.out.println(
+    // "RR distance = " + Hardware.rightRearEncoder.getDistance());
     // System.out.println(
     // "LR distance = " + Hardware.leftRearEncoder.getDistance());
 
@@ -184,9 +211,12 @@ public static void printStatements ()
     // information about the joysticks
     // ---------------------------------
     // System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
-    // System.out.println("Right Joystick: " + Hardware.rightDriver.getY());
-    // System.out.println("Left Operator: " + Hardware.leftOperator.getY());
-    // System.out.println("Right Operator: " + Hardware.rightOperator.getY());
+    // System.out
+    // .println("Right Joystick: " + Hardware.rightDriver.getY());
+    // System.out
+    // .println("Left Operator: " + Hardware.leftOperator.getY());
+    // System.out.println(
+    // "Right Operator: " + Hardware.rightOperator.getY());
 
     // =================================
     // Kilroy ancillary items

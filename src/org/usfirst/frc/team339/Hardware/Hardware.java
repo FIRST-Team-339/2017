@@ -18,6 +18,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.MotorSafetyHelper;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -57,6 +59,10 @@ public static boolean runningInLab = false;
 // PWM classes
 // ====================================
 
+public static Servo cameraServoBase = new Servo(8);
+
+public static Servo cameraServoTop = new Servo(9);
+
 // ------------------------------------
 // Jaguar classes
 // ------------------------------------
@@ -70,10 +76,14 @@ public static boolean runningInLab = false;
  */
 public static TalonSRX rightRearMotor = new TalonSRX(2);
 
+public static TalonSRX rightFrontMotor = new TalonSRX(1);
+
 /**
  * Default motor controller.
  */
 public static TalonSRX leftRearMotor = new TalonSRX(3);
+
+public static TalonSRX leftFrontMotor = new TalonSRX(4);
 
 // ------------------------------------
 // Victor classes
@@ -82,7 +92,8 @@ public static TalonSRX leftRearMotor = new TalonSRX(3);
 // ====================================
 // CAN classes
 // ====================================
-
+public static PowerDistributionPanel pdp = new PowerDistributionPanel(
+        0);
 // ====================================
 // Relay classes
 // ====================================
@@ -246,7 +257,7 @@ public static Joystick rightOperator = new Joystick(3);
 // ------------------------------------
 // Drive system
 // ------------------------------------
-
+public static final boolean usingMecanum = true;
 // -------------------
 // Assembly classes (e.g. forklift)
 // -------------------
