@@ -579,4 +579,23 @@ public void writeWhiteBalance (AxisCamera.WhiteBalance whiteBalance)
 
         }
 }
+
+/**
+ * Takes a single image
+ * 
+ * @param joystickButton
+ *            joystick.button
+ * @author Becky Button
+ */
+public void takeSinglePicture (boolean rawButton)
+{
+    if (rawButton == true && previousPictureState == false)
+        {
+        saveImagesSafely();
+        }
+    previousPictureState = rawButton;
+}
+
+private static boolean previousPictureState;
+
 }
