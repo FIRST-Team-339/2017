@@ -14,12 +14,13 @@
 // ====================================================================
 package org.usfirst.frc.team339.Hardware;
 
+import org.usfirst.frc.team339.HardwareInterfaces.CANNetwork;
+import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.MotorSafetyHelper;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -59,9 +60,6 @@ public static boolean runningInLab = false;
 // PWM classes
 // ====================================
 
-public static Servo cameraServoBase = new Servo(8);
-
-public static Servo cameraServoTop = new Servo(9);
 
 // ------------------------------------
 // Jaguar classes
@@ -94,6 +92,8 @@ public static TalonSRX leftFrontMotor = new TalonSRX(4);
 // ====================================
 public static PowerDistributionPanel pdp = new PowerDistributionPanel(
         0);
+
+public static CANNetwork CAN = new CANNetwork(Hardware.pdp);
 // ====================================
 // Relay classes
 // ====================================
@@ -194,6 +194,8 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // -------------------------------------
 // Axis/USB Camera class
 // -------------------------------------
+
+public static KilroyCamera axisCamera = new KilroyCamera(true);
 // -------------------------------------
 // declare the USB camera server and the
 // USB camera it serves

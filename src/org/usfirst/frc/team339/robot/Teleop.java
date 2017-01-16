@@ -32,7 +32,6 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
-import org.usfirst.frc.team339.HardwareInterfaces.CANNetwork;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 
 /**
@@ -64,6 +63,7 @@ public static void init ()
     Hardware.leftRearMotor.set(0.0);
     Hardware.rightRearMotor.set(0.0);
 
+
 } // end Init
 
 /**
@@ -76,10 +76,10 @@ public static void init ()
 
 public static void periodic ()
 {
-    CANNetwork CAN = new CANNetwork(Hardware.pdp);
+
     // Print out any data we want from the hardware elements.
     printStatements();
-    CAN.printAllPDPChannels();
+
     // creating new instance of Transmission Mecanum
     TransmissionMecanum mecanumDrive = new TransmissionMecanum(
             Hardware.rightFrontMotor, Hardware.rightRearMotor,
@@ -98,17 +98,21 @@ public static void periodic ()
     // else {
     //
     // }
-    // remove this; just meant to test roboRio
-    if (Hardware.rightOperator.getRawButton(8) == true)
+
+
+    if (Hardware.rightOperator.getRawButton(10) == true)
         {
-        Hardware.cameraServoBase.set(1);
-        Hardware.cameraServoBase.set(0);
+        takePicture = true;
         }
 
-
+    if (takePicture == true)
+        {
+        Hardware.axisCamera.saveImagesSafely();
+        takePicture = false;
+        }
 } // end Periodic
 
-/* private static boolean isSpeedTesting = false */;
+// private static boolean isSpeedTesting = false;
 
 
 /**
@@ -139,7 +143,7 @@ public static void printStatements ()
     // CAN items
     // prints value of the CAN controllers
     // =================================
-    // printAllPDPChannels();
+    Hardware.CAN.printAllPDPChannels();
 
     // =================================
     // Relay
@@ -233,6 +237,8 @@ public static void printStatements ()
  * Constants
  * ===============================================
  */
+
+public static boolean takePicture = false;
 
 
 // ==========================================
