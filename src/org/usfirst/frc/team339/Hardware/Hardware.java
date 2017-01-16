@@ -14,8 +14,8 @@
 // ====================================================================
 package org.usfirst.frc.team339.Hardware;
 
-import org.usfirst.frc.team339.HardwareInterfaces.CANNetwork;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
+import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
@@ -93,7 +93,7 @@ public static TalonSRX leftFrontMotor = new TalonSRX(4);
 public static PowerDistributionPanel pdp = new PowerDistributionPanel(
         0);
 
-public static CANNetwork CAN = new CANNetwork(Hardware.pdp);
+// public static CANNetwork CAN = new CANNetwork(Hardware.pdp);
 // ====================================
 // Relay classes
 // ====================================
@@ -260,6 +260,10 @@ public static Joystick rightOperator = new Joystick(3);
 // Drive system
 // ------------------------------------
 public static final boolean usingMecanum = true;
+
+public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
+        Hardware.rightFrontMotor, Hardware.rightRearMotor,
+        Hardware.leftFrontMotor, Hardware.leftRearMotor);
 // -------------------
 // Assembly classes (e.g. forklift)
 // -------------------
@@ -283,5 +287,11 @@ public static final MotorSafetyHelper leftRearMotorSafety = new MotorSafetyHelpe
  */
 public static final MotorSafetyHelper rightRearMotorSafety = new MotorSafetyHelper(
         rightRearMotor);
+
+public static final MotorSafetyHelper rightFrontMotorSafety = new MotorSafetyHelper(
+        rightFrontMotor);
+
+public static final MotorSafetyHelper leftFrontMotorSafety = new MotorSafetyHelper(
+        leftFrontMotor);
 
 } // end class

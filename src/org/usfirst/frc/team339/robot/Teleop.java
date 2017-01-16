@@ -32,7 +32,6 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
-import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 
 /**
  * This class contains all of the user code for the Autonomous
@@ -81,9 +80,7 @@ public static void periodic ()
     printStatements();
 
     // creating new instance of Transmission Mecanum
-    TransmissionMecanum mecanumDrive = new TransmissionMecanum(
-            Hardware.rightFrontMotor, Hardware.rightRearMotor,
-            Hardware.leftFrontMotor, Hardware.leftRearMotor);
+
 
     // Transmission tankDrive = new Transmission(
     // Hardware.rightFrontMotor, Hardware.rightRearMotor,
@@ -91,7 +88,7 @@ public static void periodic ()
 
     // if (Hardware.usingMecanum = true)
     // {
-    mecanumDrive.drive(Hardware.rightDriver.getMagnitude(),
+    Hardware.mecanumDrive.drive(Hardware.rightDriver.getMagnitude(),
             Hardware.rightDriver.getDirectionDegrees(),
             Hardware.rightDriver.getTwist());
     // }
@@ -99,18 +96,15 @@ public static void periodic ()
     //
     // }
 
+    Hardware.leftFrontMotor.set(0.0);
+    Hardware.leftRearMotor.set(0.0);
+    Hardware.rightFrontMotor.set(0.0);
+    Hardware.rightRearMotor.set(0.0);
 
-    if (Hardware.rightOperator.getRawButton(10) == true)
-        {
-        takePicture = true;
-        }
 
-    if (takePicture == true)
-        {
-        Hardware.axisCamera.saveImagesSafely();
-        takePicture = false;
-        }
+
 } // end Periodic
+
 
 // private static boolean isSpeedTesting = false;
 
@@ -143,7 +137,7 @@ public static void printStatements ()
     // CAN items
     // prints value of the CAN controllers
     // =================================
-    Hardware.CAN.printAllPDPChannels();
+    // Hardware.CAN.printAllPDPChannels();
 
     // =================================
     // Relay
@@ -237,8 +231,6 @@ public static void printStatements ()
  * Constants
  * ===============================================
  */
-
-public static boolean takePicture = false;
 
 
 // ==========================================
