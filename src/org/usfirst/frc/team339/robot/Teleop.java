@@ -106,13 +106,38 @@ public static void periodic ()
                 Hardware.leftDriver.getY());
         }
 
+
     // Print out any data we want from the hardware elements.
     printStatements();
+
+    // creating new instance of Transmission Mecanum
+
+
+    // Transmission tankDrive = new Transmission(
+    // Hardware.rightFrontMotor, Hardware.rightRearMotor,
+    // Hardware.leftFrontMotor, Hardware.leftRearMotor);
+
+    // if (Hardware.usingMecanum = true)
+    // {
+    Hardware.mecanumDrive.drive(Hardware.rightDriver.getMagnitude(),
+            Hardware.rightDriver.getDirectionDegrees(),
+            Hardware.rightDriver.getTwist());
+    // }
+    // else {
+    //
+    // }
+
+    Hardware.leftFrontMotor.set(0.0);
+    Hardware.leftRearMotor.set(0.0);
+    Hardware.rightFrontMotor.set(0.0);
+    Hardware.rightRearMotor.set(0.0);
+
 
 
 } // end Periodic
 
-/* private static boolean isSpeedTesting = false */;
+
+// private static boolean isSpeedTesting = false;
 
 
 public static void alignToGearPeg ()
@@ -149,7 +174,7 @@ public static void printStatements ()
     // CAN items
     // prints value of the CAN controllers
     // =================================
-    // printAllPDPChannels();
+    // Hardware.CAN.printAllPDPChannels();
 
     // =================================
     // Relay
@@ -221,9 +246,12 @@ public static void printStatements ()
     // information about the joysticks
     // ---------------------------------
     // System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
-    // System.out.println("Right Joystick: " + Hardware.rightDriver.getY());
-    // System.out.println("Left Operator: " + Hardware.leftOperator.getY());
-    // System.out.println("Right Operator: " + Hardware.rightOperator.getY());
+    // System.out
+    // .println("Right Joystick: " + Hardware.rightDriver.getY());
+    // System.out
+    // .println("Left Operator: " + Hardware.leftOperator.getY());
+    // System.out.println(
+    // "Right Operator: " + Hardware.rightOperator.getY());
 
     // =================================
     // Kilroy ancillary items

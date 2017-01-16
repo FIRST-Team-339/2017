@@ -336,6 +336,8 @@ public void teleopPeriodic ()
     // feed all motor safeties
     Hardware.leftRearMotorSafety.feed();
     Hardware.rightRearMotorSafety.feed();
+    Hardware.leftFrontMotorSafety.feed();
+    Hardware.rightFrontMotorSafety.feed();
 } // end teleopPeriodic
 
 // -------------------------------------------------------

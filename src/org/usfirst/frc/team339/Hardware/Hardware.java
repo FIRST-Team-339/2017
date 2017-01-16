@@ -23,11 +23,14 @@ import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
+import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
+import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.MotorSafetyHelper;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -95,7 +98,10 @@ public static TalonSRX leftFrontMotor = new TalonSRX(4);
 // ====================================
 // CAN classes
 // ====================================
+public static PowerDistributionPanel pdp = new PowerDistributionPanel(
+        0);
 
+// public static CANNetwork CAN = new CANNetwork(Hardware.pdp);
 // ====================================
 // Relay classes
 // ====================================
@@ -207,7 +213,6 @@ public static VisionScript visionScript = new VisionScript(
 
 public static ImageProcessor imageProcessor = new ImageProcessor(
         axisCamera, visionScript);
-
 // -------------------------------------
 // declare the USB camera server and the
 // USB camera it serves
@@ -305,6 +310,13 @@ public static final MotorSafetyHelper leftRearMotorSafety = new MotorSafetyHelpe
 public static final MotorSafetyHelper rightRearMotorSafety = new MotorSafetyHelper(
         rightRearMotor);
 
+
+public static final MotorSafetyHelper rightFrontMotorSafety = new MotorSafetyHelper(
+        rightFrontMotor);
+
+public static final MotorSafetyHelper leftFrontMotorSafety = new MotorSafetyHelper(
+        leftFrontMotor);        
+        
 public static final int MINIMUM_AXIS_CAMERA_BRIGHTNESS = 6;
 
 } // end class
