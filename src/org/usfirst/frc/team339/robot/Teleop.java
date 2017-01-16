@@ -104,8 +104,16 @@ public static void periodic ()
         Hardware.cameraServoBase.set(1);
         Hardware.cameraServoBase.set(0);
         }
-
-
+    if(Hardware.rightOperator.getRawButton(7) == true)
+    {
+    	takePicture = true;
+    	
+    }
+    if(takePicture == true)
+    {
+    	 Hardware.axisCamera.saveImagesSafely();
+  }
+   
 } // end Periodic
 
 /* private static boolean isSpeedTesting = false */;
@@ -239,5 +247,5 @@ public static void printStatements ()
 // TUNEABLES
 // ==========================================
 
-
+ public static boolean takePicture = false;
 } // end class

@@ -14,6 +14,8 @@
 // ====================================================================
 package org.usfirst.frc.team339.Hardware;
 
+import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
@@ -194,6 +196,7 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // -------------------------------------
 // Axis/USB Camera class
 // -------------------------------------
+public static KilroyCamera axisCamera = new KilroyCamera(true);
 // -------------------------------------
 // declare the USB camera server and the
 // USB camera it serves
