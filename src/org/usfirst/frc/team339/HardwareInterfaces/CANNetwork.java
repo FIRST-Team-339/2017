@@ -47,6 +47,8 @@ public void pinCurrentPrint (int pinNumber)
 }
 
 
+// currently causing a null pointer exception on testboard, but not on
+// Nessie- Cole Ramos, 16 Jan 2017
 public double pinValue (int pinNumber)
 {
     // int pinInt = (int) this.pdp.getCurrent(pinNumber);
@@ -65,12 +67,15 @@ public double pinValue (int pinNumber)
 
 public void printAllPDPChannels ()
 {
-    for (int i = 0; i < 16; i++)
+
+
+    for (int i = 0; i <= 15; i++)
+
         {
-        if (this.pinValue(i) != 0)
+        if (this.pinValue(i) != 0.0)
             {
             pinCurrentPrint(i);
-            
+
             }
         }
 }
