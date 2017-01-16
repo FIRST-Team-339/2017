@@ -75,6 +75,37 @@ public static void init ()
 
 public static void periodic ()
 {
+
+    // Hardware.imageProcessor.processImage();
+    // if (Hardware.imageProcessor.getLargestBlob() != null)
+    // {
+    // System.out.println("Center of Mass X = "
+    // + Hardware.imageProcessor.getLargestBlob().center_mass_x
+    // + " Y = " + Hardware.imageProcessor
+    // .getLargestBlob().center_mass_y);
+    // }
+    // if (Hardware.ringlightSwitch.isOnCheckNow())
+    // {
+    // Hardware.ringlightRelay.set(Relay.Value.kOn);
+    // }
+    // else
+    // {
+    // Hardware.ringlightRelay.set(Relay.Value.kOff);
+    // }
+
+
+    if (Hardware.usingMecanum == true)
+        {
+        Hardware.mecanumDrive.drive(Hardware.rightDriver.getMagnitude(),
+                Hardware.rightDriver.getDirectionDegrees(),
+                Hardware.rightDriver.getTwist());
+        }
+    else
+        {
+        Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
+                Hardware.leftDriver.getY());
+        }
+
     // Print out any data we want from the hardware elements.
     printStatements();
 
@@ -82,6 +113,12 @@ public static void periodic ()
 } // end Periodic
 
 /* private static boolean isSpeedTesting = false */;
+
+
+public static void alignToGearPeg ()
+{
+
+}
 
 
 /**
@@ -137,8 +174,8 @@ public static void printStatements ()
     // System.out.println(
     // "Left Rear Encoder Tics: "
     // // + Hardware.leftRearEncoder.get());
-  //  System.out.println(
-    //        "RR distance = " + Hardware.rightRearEncoder.getDistance());
+    // System.out.println(
+    // "RR distance = " + Hardware.rightRearEncoder.getDistance());
     // System.out.println(
     // "LR distance = " + Hardware.leftRearEncoder.getDistance());
 
@@ -203,7 +240,7 @@ public static void printStatements ()
  * Constants
  * ===============================================
  */
-
+private final double CAMERAD_ALIGN_SPEED = .2;
 
 // ==========================================
 // TUNEABLES

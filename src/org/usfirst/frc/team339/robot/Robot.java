@@ -61,6 +61,7 @@ package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
 import edu.wpi.first.wpilibj.IterativeRobot;
+import edu.wpi.first.wpilibj.Relay;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -258,6 +259,13 @@ public void robotInit ()
     else
         {
         }
+
+    // Hardware.axisCamera
+    // .writeBrightness(Hardware.MINIMUM_AXIS_CAMERA_BRIGHTNESS);
+
+    Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
+    Hardware.ringlightRelay.set(Relay.Value.kOff);
+
 
     // =========================================================
     // User code goes above here
