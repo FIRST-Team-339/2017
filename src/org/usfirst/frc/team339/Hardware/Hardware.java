@@ -257,7 +257,7 @@ public static Joystick rightOperator = new Joystick(3);
 // ------------------------------------
 // Drive system
 // ------------------------------------
-public static final boolean usingMecanum = true;
+public static boolean usingMecanum = true;
 // -------------------
 // Assembly classes (e.g. forklift)
 // -------------------

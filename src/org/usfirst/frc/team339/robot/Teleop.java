@@ -34,7 +34,7 @@ package org.usfirst.frc.team339.robot;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.HardwareInterfaces.CANNetwork;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
-
+import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 /**
  * This class contains all of the user code for the Autonomous
  * part of the match, namely, the Init and Periodic code
@@ -85,19 +85,19 @@ public static void periodic ()
             Hardware.rightFrontMotor, Hardware.rightRearMotor,
             Hardware.leftFrontMotor, Hardware.leftRearMotor);
 
-    // Transmission tankDrive = new Transmission(
-    // Hardware.rightFrontMotor, Hardware.rightRearMotor,
-    // Hardware.leftFrontMotor, Hardware.leftRearMotor);
+    TransmissionFourWheel tankDrive = new TransmissionFourWheel(
+    		 Hardware.rightFrontMotor, Hardware.rightRearMotor,
+             Hardware.leftFrontMotor, Hardware.leftRearMotor);
 
-    // if (Hardware.usingMecanum = true)
-    // {
+     if (Hardware.usingMecanum = true)
+     {
     mecanumDrive.drive(Hardware.rightDriver.getMagnitude(),
             Hardware.rightDriver.getDirectionDegrees(),
             Hardware.rightDriver.getTwist());
-    // }
-    // else {
-    //
-    // }
+     }
+     else {
+    tankDrive.drive(Hardware.rightDriver.getY(), Hardware.leftDriver.getY());
+     }
     // remove this; just meant to test roboRio
     if (Hardware.rightOperator.getRawButton(8) == true)
         {
