@@ -16,12 +16,23 @@ package org.usfirst.frc.team339.Hardware;
 
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 
+import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
+import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
+import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
+import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
+import org.usfirst.frc.team339.Vision.ImageProcessor;
+import org.usfirst.frc.team339.Vision.VisionScript;
+import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
+import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
+import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
+import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
+import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.MotorSafetyHelper;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
-import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -61,10 +72,6 @@ public static boolean runningInLab = false;
 // PWM classes
 // ====================================
 
-public static Servo cameraServoBase = new Servo(8);
-
-public static Servo cameraServoTop = new Servo(9);
-
 // ------------------------------------
 // Jaguar classes
 // ------------------------------------
@@ -86,7 +93,6 @@ public static TalonSRX rightFrontMotor = new TalonSRX(1);
 public static TalonSRX leftRearMotor = new TalonSRX(3);
 
 public static TalonSRX leftFrontMotor = new TalonSRX(4);
-
 // ------------------------------------
 // Victor classes
 // ------------------------------------
@@ -99,6 +105,8 @@ public static PowerDistributionPanel pdp = new PowerDistributionPanel(
 // ====================================
 // Relay classes
 // ====================================
+
+public static Relay ringlightRelay = new Relay(0);
 
 // ====================================
 // Digital Inputs
@@ -197,6 +205,14 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // Axis/USB Camera class
 // -------------------------------------
 public static KilroyCamera axisCamera = new KilroyCamera(true);
+
+public static VisionScript visionScript = new VisionScript(
+        new HSLColorThresholdOperator(88, 138, 95, 255, 29, 171),
+        new RemoveSmallObjectsOperator(1, true),
+        new ConvexHullOperator(false));
+
+public static ImageProcessor imageProcessor = new ImageProcessor(
+        axisCamera, visionScript);
 // -------------------------------------
 // declare the USB camera server and the
 // USB camera it serves
@@ -226,7 +242,7 @@ public static Joystick leftDriver = new Joystick(0);
 /**
  * The right joystick controlling the drive train.
  */
-public static Joystick rightDriver = new Joystick(1);
+public static Joystick rightDriver = new Joystick(4);
 
 /**
  * The left joystick controlling misc operations on the robot.
@@ -261,6 +277,13 @@ public static Joystick rightOperator = new Joystick(3);
 // Drive system
 // ------------------------------------
 public static boolean usingMecanum = true;
+public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
+        rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
+
+public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
+        rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
+
+
 // -------------------
 // Assembly classes (e.g. forklift)
 // -------------------
@@ -284,5 +307,14 @@ public static final MotorSafetyHelper leftRearMotorSafety = new MotorSafetyHelpe
  */
 public static final MotorSafetyHelper rightRearMotorSafety = new MotorSafetyHelper(
         rightRearMotor);
+
+
+public static final MotorSafetyHelper rightFrontMotorSafety = new MotorSafetyHelper(
+        rightFrontMotor);
+
+public static final MotorSafetyHelper leftFrontMotorSafety = new MotorSafetyHelper(
+        leftFrontMotor);        
+        
+public static final int MINIMUM_AXIS_CAMERA_BRIGHTNESS = 6;
 
 } // end class

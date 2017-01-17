@@ -588,4 +588,23 @@ public void takeSinglePicture(boolean joystickButton)
 	previousPictureState = joystickButton;
 }
 private static boolean previousPictureState;
+
+/**
+ * Takes a single image
+ * 
+ * @param joystickButton
+ *            joystick.button
+ * @author Becky Button
+ */
+public void takeSinglePicture (boolean rawButton)
+{
+    if (rawButton == true && previousPictureState == false)
+        {
+        saveImagesSafely();
+        }
+    previousPictureState = rawButton;
+}
+
+private static boolean previousPictureState;
+
 }
