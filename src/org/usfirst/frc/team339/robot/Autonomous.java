@@ -63,7 +63,11 @@ public class Autonomous
  */
 private static enum MainState
     {
+    INIT,
 
+    DRIVE_FORWARD,
+
+    DRIVE_BY_CAMERA
     }
 
 
@@ -101,6 +105,28 @@ public static void periodic ()
 {
 
 } // end Periodic
+
+private static MainState currentState;
+
+private static void runStateMachine ()
+{
+    switch (currentState)
+        {
+        case INIT:
+
+            break;
+        case DRIVE_FORWARD:
+
+            break;
+        case DRIVE_BY_CAMERA:
+
+            break;
+        default:
+
+            break;
+
+        }
+}
 
 
 } // end class
