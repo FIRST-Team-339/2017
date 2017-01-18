@@ -139,10 +139,40 @@ public static void periodic ()
 
 // private static boolean isSpeedTesting = false;
 
+private static boolean hasProcessedImage = false;
 
-public static void alignToGearPeg ()
+public static boolean alignToGearPeg ()
 {
+    if (!hasProcessedImage)
+        Hardware.imageProcessor.processImage();
+    if (Hardware.imageProcessor.getParticleAnalysisReports() != null)
+        {
+        if (Hardware.imageProcessor.isLeftOf(
+                Hardware.imageProcessor.getNthSizeBlob(0),
+                Hardware.imageProcessor.getNthSizeBlob(1)))
+            {
+            // Hardware.mecanumDrive.drive(CAMERA_ALIGN_SPEED,
+            // Hardware.imageProcessor.getPositionOfRobotToGear(
+            // Hardware.imageProcessor.getNthSizeBlob(0),
+            // Hardware.imageProcessor.getNthSizeBlob(1))
+            // * 90,
+            // 0);
+            System.out.println("Driving left...");
+            }
+        else
+            {
+            // Hardware.mecanumDrive.drive(CAMERA_ALIGN_SPEED,
+            // Hardware.imageProcessor.getPositionOfRobotToGear(
+            // Hardware.imageProcessor.getNthSizeBlob(1),
+            // Hardware.imageProcessor.getNthSizeBlob(0))
+            // * 90,
+            // 0);
+            System.out.println("Driving Right...");
+            }
+        }
+    // TODO compare the center of the two blobs to the center of the robot
 
+    return false;
 }
 
 
@@ -268,7 +298,11 @@ public static void printStatements ()
  * Constants
  * ===============================================
  */
-private final double CAMERAD_ALIGN_SPEED = .2;
+private final static double CAMERA_ALIGN_SPEED = .2;
+
+private final static double CAMERA_ALIGN_DEADBAND = .05;
+
+private final static double CAMERA_AIMING_CENTER = .5;
 
 // ==========================================
 // TUNEABLES
