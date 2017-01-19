@@ -23,14 +23,12 @@ import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
-import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
-import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.MotorSafetyHelper;
-import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -242,12 +240,12 @@ public static Joystick leftDriver = new Joystick(0);
 /**
  * The right joystick controlling the drive train.
  */
-public static Joystick rightDriver = new Joystick(4);
+public static Joystick rightDriver = new Joystick(1);
 
 /**
  * The left joystick controlling misc operations on the robot.
  */
-public static Joystick leftOperator = new Joystick(2);
+public static Joystick leftOperator = new Joystick(3);
 
 public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
         leftOperator, 2, false);
@@ -255,7 +253,7 @@ public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
 /**
  * The right joystick controlling misc operations on the robot.
  */
-public static Joystick rightOperator = new Joystick(3);
+public static Joystick rightOperator = new Joystick(2);
 
 // **********************************************************
 // Kilroy's Ancillary classes
@@ -315,8 +313,8 @@ public static final MotorSafetyHelper rightFrontMotorSafety = new MotorSafetyHel
         rightFrontMotor);
 
 public static final MotorSafetyHelper leftFrontMotorSafety = new MotorSafetyHelper(
-        leftFrontMotor);        
-        
+        leftFrontMotor);
+
 public static final int MINIMUM_AXIS_CAMERA_BRIGHTNESS = 6;
 
 } // end class
