@@ -129,7 +129,7 @@ private double cameraFocalLengthPixels;
 private double horizFieldOfView;
 
 // The vertical angle, in radians, above the horizontal the camera points
-private double cameraMountAngleAboveHorizontalRadians = .7854;
+private double cameraMountAngleAboveHorizontalRadians = 0;
 
 private double cameraMountAngleToRightOfCenterRadians = 0;
 
@@ -254,6 +254,7 @@ public ParticleReport getSmallestBlob ()
         return null;
 }
 
+// TODO add a function to get the tallest of 2 blobs
 public ParticleReport getNthSizeBlob (int n)
 {
     if (this.reports != null && this.reports.length > 0)
@@ -618,21 +619,31 @@ public double getPitchAngleToTarget (ParticleReport target)
 /**
  * The distance from the front of the robot to the vertical plane of the target.
  * 
- * @param target
+ * @param topTarget
  *            The blob we're targeting
  * @return
  *         The distance between the front of the robot and the vertical plane on
  *         which the target sits, in the unit of the height of the vision
  *         target.
  */
-public double getZDistanceToTarget (ParticleReport target)
+public double getZDistanceToFuelTarget (ParticleReport topTarget,
+        ParticleReport bottomTarget)
 {
-    if (target != null)
+    if (topTarget != null && bottomTarget != null)
         {
-        double yaw = this.getYawAngleToTarget(target);
-        double pitch = this.getPitchAngleToTarget(target);
-        System.out.println("Yaw angle: " + Math.toDegrees(yaw));
-        System.out.println("Pitch angle: " + Math.toDegrees(pitch));
+        // double yaw = this.getYawAngleToTarget(target);
+        double topTargetPitch = this.getPitchAngleToTarget(topTarget);
+        double bottomTargetPitch = this
+                .getPitchAngleToTarget(bottomTarget);
+        // System.out.println("Yaw angle: " + Math.toDegrees(yaw));
+        System.out.println("Pitch angle of Bottom Target: "
+                + Math.toDegrees(topTargetPitch));
+        System.out.println("Pitch angle of Top Target: "
+                + Math.toDegrees(bottomTargetPitch));
+
+        double hypotenuse = (7 * Math.sin(90 - bottomTargetPitch))
+                / Math.sin(topTargetPitch - bottomTargetPitch);
+        double zDistance = Math.sqrt((hypotenuse * hypotenuse) - 6241);
         // System.out.println(
         // "Old Distance: " + this.visionGoalHeight
         // * Math.cos(yaw)
@@ -642,11 +653,63 @@ public double getZDistanceToTarget (ParticleReport target)
         // / this.visionGoalHeight)
         // * Math.cos(this.getPitchAngleToTarget(target))
         // * Math.sin(this.getYawAngleToTarget(target))));
-        return (this.visionGoalHeightFt
-                * Math.cos(yaw)
-                / Math.tan(pitch))/* * 2.0 */;
+        // return (this.visionGoalHeightFt
+        // * Math.cos(yaw)
+        // / Math.tan(pitch))/* * 2.0 */;
+        return zDistance;
         }
     return -1.0;
+}
+
+public double getZDistanceToGearTarget (ParticleReport leftTarget,
+        ParticleReport rightTarget)
+{
+    if (leftTarget != null && rightTarget != null)
+        {
+        double leftTargetYaw = this.getYawAngleToTarget(leftTarget);
+        double rightTargetYaw = this.getYawAngleToTarget(rightTarget);
+
+        double totalAngleBetweenTargets = (-leftTargetYaw)
+                + rightTargetYaw;
+        // TODO Fix this for future use.
+        return -1.0;
+        }
+    else
+        {
+        return -1.0;
+        }
+}
+
+/**
+ * Will return -1 if the gear target is to the left of the robot, or 1 if right.
+ * 0 if center.
+ * 
+ * @return integer
+ */
+public int getPositionOfRobotToGear (ParticleReport leftTarget,
+        ParticleReport rightTarget)
+{
+    if (leftTarget != null && rightTarget != null)
+        {
+        // Multiplied by -1 to get a positive value from the left target
+        double leftTargetYaw = -1
+                * this.getYawAngleToTarget(leftTarget);
+        double rightTargetYaw = this.getYawAngleToTarget(rightTarget);
+        if (leftTargetYaw > rightTargetYaw)
+            return 1;
+        else if (rightTargetYaw > leftTargetYaw)
+            return -1;
+        else
+            return 0;
+        }
+    return 0;
+}
+
+public boolean isLeftOf (ParticleReport target1, ParticleReport target2)
+{
+    if (target1.center_mass_x > target2.center_mass_x)
+        return false;
+    return true;
 }
 
 // Positive right, negative left
@@ -713,13 +776,13 @@ public double getPitchAngleToTarget (int targetIndex)
  *         See getZDistanceToTarget (ParticleReport) for more information on the
  *         return.
  */
-@Deprecated
-public double getZDistanceToTargetFT (int targetIndex)
-{
-    if (this.reports != null && targetIndex < this.reports.length)
-        {
-        return this.getZDistanceToTarget(this.reports[targetIndex]);
-        }
-    return 0.0;
-}
+// @Deprecated
+// public double getZDistanceToTargetFT (int targetIndex)
+// {
+// if (this.reports != null && targetIndex < this.reports.length)
+// {
+// return this.getZDistanceToTarget(this.reports[targetIndex]);
+// }
+// return 0.0;
+// }
 }
