@@ -32,6 +32,7 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
+import edu.wpi.first.wpilibj.Relay;
 
 
 /**
@@ -62,6 +63,7 @@ public static void init ()
     // --------------------------------------
     Hardware.leftRearMotor.set(0.0);
     Hardware.rightRearMotor.set(0.0);
+    Hardware.ringlightRelay.set(Relay.Value.kForward);
 
 } // end Init
 
@@ -72,26 +74,41 @@ public static void init ()
  * @author Nathanial Lydick
  * @written Jan 13, 2015
  */
+static boolean buttonPrev = false; // @AHK remove
+
+static boolean lightOn = false;
 
 public static void periodic ()
 {
 
-    // Hardware.imageProcessor.processImage();
-    // if (Hardware.imageProcessor.getLargestBlob() != null)
-    // {
-    // System.out.println("Center of Mass X = "
-    // + Hardware.imageProcessor.getLargestBlob().center_mass_x
-    // + " Y = " + Hardware.imageProcessor
-    // .getLargestBlob().center_mass_y);
-    // }
-    // if (Hardware.ringlightSwitch.isOnCheckNow())
-    // {
-    // Hardware.ringlightRelay.set(Relay.Value.kOn);
-    // }
-    // else
-    // {
-    // Hardware.ringlightRelay.set(Relay.Value.kOff);
-    // }
+    Hardware.imageProcessor.processImage();
+    if (Hardware.imageProcessor.getLargestBlob() != null)
+        {
+        System.out.println("Center of Mass X = "
+                + Hardware.imageProcessor.getLargestBlob().center_mass_x
+                + " Y = " + Hardware.imageProcessor
+                        .getLargestBlob().center_mass_y);
+        }
+    if (Hardware.leftOperator.getRawButton(2) == true
+            && buttonPrev == false)// @AHK remove
+        {
+        lightOn = !lightOn;
+        }
+
+    if (lightOn == true)
+        {
+        Hardware.ringlightRelay.set(Relay.Value.kOn);
+        }
+    else
+        {
+        Hardware.ringlightRelay.set(Relay.Value.kOff);
+        }
+    buttonPrev = Hardware.leftOperator.getRawButton(2);
+
+    System.out.println("RingLight Switch:"
+            + lightOn + " " + buttonPrev + " "
+            + Hardware.leftOperator.getRawButton(2));
+
 
 
     if (Hardware.usingMecanum == true)
