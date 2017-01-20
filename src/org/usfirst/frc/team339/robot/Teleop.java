@@ -64,9 +64,9 @@ public class Teleop {
 		Hardware.rightRearMotor.set(0.0);
 		Hardware.rightFrontMotor.set(0.0);
 		Hardware.leftFrontMotor.set(0.0);
-		
+
 		Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-		
+
 		Hardware.mecanumDrive.setDebugState(DebugState.DEBUG_MOTOR_DATA);
 
 	} // end Init
@@ -81,42 +81,77 @@ public class Teleop {
 
 	public static void periodic() {
 
+		// Hardware.imageProcessor.processImage();
+		// if (Hardware.imageProcessor.getLargestBlob() != null)
+		// {
+		// System.out.println("Center of Mass X = "
+		// + Hardware.imageProcessor.getLargestBlob().center_mass_x
+		// + " Y = " + Hardware.imageProcessor
+		// .getLargestBlob().center_mass_y);
+		// }
+		// if (Hardware.ringlightSwitch.isOnCheckNow())
+		// {
+		// Hardware.ringlightRelay.set(Relay.Value.kOn);
+		// }
+		// else
+		// {
+		// Hardware.ringlightRelay.set(Relay.Value.kOff);
+		// }
+
 		// Print out any data we want from the hardware elements.
 		printStatements();
 
-		
-		if(Hardware.rightDriver.getTrigger())
-		{
+		if (Hardware.rightDriver.getTrigger()) {
 			rotationValue = Hardware.rightDriver.getTwist();
-		}else
-		{
+		} else {
 			rotationValue = 0.0;
 		}
-		
+
 		// creating new instance of Transmission Mecanum
 		Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-		
-		if (Hardware.usingMecanum == true)
-		{
+
+		if (Hardware.usingMecanum == true) {
 			Hardware.mecanumDrive.drive(Hardware.rightDriver.getMagnitude(), Hardware.rightDriver.getDirectionDegrees(),
 					rotationValue);
-		}
-		else
-		{
+		} else {
 			Hardware.tankDrive.drive(Hardware.rightDriver.getY(), Hardware.leftDriver.getY());
 		}
 
-		
-
 	} // end Periodic
-	
+
 	static double rotationValue = 0.0;
 
 	// private static boolean isSpeedTesting = false;
 
-	public static void alignToGearPeg() {
+	public static boolean alignToGearPeg() {
+		if (!hasProcessedImage)
+			Hardware.imageProcessor.processImage();
+		if (Hardware.imageProcessor.getParticleAnalysisReports() != null) {
+			if (Hardware.imageProcessor.isLeftOf(Hardware.imageProcessor.getNthSizeBlob(0),
+					Hardware.imageProcessor.getNthSizeBlob(1))) {
+				// Hardware.mecanumDrive.drive(CAMERA_ALIGN_SPEED,
+				// Hardware.imageProcessor.getPositionOfRobotToGear(
+				// Hardware.imageProcessor.getNthSizeBlob(0),
+				// Hardware.imageProcessor.getNthSizeBlob(1))
+				// * 90,
+				// 0);
+				System.out.println("Driving left...");
+			} else {
+				// Hardware.mecanumDrive.drive(CAMERA_ALIGN_SPEED,
+				// Hardware.imageProcessor.getPositionOfRobotToGear(
+				// Hardware.imageProcessor.getNthSizeBlob(1),
+				// Hardware.imageProcessor.getNthSizeBlob(0))
+				// * 90,
+				// 0);
+				System.out.println("Driving Right...");
+			}
+		}
+		// TODO compare the center of the two blobs to the center of the robot
 
+		return false;
 	}
+
+	private static boolean hasProcessedImage = false;
 
 	/**
 	 * stores print statements for future use in the print "bank", statements
@@ -216,8 +251,9 @@ public class Teleop {
 		// Joysticks
 		// information about the joysticks
 		// ---------------------------------
-//		 System.out.println("Left Joystick: " + Hardware.leftDriver.getDirectionDegrees());
-//		System.out.println("Twist: " + Hardware.leftDriver.getTwist());
+		// System.out.println("Left Joystick: " +
+		// Hardware.leftDriver.getDirectionDegrees());
+		// System.out.println("Twist: " + Hardware.leftDriver.getTwist());
 		// System.out
 		// .println("Right Joystick: " + Hardware.rightDriver.getY());
 		// System.out
@@ -239,10 +275,14 @@ public class Teleop {
 	 * =============================================== Constants
 	 * ===============================================
 	 */
+	private final static double CAMERA_ALIGN_SPEED = .2;
+
+	private final static double CAMERA_ALIGN_DEADBAND = .05;
+
+	private final static double CAMERA_AIMING_CENTER = .5;
 
 	// ==========================================
 	// TUNEABLES
 	// ==========================================
-
 
 } // end class
