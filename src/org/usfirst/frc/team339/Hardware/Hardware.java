@@ -81,7 +81,7 @@ public static boolean runningInLab = false;
 // ------------------------------------
 
 /**
- * Default motor controller.
+ * Default motor controller. 
  */
 public static TalonSRX rightRearMotor = new TalonSRX(2);
 
@@ -204,7 +204,7 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // -------------------------------------
 // Axis/USB Camera class
 // -------------------------------------
-public static KilroyCamera axisCamera = new KilroyCamera(true);
+public static KilroyCamera axisCamera = new KilroyCamera(false);
 
 public static VisionScript visionScript = new VisionScript(
         new HSLColorThresholdOperator(88, 138, 95, 255, 29, 171),
@@ -237,7 +237,7 @@ public static final DriverStation driverStation = DriverStation
 /**
  * The left joystick controlling the drive train.
  */
-public static Joystick leftDriver = new Joystick(0);
+public static Joystick leftDriver = new Joystick(1);
 
 /**
  * The right joystick controlling the drive train.
@@ -277,6 +277,7 @@ public static Joystick rightOperator = new Joystick(3);
 // Drive system
 // ------------------------------------
 public static boolean usingMecanum = true;
+public static boolean twoJoystickMecanum = false;
 public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
 

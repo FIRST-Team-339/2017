@@ -579,15 +579,7 @@ public void writeWhiteBalance (AxisCamera.WhiteBalance whiteBalance)
 
         }
 }
-public void takeSinglePicture(boolean joystickButton)
-{
-	if(joystickButton ==  true && previousPictureState == false )
-	{
-		saveImagesSafely();
-    }
-	previousPictureState = joystickButton;
-}
-private static boolean previousPictureState;
+
 
 /**
  * Takes a single image
