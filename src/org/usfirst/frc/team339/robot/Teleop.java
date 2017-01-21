@@ -32,9 +32,8 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
-import org.usfirst.frc.team339.HardwareInterfaces.CANNetwork;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.Transmission.DebugState;
-import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
+import edu.wpi.first.wpilibj.Relay;
 
 /**
  * This class contains all of the user code for the Autonomous part of the
@@ -43,246 +42,274 @@ import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourW
  * @author Nathanial Lydick
  * @written Jan 13, 2015
  */
-public class Teleop {
-	/**
-	 * User Initialization code for teleop mode should go here. Will be called
-	 * once when the robot enters teleop mode.
-	 *
-	 * @author Nathanial Lydick
-	 * @written Jan 13, 2015
-	 */
-	public static void init() {
-		// --------------------------------------
-		// initialize all encoders here
-		// --------------------------------------
-		Hardware.rightRearEncoder.reset();
-		Hardware.leftRearEncoder.reset();
-		// --------------------------------------
-		// initialize all motors here
-		// --------------------------------------
-		Hardware.leftRearMotor.set(0.0);
-		Hardware.rightRearMotor.set(0.0);
-		Hardware.rightFrontMotor.set(0.0);
-		Hardware.leftFrontMotor.set(0.0);
+public class Teleop
+{
+/**
+ * User Initialization code for teleop mode should go here. Will be called
+ * once when the robot enters teleop mode.
+ *
+ * @author Nathanial Lydick
+ * @written Jan 13, 2015
+ */
+public static void init ()
+{
+    // --------------------------------------
+    // initialize all encoders here
+    // --------------------------------------
+    Hardware.rightRearEncoder.reset();
+    Hardware.leftRearEncoder.reset();
+    // --------------------------------------
+    // initialize all motors here
+    // --------------------------------------
+    Hardware.leftRearMotor.set(0.0);
+    Hardware.rightRearMotor.set(0.0);
+    Hardware.rightFrontMotor.set(0.0);
+    Hardware.leftFrontMotor.set(0.0);
 
-		Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
 
-		Hardware.mecanumDrive.setDebugState(DebugState.DEBUG_MOTOR_DATA);
+    Hardware.mecanumDrive.setDebugState(DebugState.DEBUG_MOTOR_DATA);
 
-	} // end Init
+} // end Init
 
-	/**
-	 * User Periodic code for teleop mode should go here. Will be called
-	 * periodically at a regular rate while the robot is in teleop mode.
-	 *
-	 * @author Nathanial Lydick
-	 * @written Jan 13, 2015
-	 */
+/**
+ * User Periodic code for teleop mode should go here. Will be called
+ * periodically at a regular rate while the robot is in teleop mode.
+ *
+ * @author Nathanial Lydick
+ * @written Jan 13, 2015
+ */
 
-	public static void periodic() {
+public static void periodic ()
+{
 
-		// Hardware.imageProcessor.processImage();
-		// if (Hardware.imageProcessor.getLargestBlob() != null)
-		// {
-		// System.out.println("Center of Mass X = "
-		// + Hardware.imageProcessor.getLargestBlob().center_mass_x
-		// + " Y = " + Hardware.imageProcessor
-		// .getLargestBlob().center_mass_y);
-		// }
-		// if (Hardware.ringlightSwitch.isOnCheckNow())
-		// {
-		// Hardware.ringlightRelay.set(Relay.Value.kOn);
-		// }
-		// else
-		// {
-		// Hardware.ringlightRelay.set(Relay.Value.kOff);
-		// }
+    // Hardware.imageProcessor.processImage();
+    // if (Hardware.imageProcessor.getLargestBlob() != null)
+    // {
+    // System.out.println("Center of Mass X = "
+    // + Hardware.imageProcessor.getLargestBlob().center_mass_x
+    // + " Y = " + Hardware.imageProcessor
+    // .getLargestBlob().center_mass_y);
+    // }
+    if (Hardware.ringlightSwitch.isOnCheckNow())
+        {
+        Hardware.ringlightRelay.set(Relay.Value.kOn);
+        }
+    else
+        {
+        Hardware.ringlightRelay.set(Relay.Value.kOff);
+        }
 
-		// Print out any data we want from the hardware elements.
-		printStatements();
+    // Print out any data we want from the hardware elements.
+    printStatements();
 
-		if (Hardware.rightDriver.getTrigger()) {
-			rotationValue = Hardware.rightDriver.getTwist();
-		} else {
-			rotationValue = 0.0;
-		}
+    // =================================================================
+    // Driving code
+    // =================================================================
 
-		// creating new instance of Transmission Mecanum
-		Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+    if (Hardware.rightDriver.getTrigger())
+        {
+        rotationValue = Hardware.rightDriver.getTwist();
+        }
+    else
+        {
+        rotationValue = 0.0;
+        }
 
-		if (Hardware.usingMecanum == true) {
-			Hardware.mecanumDrive.drive(Hardware.rightDriver.getMagnitude(), Hardware.rightDriver.getDirectionDegrees(),
-					rotationValue);
-		} else {
-			Hardware.tankDrive.drive(Hardware.rightDriver.getY(), Hardware.leftDriver.getY());
-		}
+    // creating new instance of Transmission Mecanum
+    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+    if (Hardware.usingMecanum == true)
+        {
+        Hardware.mecanumDrive.drive(Hardware.rightDriver.getMagnitude(),
+                Hardware.rightDriver.getDirectionDegrees(),
+                rotationValue);
+        }
+    else
+        {
+        Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
+                Hardware.leftDriver.getY());
+        }
 
-	} // end Periodic
+    // -----------------------------------------------------------------
 
-	static double rotationValue = 0.0;
 
-	// private static boolean isSpeedTesting = false;
+    // =================================================================
+    // Camera Code
+    // =================================================================
+    if (Hardware.leftOperator.getRawButton(8))
+        alignToGearPeg();
 
-	public static boolean alignToGearPeg() {
-		if (!hasProcessedImage)
-			Hardware.imageProcessor.processImage();
-		if (Hardware.imageProcessor.getParticleAnalysisReports() != null) {
-			if (Hardware.imageProcessor.isLeftOf(Hardware.imageProcessor.getNthSizeBlob(0),
-					Hardware.imageProcessor.getNthSizeBlob(1))) {
-				// Hardware.mecanumDrive.drive(CAMERA_ALIGN_SPEED,
-				// Hardware.imageProcessor.getPositionOfRobotToGear(
-				// Hardware.imageProcessor.getNthSizeBlob(0),
-				// Hardware.imageProcessor.getNthSizeBlob(1))
-				// * 90,
-				// 0);
-				System.out.println("Driving left...");
-			} else {
-				// Hardware.mecanumDrive.drive(CAMERA_ALIGN_SPEED,
-				// Hardware.imageProcessor.getPositionOfRobotToGear(
-				// Hardware.imageProcessor.getNthSizeBlob(1),
-				// Hardware.imageProcessor.getNthSizeBlob(0))
-				// * 90,
-				// 0);
-				System.out.println("Driving Right...");
-			}
-		}
-		// TODO compare the center of the two blobs to the center of the robot
+    Hardware.axisCamera
+            .takeSinglePicture(Hardware.leftOperator.getRawButton(7));
 
-		return false;
-	}
+    if (Hardware.leftOperator.getRawButton(4))
+        {
+        System.out.println("writing brightness too high");
+        Hardware.tempCamera.setBrightness(50);
+        }
+    if (Hardware.leftOperator.getRawButton(5))
+        {
+        System.out.println("writing brightness low");
+        Hardware.tempCamera.setBrightness(3);
+        }
+    if (Hardware.leftOperator.getRawButton(10))
+        {
+        Hardware.tempCamera.setExposureManual(50);
+        }
+    if (Hardware.leftOperator.getRawButton(11))
+        {
+        Hardware.tempCamera.setExposureManual(4);
+        }
+    // -----------------------------------------------------------------
+} // end Periodic
 
-	private static boolean hasProcessedImage = false;
+static double rotationValue = 0.0;
 
-	/**
-	 * stores print statements for future use in the print "bank", statements
-	 * are commented out when not in use, when you write a new print statement,
-	 * "deposit" the statement in the correct "bank" do not "withdraw"
-	 * statements, unless directed to.
-	 * 
-	 * NOTE: Keep the groupings below, which coorespond in number and order as
-	 * the hardware declarations in the HARDWARE class
-	 * 
-	 * @author Ashley Espeland
-	 * @written 1/28/16
-	 * 
-	 *          Edited by Ryan McGee
-	 * 
-	 */
-	public static void printStatements() {
-		// =================================
-		// Motor controllers
-		// prints value of the motors
-		// =================================
-		// System.out.println("RR Motor = " + Hardware.rightRearMotor.get());
-		// System.out.println("LR Motor = " + Hardware.leftRearMotor.get());
+// private static boolean isSpeedTesting = false;
 
-		// =================================
-		// CAN items
-		// prints value of the CAN controllers
-		// =================================
-		// printAllPDPChannels();
+private static boolean hasProcessedImage = false;
 
-		// =================================
-		// Relay
-		// prints value of the relay states
-		// =================================
+public static void alignToGearPeg ()
+{
+    System.out.println("Distance to center: "
+            + Hardware.imageProcessor.getPositionOfRobotToGear(
+                    Hardware.imageProcessor.getNthSizeBlob(0),
+                    Hardware.imageProcessor.getNthSizeBlob(1),
+                    CAMERA_AIMING_CENTER));
+}
 
-		// =================================
-		// Digital Inputs
-		// =================================
-		// ---------------------------------
-		// Switches
-		// prints state of switches
-		// ---------------------------------
+/**
+ * stores print statements for future use in the print "bank", statements
+ * are commented out when not in use, when you write a new print statement,
+ * "deposit" the statement in the correct "bank" do not "withdraw"
+ * statements, unless directed to.
+ * 
+ * NOTE: Keep the groupings below, which coorespond in number and order as
+ * the hardware declarations in the HARDWARE class
+ * 
+ * @author Ashley Espeland
+ * @written 1/28/16
+ * 
+ *          Edited by Ryan McGee
+ * 
+ */
+public static void printStatements ()
+{
+    // =================================
+    // Motor controllers
+    // prints value of the motors
+    // =================================
+    // System.out.println("RR Motor = " + Hardware.rightRearMotor.get());
+    // System.out.println("LR Motor = " + Hardware.leftRearMotor.get());
 
-		// ---------------------------------
-		// Encoders
-		// prints the distance from the encoders
-		// ---------------------------------
-		// System.out.println(
-		// "Right Rear Encoder Tics: "
-		// + Hardware.rightRearEncoder.get());
-		// System.out.println(
-		// "Left Rear Encoder Tics: "
-		// // + Hardware.leftRearEncoder.get());
-		// System.out.println(
-		// "RR distance = " + Hardware.rightRearEncoder.getDistance());
-		// System.out.println(
-		// "LR distance = " + Hardware.leftRearEncoder.getDistance());
+    // =================================
+    // CAN items
+    // prints value of the CAN controllers
+    // =================================
+    // printAllPDPChannels();
 
-		// ---------------------------------
-		// Red Light/IR Sensors
-		// prints the state of the sensor
-		// ---------------------------------
+    // =================================
+    // Relay
+    // prints value of the relay states
+    // =================================
 
-		// =================================
-		// Pneumatics
-		// =================================
-		// ---------------------------------
-		// Compressor
-		// prints information on the compressor
-		// ---------------------------------
+    // =================================
+    // Digital Inputs
+    // =================================
+    // ---------------------------------
+    // Switches
+    // prints state of switches
+    // ---------------------------------
 
-		// ---------------------------------
-		// Solenoids
-		// prints the state of solenoids
-		// ---------------------------------
+    // ---------------------------------
+    // Encoders
+    // prints the distance from the encoders
+    // ---------------------------------
+    // System.out.println(
+    // "Right Rear Encoder Tics: "
+    // + Hardware.rightRearEncoder.get());
+    // System.out.println(
+    // "Left Rear Encoder Tics: "
+    // // + Hardware.leftRearEncoder.get());
+    // System.out.println(
+    // "RR distance = " + Hardware.rightRearEncoder.getDistance());
+    // System.out.println(
+    // "LR distance = " + Hardware.leftRearEncoder.getDistance());
 
-		// =================================
-		// Analogs
-		// =================================
-		// ---------------------------------
-		// pots
-		// where the pot is turned to
-		// ---------------------------------
+    // ---------------------------------
+    // Red Light/IR Sensors
+    // prints the state of the sensor
+    // ---------------------------------
 
-		// =================================
-		// Connection Items
-		// =================================
-		// ---------------------------------
-		// Cameras
-		// prints any camera information required
-		// ---------------------------------
+    // =================================
+    // Pneumatics
+    // =================================
+    // ---------------------------------
+    // Compressor
+    // prints information on the compressor
+    // ---------------------------------
 
-		// =================================
-		// Driver station
-		// =================================
-		// ---------------------------------
-		// Joysticks
-		// information about the joysticks
-		// ---------------------------------
-		// System.out.println("Left Joystick: " +
-		// Hardware.leftDriver.getDirectionDegrees());
-		// System.out.println("Twist: " + Hardware.leftDriver.getTwist());
-		// System.out
-		// .println("Right Joystick: " + Hardware.rightDriver.getY());
-		// System.out
-		// .println("Left Operator: " + Hardware.leftOperator.getY());
-		// System.out.println(
-		// "Right Operator: " + Hardware.rightOperator.getY());
+    // ---------------------------------
+    // Solenoids
+    // prints the state of solenoids
+    // ---------------------------------
 
-		// =================================
-		// Kilroy ancillary items
-		// =================================
-		// ---------------------------------
-		// timers
-		// what time does the timer have now
-		// ---------------------------------
+    // =================================
+    // Analogs
+    // =================================
+    // ---------------------------------
+    // pots
+    // where the pot is turned to
+    // ---------------------------------
 
-	} // end printStatements
+    // =================================
+    // Connection Items
+    // =================================
+    // ---------------------------------
+    // Cameras
+    // prints any camera information required
+    // ---------------------------------
 
-	/*
-	 * =============================================== Constants
-	 * ===============================================
-	 */
-	private final static double CAMERA_ALIGN_SPEED = .2;
+    // =================================
+    // Driver station
+    // =================================
+    // ---------------------------------
+    // Joysticks
+    // information about the joysticks
+    // ---------------------------------
+    // System.out.println("Left Joystick: " +
+    // Hardware.leftDriver.getDirectionDegrees());
+    // System.out.println("Twist: " + Hardware.leftDriver.getTwist());
+    // System.out
+    // .println("Right Joystick: " + Hardware.rightDriver.getY());
+    // System.out
+    // .println("Left Operator: " + Hardware.leftOperator.getY());
+    // System.out.println(
+    // "Right Operator: " + Hardware.rightOperator.getY());
 
-	private final static double CAMERA_ALIGN_DEADBAND = .05;
+    // =================================
+    // Kilroy ancillary items
+    // =================================
+    // ---------------------------------
+    // timers
+    // what time does the timer have now
+    // ---------------------------------
 
-	private final static double CAMERA_AIMING_CENTER = .5;
+} // end printStatements
 
-	// ==========================================
-	// TUNEABLES
-	// ==========================================
+/*
+ * =============================================== Constants
+ * ===============================================
+ */
+private final static double CAMERA_ALIGN_SPEED = .2;
+
+// The dead zone for the aligning
+private final static double CAMERA_ALIGN_DEADBAND = 10.0;
+
+private final static double CAMERA_AIMING_CENTER = 0.0;
+
+// ==========================================
+// TUNEABLES
+// ==========================================
 
 } // end class

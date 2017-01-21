@@ -681,36 +681,45 @@ public double getZDistanceToGearTarget (ParticleReport leftTarget,
 }
 
 /**
- * Will return -1 if the gear target is to the left of the robot, or 1 if right.
- * 0 if center.
+ * Returns the number of pixels away the center of the robot is from the
+ * center of the 2 blobs.
  * 
- * @return integer
+ * @return double
  */
-public int getPositionOfRobotToGear (ParticleReport leftTarget,
-        ParticleReport rightTarget)
+public double getPositionOfRobotToGear (ParticleReport leftTarget,
+        ParticleReport rightTarget, double compareValue)
 {
     if (leftTarget != null && rightTarget != null)
         {
-        // Multiplied by -1 to get a positive value from the left target
-        double leftTargetYaw = -1
-                * this.getYawAngleToTarget(leftTarget);
-        double rightTargetYaw = this.getYawAngleToTarget(rightTarget);
-        if (leftTargetYaw > rightTargetYaw)
-            return 1;
-        else if (rightTargetYaw > leftTargetYaw)
-            return -1;
-        else
-            return 0;
+        return compareValue - ((leftTarget.center_mass_x
+                + rightTarget.center_mass_x) / 2.0);
         }
     return 0;
 }
 
-public boolean isLeftOf (ParticleReport target1, ParticleReport target2)
+/**
+ * Gets the position of the two gear targets based on the 2 blobs'
+ * location
+ * 
+ * @param target1
+ * @param target2
+ * @return RIGHT if target1 is right of target2, LEFT if the other way
+ *         around.
+ */
+public Position getPositionOfBlob (ParticleReport target1,
+        ParticleReport target2)
 {
     if (target1.center_mass_x > target2.center_mass_x)
-        return false;
-    return true;
+        return Position.RIGHT;
+    else
+        return Position.LEFT;
+
 }
+
+public static enum Position
+    {
+    LEFT, RIGHT
+    }
 
 // Positive right, negative left
 /**

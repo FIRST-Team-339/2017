@@ -15,8 +15,6 @@
 package org.usfirst.frc.team339.Hardware;
 
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
-
-import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
@@ -25,14 +23,13 @@ import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
-import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
-import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
+import edu.wpi.cscore.AxisCamera;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.MotorSafetyHelper;
-import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
+import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -81,7 +78,7 @@ public static boolean runningInLab = false;
 // ------------------------------------
 
 /**
- * Default motor controller. 
+ * Default motor controller.
  */
 public static TalonSRX rightRearMotor = new TalonSRX(2);
 
@@ -206,6 +203,9 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // -------------------------------------
 public static KilroyCamera axisCamera = new KilroyCamera(false);
 
+public static AxisCamera tempCamera = new AxisCamera("AxisCamera",
+        "10.3.39.11");
+
 public static VisionScript visionScript = new VisionScript(
         new HSLColorThresholdOperator(88, 138, 95, 255, 29, 171),
         new RemoveSmallObjectsOperator(1, true),
@@ -249,6 +249,10 @@ public static Joystick rightDriver = new Joystick(4);
  */
 public static Joystick leftOperator = new Joystick(2);
 
+public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
+        leftOperator, 2, false);
+
+
 /**
  * The right joystick controlling misc operations on the robot.
  */
@@ -276,8 +280,10 @@ public static Joystick rightOperator = new Joystick(3);
 // ------------------------------------
 // Drive system
 // ------------------------------------
-public static boolean usingMecanum = true;
+public static boolean usingMecanum = false;
+
 public static boolean twoJoystickMecanum = false;
+
 public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
 
@@ -314,8 +320,8 @@ public static final MotorSafetyHelper rightFrontMotorSafety = new MotorSafetyHel
         rightFrontMotor);
 
 public static final MotorSafetyHelper leftFrontMotorSafety = new MotorSafetyHelper(
-        leftFrontMotor);        
-        
+        leftFrontMotor);
+
 public static final int MINIMUM_AXIS_CAMERA_BRIGHTNESS = 6;
 
 } // end class
