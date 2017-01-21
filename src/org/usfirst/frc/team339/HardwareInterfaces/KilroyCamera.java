@@ -87,6 +87,7 @@ private double vertFieldOfView = 34;
  * @written Oct 16, 2014
  *          -------------------------------------------------------
  */
+
 public KilroyCamera (boolean hasCamera)
 {
     this.haveCamera = hasCamera;
