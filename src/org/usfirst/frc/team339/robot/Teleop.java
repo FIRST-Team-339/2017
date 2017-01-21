@@ -32,12 +32,12 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
+import org.usfirst.frc.team339.HardwareInterfaces.transmission.Transmission.DebugState;
 import edu.wpi.first.wpilibj.Relay;
 
-
 /**
- * This class contains all of the user code for the Autonomous
- * part of the match, namely, the Init and Periodic code
+ * This class contains all of the user code for the Autonomous part of the
+ * match, namely, the Init and Periodic code
  *
  * @author Nathanial Lydick
  * @written Jan 13, 2015
@@ -45,8 +45,8 @@ import edu.wpi.first.wpilibj.Relay;
 public class Teleop
 {
 /**
- * User Initialization code for teleop mode should go here. Will be
- * called once when the robot enters teleop mode.
+ * User Initialization code for teleop mode should go here. Will be called
+ * once when the robot enters teleop mode.
  *
  * @author Nathanial Lydick
  * @written Jan 13, 2015
@@ -63,8 +63,12 @@ public static void init ()
     // --------------------------------------
     Hardware.leftRearMotor.set(0.0);
     Hardware.rightRearMotor.set(0.0);
-    Hardware.ringlightRelay.set(Relay.Value.kForward);
+    Hardware.rightFrontMotor.set(0.0);
+    Hardware.leftFrontMotor.set(0.0);
 
+    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+
+    Hardware.mecanumDrive.setDebugState(DebugState.DEBUG_MOTOR_DATA);
 } // end Init
 
 /**
@@ -81,21 +85,16 @@ static boolean lightOn = false;
 public static void periodic ()
 {
 
-    Hardware.imageProcessor.processImage();
-    if (Hardware.imageProcessor.getLargestBlob() != null)
-        {
-        System.out.println("Center of Mass X = "
-                + Hardware.imageProcessor.getLargestBlob().center_mass_x
-                + " Y = " + Hardware.imageProcessor
-                        .getLargestBlob().center_mass_y);
-        }
-    if (Hardware.leftOperator.getRawButton(2) == true
-            && buttonPrev == false)// @AHK remove
-        {
-        lightOn = !lightOn;
-        }
 
-    if (lightOn == true)
+    // Hardware.imageProcessor.processImage();
+    // if (Hardware.imageProcessor.getLargestBlob() != null)
+    // {
+    // System.out.println("Center of Mass X = "
+    // + Hardware.imageProcessor.getLargestBlob().center_mass_x
+    // + " Y = " + Hardware.imageProcessor
+    // .getLargestBlob().center_mass_y);
+    // }
+    if (Hardware.ringlightSwitch.isOnCheckNow())
         {
         Hardware.ringlightRelay.set(Relay.Value.kOn);
         }
@@ -103,19 +102,30 @@ public static void periodic ()
         {
         Hardware.ringlightRelay.set(Relay.Value.kOff);
         }
-    buttonPrev = Hardware.leftOperator.getRawButton(2);
 
-    System.out.println("RingLight Switch:"
-            + lightOn + " " + buttonPrev + " "
-            + Hardware.leftOperator.getRawButton(2));
+    // Print out any data we want from the hardware elements.
+    printStatements();
 
+    // =================================================================
+    // Driving code
+    // =================================================================
 
+    if (Hardware.rightDriver.getTrigger())
+        {
+        rotationValue = Hardware.rightDriver.getTwist();
+        }
+    else
+        {
+        rotationValue = 0.0;
+        }
 
+    // creating new instance of Transmission Mecanum
+    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     if (Hardware.usingMecanum == true)
         {
         Hardware.mecanumDrive.drive(Hardware.rightDriver.getMagnitude(),
                 Hardware.rightDriver.getDirectionDegrees(),
-                Hardware.rightDriver.getTwist());
+                rotationValue);
         }
     else
         {
@@ -123,84 +133,62 @@ public static void periodic ()
                 Hardware.leftDriver.getY());
         }
 
-
-    // Print out any data we want from the hardware elements.
-    printStatements();
-
-    // creating new instance of Transmission Mecanum
+    // -----------------------------------------------------------------
 
 
-    // Transmission tankDrive = new Transmission(
-    // Hardware.rightFrontMotor, Hardware.rightRearMotor,
-    // Hardware.leftFrontMotor, Hardware.leftRearMotor);
+    // =================================================================
+    // Camera Code
+    // =================================================================
+    if (Hardware.leftOperator.getRawButton(8))
+        alignToGearPeg();
 
-    // if (Hardware.usingMecanum = true)
-    // {
-    Hardware.mecanumDrive.drive(Hardware.rightDriver.getMagnitude(),
-            Hardware.rightDriver.getDirectionDegrees(),
-            Hardware.rightDriver.getTwist());
-    // }
-    // else {
-    //
-    // }
+    Hardware.axisCamera
+            .takeSinglePicture(Hardware.leftOperator.getRawButton(7));
 
-    Hardware.leftFrontMotor.set(0.0);
-    Hardware.leftRearMotor.set(0.0);
-    Hardware.rightFrontMotor.set(0.0);
-    Hardware.rightRearMotor.set(0.0);
-
-
-
+    if (Hardware.leftOperator.getRawButton(4))
+        {
+        System.out.println("writing brightness too high");
+        Hardware.tempCamera.setBrightness(50);
+        }
+    if (Hardware.leftOperator.getRawButton(5))
+        {
+        System.out.println("writing brightness low");
+        Hardware.tempCamera.setBrightness(3);
+        }
+    if (Hardware.leftOperator.getRawButton(10))
+        {
+        Hardware.tempCamera.setExposureManual(50);
+        }
+    if (Hardware.leftOperator.getRawButton(11))
+        {
+        Hardware.tempCamera.setExposureManual(4);
+        }
+    // -----------------------------------------------------------------
 } // end Periodic
 
+static double rotationValue = 0.0;
 
 // private static boolean isSpeedTesting = false;
 
 private static boolean hasProcessedImage = false;
 
-public static boolean alignToGearPeg ()
+public static void alignToGearPeg ()
 {
-    if (!hasProcessedImage)
-        Hardware.imageProcessor.processImage();
-    if (Hardware.imageProcessor.getParticleAnalysisReports() != null)
-        {
-        if (Hardware.imageProcessor.isLeftOf(
-                Hardware.imageProcessor.getNthSizeBlob(0),
-                Hardware.imageProcessor.getNthSizeBlob(1)))
-            {
-            // Hardware.mecanumDrive.drive(CAMERA_ALIGN_SPEED,
-            // Hardware.imageProcessor.getPositionOfRobotToGear(
-            // Hardware.imageProcessor.getNthSizeBlob(0),
-            // Hardware.imageProcessor.getNthSizeBlob(1))
-            // * 90,
-            // 0);
-            System.out.println("Driving left...");
-            }
-        else
-            {
-            // Hardware.mecanumDrive.drive(CAMERA_ALIGN_SPEED,
-            // Hardware.imageProcessor.getPositionOfRobotToGear(
-            // Hardware.imageProcessor.getNthSizeBlob(1),
-            // Hardware.imageProcessor.getNthSizeBlob(0))
-            // * 90,
-            // 0);
-            System.out.println("Driving Right...");
-            }
-        }
-    // TODO compare the center of the two blobs to the center of the robot
-
-    return false;
+    System.out.println("Distance to center: "
+            + Hardware.imageProcessor.getPositionOfRobotToGear(
+                    Hardware.imageProcessor.getNthSizeBlob(0),
+                    Hardware.imageProcessor.getNthSizeBlob(1),
+                    CAMERA_AIMING_CENTER));
 }
-
 
 /**
  * stores print statements for future use in the print "bank", statements
- * are commented out when not in use, when you write a new print
- * statement, "deposit" the statement in the correct "bank"
- * do not "withdraw" statements, unless directed to.
+ * are commented out when not in use, when you write a new print statement,
+ * "deposit" the statement in the correct "bank" do not "withdraw"
+ * statements, unless directed to.
  * 
- * NOTE: Keep the groupings below, which coorespond in number and
- * order as the hardware declarations in the HARDWARE class
+ * NOTE: Keep the groupings below, which coorespond in number and order as
+ * the hardware declarations in the HARDWARE class
  * 
  * @author Ashley Espeland
  * @written 1/28/16
@@ -221,7 +209,7 @@ public static void printStatements ()
     // CAN items
     // prints value of the CAN controllers
     // =================================
-    // Hardware.CAN.printAllPDPChannels();
+    // printAllPDPChannels();
 
     // =================================
     // Relay
@@ -292,7 +280,9 @@ public static void printStatements ()
     // Joysticks
     // information about the joysticks
     // ---------------------------------
-    // System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
+    // System.out.println("Left Joystick: " +
+    // Hardware.leftDriver.getDirectionDegrees());
+    // System.out.println("Twist: " + Hardware.leftDriver.getTwist());
     // System.out
     // .println("Right Joystick: " + Hardware.rightDriver.getY());
     // System.out
@@ -311,19 +301,18 @@ public static void printStatements ()
 } // end printStatements
 
 /*
- * ===============================================
- * Constants
+ * =============================================== Constants
  * ===============================================
  */
 private final static double CAMERA_ALIGN_SPEED = .2;
 
-private final static double CAMERA_ALIGN_DEADBAND = .05;
+// The dead zone for the aligning
+private final static double CAMERA_ALIGN_DEADBAND = 10.0;
 
-private final static double CAMERA_AIMING_CENTER = .5;
+private final static double CAMERA_AIMING_CENTER = 0.0;
 
 // ==========================================
 // TUNEABLES
 // ==========================================
-
 
 } // end class

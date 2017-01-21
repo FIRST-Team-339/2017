@@ -528,6 +528,14 @@ public void writeExposureControl (AxisCamera.ExposureControl value)
         }
 }
 
+// public void writeExposure(int value)
+// {
+// if (this.haveCamera)
+// {
+// this.camera.writeExposure
+// }
+// }
+
 public void writeMaxFPS (int value)
 {
     if (this.haveCamera)
@@ -579,6 +587,7 @@ public void writeWhiteBalance (AxisCamera.WhiteBalance whiteBalance)
 
         }
 }
+
 
 /**
  * Takes a single image

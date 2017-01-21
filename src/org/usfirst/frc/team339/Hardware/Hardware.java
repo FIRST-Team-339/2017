@@ -23,6 +23,7 @@ import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
+import edu.wpi.cscore.AxisCamera;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
@@ -98,8 +99,6 @@ public static TalonSRX leftFrontMotor = new TalonSRX(4);
 // ====================================
 public static PowerDistributionPanel pdp = new PowerDistributionPanel(
         0);
-
-// public static CANNetwork CAN = new CANNetwork(Hardware.pdp);
 // ====================================
 // Relay classes
 // ====================================
@@ -202,7 +201,10 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // -------------------------------------
 // Axis/USB Camera class
 // -------------------------------------
-public static KilroyCamera axisCamera = new KilroyCamera(true);
+public static KilroyCamera axisCamera = new KilroyCamera(false);
+
+public static AxisCamera tempCamera = new AxisCamera("AxisCamera",
+        "10.3.39.11");
 
 public static VisionScript visionScript = new VisionScript(
         new HSLColorThresholdOperator(88, 138, 95, 255, 29, 171),
@@ -235,7 +237,7 @@ public static final DriverStation driverStation = DriverStation
 /**
  * The left joystick controlling the drive train.
  */
-public static Joystick leftDriver = new Joystick(0);
+public static Joystick leftDriver = new Joystick(1);
 
 /**
  * The right joystick controlling the drive train.
@@ -249,6 +251,7 @@ public static Joystick leftOperator = new Joystick(3);
 
 public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
         leftOperator, 2, false);
+
 
 /**
  * The right joystick controlling misc operations on the robot.
@@ -277,13 +280,17 @@ public static Joystick rightOperator = new Joystick(2);
 // ------------------------------------
 // Drive system
 // ------------------------------------
+public static boolean usingMecanum = false;
+
+public static boolean twoJoystickMecanum = false;
+
 public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
 
 public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
 
-public static boolean usingMecanum = true;
+
 // -------------------
 // Assembly classes (e.g. forklift)
 // -------------------

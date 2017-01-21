@@ -62,7 +62,7 @@ public static enum MotorDirection
  * because it's too close to zero. So if we read a value around 0.1 from
  * the joystick, we probably don't want to actually send values.
  */
-private final double deadbandPercentageZone = 0.1;
+private final double deadbandPercentageZone = 0.2;
 
 /**
  * If we want to print out extra debug info from Transmission, we can

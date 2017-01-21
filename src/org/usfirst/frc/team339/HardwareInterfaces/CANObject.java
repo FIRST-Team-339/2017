@@ -1,6 +1,7 @@
 package org.usfirst.frc.team339.HardwareInterfaces;
 
 import com.ctre.CANTalon;
+
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 

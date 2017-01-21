@@ -251,6 +251,8 @@ public void robotInit ()
 
     Hardware.leftRearMotorSafety.setExpiration(.25);
     Hardware.rightRearMotorSafety.setExpiration(.25);
+    
+    Hardware.rightFrontMotor.setInverted(true);
 
 
     if (Hardware.runningInLab == true)
