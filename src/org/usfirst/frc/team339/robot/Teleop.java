@@ -78,10 +78,6 @@ public static void init ()
  * @author Nathanial Lydick
  * @written Jan 13, 2015
  */
-static boolean buttonPrev = false; // @AHK remove
-
-static boolean lightOn = false;
-
 public static void periodic ()
 {
 
@@ -168,11 +164,7 @@ public static void periodic ()
 
 static double rotationValue = 0.0;
 
-// private static boolean isSpeedTesting = false;
-
-private static boolean hasProcessedImage = false;
-
-public static void alignToGearPeg ()
+public static void alignToGearPeg () // TODO move to another class
 {
     System.out.println("Distance to center: "
             + Hardware.imageProcessor.getPositionOfRobotToGear(
@@ -202,14 +194,11 @@ public static void printStatements ()
     // Motor controllers
     // prints value of the motors
     // =================================
-    // System.out.println("RR Motor = " + Hardware.rightRearMotor.get());
-    // System.out.println("LR Motor = " + Hardware.leftRearMotor.get());
 
     // =================================
     // CAN items
     // prints value of the CAN controllers
     // =================================
-    // printAllPDPChannels();
 
     // =================================
     // Relay
@@ -228,16 +217,6 @@ public static void printStatements ()
     // Encoders
     // prints the distance from the encoders
     // ---------------------------------
-    // System.out.println(
-    // "Right Rear Encoder Tics: "
-    // + Hardware.rightRearEncoder.get());
-    // System.out.println(
-    // "Left Rear Encoder Tics: "
-    // // + Hardware.leftRearEncoder.get());
-    // System.out.println(
-    // "RR distance = " + Hardware.rightRearEncoder.getDistance());
-    // System.out.println(
-    // "LR distance = " + Hardware.leftRearEncoder.getDistance());
 
     // ---------------------------------
     // Red Light/IR Sensors
