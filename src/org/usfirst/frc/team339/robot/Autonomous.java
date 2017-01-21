@@ -67,7 +67,9 @@ private static enum MainState
 
     DRIVE_FORWARD,
 
-    DRIVE_BY_CAMERA
+    DRIVE_BY_CAMERA,
+
+    DONE
     }
 
 
@@ -103,7 +105,7 @@ public static void init ()
  */
 public static void periodic ()
 {
-
+    runStateMachine();
 } // end Periodic
 
 private static MainState currentState;
@@ -121,10 +123,12 @@ private static void runStateMachine ()
         case DRIVE_BY_CAMERA:
 
             break;
+        case DONE:
+
+            break; // Optional break. May want to fall through to default.
         default:
 
             break;
-
         }
 }
 

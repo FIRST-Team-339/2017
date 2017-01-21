@@ -242,12 +242,12 @@ public static Joystick leftDriver = new Joystick(1);
 /**
  * The right joystick controlling the drive train.
  */
-public static Joystick rightDriver = new Joystick(4);
+public static Joystick rightDriver = new Joystick(1);
 
 /**
  * The left joystick controlling misc operations on the robot.
  */
-public static Joystick leftOperator = new Joystick(2);
+public static Joystick leftOperator = new Joystick(3);
 
 public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
         leftOperator, 2, false);
@@ -256,7 +256,7 @@ public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
 /**
  * The right joystick controlling misc operations on the robot.
  */
-public static Joystick rightOperator = new Joystick(3);
+public static Joystick rightOperator = new Joystick(2);
 
 // **********************************************************
 // Kilroy's Ancillary classes
