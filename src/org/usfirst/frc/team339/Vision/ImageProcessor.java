@@ -257,7 +257,7 @@ public ParticleReport getSmallestBlob ()
 // TODO add a function to get the tallest of 2 blobs
 public ParticleReport getNthSizeBlob (int n)
 {
-    if (this.reports != null && this.reports.length > 0)
+    if (this.reports != null && this.reports.length > n)
         return this.reports[n];
     else
         return null;
@@ -293,10 +293,13 @@ public void applyOperators ()
     if (this.camera.gethaveCamera() == true && this.currentImage != null
             && this.newImageIsFresh == true)
         {
+        System.out.println("Length of operators: " + operators.size());
         for (int i = 0; i < operators.size(); i++)
             {
             this.currentImage = this.operators.get(i)
                     .operate(this.currentImage);
+            this.updateParticalAnalysisReports();
+            System.out.println("NumOfBlobs: " + this.reports.length);
             }
         }
 }
@@ -438,6 +441,7 @@ public void processImage ()
         this.updateImage();
         if (this.newImageIsFresh == true)
             {
+            System.out.println("processImage is smooth");
             this.applyOperators();
             this.updateParticalAnalysisReports();
             }
@@ -684,15 +688,24 @@ public double getZDistanceToGearTarget (ParticleReport leftTarget,
  * Returns the number of pixels away the center of the robot is from the
  * center of the 2 blobs.
  * 
- * @return double
+ * @param leftTarget
+ *            The blob of the left-side target for the gear peg
+ * @param rightTarget
+ *            The blob of the right-side target for the gear peg
+ * @param compareValue
+ *            Where we want the center of the two targets to be
+ * @return the number of pixels the center of the two targets are away
+ *         from where we want it
  */
 public double getPositionOfRobotToGear (ParticleReport leftTarget,
         ParticleReport rightTarget, double compareValue)
 {
+
     if (leftTarget != null && rightTarget != null)
         {
-        return compareValue - ((leftTarget.center_mass_x
-                + rightTarget.center_mass_x) / 2.0);
+        this.camera.saveImagesSafely();
+        return ((leftTarget.center_mass_x
+                + rightTarget.center_mass_x) / 2.0) - compareValue;
         }
     return 0;
 }

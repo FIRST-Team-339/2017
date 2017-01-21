@@ -89,6 +89,8 @@ private double vertFieldOfView = 34;
  */
 public KilroyCamera (boolean hasCamera)
 {
+    if (hasCamera == false)
+        System.out.println("ATTENTION: the AXIS CAMERA is DISABLED :(");
     this.haveCamera = hasCamera;
     if (hasCamera)
         {

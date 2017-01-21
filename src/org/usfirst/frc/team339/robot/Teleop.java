@@ -137,29 +137,13 @@ public static void periodic ()
     // Camera Code
     // =================================================================
     if (Hardware.leftOperator.getRawButton(8))
+        {
+        Hardware.imageProcessor.processImage();
         alignToGearPeg();
-
+        }
     Hardware.axisCamera
             .takeSinglePicture(Hardware.leftOperator.getRawButton(7));
 
-    if (Hardware.leftOperator.getRawButton(4))
-        {
-        System.out.println("writing brightness too high");
-        Hardware.tempCamera.setBrightness(50);
-        }
-    if (Hardware.leftOperator.getRawButton(5))
-        {
-        System.out.println("writing brightness low");
-        Hardware.tempCamera.setBrightness(3);
-        }
-    if (Hardware.leftOperator.getRawButton(10))
-        {
-        Hardware.tempCamera.setExposureManual(50);
-        }
-    if (Hardware.leftOperator.getRawButton(11))
-        {
-        Hardware.tempCamera.setExposureManual(4);
-        }
     // -----------------------------------------------------------------
 } // end Periodic
 
@@ -306,7 +290,7 @@ private final static double CAMERA_ALIGN_SPEED = .2;
 // The dead zone for the aligning
 private final static double CAMERA_ALIGN_DEADBAND = 10.0;
 
-private final static double CAMERA_AIMING_CENTER = 0.0;
+private final static double CAMERA_AIMING_CENTER = 100.0;
 
 // ==========================================
 // TUNEABLES

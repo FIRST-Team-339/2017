@@ -23,7 +23,6 @@ import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
-import edu.wpi.cscore.AxisCamera;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
@@ -201,14 +200,15 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // -------------------------------------
 // Axis/USB Camera class
 // -------------------------------------
-public static KilroyCamera axisCamera = new KilroyCamera(false);
 
-public static AxisCamera tempCamera = new AxisCamera("AxisCamera",
-        "10.3.39.11");
+public static KilroyCamera axisCamera = new KilroyCamera(true);
+
+// public static AxisCamera tempCamera = new AxisCamera("AxisCamera",
+// "10.3.39.11");
 
 public static VisionScript visionScript = new VisionScript(
-        new HSLColorThresholdOperator(88, 138, 95, 255, 29, 171),
-        new RemoveSmallObjectsOperator(1, true),
+        new HSLColorThresholdOperator(55, 147, 14, 255, 78, 255),
+        new RemoveSmallObjectsOperator(3, true),
         new ConvexHullOperator(false));
 
 public static ImageProcessor imageProcessor = new ImageProcessor(
