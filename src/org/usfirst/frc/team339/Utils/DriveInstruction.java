@@ -11,8 +11,11 @@ package org.usfirst.frc.team339.Utils;
 public class DriveInstruction
 {
 private double forwardDistance = 0.0;
+
 private double forwardSpeedRatio = 0.0;
+
 private double rotationalDistance = 0.0;
+
 private double rotationalSpeedRatio = 0.0;
 
 boolean terminator = false;
@@ -44,8 +47,6 @@ public DriveInstruction (boolean terminator)
 {
     this.terminator = terminator;
 }
-
-
 
 public double getForwardDistance ()
 {

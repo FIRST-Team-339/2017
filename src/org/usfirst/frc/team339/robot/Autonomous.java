@@ -65,7 +65,15 @@ private static enum MainState
     {
     INIT,
 
-    DRIVE_FORWARD,
+    DRIVE_FORWARD_TO_CENTER,
+
+    BACK_UP_TO_FIRE,
+
+    ALIGN_ON_BOILER,
+
+    FIRE_ON_BOILER,
+
+    ALIGN_ON_PEG,
 
     DRIVE_BY_CAMERA,
 

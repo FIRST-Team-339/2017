@@ -105,7 +105,15 @@ public static void periodic ()
     // =================================================================
     // Driving code
     // =================================================================
-
+    double degrees = Hardware.rightDriver.getDirectionDegrees();
+    if (degrees > 0 && degrees <= 180)
+        {
+        degrees = degrees - 180;
+        }
+    else if (degrees <= 0 && degrees >= -180)
+        {
+        degrees = degrees + 180;
+        }
     if (Hardware.rightDriver.getTrigger())
         {
         rotationValue = Hardware.rightDriver.getTwist();
@@ -115,12 +123,11 @@ public static void periodic ()
         rotationValue = 0.0;
         }
 
-    // creating new instance of Transmission Mecanum
-    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+
     if (Hardware.usingMecanum == true)
         {
         Hardware.mecanumDrive.drive(Hardware.rightDriver.getMagnitude(),
-                Hardware.rightDriver.getDirectionDegrees(),
+                degrees,
                 rotationValue);
         }
     else
@@ -128,6 +135,7 @@ public static void periodic ()
         Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
                 Hardware.leftDriver.getY());
         }
+
 
     // -----------------------------------------------------------------
 
