@@ -123,8 +123,6 @@ public static void periodic ()
                     Hardware.leftDriver.getY());
             }
 
-    Hardware.rightRearMotor.set(.5);
-    Hardware.rightFrontMotor.set(.5);
 
     // -----------------------------------------------------------------
 
