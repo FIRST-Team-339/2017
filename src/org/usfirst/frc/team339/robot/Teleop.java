@@ -32,7 +32,6 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
-import org.usfirst.frc.team339.HardwareInterfaces.transmission.Transmission.DebugState;
 import edu.wpi.first.wpilibj.Relay;
 
 /**
@@ -68,7 +67,9 @@ public static void init ()
 
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
 
-    Hardware.mecanumDrive.setDebugState(DebugState.DEBUG_MOTOR_DATA);
+    Hardware.tankDrive.setGear(Hardware.tankDrive.getMaxGear());
+
+    // Hardware.mecanumDrive.setDebugState(DebugState.DEBUG_MOTOR_DATA);
 } // end Init
 
 /**
@@ -81,15 +82,6 @@ public static void init ()
 public static void periodic ()
 {
 
-
-    // Hardware.imageProcessor.processImage();
-    // if (Hardware.imageProcessor.getLargestBlob() != null)
-    // {
-    // System.out.println("Center of Mass X = "
-    // + Hardware.imageProcessor.getLargestBlob().center_mass_x
-    // + " Y = " + Hardware.imageProcessor
-    // .getLargestBlob().center_mass_y);
-    // }
     if (Hardware.ringlightSwitch.isOnCheckNow())
         {
         Hardware.ringlightRelay.set(Relay.Value.kOn);
@@ -116,18 +108,23 @@ public static void periodic ()
         }
 
     // creating new instance of Transmission Mecanum
-    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-    if (Hardware.usingMecanum == true)
-        {
-        Hardware.mecanumDrive.drive(Hardware.rightDriver.getMagnitude(),
-                Hardware.rightDriver.getDirectionDegrees(),
-                rotationValue);
-        }
-    else
-        {
-        Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
-                Hardware.leftDriver.getY());
-        }
+
+    if (!isAligning)
+        if (Hardware.usingMecanum == true)
+            {
+            Hardware.mecanumDrive.drive(
+                    Hardware.rightDriver.getMagnitude(),
+                    Hardware.rightDriver.getDirectionDegrees(),
+                    rotationValue);
+            }
+        else
+            {
+            Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
+                    Hardware.leftDriver.getY());
+            }
+
+    Hardware.rightRearMotor.set(.5);
+    Hardware.rightFrontMotor.set(.5);
 
     // -----------------------------------------------------------------
 
@@ -137,25 +134,34 @@ public static void periodic ()
     // =================================================================
     if (Hardware.leftOperator.getRawButton(8))
         {
-        Hardware.imageProcessor.processImage();
-        alignToGearPeg();
+        isAligning = Hardware.autoDrive.alignToGear(
+                CAMERA_AIMING_CENTER, CAMERA_ALIGN_SPEED,
+                CAMERA_ALIGN_DEADBAND);
         }
+
+    if (isAligning)
+        {
+        isAligning = Hardware.autoDrive.alignToGear(
+                CAMERA_AIMING_CENTER, CAMERA_ALIGN_SPEED,
+                CAMERA_ALIGN_DEADBAND);
+        }
+    // Cancel auto aligning
+    if (isAligning && Hardware.leftOperator.getRawButton(7))
+        {
+        isAligning = false;
+        }
+
     Hardware.axisCamera
-            .takeSinglePicture(Hardware.leftOperator.getRawButton(7));
+            .takeSinglePicture(Hardware.leftOperator.getRawButton(8));
 
     // -----------------------------------------------------------------
 } // end Periodic
 
-static double rotationValue = 0.0;
+private static double rotationValue = 0.0;
 
-public static void alignToGearPeg () // TODO move to another class
-{
-    System.out.println("Distance to center: "
-            + Hardware.imageProcessor.getPositionOfRobotToGear(
-                    Hardware.imageProcessor.getNthSizeBlob(0),
-                    Hardware.imageProcessor.getNthSizeBlob(1),
-                    CAMERA_AIMING_CENTER));
-}
+private static boolean isAligning = false;
+
+
 
 /**
  * stores print statements for future use in the print "bank", statements

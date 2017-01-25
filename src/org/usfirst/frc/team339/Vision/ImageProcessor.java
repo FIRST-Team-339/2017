@@ -688,24 +688,23 @@ public double getZDistanceToGearTarget (ParticleReport leftTarget,
  * Returns the number of pixels away the center of the robot is from the
  * center of the 2 blobs.
  * 
- * @param leftTarget
- *            The blob of the left-side target for the gear peg
- * @param rightTarget
- *            The blob of the right-side target for the gear peg
+ * @param target1
+ *            The first target for the gear peg
+ * @param target2
+ *            The other target for the gear peg
  * @param compareValue
  *            Where we want the center of the two targets to be
  * @return the number of pixels the center of the two targets are away
  *         from where we want it
  */
-public double getPositionOfRobotToGear (ParticleReport leftTarget,
-        ParticleReport rightTarget, double compareValue)
+public double getPositionOfRobotToGear (ParticleReport target1,
+        ParticleReport target2, double compareValue)
 {
 
-    if (leftTarget != null && rightTarget != null)
+    if (target1 != null && target2 != null)
         {
-        this.camera.saveImagesSafely();
-        return ((leftTarget.center_mass_x
-                + rightTarget.center_mass_x) / 2.0) - compareValue;
+        return ((target1.center_mass_x
+                + target2.center_mass_x) / 2.0) - compareValue;
         }
     return 0;
 }

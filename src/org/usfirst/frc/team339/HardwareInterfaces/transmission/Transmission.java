@@ -18,8 +18,9 @@ import edu.wpi.first.wpilibj.command.Subsystem;
  */
 public class Transmission extends Subsystem
 {
-//Always eat pure-bred, free-range giraffes, never those addicted or alien ones.
-//Giraffe giraffe = new Giraffe("pure bred","free range");
+// Always eat pure-bred, free-range giraffes, never those addicted or alien
+// ones.
+// Giraffe giraffe = new Giraffe("pure bred","free range");
 /**
  * This stores whether or not we want to spit out debug data to the console
  * or whatever error processing we're doing.
@@ -75,6 +76,7 @@ private DebugState debugState = DebugState.DEBUG_NONE;
  * the opposite value that we originally intended
  */
 private boolean leftJoystickReversed = true;
+
 private boolean rightJoystickReversed = true;
 
 /**
@@ -139,9 +141,20 @@ private DoubleSolenoid transmissionSolenoids = null;
  *           -------------------------------------------------------
  */
 private final double[] gearPercentages =
-        {0.0, 0.70, 0.80, 0.90, 1.00};
+    {0.0, 0.70, 0.80, 0.90, 1.00};
 
 private final int MAX_GEAR = this.gearPercentages.length;
+
+/**
+ * Gets the highest gear available on the transmission, 0.0 - 1.0
+ * (or 0% through 100%, respectively)
+ * 
+ * @return the highest gear
+ */
+public int getMaxGear ()
+{
+    return this.MAX_GEAR;
+}
 
 /**
  * -----------------------------------------------------------
@@ -166,8 +179,11 @@ private final int MAX_GEAR = this.gearPercentages.length;
  *          ------------------------------------------------------------
  */
 private SpeedController rightSpeedController = null;
+
 private MotorDirection rightMotorDirection = MotorDirection.FORWARD;
+
 private SpeedController leftSpeedController = null;
+
 private MotorDirection leftMotorDirection = MotorDirection.FORWARD;
 
 /**
@@ -500,11 +516,10 @@ public double scaleJoystickValue (double joystickValue)
     // If it's lower than zero, this means that it's too small
     // to do anything with. Otherwise, we have a good value to scale.
     // ---------------------------------------------------------------
-    final double absJoystickInputValue =
-            java.lang.Math.max(
-                    (Math.abs(joystickValue)
-                            - this.deadbandPercentageZone),
-                    0.0);
+    final double absJoystickInputValue = java.lang.Math.max(
+            (Math.abs(joystickValue)
+                    - this.deadbandPercentageZone),
+            0.0);
 
     // -----------------------------------------
     // The range of values we will actually use
@@ -516,9 +531,8 @@ public double scaleJoystickValue (double joystickValue)
     // Scales it by the ratio of the max gear value to
     // the deadband range.
     // -------------------------------------------------
-    final double scaledJoystickInput =
-            absJoystickInputValue
-                    * (maxCurrentGearValue / deadbandRange);
+    final double scaledJoystickInput = absJoystickInputValue
+            * (maxCurrentGearValue / deadbandRange);
 
     // -------------------------------------------------------
     // Since we previously absolutized it, return a negative
