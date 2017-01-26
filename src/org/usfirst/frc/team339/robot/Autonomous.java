@@ -125,9 +125,7 @@ private static void runStateMachine ()
         case INIT:
 
             break;
-        case DRIVE_FORWARD:
 
-            break;
         case DRIVE_BY_CAMERA:
 
             break;
