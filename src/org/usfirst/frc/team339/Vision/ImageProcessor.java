@@ -145,7 +145,7 @@ public ParticleReport[] reports = new ParticleReport[0];
 
 private boolean newImageIsFresh = false;
 
-private double visionGoalHeightFt = 0.0;// TODO setters and Getters.
+private double visionGoalHeight = 0.0;// TODO setters and Getters.
 
 /**
  * Creates an ImageProcessor object with camera <camera> and a default
@@ -429,6 +429,28 @@ public double getMountAngleToRightOfCenter ()
 }
 
 /**
+ * Tells the program the height of our vision target, in arbitrary units.
+ * Determines the units for the rest of the real-world values returned from this
+ * class.
+ * 
+ * @param height
+ *            The height of the target, in your choice of unit.
+ */
+public void setVisionGoalHeight (double height)
+{
+    this.visionGoalHeight = height;
+}
+
+/**
+ * @return
+ *         The height of the vision target previously set.
+ */
+public double getVisionGoalHeight ()
+{
+    return this.visionGoalHeight;
+}
+
+/**
  * Pulls a new image from the camera and processes the image through the
  * operator list, only if the new image it received was fresh.
  */
@@ -633,32 +655,20 @@ public double getZDistanceToFuelTarget (ParticleReport topTarget,
         double topTargetPitch = this.getPitchAngleToTarget(topTarget);
         double bottomTargetPitch = this
                 .getPitchAngleToTarget(bottomTarget);
-        // System.out.println("Yaw angle: " + Math.toDegrees(yaw));
-        // System.out.println("Pitch angle of Bottom Target: "
-        // + Math.toDegrees(topTargetPitch));
-        // System.out.println("Pitch angle of Top Target: "
-        // + Math.toDegrees(bottomTargetPitch));
-
         double hypotenuse = (7 * Math.sin(90 - bottomTargetPitch))
                 / Math.sin(topTargetPitch - bottomTargetPitch);
         double zDistance = Math.sqrt((hypotenuse * hypotenuse) - 6241);
-        // System.out.println(
-        // "Old Distance: " + this.visionGoalHeight
-        // * Math.cos(yaw)
-        // / Math.tan(pitch));
-        // System.out.println("New Distance: " +
-        // (Math.sin(getPitchAngleToTarget(target)
-        // / this.visionGoalHeight)
-        // * Math.cos(this.getPitchAngleToTarget(target))
-        // * Math.sin(this.getYawAngleToTarget(target))));
-        // return (this.visionGoalHeightFt
-        // * Math.cos(yaw)
-        // / Math.tan(pitch))/* * 2.0 */;
         return zDistance;
         }
     return -1.0;
 }
 
+/**
+ * 
+ * @param leftTarget
+ * @param rightTarget
+ * @return
+ */
 public double getZDistanceToGearTarget (ParticleReport leftTarget,
         ParticleReport rightTarget)
 {
