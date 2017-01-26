@@ -67,15 +67,25 @@ private static enum MainState
 
     DRIVE_FORWARD_TO_CENTER,
 
-    BACK_UP_TO_FIRE,
+    DRIVE_FORWARD_TO_SIDES,
 
-    ALIGN_ON_BOILER,
+    TURN_TO_GEAR_PEG,
 
-    FIRE_ON_BOILER,
+    DRIVE_TO_GEAR_WITH_CAMERA,
 
-    ALIGN_ON_PEG,
+    DRIVE_CAREFULLY_TO_PEG,
 
-    DRIVE_BY_CAMERA,
+    WIGGLE_WIGGLE,
+
+    WAIT_FOR_GEAR_EXODUS,
+
+    DELAY_AFTER_GEAR_EXODUS,
+
+    DRIVE_BACKWARDS_TO_FIRERANGE,
+
+    ALIGN_TO_FIRE,
+
+    FIRE,
 
     DONE
     }
@@ -122,16 +132,6 @@ private static void runStateMachine ()
 {
     switch (currentState)
         {
-        case INIT:
-
-            break;
-
-        case DRIVE_BY_CAMERA:
-
-            break;
-        case DONE:
-
-            break; // Optional break. May want to fall through to default.
         default:
 
             break;
