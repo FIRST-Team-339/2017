@@ -16,6 +16,7 @@ package org.usfirst.frc.team339.Hardware;
 
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
+import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import org.usfirst.frc.team339.Utils.Drive;
@@ -194,7 +195,7 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------
-
+public static UltraSonic usTest = new UltraSonic(1);
 // **********************************************************
 // roboRIO CONNECTIONS CLASSES
 // **********************************************************
@@ -202,7 +203,7 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // Axis/USB Camera class
 // -------------------------------------
 
-public static KilroyCamera axisCamera = new KilroyCamera(true);
+public static KilroyCamera axisCamera = new KilroyCamera(false);
 
 // public static AxisCamera tempCamera = new AxisCamera("AxisCamera",
 // "10.3.39.11");

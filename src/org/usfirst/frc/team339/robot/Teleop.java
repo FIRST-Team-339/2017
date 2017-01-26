@@ -68,6 +68,8 @@ public static void init ()
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
 
     Hardware.tankDrive.setGear(Hardware.tankDrive.getMaxGear());
+    Hardware.usTest.setScalingFactor(.1032);
+    Hardware.usTest.setOffsetDistanceFromNearestBummper(0);
 
     // Hardware.mecanumDrive.setDebugState(DebugState.DEBUG_MOTOR_DATA);
 } // end Init
@@ -81,6 +83,10 @@ public static void init ()
  */
 public static void periodic ()
 {
+
+    System.out.println(Hardware.usTest.getRefinedDistanceValue());
+    System.out.println(Hardware.usTest.getRefinedDistanceValue()
+            * (1 / Hardware.usTest.getScalingFactor()));
 
     if (Hardware.ringlightSwitch.isOnCheckNow())
         {

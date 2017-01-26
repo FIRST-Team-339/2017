@@ -65,19 +65,22 @@ private static enum MainState
     {
     INIT,
 
-    DRIVE_FORWARD_TO_CENTER,
+    DRIVE_FORWARD_TO_CENTER_GOAL,
 
-    BACK_UP_TO_FIRE,
+    DRIVE_FORWARD_TO_SIDE_GOALS,
 
-    ALIGN_ON_BOILER,
+    WIGGLE_WIGGLE, // WIGGLE WIGGLE STATE
 
-    FIRE_ON_BOILER,
+    DRIVE_BY_CAMERA_TO_PEG,
 
-    ALIGN_ON_PEG,
+    DRIVE_TO_PEG,
 
-    DRIVE_BY_CAMERA,
+    WAIT_FOR_GEAR_EXODUS,
 
-    DONE
+    DELAY_AFTER_GEAR_EXODUS,
+
+
+
     }
 
 
@@ -116,27 +119,16 @@ public static void periodic ()
     runStateMachine();
 } // end Periodic
 
+boolean isRed;
+
+Enum autoDecision;
+
 private static MainState currentState;
 
 private static void runStateMachine ()
 {
     switch (currentState)
         {
-        case INIT:
-
-            break;
-        case DRIVE_FORWARD:
-
-            break;
-        case DRIVE_BY_CAMERA:
-
-            break;
-        case DONE:
-
-            break; // Optional break. May want to fall through to default.
-        default:
-
-            break;
         }
 }
 
