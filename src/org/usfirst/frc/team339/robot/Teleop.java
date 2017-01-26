@@ -32,6 +32,7 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
+import org.usfirst.frc.team339.Utils.Drive;
 import edu.wpi.first.wpilibj.Relay;
 
 /**
@@ -130,19 +131,43 @@ public static void periodic ()
     // =================================================================
     // Camera Code
     // =================================================================
+
+    // Starts the aligning process with button 8 on the left operator
     if (Hardware.leftOperator.getRawButton(8))
         {
-        isAligning = Hardware.autoDrive.alignToGear(
+        alignValue = Hardware.autoDrive.alignToGear(
                 CAMERA_AIMING_CENTER, CAMERA_ALIGN_SPEED,
                 CAMERA_ALIGN_DEADBAND);
         }
 
+    // Determines whether or not we are aligned yet, and stops when we are.
+    // If we don't see any blobs, tell us and continue aligning.
     if (isAligning)
         {
-        isAligning = Hardware.autoDrive.alignToGear(
+        alignValue = Hardware.autoDrive.alignToGear(
                 CAMERA_AIMING_CENTER, CAMERA_ALIGN_SPEED,
                 CAMERA_ALIGN_DEADBAND);
+
+        if (alignValue == Drive.AlignReturnType.MISALIGNED)
+            {
+            isAligning = true;
+            System.out.println("we are misaligned!!");
+            }
+        else if (alignValue == Drive.AlignReturnType.ALIGNED)
+            {
+            isAligning = false;
+            System.out.println("We are aligned!!");
+            }
+        else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
+            {
+            System.out.println("We don't see anything!");
+            isAligning = true;
+            }
+        else
+            System.out
+                    .println("I have no idea wtf is going on here...");
         }
+
     // Cancel auto aligning
     if (isAligning && Hardware.leftOperator.getRawButton(7))
         {
@@ -156,6 +181,8 @@ public static void periodic ()
 } // end Periodic
 
 private static double rotationValue = 0.0;
+
+private static Drive.AlignReturnType alignValue = Drive.AlignReturnType.MISALIGNED;
 
 private static boolean isAligning = false;
 
@@ -274,9 +301,10 @@ public static void printStatements ()
 private final static double CAMERA_ALIGN_SPEED = .2;
 
 // The dead zone for the aligning
-private final static double CAMERA_ALIGN_DEADBAND = 10.0;
+private final static double CAMERA_ALIGN_DEADBAND = 10.0
+        / Hardware.axisCamera.getHorizontalResolution();
 
-private final static double CAMERA_AIMING_CENTER = 100.0;
+private final static double CAMERA_AIMING_CENTER = 271.8;
 
 // ==========================================
 // TUNEABLES
