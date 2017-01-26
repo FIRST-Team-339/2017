@@ -293,13 +293,11 @@ public void applyOperators ()
     if (this.camera.gethaveCamera() == true && this.currentImage != null
             && this.newImageIsFresh == true)
         {
-        System.out.println("Length of operators: " + operators.size());
         for (int i = 0; i < operators.size(); i++)
             {
             this.currentImage = this.operators.get(i)
                     .operate(this.currentImage);
             this.updateParticalAnalysisReports();
-            System.out.println("NumOfBlobs: " + this.reports.length);
             }
         }
 }
@@ -441,7 +439,6 @@ public void processImage ()
         this.updateImage();
         if (this.newImageIsFresh == true)
             {
-            System.out.println("processImage is smooth");
             this.applyOperators();
             this.updateParticalAnalysisReports();
             }
@@ -493,9 +490,6 @@ public void updateParticalAnalysisReports ()
         {
         final int numParticles = NIVision
                 .imaqCountParticles(this.currentImage, 0);
-
-        System.out.println("Object removal blobs: " +
-                NIVision.imaqCountParticles(this.currentImage, 0));
 
         // Measure particles and sort by particle size
         final Vector<ParticleReport> particles = new Vector<ParticleReport>();
@@ -608,10 +602,10 @@ public double getPitchAngleToTarget (ParticleReport target)
         double adjustedYVal = this.cameraYRes
                 - target.center_mass_y;
         // System.out.println("Vert Res: " + Hardware.drive.cameraYResolution);
-        System.out.println(
-                "Y coord " + target.center_mass_y);
-        System.out.println(
-                "X coord " + target.center_mass_x);
+        // System.out.println(
+        // "Y coord " + target.center_mass_y);
+        // System.out.println(
+        // "X coord " + target.center_mass_x);
         return Math.atan((adjustedYVal - (this.cameraYRes / 2) - .5)
                 / this.cameraFocalLengthPixels)
                 + this.cameraMountAngleAboveHorizontalRadians;
@@ -640,10 +634,10 @@ public double getZDistanceToFuelTarget (ParticleReport topTarget,
         double bottomTargetPitch = this
                 .getPitchAngleToTarget(bottomTarget);
         // System.out.println("Yaw angle: " + Math.toDegrees(yaw));
-        System.out.println("Pitch angle of Bottom Target: "
-                + Math.toDegrees(topTargetPitch));
-        System.out.println("Pitch angle of Top Target: "
-                + Math.toDegrees(bottomTargetPitch));
+        // System.out.println("Pitch angle of Bottom Target: "
+        // + Math.toDegrees(topTargetPitch));
+        // System.out.println("Pitch angle of Top Target: "
+        // + Math.toDegrees(bottomTargetPitch));
 
         double hypotenuse = (7 * Math.sin(90 - bottomTargetPitch))
                 / Math.sin(topTargetPitch - bottomTargetPitch);
@@ -701,12 +695,12 @@ public double getPositionOfRobotToGear (ParticleReport target1,
         ParticleReport target2, double compareValue)
 {
 
-    if (target1 != null && target2 != null)
+    if (target1 != null && target2 != null && this.reports.length >= 2)
         {
         return ((target1.center_mass_x
                 + target2.center_mass_x) / 2.0) - compareValue;
         }
-    return 0;
+    return Double.MAX_VALUE;
 }
 
 /**

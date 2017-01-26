@@ -80,16 +80,16 @@ public static boolean runningInLab = false;
 /**
  * Default motor controller.
  */
-public static TalonSRX rightRearMotor = new TalonSRX(2);
+public static TalonSRX rightRearMotor = new TalonSRX(4);// 2);
 
-public static TalonSRX rightFrontMotor = new TalonSRX(1);
+public static TalonSRX rightFrontMotor = new TalonSRX(2);// 1);
 
 /**
  * Default motor controller.
  */
 public static TalonSRX leftRearMotor = new TalonSRX(3);
 
-public static TalonSRX leftFrontMotor = new TalonSRX(4);
+public static TalonSRX leftFrontMotor = new TalonSRX(1);// 4);
 // ------------------------------------
 // Victor classes
 // ------------------------------------
@@ -238,7 +238,7 @@ public static final DriverStation driverStation = DriverStation
 /**
  * The left joystick controlling the drive train.
  */
-public static Joystick leftDriver = new Joystick(1);
+public static Joystick leftDriver = new Joystick(0);
 
 /**
  * The right joystick controlling the drive train.
@@ -248,7 +248,7 @@ public static Joystick rightDriver = new Joystick(1);
 /**
  * The left joystick controlling misc operations on the robot.
  */
-public static Joystick leftOperator = new Joystick(3);
+public static Joystick leftOperator = new Joystick(2);
 
 public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
         leftOperator, 2, false);
@@ -257,7 +257,7 @@ public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
 /**
  * The right joystick controlling misc operations on the robot.
  */
-public static Joystick rightOperator = new Joystick(2);
+public static Joystick rightOperator = new Joystick(3);
 
 // **********************************************************
 // Kilroy's Ancillary classes

@@ -82,7 +82,8 @@ public Drive (TransmissionFourWheel transmissionFourWheel,
  *            in this range.
  * @return Whether or not we are aligned to the center yet.
  */
-public boolean alignToGear (double relativeCenter, double movementSpeed,
+public AlignReturnType alignToGear (double relativeCenter,
+        double movementSpeed,
         double deadband)
 {
     imageProcessor.processImage();
@@ -90,19 +91,26 @@ public boolean alignToGear (double relativeCenter, double movementSpeed,
         switch (this.transmissionType)
             {
             case TANK:
-                double distanceToCenter = imageProcessor
+                double position = imageProcessor
                         .getPositionOfRobotToGear(
                                 imageProcessor.getNthSizeBlob(0),
                                 imageProcessor.getNthSizeBlob(1),
-                                relativeCenter)
+                                relativeCenter);
+                double distanceToCenter = position
                         / camera.getHorizontalResolution();
                 System.out
                         .println("Distance to center: "
                                 + distanceToCenter);
 
+                System.out.println("Deadband: " + (10.0
+                        / this.camera.getHorizontalResolution()));
+                if (position == Double.MAX_VALUE)
+                    {
+                    return AlignReturnType.NO_BLOBS;
+                    }
                 if (Math.abs(distanceToCenter) <= deadband)
                     {
-                    return true;
+                    return AlignReturnType.ALIGNED;
                     }
                 else if (distanceToCenter > 0)
                     {
@@ -121,8 +129,14 @@ public boolean alignToGear (double relativeCenter, double movementSpeed,
             default:
                 break;
             }
-    return false;
+    transmissionFourWheel.drive(0.0, 0.0);
+    return AlignReturnType.MISALIGNED;
 }
+
+public static enum AlignReturnType
+    {
+    NO_BLOBS, ALIGNED, MISALIGNED
+    }
 
 public static enum TransmissionType
     {
