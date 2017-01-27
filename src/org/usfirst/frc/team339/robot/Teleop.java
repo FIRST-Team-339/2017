@@ -70,8 +70,10 @@ public static void init ()
 
     Hardware.tankDrive.setGear(Hardware.tankDrive.getMaxGear());
 
+
     // Hardware.mecanumDrive.setDebugState(DebugState.DEBUG_MOTOR_DATA);
 } // end Init
+
 
 /**
  * User Periodic code for teleop mode should go here. Will be called
@@ -135,9 +137,8 @@ public static void periodic ()
     // Starts the aligning process with button 8 on the left operator
     if (Hardware.leftOperator.getRawButton(8))
         {
-        alignValue = Hardware.autoDrive.alignToGear(
-                CAMERA_AIMING_CENTER, CAMERA_ALIGN_SPEED,
-                CAMERA_ALIGN_DEADBAND);
+        isAligning = true;
+
         }
 
     // Determines whether or not we are aligned yet, and stops when we are.
@@ -145,7 +146,8 @@ public static void periodic ()
     if (isAligning)
         {
         alignValue = Hardware.autoDrive.alignToGear(
-                CAMERA_AIMING_CENTER, CAMERA_ALIGN_SPEED,
+                CAMERA_ALIGN_CENTER,
+                CAMERA_ALIGN_SPEED,
                 CAMERA_ALIGN_DEADBAND);
 
         if (alignValue == Drive.AlignReturnType.MISALIGNED)
@@ -163,9 +165,6 @@ public static void periodic ()
             System.out.println("We don't see anything!");
             isAligning = true;
             }
-        else
-            System.out
-                    .println("I have no idea wtf is going on here...");
         }
 
     // Cancel auto aligning
@@ -176,6 +175,8 @@ public static void periodic ()
 
     Hardware.axisCamera
             .takeSinglePicture(Hardware.leftOperator.getRawButton(8));
+
+
 
     // -----------------------------------------------------------------
 } // end Periodic
@@ -232,6 +233,8 @@ public static void printStatements ()
     // Encoders
     // prints the distance from the encoders
     // ---------------------------------
+    // System.out.println("Right Encoder: "
+    // + Hardware.rightRearEncoder.getDistance());
 
     // ---------------------------------
     // Red Light/IR Sensors
@@ -298,13 +301,13 @@ public static void printStatements ()
  * =============================================== Constants
  * ===============================================
  */
-private final static double CAMERA_ALIGN_SPEED = .2;
+private final static double CAMERA_ALIGN_SPEED = .5;
 
 // The dead zone for the aligning
 private final static double CAMERA_ALIGN_DEADBAND = 10.0
         / Hardware.axisCamera.getHorizontalResolution();
 
-private final static double CAMERA_AIMING_CENTER = 271.8;
+private final static double CAMERA_ALIGN_CENTER = 271.8;
 
 // ==========================================
 // TUNEABLES

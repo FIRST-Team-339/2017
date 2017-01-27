@@ -39,7 +39,6 @@ public Image operate (Image Source)
                                                         // adjustment
             // new NIVision.StructuringElement(3, 3, 0));
             // Source.free();
-            System.out.println("Good. Working???");
             // return newImage;
             }
         else
