@@ -4,6 +4,7 @@ import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
+import edu.wpi.first.wpilibj.Encoder;
 
 /**
  * This class allows us to drive semi-autonomously, and is to be implemented
@@ -24,6 +25,14 @@ private ImageProcessor imageProcessor = null;
 
 private KilroyCamera camera = null;
 
+private Encoder rightFrontEncoder = null;
+
+private Encoder rightRearEncoder = null;
+
+private Encoder leftFrontEncoder = null;
+
+private Encoder leftRearEncoder = null;
+
 /**
  * Creates an instance of the Drive class, with a mecanum drive system.
  * If this is called, the mecanum versions of each method are used.
@@ -42,6 +51,22 @@ public Drive (TransmissionMecanum transmissionMecanum,
     this.transmissionType = TransmissionType.MECANUM;
     this.camera = camera;
     this.imageProcessor = imageProcessor;
+}
+
+public Drive (TransmissionMecanum transmissionMecanum,
+        KilroyCamera camera, ImageProcessor imageProcessor,
+        Encoder rightFrontEncoder, Encoder rightRearEncoder,
+        Encoder leftFrontEncoder, Encoder leftRearEncoder)
+{
+    this.transmissionMecanum = transmissionMecanum;
+    this.transmissionType = TransmissionType.MECANUM;
+    this.camera = camera;
+    this.imageProcessor = imageProcessor;
+
+    this.rightFrontEncoder = rightFrontEncoder;
+    this.rightRearEncoder = rightRearEncoder;
+    this.leftFrontEncoder = leftFrontEncoder;
+    this.leftRearEncoder = rightRearEncoder;
 }
 
 /**
@@ -106,21 +131,23 @@ public AlignReturnType alignToGear (double relativeCenter,
                         / this.camera.getHorizontalResolution()));
                 if (position == Double.MAX_VALUE)
                     {
+                    transmissionFourWheel.drive(0.0, 0.0);
                     return AlignReturnType.NO_BLOBS;
                     }
                 if (Math.abs(distanceToCenter) <= deadband)
                     {
+                    transmissionFourWheel.drive(0.0, 0.0);
                     return AlignReturnType.ALIGNED;
                     }
                 else if (distanceToCenter > 0)
                     {
-                    transmissionFourWheel.drive(-movementSpeed,
-                            movementSpeed);
+                    transmissionFourWheel.drive(movementSpeed,
+                            -movementSpeed);
                     }
                 else if (distanceToCenter < 0)
                     {
-                    transmissionFourWheel.drive(movementSpeed,
-                            -movementSpeed);
+                    transmissionFourWheel.drive(-movementSpeed,
+                            movementSpeed);
                     }
                 break;
             case MECANUM:
@@ -129,14 +156,26 @@ public AlignReturnType alignToGear (double relativeCenter,
             default:
                 break;
             }
-    transmissionFourWheel.drive(0.0, 0.0);
     return AlignReturnType.MISALIGNED;
 }
+
+
 
 public static enum AlignReturnType
     {
     NO_BLOBS, ALIGNED, MISALIGNED
     }
+
+
+
+
+public static enum TurnDirection
+    {
+    RIGHT, LEFT
+    }
+
+
+
 
 public static enum TransmissionType
     {
