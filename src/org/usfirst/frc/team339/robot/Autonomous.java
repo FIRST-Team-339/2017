@@ -90,6 +90,19 @@ private static enum MainState
     DONE
     }
 
+private static enum AutoProgram
+    {
+    INIT,
+
+    CENTER_GEAR_PLACEMENT,
+
+    RIGHT_PATH,
+
+    LEFT_PATH,
+
+    DONE
+    }
+
 
 
 // ==================================
@@ -123,19 +136,58 @@ public static void init ()
  */
 public static void periodic ()
 {
-    runStateMachine();
+    switch (autoPath)
+        {
+        case INIT:
+            // get the auto program we want to run.
+            break;
+        case CENTER_GEAR_PLACEMENT:
+            if (placeCenterGearPath())
+                autoPath = AutoProgram.DONE;
+            break;
+        case RIGHT_PATH:
+            if (rightSidePath())
+                autoPath = AutoProgram.DONE;
+            break;
+        case LEFT_PATH:
+            if (leftSidePath())
+                autoPath = AutoProgram.DONE;
+            break;
+        case DONE:
+            break;
+        }
+
 } // end Periodic
 
 private static MainState currentState;
 
-private static void runStateMachine ()
+private static AutoProgram autoPath = AutoProgram.INIT;
+
+private static boolean placeCenterGearPath ()
 {
     switch (currentState)
         {
-        default:
 
-            break;
         }
+    return false;
+}
+
+private static boolean rightSidePath ()
+{
+    switch (currentState)
+        {
+
+        }
+    return false;
+}
+
+private static boolean leftSidePath ()
+{
+    switch (currentState)
+        {
+
+        }
+    return false;
 }
 
 
