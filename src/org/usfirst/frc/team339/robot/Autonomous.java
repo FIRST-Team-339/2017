@@ -310,8 +310,8 @@ private static void initializeDriveProgram ()
 {
     Hardware.autoStateTimer.stop();
     Hardware.autoStateTimer.reset();
+    Hardware.driveGyro.calibrate();
     Hardware.driveGyro.reset();
-
 }
 
 } // end class
