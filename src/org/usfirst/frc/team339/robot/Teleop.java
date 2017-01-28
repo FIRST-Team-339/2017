@@ -127,6 +127,24 @@ public static void periodic ()
             }
 
 
+    // Testing turn by degrees
+    if (Hardware.leftDriver.getRawButton(2))
+        {
+        turnDegrees = 90;
+        isTurning = true;
+        }
+    if (Hardware.rightDriver.getRawButton(2))
+        {
+        turnDegrees = -90;
+        isTurning = true;
+        }
+
+    if (isTurning)
+        {
+        isTurning = !Hardware.autoDrive.turnDegrees(turnDegrees);
+        }
+
+
     // -----------------------------------------------------------------
 
 
@@ -187,6 +205,11 @@ private static Drive.AlignReturnType alignValue = Drive.AlignReturnType.MISALIGN
 
 private static boolean isAligning = false;
 
+private static boolean isTurning = false;
+
+private static double turnDegrees = 0.0;
+
+
 
 
 /**
@@ -233,8 +256,10 @@ public static void printStatements ()
     // Encoders
     // prints the distance from the encoders
     // ---------------------------------
-    // System.out.println("Right Encoder: "
-    // + Hardware.rightRearEncoder.getDistance());
+    System.out.println("Right Encoder: "
+            + Hardware.autoDrive.getRightRearEncoderDistance());
+    System.out.println("Left Encoder: "
+            + Hardware.autoDrive.getLeftRearEncoderDistance());
 
     // ---------------------------------
     // Red Light/IR Sensors

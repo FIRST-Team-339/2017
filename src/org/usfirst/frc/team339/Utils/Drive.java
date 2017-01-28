@@ -33,6 +33,8 @@ private Encoder leftFrontEncoder = null;
 
 private Encoder leftRearEncoder = null;
 
+private boolean isUsingEncoders = false;
+
 /**
  * Creates an instance of the Drive class, with a mecanum drive system.
  * If this is called, the mecanum versions of each method are used.
@@ -77,15 +79,10 @@ public Drive (TransmissionMecanum transmissionMecanum,
         Encoder rightFrontEncoder, Encoder rightRearEncoder,
         Encoder leftFrontEncoder, Encoder leftRearEncoder)
 {
-    this.transmissionMecanum = transmissionMecanum;
-    this.transmissionType = TransmissionType.MECANUM;
-    this.camera = camera;
-    this.imageProcessor = imageProcessor;
+    this(transmissionMecanum, camera, imageProcessor);
 
-    this.rightFrontEncoder = rightFrontEncoder;
-    this.rightRearEncoder = rightRearEncoder;
-    this.leftFrontEncoder = leftFrontEncoder;
-    this.leftRearEncoder = leftRearEncoder;
+    this.initEncoders(leftFrontEncoder, rightFrontEncoder,
+            leftRearEncoder, rightRearEncoder);
 }
 
 /**
@@ -108,6 +105,62 @@ public Drive (TransmissionFourWheel transmissionFourWheel,
     this.imageProcessor = imageProcessor;
 }
 
+/**
+ * Creates an instance of the Drive class, with a Tank drive system.
+ * If this is called, the Tank versions of each method are used.
+ * 
+ * @param transmissionFourWheel
+ *            The transmission to be input
+ * @param camera
+ *            The camera we want to use for image saving
+ * @param imageProcessor
+ *            The processor we want to use for aiming and aligning
+ * @param rightFrontEncoder
+ *            The front right encoder
+ * @param rightRearEncoder
+ *            The back right encoder
+ * @param leftFrontEncoder
+ *            The front left encoder
+ * @param leftRearEncoder
+ *            The back left encoder
+ */
+public Drive (TransmissionFourWheel transmissionFourWheel,
+        KilroyCamera camera, ImageProcessor imageProcessor,
+        Encoder leftFrontEncoder, Encoder rightFrontEncoder,
+        Encoder leftRearEncoder, Encoder rightRearEncoder)
+{
+    this(transmissionFourWheel, camera, imageProcessor);
+    this.initEncoders(leftFrontEncoder, rightFrontEncoder,
+            leftRearEncoder, rightRearEncoder);
+}
+
+
+/**
+ * Initializes all the encoders. Is called in the constructor and can
+ * be called outside the class.
+ *
+ * @param _leftFrontEncoder
+ *            The front left encoder
+ * @param _rightFrontEncoder
+ *            The front right encoder
+ * @param _leftRearEncoder
+ *            The back left encoder
+ * @param _rightRearEncoder
+ *            The back right encoder
+ */
+public void initEncoders (Encoder _leftFrontEncoder,
+        Encoder _rightFrontEncoder, Encoder _leftRearEncoder,
+        Encoder _rightRearEncoder)
+{
+    isUsingEncoders = true;
+
+    this.leftFrontEncoder = _leftFrontEncoder;
+    this.rightFrontEncoder = _rightFrontEncoder;
+    this.leftRearEncoder = _leftRearEncoder;
+    this.rightRearEncoder = _rightRearEncoder;
+
+    this.setEncoderDistancePerPulse(DEFAULT_DISTANCE_PER_PULSE);
+}
 
 /**
  * Aligns to the low dual targets for the gear peg. This finds the
@@ -131,7 +184,7 @@ public AlignReturnType alignToGear (double relativeCenter,
         double deadband)
 {
     imageProcessor.processImage();
-    if (imageProcessor.getParticleAnalysisReports() != null)
+    if (imageProcessor.getNthSizeBlob(1) != null)
         switch (this.transmissionType)
             {
             case TANK:
@@ -180,27 +233,187 @@ public AlignReturnType alignToGear (double relativeCenter,
 
 
 
+/**
+ * Tells us how any aligning method returned.
+ * 
+ * @author Ryan McGee
+ *
+ */
 public static enum AlignReturnType
     {
-    NO_BLOBS, ALIGNED, MISALIGNED
+    /**
+     * No blobs are present
+     */
+    NO_BLOBS,
+    /**
+     * We are now aligned with the target
+     */
+    ALIGNED,
+    /**
+     * We are not aligned with the target, keep aligning
+     */
+    MISALIGNED
     }
 
+/**
+ * @return the distance the front left encoder has driven based on the
+ *         distance per pulse set earlier.
+ */
+public double getLeftFrontEncoderDistance ()
+{
+    return this.leftFrontEncoder.getDistance();
+}
+
+/**
+ * @return the distance the front right encoder has driven based on the
+ *         distance per pulse set earlier.
+ */
+public double getRightFrontEncoderDistance ()
+{
+    return this.rightFrontEncoder.getDistance();
+}
+
+/**
+ * @return the distance the back left encoder has driven based on the
+ *         distance per pulse set earlier.
+ */
+public double getLeftRearEncoderDistance ()
+{
+    return this.leftRearEncoder.getDistance();
+}
+
+/**
+ * @return the distance the back rear encoder has driven based on the
+ *         distance per pulse set earlier.
+ */
+public double getRightRearEncoderDistance ()
+{
+    return this.rightRearEncoder.getDistance();
+}
+
+/**
+ * Sets the value multiplied by to get an accurate distance we have driven
+ * 
+ * @param value
+ *            Distance per pulse
+ */
+public void setEncoderDistancePerPulse (double value)
+{
+    this.leftFrontEncoder.setDistancePerPulse(value);
+    this.rightFrontEncoder.setDistancePerPulse(value);
+    this.leftRearEncoder.setDistancePerPulse(value);
+    this.rightRearEncoder.setDistancePerPulse(value);
+}
+
+/**
+ * Resets all encoders back to 0 'distance units' driven
+ */
+public void resetEncoders ()
+{
+    this.leftFrontEncoder.reset();
+    this.rightFrontEncoder.reset();
+    this.leftRearEncoder.reset();
+    this.rightRearEncoder.reset();
+}
+
+/**
+ * Rotates the robot by degrees.
+ * 
+ * @param degrees
+ *            Number of degrees to rotate by. Negative if left, positive if
+ *            right.
+ * @return Whether or not we have finished turning yet.
+ */
+public boolean turnDegrees (double degrees)
+{
+    if (firstAlign)
+        {
+        this.resetEncoders();
+        this.firstAlign = false;
+        }
+    // We do not know why, but the robot by default turns opposite what we want.
+    double adjustedDegrees = -degrees;
+
+    if (!isUsingEncoders)
+        {
+        this.firstAlign = true;
+        return true;
+        }
+    double angleInRadians = Math.toRadians(Math.abs(degrees));
+
+    double leftSideAverage = Math
+            .abs(this.getLeftFrontEncoderDistance()
+                    + this.getLeftRearEncoderDistance())
+            / 2.0;
+
+    double rightSideAverage = Math
+            .abs(this.getRightFrontEncoderDistance()
+                    + this.getRightRearEncoderDistance())
+            / 2.0;
+
+    // If the arc length is equal to the amount driven, we finish
+    if (rightSideAverage >= angleInRadians * ROBOT_TURNING_RADIUS
+            || leftSideAverage >= angleInRadians * ROBOT_TURNING_RADIUS)
+        {
+        this.firstAlign = true;
+        return true;
+        }
+
+    // Rotate if not
+    if (adjustedDegrees < 0)
+        {
+        if (transmissionType == TransmissionType.TANK)
+            transmissionFourWheel.drive(ROTATE_SPEED, -ROTATE_SPEED);
+        else
+            transmissionMecanum.drive(0.0, 0.0, -ROTATE_SPEED);
+        }
+    else if (adjustedDegrees > 0)
+        {
+        if (transmissionType == TransmissionType.TANK)
+            transmissionFourWheel.drive(-ROTATE_SPEED, ROTATE_SPEED);
+        else
+            transmissionMecanum.drive(0.0, 0.0, ROTATE_SPEED);
+        }
+    return false;
+}
+
+private boolean firstAlign = true;
 
 
-
-public static enum TurnDirection
-    {
-    RIGHT, LEFT
-    }
-
-
-
-
+/**
+ * The type of transmission we are using. Is set in the constructor.
+ * 
+ * @author Ryan McGee
+ *
+ */
 public static enum TransmissionType
     {
-    TANK, MECANUM
+    /**
+     * Tank drive
+     */
+    TANK,
+    /**
+     * Mecanum drive
+     */
+    MECANUM
     }
 
+// =====================================================================
+// Constants
+// =====================================================================
 private TransmissionType transmissionType = null;
+
+private static final double ROTATE_SPEED = .7;
+
+/**
+ * The value that the getDistance is multiplied by to get an accurate
+ * distance.
+ */
+private static final double DEFAULT_DISTANCE_PER_PULSE = 1.0 / 12.9375;
+
+/**
+ * The radius the robot turns around, in inches. Useful for turning by degrees.
+ */
+private static final double ROBOT_TURNING_RADIUS = 11.0;
 
 }
