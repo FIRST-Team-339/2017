@@ -65,6 +65,12 @@ private static enum MainState
     {
     INIT,
 
+    DELAY_BEFORE_START,
+
+    DRIVE_FORWARD_TO_CENTER_SLOW,
+
+    DRIVE_FORWARD_TO_CENTER_MED,
+
     DRIVE_FORWARD_TO_CENTER,
 
     DRIVE_FORWARD_TO_SIDES,
@@ -139,7 +145,7 @@ public static void periodic ()
     switch (autoPath)
         {
         case INIT:
-            // get the auto program we want to run.
+            // get the auto program we want to run, get delay pot.
             break;
         case CENTER_GEAR_PLACEMENT:
             if (placeCenterGearPath())
@@ -167,7 +173,34 @@ private static boolean placeCenterGearPath ()
 {
     switch (currentState)
         {
-
+        case INIT:
+            // zero out all the sensors, reset timers, etc.
+            currentState = MainState.DELAY_BEFORE_START;
+            break;
+        case DELAY_BEFORE_START:
+            // wait for timer to run out
+            currentState = MainState.DRIVE_FORWARD_TO_CENTER_SLOW;
+            break;
+        case DRIVE_FORWARD_TO_CENTER_SLOW:
+            // drive at our slow speed. wait a certain time. Could also check
+            // distance for safety
+            currentState = MainState.DRIVE_FORWARD_TO_CENTER_MED;
+            break;
+        case DRIVE_FORWARD_TO_CENTER_MED:
+            // drive at our medium speed. wait a certain time to move on.
+            currentState = MainState.DRIVE_FORWARD_TO_CENTER;
+            break;
+        case DRIVE_FORWARD_TO_CENTER:
+            // If we see blobs, hand over control to camera, otherwise, go
+            // forward. Check to make sure we haven't gone too far.
+            if (false)
+                {
+                currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
+                }
+            break;
+        default:
+        case DONE:
+            return true;
         }
     return false;
 }
