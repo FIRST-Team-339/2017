@@ -53,6 +53,25 @@ public Drive (TransmissionMecanum transmissionMecanum,
     this.imageProcessor = imageProcessor;
 }
 
+/**
+ * Creates an instance of the Drive class, with a mecanum drive system.
+ * If this is called, the mecanum versions of each method are used.
+ * 
+ * @param transmissionMecanum
+ *            The transmission to be input
+ * @param camera
+ *            The camera we want to use for image saving
+ * @param imageProcessor
+ *            The processor we want to use for aiming and aligning
+ * @param rightFrontEncoder
+ *            The front right encoder
+ * @param rightRearEncoder
+ *            The back right encoder
+ * @param leftFrontEncoder
+ *            The front left encoder
+ * @param leftRearEncoder
+ *            The back left encoder
+ */
 public Drive (TransmissionMecanum transmissionMecanum,
         KilroyCamera camera, ImageProcessor imageProcessor,
         Encoder rightFrontEncoder, Encoder rightRearEncoder,
@@ -66,7 +85,7 @@ public Drive (TransmissionMecanum transmissionMecanum,
     this.rightFrontEncoder = rightFrontEncoder;
     this.rightRearEncoder = rightRearEncoder;
     this.leftFrontEncoder = leftFrontEncoder;
-    this.leftRearEncoder = rightRearEncoder;
+    this.leftRearEncoder = leftRearEncoder;
 }
 
 /**
