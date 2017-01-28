@@ -188,20 +188,18 @@ public AlignReturnType alignToGear (double relativeCenter,
         switch (this.transmissionType)
             {
             case TANK:
-                double position = imageProcessor
+                double distanceToCenter = imageProcessor
                         .getPositionOfRobotToGear(
                                 imageProcessor.getNthSizeBlob(0),
                                 imageProcessor.getNthSizeBlob(1),
                                 relativeCenter);
-                double distanceToCenter = position
-                        / camera.getHorizontalResolution();
                 System.out
                         .println("Distance to center: "
                                 + distanceToCenter);
 
                 System.out.println("Deadband: " + (10.0
                         / this.camera.getHorizontalResolution()));
-                if (position == Double.MAX_VALUE)
+                if (distanceToCenter == Double.MAX_VALUE)
                     {
                     transmissionFourWheel.drive(0.0, 0.0);
                     return AlignReturnType.NO_BLOBS;
@@ -232,6 +230,44 @@ public AlignReturnType alignToGear (double relativeCenter,
 }
 
 
+public AlignReturnType strafeToGear (double driveSpeed,
+        double alignVar, double deadband, double relativeCenter)
+{
+    // If we have no blobs, return so.
+    if (this.imageProcessor.getNthSizeBlob(1) == null)
+        return AlignReturnType.NO_BLOBS;
+
+    double distanceToCenter = this.imageProcessor
+            .getPositionOfRobotToGear(
+                    this.imageProcessor.getNthSizeBlob(0),
+                    this.imageProcessor.getNthSizeBlob(1),
+                    relativeCenter);
+
+    if (Math.abs(distanceToCenter) < deadband)
+        return AlignReturnType.ALIGNED;
+
+    if (distanceToCenter > 0)
+        {
+        if (this.transmissionType == TransmissionType.MECANUM)
+            this.transmissionMecanum.drive(driveSpeed, alignVar, 0);
+        else if (this.transmissionType == TransmissionType.TANK)
+            this.transmissionFourWheel.drive(driveSpeed - alignVar,
+                    driveSpeed + alignVar);
+        }
+    else if (distanceToCenter < 0)
+        {
+        if (this.transmissionType == TransmissionType.MECANUM)
+            this.transmissionMecanum.drive(driveSpeed, -alignVar, 0.0);
+        else if (this.transmissionType == TransmissionType.TANK)
+            this.transmissionFourWheel.drive(driveSpeed + alignVar,
+                    driveSpeed - alignVar);
+        }
+
+
+    return AlignReturnType.MISALIGNED;
+}
+
+
 
 /**
  * Tells us how any aligning method returned.
@@ -252,7 +288,11 @@ public static enum AlignReturnType
     /**
      * We are not aligned with the target, keep aligning
      */
-    MISALIGNED
+    MISALIGNED,
+    /**
+     * Only used if we are using an ultrasonic
+     */
+    CLOSE_ENOUGH
     }
 
 /**
@@ -403,7 +443,7 @@ public static enum TransmissionType
 // =====================================================================
 private TransmissionType transmissionType = null;
 
-private static final double ROTATE_SPEED = .7;
+private static final double ROTATE_SPEED = .6;
 
 /**
  * The value that the getDistance is multiplied by to get an accurate

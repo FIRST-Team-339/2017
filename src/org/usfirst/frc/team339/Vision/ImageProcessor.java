@@ -707,8 +707,9 @@ public double getPositionOfRobotToGear (ParticleReport target1,
 
     if (target1 != null && target2 != null && this.reports.length >= 2)
         {
-        return ((target1.center_mass_x
-                + target2.center_mass_x) / 2.0) - compareValue;
+        return (((target1.center_mass_x
+                + target2.center_mass_x) / 2.0) - compareValue)
+                / this.camera.getHorizontalResolution();
         }
     return Double.MAX_VALUE;
 }
