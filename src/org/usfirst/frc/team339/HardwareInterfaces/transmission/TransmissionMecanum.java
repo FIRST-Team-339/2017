@@ -3,7 +3,8 @@ package org.usfirst.frc.team339.HardwareInterfaces.transmission;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SpeedController;
 
-public class TransmissionMecanum extends TransmissionFourWheel {
+public class TransmissionMecanum extends TransmissionFourWheel
+{
 
 /**
  * @description If we are within x many degrees of being purely up, down,
@@ -31,9 +32,13 @@ private boolean mecanumJoystickReversed = false;
  *
  * @author Noah Golmant #written 23 July 2015
  */
-	public TransmissionMecanum(SpeedController rightFrontSpeedController, SpeedController rightRearSpeedController,
-			SpeedController leftFrontSpeedController, SpeedController leftRearSpeedController) {
-		super(rightFrontSpeedController, rightRearSpeedController, leftFrontSpeedController, leftRearSpeedController);
+public TransmissionMecanum (SpeedController rightFrontSpeedController,
+        SpeedController rightRearSpeedController,
+        SpeedController leftFrontSpeedController,
+        SpeedController leftRearSpeedController)
+{
+    super(rightFrontSpeedController, rightRearSpeedController,
+            leftFrontSpeedController, leftRearSpeedController);
 
 }
 
@@ -90,7 +95,8 @@ public void drive (double magnitude, double direction, double rotation,
         double yValue, double xValue)
 {
 
-		double tempRotation = rotation, tempMagnitude = magnitude, tempDirection = direction;
+    double tempRotation = rotation, tempMagnitude = magnitude,
+            tempDirection = direction;
 
     if (Math.abs(yValue) > directionalYOrthogonalZone
             || Math.abs(xValue) > directionalXOrthogonalZone)
@@ -117,30 +123,41 @@ public void drive (double magnitude, double direction, double rotation,
             // Magnitude and rotation deadzones
 
             // Deadzone for Rotation
-//		if (Math.abs(rotation) > this.getDeadbandPercentageZone() && tempRotation > 0)
+            // if (Math.abs(rotation) > this.getDeadbandPercentageZone() &&
+            // tempRotation > 0)
             // {
-//			tempRotation = (tempRotation + (tempRotation * this.getDeadbandPercentageZone())) - this.getDeadbandPercentageZone();
-//		}else if (Math.abs(rotation) > this.getDeadbandPercentageZone() && tempRotation < 0)
+            // tempRotation = (tempRotation + (tempRotation *
+            // this.getDeadbandPercentageZone())) -
+            // this.getDeadbandPercentageZone();
+            // }else if (Math.abs(rotation) > this.getDeadbandPercentageZone()
+            // && tempRotation < 0)
             // {
-//			tempRotation = (tempRotation + (tempRotation * this.getDeadbandPercentageZone())) + this.getDeadbandPercentageZone();
+            // tempRotation = (tempRotation + (tempRotation *
+            // this.getDeadbandPercentageZone())) +
+            // this.getDeadbandPercentageZone();
             // }else
             // {
             // tempRotation = 0.0;
             // }
-		if(Math.abs(tempRotation) < this.getDeadbandPercentageZone())
-		{
-			tempRotation = 0.0;
-		}
-		
-		if(Math.abs(tempMagnitude) < this.getDeadbandPercentageZone())
-		{
-			tempMagnitude = 0.0;
-		}
+            if (Math.abs(tempRotation) < this
+                    .getDeadbandPercentageZone())
+                {
+                tempRotation = 0.0;
+                }
+
+            if (Math.abs(tempMagnitude) < this
+                    .getDeadbandPercentageZone())
+                {
+                tempMagnitude = 0.0;
+                }
 
             // Deadzone for Magnitude
-//		 if (Math.abs(magnitude) > this.getDeadbandPercentageZone() && tempMagnitude > 0)
+            // if (Math.abs(magnitude) > this.getDeadbandPercentageZone() &&
+            // tempMagnitude > 0)
             // {
-//			 tempMagnitude = (tempMagnitude + (tempMagnitude * this.getDeadbandPercentageZone())) - this.getCurrentGearPercentage();
+            // tempMagnitude = (tempMagnitude + (tempMagnitude *
+            // this.getDeadbandPercentageZone())) -
+            // this.getCurrentGearPercentage();
             // }else
             // {
             // tempMagnitude = 0.0;
@@ -163,7 +180,8 @@ public void drive (double magnitude, double direction, double rotation,
             tempRotation = this.limit(rotation);
 
             // check if the joystick is reversed
-		if (this.isMecanumJoystickReversed() == true) {
+            if (this.isMecanumJoystickReversed() == true)
+                {
                 tempRotation *= -1.0;
                 tempMagnitude *= -1.0;
                 }
@@ -171,8 +189,10 @@ public void drive (double magnitude, double direction, double rotation,
             /**
              * MECANUM CONTROLS EXPLANATION
              *
-             * First, we apply all of our deadzones and limits. What we start with
-             * is a goal vector to travel along, with a direction and a magnitude,
+             * First, we apply all of our deadzones and limits. What we start
+             * with
+             * is a goal vector to travel along, with a direction and a
+             * magnitude,
              * i.e. how fast we move along it.
              *
              * We break this vector into its X and Y components, and send these
@@ -182,7 +202,8 @@ public void drive (double magnitude, double direction, double rotation,
              *
              * LEFT FRONT: \\ RIGHT FRONT: // LEFT REAR: // RIGHT REAR: \\
              *
-             * As the "\\" wheels move forward, they go 45 degrees to the right. As
+             * As the "\\" wheels move forward, they go 45 degrees to the right.
+             * As
              * the "//" wheels move forward, they go 45 degrees to the left.
              *
              * As an example of how the mecanum can move in any input vector,
@@ -213,19 +234,29 @@ public void drive (double magnitude, double direction, double rotation,
 
             // Add 45 to account for the angle of the rollers
             // on the mecanum wheels.
-		final double dirInRad = ((tempDirection + 45.0) * 3.14159) / 180.0;
+            final double dirInRad = ((tempDirection + 45.0) * 3.14159)
+                    / 180.0;
             final double cosD = Math.cos(dirInRad);
             final double sinD = Math.sin(dirInRad);
 
             // Calculate the speed to send to each motor.
-		double leftFrontSpeed = (sinD * tempMagnitude) + tempRotation;
-		double rightFrontSpeed = (cosD * tempMagnitude) - tempRotation;
-		double leftRearSpeed = (cosD * tempMagnitude) + tempRotation;
-		double rightRearSpeed = (sinD * tempMagnitude) - tempRotation;
+            double leftFrontSpeed = (sinD * tempMagnitude)
+                    + tempRotation;
+            double rightFrontSpeed = (cosD * tempMagnitude)
+                    - tempRotation;
+            double leftRearSpeed = (cosD * tempMagnitude)
+                    + tempRotation;
+            double rightRearSpeed = (sinD * tempMagnitude)
+                    - tempRotation;
 
-		if ((this.getDebugState() == DebugState.DEBUG_MOTOR_DATA) || (this.getDebugState() == DebugState.DEBUG_ALL)) {
-			System.out.println("MECANUM OUTPUT:\n" + "LF: " + leftFrontSpeed + "\tRF: " + rightFrontSpeed + "\n"
-					+ "LR: " + leftRearSpeed + "\tRR: " + rightRearSpeed);
+            if ((this.getDebugState() == DebugState.DEBUG_MOTOR_DATA)
+                    || (this.getDebugState() == DebugState.DEBUG_ALL))
+                {
+                System.out.println(
+                        "MECANUM OUTPUT:\n" + "LF: " + leftFrontSpeed
+                                + "\tRF: " + rightFrontSpeed + "\n"
+                                + "LR: " + leftRearSpeed + "\tRR: "
+                                + rightRearSpeed);
                 }
 
             // limit the values to our motor range of -1..1
@@ -247,6 +278,8 @@ public void drive (double magnitude, double direction, double rotation,
             this.driveRightMotor(rightFrontSpeed);
             this.driveRightRearMotor(rightRearSpeed);
             }
+        }
+}
 
 public void testDrive (double direction, double magnitude,
         double rotation)
