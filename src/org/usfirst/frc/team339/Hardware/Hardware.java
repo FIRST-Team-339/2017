@@ -292,7 +292,8 @@ public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
 
 public static Drive autoDrive = new Drive(tankDrive, axisCamera,
-        imageProcessor);
+        imageProcessor, leftRearEncoder, rightRearEncoder,
+        leftRearEncoder, rightRearEncoder);
 
 // -------------------
 // Assembly classes (e.g. forklift)

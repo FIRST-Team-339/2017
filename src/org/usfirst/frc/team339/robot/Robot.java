@@ -268,8 +268,6 @@ public void robotInit ()
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
 
-
-
     // =========================================================
     // User code goes above here
     // =========================================================
