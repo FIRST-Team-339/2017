@@ -17,6 +17,7 @@ package org.usfirst.frc.team339.Hardware;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
+import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
@@ -114,7 +115,8 @@ public static Relay ringlightRelay = new Relay(0);
 // ------------------------------------
 // Single and double throw switches
 // ------------------------------------
-
+public static SingleThrowSwitch gearLimitSwitch = new SingleThrowSwitch(
+        12);// TODO port number
 // ------------------------------------
 // Gear Tooth Sensors
 // ------------------------------------
@@ -199,6 +201,7 @@ public static Potentiometer delayPot = new Potentiometer(0, 250);// TODO max
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------
+
 public static UltraSonic LeftUS = new UltraSonic(1);
 
 public static UltraSonic RightUS = new UltraSonic(2);
