@@ -235,8 +235,8 @@ private static boolean placeCenterGearPath ()
         case DRIVE_TO_GEAR_WITH_CAMERA:
             if (Hardware.imageProcessor.getNthSizeBlob(1) == null)
                 currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
-            Hardware.autoDrive.strafeToGear(.6, 25, .1, 271.8);// TODO magic
-                                                               // numbers
+            Hardware.autoDrive.strafeToGear(.6, 25, .1, 271.8, 10);// TODO magic
+                                                                   // numbers
             break;
         case DRIVE_CAREFULLY_TO_PEG:
             if ((Hardware.RightUS.getDistanceFromNearestBumper()
