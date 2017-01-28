@@ -141,7 +141,7 @@ public void autonomousPeriodic ()
     // start setup - tell the user we are beginning
     // setup
     // ---------------------------------------
-    System.out.println("Started AutonomousPeriodic().");
+    // System.out.println("Started AutonomousPeriodic().");
 
     // =========================================================
     // User code goes below here
