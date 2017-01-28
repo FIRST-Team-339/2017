@@ -261,7 +261,10 @@ public void robotInit ()
     else
         {
         }
-
+    Hardware.LeftUS.setScalingFactor(.13);
+    Hardware.LeftUS.setOffsetDistanceFromNearestBummper(0);
+    Hardware.RightUS.setScalingFactor(.13);
+    Hardware.RightUS.setOffsetDistanceFromNearestBummper(0);
     // Hardware.axisCamera
     // .writeBrightness(Hardware.MINIMUM_AXIS_CAMERA_BRIGHTNESS);
 

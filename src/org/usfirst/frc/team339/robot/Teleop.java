@@ -69,6 +69,10 @@ public static void init ()
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
 
     Hardware.tankDrive.setGear(Hardware.tankDrive.getMaxGear());
+    Hardware.LeftUS.setScalingFactor(.13);
+    Hardware.LeftUS.setOffsetDistanceFromNearestBummper(0);
+    Hardware.RightUS.setScalingFactor(.13);
+    Hardware.RightUS.setOffsetDistanceFromNearestBummper(0);
 
 
     // Hardware.mecanumDrive.setDebugState(DebugState.DEBUG_MOTOR_DATA);
@@ -84,7 +88,6 @@ public static void init ()
  */
 public static void periodic ()
 {
-
     if (Hardware.ringlightSwitch.isOnCheckNow())
         {
         Hardware.ringlightRelay.set(Relay.Value.kOn);
@@ -282,6 +285,10 @@ public static void printStatements ()
     // =================================
     // Analogs
     // =================================
+    System.out.println(
+            "Left = " + Hardware.LeftUS.getRefinedDistanceValue());
+    System.out.println(
+            "Right = " + Hardware.RightUS.getRefinedDistanceValue());
     // ---------------------------------
     // pots
     // where the pot is turned to

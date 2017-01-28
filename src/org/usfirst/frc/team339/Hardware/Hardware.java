@@ -17,6 +17,7 @@ package org.usfirst.frc.team339.Hardware;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
+import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import org.usfirst.frc.team339.Utils.Drive;
@@ -198,7 +199,9 @@ public static Potentiometer delayPot = new Potentiometer(0, 250);// TODO max
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------
+public static UltraSonic LeftUS = new UltraSonic(1);
 
+public static UltraSonic RightUS = new UltraSonic(2);
 // **********************************************************
 // roboRIO CONNECTIONS CLASSES
 // **********************************************************

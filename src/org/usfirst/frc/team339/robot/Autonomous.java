@@ -115,7 +115,7 @@ private static enum AutoProgram
 
     LEFT_PATH,
 
-    DONE
+    DELAY_AFTER_GEAR_EXODUS, DONE
     }
 
 
@@ -174,6 +174,7 @@ public static void periodic ()
         }
 
 } // end Periodic
+
 
 private static MainState currentState = MainState.INIT;
 
