@@ -194,12 +194,20 @@ private static boolean placeCenterGearPath ()
         case DELAY_BEFORE_START:
             // wait for timer to run out
             if (Hardware.autoStateTimer.get() >= delayTime)
+                {
                 currentState = MainState.DRIVE_FORWARD_TO_CENTER_SLOW;
+                Hardware.autoStateTimer.reset();
+                Hardware.autoStateTimer.start();
+                }
             break;
         case DRIVE_FORWARD_TO_CENTER_SLOW:
             // drive at our slow speed. wait a certain time. Could also check
             // distance for safety
-            currentState = MainState.DRIVE_FORWARD_TO_CENTER_MED;
+            Hardware.mecanumDrive.drive(.4, 0, 0);// TODO magic number
+            if (Hardware.autoStateTimer.get() >= .3)
+                {
+                currentState = MainState.DRIVE_FORWARD_TO_CENTER_MED;
+                }
             break;
         case DRIVE_FORWARD_TO_CENTER_MED:
             // drive at our medium speed. wait a certain time to move on.
