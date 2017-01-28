@@ -195,7 +195,9 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------
-public static UltraSonic usTest = new UltraSonic(1);
+public static UltraSonic LeftUS = new UltraSonic(1);
+
+public static UltraSonic RightUS = new UltraSonic(2);
 // **********************************************************
 // roboRIO CONNECTIONS CLASSES
 // **********************************************************
