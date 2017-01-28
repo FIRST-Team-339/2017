@@ -281,9 +281,6 @@ public static Joystick rightOperator = new Joystick(3);
 // ------------------------------------
 // Drive system
 // ------------------------------------
-public static boolean usingMecanum = false;
-
-public static boolean twoJoystickMecanum = false;
 
 public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
@@ -291,8 +288,16 @@ public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
 public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
 
-public static Drive autoDrive = new Drive(tankDrive, axisCamera,
-        imageProcessor);
+/**
+ * are we using mecanum? set false for tank drive
+ */
+public static boolean usingMecanum = true;
+
+/**
+ * are we using 2 joysticks?
+ */
+public static boolean twoJoystickControl = true;
+
 
 // -------------------
 // Assembly classes (e.g. forklift)

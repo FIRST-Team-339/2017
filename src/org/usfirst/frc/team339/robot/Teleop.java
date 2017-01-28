@@ -70,8 +70,8 @@ public static void init ()
 
     Hardware.tankDrive.setGear(Hardware.tankDrive.getMaxGear());
 
+    Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
 
-    // Hardware.mecanumDrive.setDebugState(DebugState.DEBUG_MOTOR_DATA);
 } // end Init
 
 
@@ -215,6 +215,7 @@ public static void printStatements ()
     // CAN items
     // prints value of the CAN controllers
     // =================================
+    // Hardware.CAN.printAllPDPChannels();
 
     // =================================
     // Relay
