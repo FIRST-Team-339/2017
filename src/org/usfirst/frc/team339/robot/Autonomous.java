@@ -180,7 +180,7 @@ private static MainState currentState = MainState.INIT;
 
 private static AutoProgram autoPath = AutoProgram.INIT;
 
-private static double delayTime = 0;
+private static double delayTime = 5;
 
 private static boolean placeCenterGearPath ()
 {
@@ -208,38 +208,64 @@ private static boolean placeCenterGearPath ()
             if (Hardware.autoStateTimer.get() >= .3)
                 {
                 currentState = MainState.DRIVE_FORWARD_TO_CENTER_MED;
+                Hardware.autoStateTimer.reset();
+                Hardware.autoStateTimer.start();
                 }
             break;
         case DRIVE_FORWARD_TO_CENTER_MED:
             // drive at our medium speed. wait a certain time to move on.
-            currentState = MainState.DRIVE_FORWARD_TO_CENTER;
+            Hardware.mecanumDrive.drive(.6, 0, 0);
+            if (Hardware.autoStateTimer.get() >= .3)
+                {
+                currentState = MainState.DRIVE_FORWARD_TO_CENTER;
+                Hardware.autoStateTimer.reset();
+                Hardware.autoStateTimer.start();
+                }
+
             break;
         case DRIVE_FORWARD_TO_CENTER:
             // If we see blobs, hand over control to camera, otherwise, go
             // forward. Check to make sure we haven't gone too far.
-            if (false)
+            if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
                 {
                 currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
                 }
             currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
             break;
         case DRIVE_TO_GEAR_WITH_CAMERA:
-            currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
+            if (Hardware.imageProcessor.getNthSizeBlob(1) == null)
+                currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
+            Hardware.autoDrive.strafeToGear(.6, 25, .1, 271.8, 10);// TODO magic
+                                                                   // numbers
             break;
         case DRIVE_CAREFULLY_TO_PEG:
-            currentState = MainState.WIGGLE_WIGGLE;
+            if ((Hardware.RightUS.getDistanceFromNearestBumper()
+                    + Hardware.LeftUS.getDistanceFromNearestBumper())
+                    / 2 <= 6)// desired distance from wall when we start
+                currentState = MainState.WIGGLE_WIGGLE;
             break;
         case WIGGLE_WIGGLE:
+            // Find out how to wiggle wiggle.
             currentState = MainState.WAIT_FOR_GEAR_EXODUS;
             break;
         case WAIT_FOR_GEAR_EXODUS:
-            currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
+            if (Hardware.gearLimitSwitch.isOn() == false)
+                {
+                currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
+                Hardware.autoStateTimer.reset();
+                Hardware.autoStateTimer.start();
+                }
             break;
         case DELAY_AFTER_GEAR_EXODUS:
-            currentState = MainState.DRIVE_AWAY_FROM_PEG;
+            if (Hardware.autoStateTimer.get() >= 1.5)
+                {
+                Hardware.autoDrive.resetEncoders();
+                currentState = MainState.DRIVE_AWAY_FROM_PEG;
+                }
             break;
         case DRIVE_AWAY_FROM_PEG:
-            currentState = MainState.DONE;
+            if (Hardware.autoDrive.driveInches(-36.0))
+                currentState = MainState.DONE;
             break;
         default:
         case DONE:
