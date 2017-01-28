@@ -189,16 +189,40 @@ public void initEncoders (Encoder _leftFrontEncoder,
 }
 
 /**
- * Drives a distance and
+ * Gets the averaged distance out of the four encoders
+ * 
+ * @return averaged distance after driving forwards
+ */
+public double getAveragedEncoderValues ()
+{
+    return (this.getLeftFrontEncoderDistance()
+            + this.getRightFrontEncoderDistance()
+            + this.getLeftRearEncoderDistance()
+            + this.getRightRearEncoderDistance()) / 4.0;
+}
+
+// TODO write this!
+// TODO we need to implement a drivInches for mecanum and
+// change this to driveStraightInches.
+/**
+ * Drives a distance given
  * 
  * @param inches
  * @return
  */
 public boolean driveInches (double inches)
 {
+    if (firstTimeDriveInches)
+        {
+        this.resetEncoders();
+        firstTimeDriveInches = false;
+        }
+
 
     return false;
 }
+
+private boolean firstTimeDriveInches = true;
 
 /**
  * Aligns to the low dual targets for the gear peg. This finds the
@@ -268,6 +292,7 @@ public AlignReturnType alignToGear (double relativeCenter,
 }
 
 
+// TODO we need to test this!!
 /**
  * Aligns to the gear peg WHILE driving towards it. If the transmission type
  * is Mecanum, it will STRAFE while moving forwards. If it is tank drive
