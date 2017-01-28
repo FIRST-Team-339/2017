@@ -301,9 +301,12 @@ public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
 public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
 
+private static UltraSonic rightUlt;
+
+// Change when we get the robot for mecanum and two ultrasonic.
 public static Drive autoDrive = new Drive(tankDrive, axisCamera,
         imageProcessor, leftRearEncoder, rightRearEncoder,
-        leftRearEncoder, rightRearEncoder);
+        leftRearEncoder, rightRearEncoder, rightUlt, rightUlt);
 
 // -------------------
 // Assembly classes (e.g. forklift)
