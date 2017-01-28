@@ -188,6 +188,7 @@ private static boolean placeCenterGearPath ()
         {
         case INIT:
             // zero out all the sensors, reset timers, etc.
+
             currentState = MainState.DELAY_BEFORE_START;
             break;
         case DELAY_BEFORE_START:
@@ -305,13 +306,17 @@ private static boolean leftSidePath ()
     return false;
 }
 
-
+/**
+ * reset all the sensors and timers, in preparation for an autonomous program.
+ */
 private static void initializeDriveProgram ()
 {
     Hardware.autoStateTimer.stop();
     Hardware.autoStateTimer.reset();
     Hardware.driveGyro.calibrate();
     Hardware.driveGyro.reset();
+    Hardware.autoDrive.resetEncoders();
+    Hardware.mecanumDrive.drive(0, 0, 0);
 }
 
 } // end class

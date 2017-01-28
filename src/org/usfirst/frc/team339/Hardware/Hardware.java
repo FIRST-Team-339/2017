@@ -16,6 +16,7 @@ package org.usfirst.frc.team339.Hardware;
 
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
+import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import org.usfirst.frc.team339.Utils.Drive;
@@ -187,11 +188,13 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // Gyro class
 // ------------------------------------
 public static ADXRS450_Gyro driveGyro = new ADXRS450_Gyro();
+
 // -------------------------------------
 // Potentiometers
 // -------------------------------------
 // -------------------------------------
-
+public static Potentiometer delayPot = new Potentiometer(0, 250);// TODO max
+                                                                 // degree value
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------
