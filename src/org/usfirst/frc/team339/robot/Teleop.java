@@ -286,9 +286,10 @@ public static void printStatements ()
     // Analogs
     // =================================
     System.out.println(
-            "Left = " + Hardware.LeftUS.getRefinedDistanceValue());
+            "Left = " + Hardware.LeftUS.getDistanceFromNearestBumper());
     System.out.println(
-            "Right = " + Hardware.RightUS.getRefinedDistanceValue());
+            "Right = "
+                    + Hardware.RightUS.getDistanceFromNearestBumper());
     // ---------------------------------
     // pots
     // where the pot is turned to

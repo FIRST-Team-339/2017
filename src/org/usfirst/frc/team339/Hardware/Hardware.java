@@ -199,6 +199,7 @@ public static Potentiometer delayPot = new Potentiometer(0, 250);// TODO max
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------
+
 public static UltraSonic LeftUS = new UltraSonic(1);
 
 public static UltraSonic RightUS = new UltraSonic(2);
@@ -298,9 +299,12 @@ public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
 public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
 
+private static UltraSonic rightUlt;
+
+// Change when we get the robot for mecanum and two ultrasonic.
 public static Drive autoDrive = new Drive(tankDrive, axisCamera,
         imageProcessor, leftRearEncoder, rightRearEncoder,
-        leftRearEncoder, rightRearEncoder);
+        leftRearEncoder, rightRearEncoder, rightUlt, rightUlt);
 
 // -------------------
 // Assembly classes (e.g. forklift)
