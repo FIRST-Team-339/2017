@@ -68,9 +68,9 @@ public static void init ()
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
 
     Hardware.tankDrive.setGear(Hardware.tankDrive.getMaxGear());
-    Hardware.LeftUS.setScalingFactor(.1032);
+    Hardware.LeftUS.setScalingFactor(.0774);
     Hardware.LeftUS.setOffsetDistanceFromNearestBummper(0);
-    Hardware.RightUS.setScalingFactor(.1032);
+    Hardware.RightUS.setScalingFactor(.0774);
     Hardware.RightUS.setOffsetDistanceFromNearestBummper(0);
 
     // Hardware.mecanumDrive.setDebugState(DebugState.DEBUG_MOTOR_DATA);
