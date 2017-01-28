@@ -31,6 +31,7 @@
 // ====================================================================
 package org.usfirst.frc.team339.robot;
 
+import org.usfirst.frc.team339.Hardware.Hardware;
 
 /**
  * An Autonomous class.
@@ -73,6 +74,10 @@ private static enum MainState
 
     DRIVE_FORWARD_TO_CENTER,
 
+    DRIVE_FORWARD_TO_SIDES_SLOW,
+
+    DRIVE_FORWARD_TO_SIDES_MED,
+
     DRIVE_FORWARD_TO_SIDES,
 
     TURN_TO_GEAR_PEG,
@@ -87,7 +92,11 @@ private static enum MainState
 
     DELAY_AFTER_GEAR_EXODUS,
 
+    DRIVE_AWAY_FROM_PEG,
+
     DRIVE_BACKWARDS_TO_FIRERANGE,
+
+    DRIVE_INTO_RANGE_WITH_CAMERA,
 
     ALIGN_TO_FIRE,
 
@@ -146,6 +155,7 @@ public static void periodic ()
         {
         case INIT:
             // get the auto program we want to run, get delay pot.
+            autoPath = AutoProgram.CENTER_GEAR_PLACEMENT;
             break;
         case CENTER_GEAR_PLACEMENT:
             if (placeCenterGearPath())
@@ -165,12 +175,15 @@ public static void periodic ()
 
 } // end Periodic
 
-private static MainState currentState;
+private static MainState currentState = MainState.INIT;
 
 private static AutoProgram autoPath = AutoProgram.INIT;
 
+private static double delayTime = 0;
+
 private static boolean placeCenterGearPath ()
 {
+    System.out.println("CurrentState = " + currentState);
     switch (currentState)
         {
         case INIT:
@@ -197,6 +210,25 @@ private static boolean placeCenterGearPath ()
                 {
                 currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
                 }
+            currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
+            break;
+        case DRIVE_TO_GEAR_WITH_CAMERA:
+            currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
+            break;
+        case DRIVE_CAREFULLY_TO_PEG:
+            currentState = MainState.WIGGLE_WIGGLE;
+            break;
+        case WIGGLE_WIGGLE:
+            currentState = MainState.WAIT_FOR_GEAR_EXODUS;
+            break;
+        case WAIT_FOR_GEAR_EXODUS:
+            currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
+            break;
+        case DELAY_AFTER_GEAR_EXODUS:
+            currentState = MainState.DRIVE_AWAY_FROM_PEG;
+            break;
+        case DRIVE_AWAY_FROM_PEG:
+            currentState = MainState.DONE;
             break;
         default:
         case DONE:
@@ -207,9 +239,59 @@ private static boolean placeCenterGearPath ()
 
 private static boolean rightSidePath ()
 {
+    System.out.println("Current State = " + currentState);
     switch (currentState)
         {
-
+        case INIT:
+            currentState = MainState.DELAY_BEFORE_START;
+            break;
+        case DELAY_BEFORE_START:
+            currentState = MainState.DRIVE_FORWARD_TO_SIDES_SLOW;
+            break;
+        case DRIVE_FORWARD_TO_SIDES_SLOW:
+            currentState = MainState.DRIVE_FORWARD_TO_SIDES_MED;
+            break;
+        case DRIVE_FORWARD_TO_SIDES_MED:
+            currentState = MainState.DRIVE_FORWARD_TO_SIDES;
+            break;
+        case DRIVE_FORWARD_TO_SIDES:
+            currentState = MainState.TURN_TO_GEAR_PEG;
+            break;
+        case TURN_TO_GEAR_PEG:
+            // check red or blue side for direction to turn
+            if (false)
+                currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
+            currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
+            break;
+        case DRIVE_CAREFULLY_TO_PEG:
+            currentState = MainState.WIGGLE_WIGGLE;
+            break;
+        case WIGGLE_WIGGLE:
+            currentState = MainState.WAIT_FOR_GEAR_EXODUS;
+            break;
+        case WAIT_FOR_GEAR_EXODUS:
+            currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
+            break;
+        case DELAY_AFTER_GEAR_EXODUS:
+            currentState = MainState.DRIVE_BACKWARDS_TO_FIRERANGE;
+            break;
+        case DRIVE_BACKWARDS_TO_FIRERANGE:
+            if (false)
+                currentState = MainState.DRIVE_INTO_RANGE_WITH_CAMERA;
+            currentState = MainState.ALIGN_TO_FIRE;
+            break;
+        case ALIGN_TO_FIRE:
+            if (false)
+                {
+                // align By camera, probably in a firemech
+                currentState = MainState.FIRE;
+                }
+            currentState = MainState.DONE;
+            break;
+        case FIRE:
+            currentState = MainState.DONE;
+        default:
+            currentState = MainState.DONE;
         }
     return false;
 }
@@ -223,5 +305,13 @@ private static boolean leftSidePath ()
     return false;
 }
 
+
+private static void initializeDriveProgram ()
+{
+    Hardware.autoStateTimer.stop();
+    Hardware.autoStateTimer.reset();
+    Hardware.driveGyro.reset();
+
+}
 
 } // end class

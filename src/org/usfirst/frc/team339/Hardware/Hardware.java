@@ -24,6 +24,7 @@ import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
@@ -185,7 +186,7 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // ------------------------------------
 // Gyro class
 // ------------------------------------
-
+public static ADXRS450_Gyro driveGyro = new ADXRS450_Gyro();
 // -------------------------------------
 // Potentiometers
 // -------------------------------------
@@ -305,6 +306,8 @@ public static Drive autoDrive = new Drive(tankDrive, axisCamera,
  * Default timer.
  */
 public static final Timer kilroyTimer = new Timer();
+
+public static final Timer autoStateTimer = new Timer();
 
 /**
  * Default motor safety
