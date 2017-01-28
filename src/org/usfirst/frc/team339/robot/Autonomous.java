@@ -188,12 +188,13 @@ private static boolean placeCenterGearPath ()
         {
         case INIT:
             // zero out all the sensors, reset timers, etc.
-
+            Hardware.autoStateTimer.start();
             currentState = MainState.DELAY_BEFORE_START;
             break;
         case DELAY_BEFORE_START:
             // wait for timer to run out
-            currentState = MainState.DRIVE_FORWARD_TO_CENTER_SLOW;
+            if (Hardware.autoStateTimer.get() >= delayTime)
+                currentState = MainState.DRIVE_FORWARD_TO_CENTER_SLOW;
             break;
         case DRIVE_FORWARD_TO_CENTER_SLOW:
             // drive at our slow speed. wait a certain time. Could also check
