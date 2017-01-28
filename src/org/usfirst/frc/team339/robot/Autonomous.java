@@ -180,7 +180,7 @@ private static MainState currentState = MainState.INIT;
 
 private static AutoProgram autoPath = AutoProgram.INIT;
 
-private static double delayTime = 0;
+private static double delayTime = 5;
 
 private static boolean placeCenterGearPath ()
 {
