@@ -73,7 +73,10 @@ public static void init ()
     Hardware.leftUS.setOffsetDistanceFromNearestBummper(0);
     Hardware.rightUS.setScalingFactor(.13);
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(0);
-
+    Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(1);
+    Hardware.leftUS.setNumberOfItemsToCheckBackwardForValidity(1);
+    // Hardware.LeftUS.setConfidenceCalculationsOn(false);
+    // Hardware.RightUS.setConfidenceCalculationsOn(false);
 
     // Hardware.mecanumDrive.setDebugState(DebugState.DEBUG_MOTOR_DATA);
 } // end Init
@@ -328,11 +331,12 @@ public static void printStatements ()
     // =================================
     // Analogs
     // =================================
-    System.out.println(
-            "Left = " + Hardware.leftUS.getDistanceFromNearestBumper());
-    System.out.println(
-            "Right = "
-                    + Hardware.rightUS.getDistanceFromNearestBumper());
+    System.out.println("LeftUS = "
+            + Hardware.leftUS.getDistanceFromNearestBumper());
+
+    System.out.println("RightUS = "
+            + Hardware.rightUS.getDistanceFromNearestBumper());
+
     // ---------------------------------
     // pots
     // where the pot is turned to
