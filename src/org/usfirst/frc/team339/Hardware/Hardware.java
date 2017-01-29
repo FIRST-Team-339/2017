@@ -16,6 +16,9 @@ package org.usfirst.frc.team339.Hardware;
 
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
+import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
+import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
+import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import org.usfirst.frc.team339.Utils.Drive;
@@ -114,7 +117,8 @@ public static Relay ringlightRelay = new Relay(0);
 // ------------------------------------
 // Single and double throw switches
 // ------------------------------------
-
+public static SingleThrowSwitch gearLimitSwitch = new SingleThrowSwitch(
+        5);
 // ------------------------------------
 // Gear Tooth Sensors
 // ------------------------------------
@@ -188,16 +192,21 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // ------------------------------------
 // Gyro class
 // ------------------------------------
+public static ADXRS450_Gyro driveGyro = new ADXRS450_Gyro();
 
 // -------------------------------------
 // Potentiometers
 // -------------------------------------
 // -------------------------------------
-
+public static Potentiometer delayPot = new Potentiometer(0, 270);// TODO max
+                                                                 // degree value
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------
 
+public static UltraSonic leftUS = new UltraSonic(1);
+
+public static UltraSonic rightUS = new UltraSonic(2);
 // **********************************************************
 // roboRIO CONNECTIONS CLASSES
 // **********************************************************
@@ -298,8 +307,10 @@ public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
 public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
 
+// Change when we get the robot for mecanum and two ultrasonic.
 public static Drive autoDrive = new Drive(tankDrive, axisCamera,
-        imageProcessor);
+        imageProcessor, leftRearEncoder, rightRearEncoder,
+        leftRearEncoder, rightRearEncoder, rightUS, rightUS);
 
 // -------------------
 // Assembly classes (e.g. forklift)
@@ -312,6 +323,8 @@ public static Drive autoDrive = new Drive(tankDrive, axisCamera,
  * Default timer.
  */
 public static final Timer kilroyTimer = new Timer();
+
+public static final Timer autoStateTimer = new Timer();
 
 /**
  * Default motor safety
@@ -332,6 +345,7 @@ public static final MotorSafetyHelper rightFrontMotorSafety = new MotorSafetyHel
 public static final MotorSafetyHelper leftFrontMotorSafety = new MotorSafetyHelper(
         leftFrontMotor);
 
+public static final int MINIMUM_AXIS_CAMERA_BRIGHTNESS = 6;
 
 
 } // end class
