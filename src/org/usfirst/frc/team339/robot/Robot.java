@@ -103,7 +103,7 @@ public void autonomousInit ()
     // setup
     // ---------------------------------------
     System.out.println("Started AutonousInit().");
-
+    Hardware.mecanumDrive.setFirstGearPercentage(firstGear);
     // =========================================================
     // User code goes below here
     // =========================================================
@@ -112,7 +112,7 @@ public void autonomousInit ()
     // which contains the user code.
     // -------------------------------------
     Autonomous.init();
-
+    Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
     // =========================================================
     // User code goes above here
     // =========================================================
@@ -183,7 +183,11 @@ public void disabledInit ()
     // =========================================================
     // User code goes below here
     // =========================================================
-
+    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    // Hardware.rightRearMotor.setInverted(true);
+    // Hardware.leftFrontMotor.setInverted(true);
+    // Hardware.leftRearMotor.setInverted(true);
+    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     // =========================================================
     // User code goes above here
     // =========================================================
@@ -242,7 +246,13 @@ public void robotInit ()
     // =========================================================
     Hardware.leftRearEncoder.reset();
     Hardware.rightRearEncoder.reset();
-
+    Hardware.mecanumDrive.setFirstGearPercentage(firstGear);
+    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    // Hardware.rightRearMotor.setInverted(true);
+    // Hardware.leftFrontMotor.setInverted(true);
+    // Hardware.leftRearMotor.setInverted(true);
+    Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
+    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     // -------------------------------------
     // motor initialization
     // -------------------------------------
@@ -302,8 +312,8 @@ public void robotInit ()
 // -------------------------------------------------------
 /**
  * Non-User initialization code for teleop mode should go here. Will be
- * called once when the robot enters teleop mode, and will call the Teleop
- * class's Init function, where the User code should be placed.
+ * called once when the robot enters teleop mode, and will call the
+ * Teleop class's Init function, where the User code should be placed.
  *
  * @author Bob Brown
  * @written Jan 2, 2011
@@ -317,12 +327,17 @@ public void teleopInit ()
     // setup
     // ---------------------------------------
     System.out.println("Started teleopInit().");
-
+    Hardware.mecanumDrive.setFirstGearPercentage(firstGear);
     // =========================================================
     // User code goes below here
     // =========================================================
     Teleop.init();
-
+    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    // Hardware.rightRearMotor.setInverted(true);
+    // Hardware.leftFrontMotor.setInverted(true);
+    // Hardware.leftRearMotor.setInverted(true);
+    Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
+    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     // =========================================================
     // User code goes above here
     // =========================================================
@@ -406,5 +421,6 @@ public void testPeriodic ()
 // ==========================================
 // TUNEABLES
 // ==========================================
+public static double firstGear = .7;
 
 } // end class
