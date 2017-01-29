@@ -160,9 +160,10 @@ public static void periodic ()
         {
         case INIT:
             // get the auto program we want to run, get delay pot.
+            delayTime = Hardware.delayPot.get() * (5 / 270);
             if (Hardware.driverStation.getAlliance() == Alliance.Red)
                 isRedAlliance = true;
-            autoPath = AutoProgram.CENTER_GEAR_PLACEMENT;
+            autoPath = AutoProgram.RIGHT_PATH;
             break;
         case CENTER_GEAR_PLACEMENT:
             if (placeCenterGearPath())
@@ -177,6 +178,10 @@ public static void periodic ()
                 autoPath = AutoProgram.DONE;
             break;
         case DONE:
+            Hardware.leftRearMotor.set(0);
+            Hardware.leftFrontMotor.set(0);
+            Hardware.rightRearMotor.set(0);
+            Hardware.rightFrontMotor.set(0);
             break;
         }
 
@@ -311,7 +316,7 @@ private static boolean rightSidePath ()
             currentState = MainState.TURN_TO_GEAR_PEG;
             break;
         case TURN_TO_GEAR_PEG:
-            // check red or blue side for direction to turn
+            // turn left on both red and blue
             if (false)
                 currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
             currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
@@ -351,7 +356,7 @@ private static boolean rightSidePath ()
             if (false)
                 currentState = MainState.DRIVE_INTO_RANGE_WITH_CAMERA;
             // TODO random number I selected
-            if (Hardware.autoDrive.driveInches(6))
+            if (Hardware.autoDrive.driveInches(6, .6))
                 currentState = MainState.ALIGN_TO_FIRE;
             break;
         case TURN_TO_HOPPER:
@@ -363,7 +368,8 @@ private static boolean rightSidePath ()
             break;
         case DRIVE_UP_TO_HOPPER:
             // TODO see above todo.
-            if (Hardware.autoDrive.driveInches(isRedAlliance ? 12 : 90))
+            if (Hardware.autoDrive.driveInches(isRedAlliance ? 12 : 90,
+                    .6))
                 {
                 currentState = MainState.DONE;
                 }
