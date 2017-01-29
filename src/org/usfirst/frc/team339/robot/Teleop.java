@@ -69,12 +69,12 @@ public static void init ()
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
 
     Hardware.tankDrive.setGear(Hardware.tankDrive.getMaxGear());
-    Hardware.LeftUS.setScalingFactor(.13);
-    Hardware.LeftUS.setOffsetDistanceFromNearestBummper(0);
-    Hardware.RightUS.setScalingFactor(.13);
-    Hardware.RightUS.setOffsetDistanceFromNearestBummper(0);
-    Hardware.RightUS.setNumberOfItemsToCheckBackwardForValidity(1);
-    Hardware.LeftUS.setNumberOfItemsToCheckBackwardForValidity(1);
+    Hardware.leftUS.setScalingFactor(.13);
+    Hardware.leftUS.setOffsetDistanceFromNearestBummper(0);
+    Hardware.rightUS.setScalingFactor(.13);
+    Hardware.rightUS.setOffsetDistanceFromNearestBummper(0);
+    Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(1);
+    Hardware.leftUS.setNumberOfItemsToCheckBackwardForValidity(1);
     // Hardware.LeftUS.setConfidenceCalculationsOn(false);
     // Hardware.RightUS.setConfidenceCalculationsOn(false);
 
@@ -139,15 +139,21 @@ public static void periodic ()
         turnDegrees = 90;
         isTurning = true;
         }
-    if (Hardware.rightDriver.getRawButton(2))
-        {
-        turnDegrees = -90;
-        isTurning = true;
-        }
 
     if (isTurning)
         {
         isTurning = !Hardware.autoDrive.turnDegrees(turnDegrees);
+        }
+
+    // Testing driveInches
+    if (Hardware.rightDriver.getRawButton(2))
+        {
+        isDrivingInches = true;
+        }
+
+    if (isDrivingInches)
+        {
+        Hardware.autoDrive.driveInches(24, .4);
         }
 
 
@@ -195,6 +201,39 @@ public static void periodic ()
     if (isAligning && Hardware.leftOperator.getRawButton(7))
         {
         isAligning = false;
+        isStrafingToTarget = false;
+        isDrivingInches = false;
+        isTurning = false;
+        }
+
+    // Testing strafe to target on button 8 on the RIGHT operator
+    if (Hardware.rightOperator.getRawButton(8))
+        isStrafingToTarget = true;
+
+    if (isStrafingToTarget)
+        {
+        alignValue = Hardware.autoDrive.strafeToGear(.4, .2,
+                CAMERA_ALIGN_DEADBAND, CAMERA_ALIGN_CENTER, 20);
+        if (alignValue == Drive.AlignReturnType.ALIGNED)
+            {
+            System.out.println("We are aligned!");
+            isStrafingToTarget = true;
+            }
+        else if (alignValue == Drive.AlignReturnType.MISALIGNED)
+            {
+            System.out.println("WE are NOT aligned!");
+            isStrafingToTarget = true;
+            }
+        else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
+            {
+            System.out.println("We have no blobs!");
+            isStrafingToTarget = true;
+            }
+        else if (alignValue == Drive.AlignReturnType.CLOSE_ENOUGH)
+            {
+            System.out.println("We are good to go!");
+            isStrafingToTarget = false;
+            }
         }
 
     Hardware.axisCamera
@@ -214,6 +253,10 @@ private static boolean isAligning = false;
 private static boolean isTurning = false;
 
 private static double turnDegrees = 0.0;
+
+private static boolean isStrafingToTarget = false;
+
+private static boolean isDrivingInches = false;
 
 
 
@@ -288,12 +331,12 @@ public static void printStatements ()
     // =================================
     // Analogs
     // =================================
-    System.out.println(
-            "Left US = "
-                    + Hardware.LeftUS.getDistanceFromNearestBumper());
-    System.out.println(
-            "Right US = "
-                    + Hardware.RightUS.getDistanceFromNearestBumper());
+    System.out.println("LeftUS = "
+            + Hardware.leftUS.getDistanceFromNearestBumper());
+
+    System.out.println("RightUS = "
+            + Hardware.rightUS.getDistanceFromNearestBumper());
+
     // ---------------------------------
     // pots
     // where the pot is turned to

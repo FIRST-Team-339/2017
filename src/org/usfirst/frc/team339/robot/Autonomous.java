@@ -252,8 +252,8 @@ private static boolean placeCenterGearPath ()
                                                                    // numbers
             break;
         case DRIVE_CAREFULLY_TO_PEG:
-            if ((Hardware.RightUS.getDistanceFromNearestBumper()
-                    + Hardware.LeftUS.getDistanceFromNearestBumper())
+            if ((Hardware.rightUS.getDistanceFromNearestBumper()
+                    + Hardware.leftUS.getDistanceFromNearestBumper())
                     / 2 <= 6)// desired distance from wall when we start
                 currentState = MainState.WIGGLE_WIGGLE;
             break;
@@ -277,7 +277,7 @@ private static boolean placeCenterGearPath ()
                 }
             break;
         case DRIVE_AWAY_FROM_PEG:
-            if (Hardware.autoDrive.driveInches(-36.0))
+            if (Hardware.autoDrive.driveInches(-36.0, .5))
                 currentState = MainState.DONE;
             break;
         default:
