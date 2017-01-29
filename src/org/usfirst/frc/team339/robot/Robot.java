@@ -103,7 +103,7 @@ public void autonomousInit ()
     // setup
     // ---------------------------------------
     System.out.println("Started AutonousInit().");
-
+    Hardware.mecanumDrive.setFirstGearPercentage(firstGear);
     // =========================================================
     // User code goes below here
     // =========================================================
@@ -183,6 +183,10 @@ public void disabledInit ()
     // =========================================================
     // User code goes below here
     // =========================================================
+    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    // Hardware.rightRearMotor.setInverted(true);
+    // Hardware.leftFrontMotor.setInverted(true);
+    // Hardware.leftRearMotor.setInverted(true);
 
     // =========================================================
     // User code goes above here
@@ -242,6 +246,11 @@ public void robotInit ()
     // =========================================================
     Hardware.leftRearEncoder.reset();
     Hardware.rightRearEncoder.reset();
+    Hardware.mecanumDrive.setFirstGearPercentage(firstGear);
+    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    // Hardware.rightRearMotor.setInverted(true);
+    // Hardware.leftFrontMotor.setInverted(true);
+    // Hardware.leftRearMotor.setInverted(true);
 
     // -------------------------------------
     // motor initialization
@@ -301,11 +310,15 @@ public void teleopInit ()
     // setup
     // ---------------------------------------
     System.out.println("Started teleopInit().");
-
+    Hardware.mecanumDrive.setFirstGearPercentage(firstGear);
     // =========================================================
     // User code goes below here
     // =========================================================
     Teleop.init();
+    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    // Hardware.rightRearMotor.setInverted(true);
+    // Hardware.leftFrontMotor.setInverted(true);
+    // Hardware.leftRearMotor.setInverted(true);
 
     // =========================================================
     // User code goes above here
@@ -341,6 +354,9 @@ public void teleopPeriodic ()
     Hardware.rightRearMotorSafety.feed();
     Hardware.leftFrontMotorSafety.feed();
     Hardware.rightFrontMotorSafety.feed();
+
+
+
 } // end teleopPeriodic
 
 // -------------------------------------------------------
@@ -390,5 +406,6 @@ public void testPeriodic ()
 // ==========================================
 // TUNEABLES
 // ==========================================
+public static double firstGear = .7;
 
 } // end class

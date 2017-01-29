@@ -14,12 +14,8 @@
 // ====================================================================
 package org.usfirst.frc.team339.Hardware;
 
-import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
-import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
-import org.usfirst.frc.team339.Utils.Drive;
-import org.usfirst.frc.team339.Vision.ImageProcessor;
 import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
@@ -80,16 +76,16 @@ public static boolean runningInLab = false;
 /**
  * Default motor controller.
  */
-public static TalonSRX rightRearMotor = new TalonSRX(4);// 2);
+public static TalonSRX rightRearMotor = new TalonSRX(2);// 2);
 
-public static TalonSRX rightFrontMotor = new TalonSRX(2);// 1);
+public static TalonSRX rightFrontMotor = new TalonSRX(1);// 1);
 
 /**
  * Default motor controller.
  */
 public static TalonSRX leftRearMotor = new TalonSRX(3);
 
-public static TalonSRX leftFrontMotor = new TalonSRX(1);// 4);
+public static TalonSRX leftFrontMotor = new TalonSRX(4);// 4);
 // ------------------------------------
 // Victor classes
 // ------------------------------------
@@ -202,7 +198,7 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // Axis/USB Camera class
 // -------------------------------------
 
-public static KilroyCamera axisCamera = new KilroyCamera(true);
+// public static KilroyCamera axisCamera = new KilroyCamera(true);
 
 // public static AxisCamera tempCamera = new AxisCamera("AxisCamera",
 // "10.3.39.11");
@@ -212,8 +208,8 @@ public static VisionScript visionScript = new VisionScript(
         new RemoveSmallObjectsOperator(3, true),
         new ConvexHullOperator(false));
 
-public static ImageProcessor imageProcessor = new ImageProcessor(
-        axisCamera, visionScript);
+// public static ImageProcessor imageProcessor = new ImageProcessor(
+// axisCamera, visionScript);
 // -------------------------------------
 // declare the USB camera server and the
 // USB camera it serves
@@ -250,8 +246,8 @@ public static Joystick rightDriver = new Joystick(1);
  */
 public static Joystick leftOperator = new Joystick(2);
 
-public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
-        leftOperator, 2, false);
+// public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
+// leftOperator, 2, false);
 
 
 /**
@@ -287,11 +283,12 @@ public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
 
 public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
+public static double firstGear = .7;
 
 /**
  * are we using mecanum? set false for tank drive
  */
-public static boolean usingMecanum = true;
+public static boolean isUsingMecanum = true;
 
 /**
  * are we using 2 joysticks?

@@ -17,7 +17,7 @@ public class TransmissionMecanum extends TransmissionFourWheel
 private double directionalDeadzone = 0.0;
 private double directionalXOrthogonalZone = 0.0;
 private double directionalYOrthogonalZone = 0.0;
-
+private double firstGearPercentage = 0.0;
 
 /** Sets whether or not the mecanum control joystick is reversed */
 private boolean mecanumJoystickReversed = false;
@@ -101,263 +101,207 @@ public void drive (double magnitude, double direction, double rotation,
     if (Math.abs(yValue) > directionalYOrthogonalZone
             || Math.abs(xValue) > directionalXOrthogonalZone)
         {
+        if (tempDirection > -10 && tempDirection < 10)
+            tempDirection = 0;
+        if (tempDirection > 10 && tempDirection < 30)
+            tempDirection = 20;
+        if (tempDirection > 30 && tempDirection < 50)
+            tempDirection = 40;
+        if (tempDirection > 50 && tempDirection < 70)
+            tempDirection = 60;
+        if (tempDirection > 70 && tempDirection < 90)
+            tempDirection = 80;
+        if (tempDirection > 90 && tempDirection < 110)
+            tempDirection = 100;
+        if (tempDirection > 110 && tempDirection < 130)
+            tempDirection = 120;
+        if (tempDirection > 130 && tempDirection < 150)
+            tempDirection = 140;
+        if (tempDirection > 150 && tempDirection < 170)
+            tempDirection = 160;
+        if (tempDirection > 170 && tempDirection <= 180)
+            tempDirection = 175;
+        if (tempDirection > -180 && tempDirection < -170)
+            tempDirection = 175;
+        if (tempDirection > -170 && tempDirection < -150)
+            tempDirection = -160;
+        if (tempDirection > -150 && tempDirection < -130)
+            tempDirection = -140;
+        if (tempDirection > -130 && tempDirection < -110)
+            tempDirection = -120;
+        if (tempDirection > -110 && tempDirection < -90)
+            tempDirection = -100;
+        if (tempDirection > -90 && tempDirection < -70)
+            tempDirection = -80;
+        if (tempDirection > -70 && tempDirection < -50)
+            tempDirection = -60;
+        if (tempDirection > -50 && tempDirection < -30)
+            tempDirection = -40;
+        if (tempDirection > -30 && tempDirection < -10)
+            tempDirection = -20;
 
-        if (Math.abs(tempDirection) < 105
-                && Math.abs(tempDirection) > 75
-                && tempMagnitude > 0.7)
+
+        // System.out.println("not straight strafing");
+        // Magnitude and rotation deadzones
+
+        // Deadzone for Rotation
+        // if (Math.abs(rotation) > this.getDeadbandPercentageZone() &&
+        // tempRotation > 0)
+        // {
+        // tempRotation = (tempRotation + (tempRotation *
+        // this.getDeadbandPercentageZone())) -
+        // this.getDeadbandPercentageZone();
+        // }else if (Math.abs(rotation) > this.getDeadbandPercentageZone()
+        // && tempRotation < 0)
+        // {
+        // tempRotation = (tempRotation + (tempRotation *
+        // this.getDeadbandPercentageZone())) +
+        // this.getDeadbandPercentageZone();
+        // }else
+        // {
+        // tempRotation = 0.0;
+        // }
+        if (Math.abs(tempRotation) < this
+                .getDeadbandPercentageZone())
             {
-            if (direction < 105 && direction > 75)
-                {
-                tempDirection = 90;
-                System.out.println("right");
-                }
-            else
-                {
-                tempDirection = -90;
-                System.out.println("left");
-                }
+            tempRotation = 0.0;
             }
-        else
+
+        if (Math.abs(tempMagnitude) < this
+                .getDeadbandPercentageZone())
             {
-            System.out.println("not straight strafing");
-            // Magnitude and rotation deadzones
-
-            // Deadzone for Rotation
-            // if (Math.abs(rotation) > this.getDeadbandPercentageZone() &&
-            // tempRotation > 0)
-            // {
-            // tempRotation = (tempRotation + (tempRotation *
-            // this.getDeadbandPercentageZone())) -
-            // this.getDeadbandPercentageZone();
-            // }else if (Math.abs(rotation) > this.getDeadbandPercentageZone()
-            // && tempRotation < 0)
-            // {
-            // tempRotation = (tempRotation + (tempRotation *
-            // this.getDeadbandPercentageZone())) +
-            // this.getDeadbandPercentageZone();
-            // }else
-            // {
-            // tempRotation = 0.0;
-            // }
-            if (Math.abs(tempRotation) < this
-                    .getDeadbandPercentageZone())
-                {
-                tempRotation = 0.0;
-                }
-
-            if (Math.abs(tempMagnitude) < this
-                    .getDeadbandPercentageZone())
-                {
-                tempMagnitude = 0.0;
-                }
-
-            // Deadzone for Magnitude
-            // if (Math.abs(magnitude) > this.getDeadbandPercentageZone() &&
-            // tempMagnitude > 0)
-            // {
-            // tempMagnitude = (tempMagnitude + (tempMagnitude *
-            // this.getDeadbandPercentageZone())) -
-            // this.getCurrentGearPercentage();
-            // }else
-            // {
-            // tempMagnitude = 0.0;
-            // }
-
-
-            if ((this.getDebugState() == DebugState.DEBUG_MOTOR_DATA)
-                    || (this.getDebugState() == DebugState.DEBUG_ALL))
-                {
-                System.out
-                        .println("MECANUM INPUT:\n"
-                                + "Original direction: "
-                                + direction + "\tReal direction: "
-                                + tempDirection + "\n" + "Magnitude: "
-                                + tempMagnitude
-                                + "\n" + "Rotation: " + rotation);
-                }
-
-            // limit the rotation value between -1 and +1
-            tempRotation = this.limit(rotation);
-
-            // check if the joystick is reversed
-            if (this.isMecanumJoystickReversed() == true)
-                {
-                tempRotation *= -1.0;
-                tempMagnitude *= -1.0;
-                }
-
-            /**
-             * MECANUM CONTROLS EXPLANATION
-             *
-             * First, we apply all of our deadzones and limits. What we start
-             * with
-             * is a goal vector to travel along, with a direction and a
-             * magnitude,
-             * i.e. how fast we move along it.
-             *
-             * We break this vector into its X and Y components, and send these
-             * components to their respective motors.
-             *
-             * The mecanum motors form an X pattern with the angled rollers.
-             *
-             * LEFT FRONT: \\ RIGHT FRONT: // LEFT REAR: // RIGHT REAR: \\
-             *
-             * As the "\\" wheels move forward, they go 45 degrees to the right.
-             * As
-             * the "//" wheels move forward, they go 45 degrees to the left.
-             *
-             * As an example of how the mecanum can move in any input vector,
-             * consider a goal of moving right, with a degree input of +90.0
-             * degrees.
-             *
-             * The correct input degree value, accounting for 45 degree rollers,
-             * is
-             * 135. cos(135 degrees) = -.707 sin(135 degrees) = +.707
-             *
-             * If the left front and right rear motors (\\) receive a positive
-             * value, they will move forward and to the right.
-             *
-             * If the right front and left rear motors (//) receive a negative
-             * value, they will move backwards and to the right.
-             *
-             * Since the forward and backwards movements (theoretically) cancel
-             * out,
-             * the net movement will be completely towards the right.
-             *
-             * We can also apply a rotation amount to twist the robot as it
-             * moves
-             * along the goal vector.
-             *
-             * @author Noah Golmant
-             * @written 23 July 2015
-             */
-
-            // Add 45 to account for the angle of the rollers
-            // on the mecanum wheels.
-            final double dirInRad = ((tempDirection + 45.0) * 3.14159)
-                    / 180.0;
-            final double cosD = Math.cos(dirInRad);
-            final double sinD = Math.sin(dirInRad);
-
-            // Calculate the speed to send to each motor.
-            double leftFrontSpeed = (sinD * tempMagnitude)
-                    + tempRotation;
-            double rightFrontSpeed = (cosD * tempMagnitude)
-                    - tempRotation;
-            double leftRearSpeed = (cosD * tempMagnitude)
-                    + tempRotation;
-            double rightRearSpeed = (sinD * tempMagnitude)
-                    - tempRotation;
-
-            if ((this.getDebugState() == DebugState.DEBUG_MOTOR_DATA)
-                    || (this.getDebugState() == DebugState.DEBUG_ALL))
-                {
-                System.out.println(
-                        "MECANUM OUTPUT:\n" + "LF: " + leftFrontSpeed
-                                + "\tRF: " + rightFrontSpeed + "\n"
-                                + "LR: " + leftRearSpeed + "\tRR: "
-                                + rightRearSpeed);
-                }
-
-            // limit the values to our motor range of -1..1
-            leftFrontSpeed = this.limit(leftFrontSpeed);
-            leftRearSpeed = this.limit(leftRearSpeed);
-            rightFrontSpeed = this.limit(rightFrontSpeed);
-            rightRearSpeed = this.limit(rightRearSpeed);
-
-            // scale all of the motor "send" values by our current gear and
-            // deadzone.
-            leftFrontSpeed = this.scaleJoystickValue(leftFrontSpeed);
-            leftRearSpeed = this.scaleJoystickValue(leftRearSpeed);
-            rightFrontSpeed = this.scaleJoystickValue(rightFrontSpeed);
-            rightRearSpeed = this.scaleJoystickValue(rightRearSpeed);
-
-            // finally, send the scaled values to our motors.
-            this.driveLeftMotor(leftFrontSpeed);
-            this.driveLeftRearMotor(leftRearSpeed);
-            this.driveRightMotor(rightFrontSpeed);
-            this.driveRightRearMotor(rightRearSpeed);
+            tempMagnitude = 0.0;
             }
-        }
-}
 
-public void testDrive (double direction, double magnitude,
-        double rotation)
-{
-    double tempDirection = direction, tempMagnitude = magnitude,
-            tempRotation = rotation;
+        // Deadzone for Magnitude
+        // if (Math.abs(magnitude) > this.getDeadbandPercentageZone() &&
+        // tempMagnitude > 0)
+        // {
+        // tempMagnitude = (tempMagnitude + (tempMagnitude *
+        // this.getDeadbandPercentageZone())) -
+        // this.getCurrentGearPercentage();
+        // }else
+        // {
+        // tempMagnitude = 0.0;
+        // }
 
-    // Deadzone stuff
-    if (Math.abs(tempDirection) < this.getDeadbandPercentageZone())
-        tempDirection = 0.0;
-    if (Math.abs(tempMagnitude) < this.getDeadbandPercentageZone())
-        tempMagnitude = 0.0;
-    if (Math.abs(tempRotation) < this.getDeadbandPercentageZone())
-        tempRotation = 0.0;
 
-    // Change -180 to 180 degrees to 0 to 360 degrees
-    if (tempDirection < 0)
-        {
-        tempDirection += 360;
-        }
-    tempDirection = Math.toRadians(tempDirection);
+        if ((this.getDebugState() == DebugState.DEBUG_MOTOR_DATA)
+                || (this.getDebugState() == DebugState.DEBUG_ALL))
+            {
+            System.out
+                    .println("MECANUM INPUT:\n"
+                            + "Original direction: "
+                            + direction + "\tReal direction: "
+                            + tempDirection + "\n" + "Magnitude: "
+                            + tempMagnitude
+                            + "\n" + "Rotation: " + rotation);
+            }
 
-    // If rotation is being used, lock other controls
-    if (tempRotation > 0 || tempRotation < 0)
-        {
-        this.driveLeftMotor(tempRotation);
-        this.driveRightMotor(-tempRotation);
-        this.driveLeftRearMotor(tempRotation);
-        this.driveRightRearMotor(-tempRotation);
-        // Between 0 and pi/2, use these equations
-        }
-    else if (tempDirection >= 0 && tempDirection <= Math.PI / 2.0)
-        {
-        this.driveLeftMotor(tempMagnitude);
-        this.driveRightMotor(
-                tempMagnitude * Math.cos(2 * tempRotation));
-        this.driveLeftRearMotor(
-                tempMagnitude * Math.cos(2 * tempDirection));
-        this.driveRightRearMotor(tempMagnitude);
-        // between pi/2 and pi use these equations
-        }
-    else if (tempDirection > Math.PI / 2.0 && tempDirection <= Math.PI)
-        {
-        this.driveLeftMotor(tempMagnitude
-                * Math.cos((2 * tempDirection) - (Math.PI / 2.0)));
-        this.driveRightMotor(-tempMagnitude);
-        this.driveLeftRearMotor(-tempMagnitude);
-        this.driveRightRearMotor(tempMagnitude
-                * Math.cos((2 * tempDirection) - (Math.PI / 2.0)));
-        // between pi and 2pi/3 use these equations
-        }
-    else if (tempDirection > Math.PI
-            && tempDirection <= 3 * Math.PI / 2)
-        {
-        this.driveLeftMotor(-tempMagnitude);
-        this.driveRightMotor(
-                -tempMagnitude * Math.cos(2 * tempDirection)
-                        - (Math.PI));
-        this.driveLeftRearMotor(
-                -tempMagnitude * Math.cos(2 * tempDirection)
-                        - (Math.PI));
-        this.driveRightRearMotor(-tempMagnitude);
-        // for the last quadrant use these equations
-        }
-    else if (tempDirection > 3 * Math.PI / 2
-            && tempDirection <= Math.PI * 2)
-        ;
-        {
-        this.driveLeftMotor(
-                -tempMagnitude * Math.cos(2 * tempDirection)
-                        - (3 * Math.PI / 2));
-        this.driveRightMotor(tempMagnitude);
-        this.driveLeftRearMotor(tempMagnitude);
-        this.driveRightRearMotor(
-                -tempMagnitude * Math.cos(2 * tempDirection)
-                        - (3 * Math.PI / 2));
-        }
+        // limit the rotation value between -1 and +1
+        tempRotation = this.limit(rotation);
 
+        // check if the joystick is reversed
+        if (this.isMecanumJoystickReversed() == true)
+            {
+            tempRotation *= -1.0;
+            tempMagnitude *= -1.0;
+            }
+
+        /**
+         * MECANUM CONTROLS EXPLANATION
+         *
+         * First, we apply all of our deadzones and limits. What we start
+         * with
+         * is a goal vector to travel along, with a direction and a
+         * magnitude,
+         * i.e. how fast we move along it.
+         *
+         * We break this vector into its X and Y components, and send these
+         * components to their respective motors.
+         *
+         * The mecanum motors form an X pattern with the angled rollers.
+         *
+         * LEFT FRONT: \\ RIGHT FRONT: // LEFT REAR: // RIGHT REAR: \\
+         *
+         * As the "\\" wheels move forward, they go 45 degrees to the right.
+         * As
+         * the "//" wheels move forward, they go 45 degrees to the left.
+         *
+         * As an example of how the mecanum can move in any input vector,
+         * consider a goal of moving right, with a degree input of +90.0
+         * degrees.
+         *
+         * The correct input degree value, accounting for 45 degree rollers,
+         * is
+         * 135. cos(135 degrees) = -.707 sin(135 degrees) = +.707
+         *
+         * If the left front and right rear motors (\\) receive a positive
+         * value, they will move forward and to the right.
+         *
+         * If the right front and left rear motors (//) receive a negative
+         * value, they will move backwards and to the right.
+         *
+         * Since the forward and backwards movements (theoretically) cancel
+         * out,
+         * the net movement will be completely towards the right.
+         *
+         * We can also apply a rotation amount to twist the robot as it
+         * moves
+         * along the goal vector.
+         *
+         * @author Noah Golmant
+         * @written 23 July 2015
+         */
+
+        // Add 45 to account for the angle of the rollers
+        // on the mecanum wheels.
+        final double dirInRad = ((tempDirection + 45.0) * 3.14159)
+                / 180.0;
+        final double cosD = Math.cos(dirInRad);
+        final double sinD = Math.sin(dirInRad);
+
+        // Calculate the speed to send to each motor.
+        double leftFrontSpeed = (sinD * tempMagnitude)
+                + tempRotation;
+        double rightFrontSpeed = (cosD * tempMagnitude)
+                - tempRotation;
+        double leftRearSpeed = (cosD * tempMagnitude)
+                + tempRotation;
+        double rightRearSpeed = (sinD * tempMagnitude)
+                - tempRotation;
+
+        if ((this.getDebugState() == DebugState.DEBUG_MOTOR_DATA)
+                || (this.getDebugState() == DebugState.DEBUG_ALL))
+            {
+            System.out.println(
+                    "MECANUM OUTPUT:\n" + "LF: " + leftFrontSpeed
+                            + "\tRF: " + rightFrontSpeed + "\n"
+                            + "LR: " + leftRearSpeed + "\tRR: "
+                            + rightRearSpeed);
+            }
+
+        final double gearPercentage = getFirstGearPercentage();
+        // limit the values to our motor range of -1..1
+        leftFrontSpeed = this.limit(leftFrontSpeed * gearPercentage);
+        leftRearSpeed = this.limit(leftRearSpeed * gearPercentage);
+        rightFrontSpeed = this.limit(rightFrontSpeed * gearPercentage);
+        rightRearSpeed = this.limit(rightRearSpeed * gearPercentage);
+
+        // scale all of the motor "send" values by our current gear and
+        // deadzone.
+        leftFrontSpeed = this.scaleJoystickValue(leftFrontSpeed);
+        leftRearSpeed = this.scaleJoystickValue(leftRearSpeed);
+        rightFrontSpeed = this.scaleJoystickValue(rightFrontSpeed);
+        rightRearSpeed = this.scaleJoystickValue(rightRearSpeed);
+
+        // finally, send the scaled values to our motors.
+        this.driveLeftMotor(leftFrontSpeed);
+        this.driveLeftRearMotor(leftRearSpeed);
+        this.driveRightMotor(rightFrontSpeed);
+        this.driveRightRearMotor(rightRearSpeed);
+        // }
+        }
 }
 
 /**
@@ -389,13 +333,13 @@ public boolean isMecanumJoystickReversed ()
  * we just send that "pure" degree value to account for human error in
  * joystick directional input.
  *
- * @param newDirectionalDeadzone
- *            new direction deadzone. The joystick direction values ranges
- *            from +180 to -180. 0 = forward, +90 = right, -90 = left, +/-
- *            180 = backwards
  *
- * @author Noah Golmant
- * @written 23 July 2015
+ * @author Becky Button
+ * @param directionalXOrthogonalZone
+ *            x deadband
+ * @param directionalYOrthogonalZone
+ *            y deadband
+ * @written 29 January 2017
  */
 public void setDirectionalDeadzone (double directionalXOrthogonalZone,
         double directionalYOrthogonalZone)
@@ -417,6 +361,27 @@ public void setMecanumJoystickReversed (boolean isReversed)
     this.mecanumJoystickReversed = isReversed;
 }
 
+/**
+ * set drive coefficient to change speed
+ * 
+ * @param firstGearPercentage
+ *            drive coefficient
+ * @author Becky Button
+ */
+public void setFirstGearPercentage (double firstGearPercentage)
+{
+    this.firstGearPercentage = firstGearPercentage;
+}
 
+/**
+ * get first gear percentage
+ * 
+ * @return percentage
+ * @author Becky Button
+ */
+public double getFirstGearPercentage ()
+{
+    return this.firstGearPercentage;
+}
 
 }
