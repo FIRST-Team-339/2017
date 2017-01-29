@@ -283,7 +283,7 @@ public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
 
 public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
-public static double firstGear = .7;
+
 
 /**
  * are we using mecanum? set false for tank drive

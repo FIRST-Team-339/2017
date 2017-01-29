@@ -112,7 +112,7 @@ public void autonomousInit ()
     // which contains the user code.
     // -------------------------------------
     Autonomous.init();
-
+    Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
     // =========================================================
     // User code goes above here
     // =========================================================
@@ -187,7 +187,7 @@ public void disabledInit ()
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
-
+    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     // =========================================================
     // User code goes above here
     // =========================================================
@@ -251,7 +251,8 @@ public void robotInit ()
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
-
+    Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
+    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     // -------------------------------------
     // motor initialization
     // -------------------------------------
@@ -319,7 +320,8 @@ public void teleopInit ()
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
-
+    Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
+    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     // =========================================================
     // User code goes above here
     // =========================================================

@@ -64,11 +64,11 @@ public static void init ()
     Hardware.rightFrontMotor.set(0.0);
     Hardware.leftFrontMotor.set(0.0);
 
-    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+
 
     Hardware.tankDrive.setGear(Hardware.tankDrive.getMaxGear());
 
-    Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
+
 
 } // end Init
 
