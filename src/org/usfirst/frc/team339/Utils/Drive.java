@@ -2,7 +2,6 @@ package org.usfirst.frc.team339.Utils;
 
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
-import org.usfirst.frc.team339.HardwareInterfaces.transmission.Transmission;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
@@ -54,11 +53,10 @@ private UltraSonic rightUlt = null;
  * @param imageProcessor
  *            The processor we want to use for aiming and aligning
  */
-public Drive (Transmission transmission,
+public Drive (TransmissionMecanum transmissionMecanum,
         KilroyCamera camera, ImageProcessor imageProcessor)
 {
-    if (transmission instanceof TransmissionMecanum)
-        this.transmissionMecanum = transmissionMecanum;
+    this.transmissionMecanum = transmissionMecanum;
     this.transmissionType = TransmissionType.MECANUM;
     this.camera = camera;
     this.imageProcessor = imageProcessor;
@@ -205,7 +203,8 @@ public double getAveragedEncoderValues ()
 
 // TODO Test this
 /**
- * Drives a distance given
+ * Drives a distance given. To drive backwards, give negative speed, not
+ * negative distance.
  * 
  * @param inches
  *            How far we want to go
@@ -216,7 +215,6 @@ public double getAveragedEncoderValues ()
 public boolean driveInches (double inches, double speed)
 {
     // Again, we don't know why it's going backwards...
-    double alteredSpeed = -speed;
 
     if (firstTimeDriveInches)
         {
@@ -224,7 +222,7 @@ public boolean driveInches (double inches, double speed)
         firstTimeDriveInches = false;
         }
 
-    if (Math.abs(this.getAveragedEncoderValues()) >= inches)
+    if (Math.abs(this.getAveragedEncoderValues()) >= Math.abs(inches))
         {
         if (this.transmissionType == TransmissionType.MECANUM)
             this.transmissionMecanum.drive(0.0, 0.0, 0.0);
@@ -236,7 +234,7 @@ public boolean driveInches (double inches, double speed)
     if (this.transmissionType == TransmissionType.MECANUM)
         this.transmissionMecanum.drive(speed, 0.0, 0.0);
     else
-        this.transmissionFourWheel.drive(speed, speed);
+        this.transmissionFourWheel.drive(-speed, -speed);
 
     return false;
 }
@@ -339,6 +337,10 @@ public AlignReturnType strafeToGear (double driveSpeed,
     // If we have no blobs, return so.
     if (this.imageProcessor.getNthSizeBlob(1) == null)
         return AlignReturnType.NO_BLOBS;
+
+    // If we don't have any ultrasonics in the constructor, stop aligning.
+    if (this.isUsingUltrasonics == false)
+        return AlignReturnType.ALIGNED;
 
     double distanceToCenter = this.imageProcessor
             .getPositionOfRobotToGear(
@@ -507,8 +509,8 @@ public boolean turnDegrees (double degrees)
             / 2.0;
 
     // If the arc length is equal to the amount driven, we finish
-    if (rightSideAverage >= angleInRadians * ROBOT_TURNING_RADIUS
-            || leftSideAverage >= angleInRadians * ROBOT_TURNING_RADIUS)
+    if (rightSideAverage >= angleInRadians * turningCircleRadius
+            || leftSideAverage >= angleInRadians * turningCircleRadius)
         {
         this.firstAlign = true;
         return true;
@@ -534,11 +536,22 @@ public boolean turnDegrees (double degrees)
 
 private double rotateSpeed = .6;
 
+/**
+ * Gets how fast we are rotating in turnDegrees
+ * 
+ * @return rotation speed
+ */
 public double getRotateSpeed ()
 {
     return this.rotateSpeed;
 }
 
+/**
+ * Sets how fast we should rotate in turnDegrees
+ * 
+ * @param speed
+ *            rotation speed
+ */
 public void setRotateSpeed (double speed)
 {
     this.rotateSpeed = speed;
@@ -547,11 +560,22 @@ public void setRotateSpeed (double speed)
 
 private double turningCircleRadius = 11;
 
+/**
+ * Gets the radius of the circle that the robot rotates around
+ * 
+ * @return Radius in inches
+ */
 public double getTurningCircleRadius ()
 {
     return turningCircleRadius;
 }
 
+/**
+ * Sets the radius of the circlie that the robot rotates around
+ * 
+ * @param radius
+ *            Radius in inches
+ */
 public void setTurningCircleRadius (double radius)
 {
     this.turningCircleRadius = radius;
@@ -583,17 +607,11 @@ public static enum TransmissionType
 // =====================================================================
 private TransmissionType transmissionType = null;
 
-private static final double ROTATE_SPEED = .6;
-
 /**
  * The value that the getDistance is multiplied by to get an accurate
  * distance.
  */
 private static final double DEFAULT_DISTANCE_PER_PULSE = 1.0 / 12.9375;
 
-/**
- * The radius the robot turns around, in inches. Useful for turning by degrees.
- */
-private static final double ROBOT_TURNING_RADIUS = 11.0;
 
 }
