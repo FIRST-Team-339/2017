@@ -2,6 +2,7 @@ package org.usfirst.frc.team339.Utils;
 
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
+import org.usfirst.frc.team339.HardwareInterfaces.transmission.Transmission;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
@@ -53,10 +54,11 @@ private UltraSonic rightUlt = null;
  * @param imageProcessor
  *            The processor we want to use for aiming and aligning
  */
-public Drive (TransmissionMecanum transmissionMecanum,
+public Drive (Transmission transmission,
         KilroyCamera camera, ImageProcessor imageProcessor)
 {
-    this.transmissionMecanum = transmissionMecanum;
+    if (transmission instanceof TransmissionMecanum)
+        this.transmissionMecanum = transmissionMecanum;
     this.transmissionType = TransmissionType.MECANUM;
     this.camera = camera;
     this.imageProcessor = imageProcessor;
@@ -201,23 +203,40 @@ public double getAveragedEncoderValues ()
             + this.getRightRearEncoderDistance()) / 4.0;
 }
 
-// TODO write this!
-// TODO we need to implement a drivInches for mecanum and
-// change this to driveStraightInches.
+// TODO Test this
 /**
  * Drives a distance given
  * 
  * @param inches
- * @return
+ *            How far we want to go
+ * @param speed
+ *            How fast we want to go there
+ * @return Whether or not we have finished driving yet
  */
-public boolean driveInches (double inches)
+public boolean driveInches (double inches, double speed)
 {
+    // Again, we don't know why it's going backwards...
+    double alteredSpeed = -speed;
+
     if (firstTimeDriveInches)
         {
         this.resetEncoders();
         firstTimeDriveInches = false;
         }
 
+    if (Math.abs(this.getAveragedEncoderValues()) >= inches)
+        {
+        if (this.transmissionType == TransmissionType.MECANUM)
+            this.transmissionMecanum.drive(0.0, 0.0, 0.0);
+        else
+            this.transmissionFourWheel.drive(0.0, 0.0);
+        firstTimeDriveInches = true;
+        return true;
+        }
+    if (this.transmissionType == TransmissionType.MECANUM)
+        this.transmissionMecanum.drive(speed, 0.0, 0.0);
+    else
+        this.transmissionFourWheel.drive(speed, speed);
 
     return false;
 }
@@ -499,18 +518,43 @@ public boolean turnDegrees (double degrees)
     if (adjustedDegrees < 0)
         {
         if (transmissionType == TransmissionType.TANK)
-            transmissionFourWheel.drive(ROTATE_SPEED, -ROTATE_SPEED);
+            transmissionFourWheel.drive(rotateSpeed, -rotateSpeed);
         else
-            transmissionMecanum.drive(0.0, 0.0, -ROTATE_SPEED);
+            transmissionMecanum.drive(0.0, 0.0, -rotateSpeed);
         }
     else if (adjustedDegrees > 0)
         {
         if (transmissionType == TransmissionType.TANK)
-            transmissionFourWheel.drive(-ROTATE_SPEED, ROTATE_SPEED);
+            transmissionFourWheel.drive(-rotateSpeed, rotateSpeed);
         else
-            transmissionMecanum.drive(0.0, 0.0, ROTATE_SPEED);
+            transmissionMecanum.drive(0.0, 0.0, rotateSpeed);
         }
     return false;
+}
+
+private double rotateSpeed = .6;
+
+public double getRotateSpeed ()
+{
+    return this.rotateSpeed;
+}
+
+public void setRotateSpeed (double speed)
+{
+    this.rotateSpeed = speed;
+}
+
+
+private double turningCircleRadius = 11;
+
+public double getTurningCircleRadius ()
+{
+    return turningCircleRadius;
+}
+
+public void setTurningCircleRadius (double radius)
+{
+    this.turningCircleRadius = radius;
 }
 
 private boolean firstAlign = true;
