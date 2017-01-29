@@ -73,7 +73,10 @@ public static void init ()
     Hardware.LeftUS.setOffsetDistanceFromNearestBummper(0);
     Hardware.RightUS.setScalingFactor(.13);
     Hardware.RightUS.setOffsetDistanceFromNearestBummper(0);
-
+    Hardware.RightUS.setNumberOfItemsToCheckBackwardForValidity(1);
+    Hardware.LeftUS.setNumberOfItemsToCheckBackwardForValidity(1);
+    // Hardware.LeftUS.setConfidenceCalculationsOn(false);
+    // Hardware.RightUS.setConfidenceCalculationsOn(false);
 
     // Hardware.mecanumDrive.setDebugState(DebugState.DEBUG_MOTOR_DATA);
 } // end Init
@@ -286,9 +289,10 @@ public static void printStatements ()
     // Analogs
     // =================================
     System.out.println(
-            "Left = " + Hardware.LeftUS.getDistanceFromNearestBumper());
+            "Left US = "
+                    + Hardware.LeftUS.getDistanceFromNearestBumper());
     System.out.println(
-            "Right = "
+            "Right US = "
                     + Hardware.RightUS.getDistanceFromNearestBumper());
     // ---------------------------------
     // pots

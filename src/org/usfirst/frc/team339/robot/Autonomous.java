@@ -32,6 +32,7 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 /**
  * An Autonomous class.
@@ -94,6 +95,10 @@ private static enum MainState
 
     DRIVE_AWAY_FROM_PEG,
 
+    TURN_TO_HOPPER,
+
+    DRIVE_UP_TO_HOPPER,
+
     DRIVE_BACKWARDS_TO_FIRERANGE,
 
     DRIVE_INTO_RANGE_WITH_CAMERA,
@@ -155,6 +160,8 @@ public static void periodic ()
         {
         case INIT:
             // get the auto program we want to run, get delay pot.
+            if (Hardware.driverStation.getAlliance() == Alliance.Red)
+                isRedAlliance = true;
             autoPath = AutoProgram.CENTER_GEAR_PLACEMENT;
             break;
         case CENTER_GEAR_PLACEMENT:
@@ -181,6 +188,12 @@ private static MainState currentState = MainState.INIT;
 private static AutoProgram autoPath = AutoProgram.INIT;
 
 private static double delayTime = 5;
+
+private static boolean isRedAlliance = false;
+
+private static boolean goForFire = false;
+
+private static boolean goForHopper = false;
 
 private static boolean placeCenterGearPath ()
 {
@@ -280,10 +293,13 @@ private static boolean rightSidePath ()
     switch (currentState)
         {
         case INIT:
+            Hardware.autoStateTimer.reset();
+            Hardware.autoStateTimer.start();
             currentState = MainState.DELAY_BEFORE_START;
             break;
         case DELAY_BEFORE_START:
-            currentState = MainState.DRIVE_FORWARD_TO_SIDES_SLOW;
+            if (Hardware.autoStateTimer.get() > delayTime)
+                currentState = MainState.DRIVE_FORWARD_TO_SIDES_SLOW;
             break;
         case DRIVE_FORWARD_TO_SIDES_SLOW:
             currentState = MainState.DRIVE_FORWARD_TO_SIDES_MED;
@@ -300,6 +316,12 @@ private static boolean rightSidePath ()
                 currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
             currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
             break;
+        case DRIVE_TO_GEAR_WITH_CAMERA:
+            if (false)
+                {
+                currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
+                }
+            break;
         case DRIVE_CAREFULLY_TO_PEG:
             currentState = MainState.WIGGLE_WIGGLE;
             break;
@@ -310,13 +332,41 @@ private static boolean rightSidePath ()
             currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
             break;
         case DELAY_AFTER_GEAR_EXODUS:
-            currentState = MainState.DRIVE_BACKWARDS_TO_FIRERANGE;
+            currentState = MainState.DRIVE_AWAY_FROM_PEG;
             break;
+        case DRIVE_AWAY_FROM_PEG:
+            if (isRedAlliance && goForFire)
+                {
+                currentState = MainState.DRIVE_BACKWARDS_TO_FIRERANGE;
+                }
+            else if (goForHopper)
+                {
+                currentState = MainState.TURN_TO_HOPPER;
+                }
+            else
+                {
+                currentState = MainState.DONE;
+                }
         case DRIVE_BACKWARDS_TO_FIRERANGE:
             if (false)
                 currentState = MainState.DRIVE_INTO_RANGE_WITH_CAMERA;
-            currentState = MainState.ALIGN_TO_FIRE;
+            // TODO random number I selected
+            if (Hardware.autoDrive.driveInches(6))
+                currentState = MainState.ALIGN_TO_FIRE;
             break;
+        case TURN_TO_HOPPER:
+            // TODO random numbers I selected
+            if (Hardware.autoDrive.turnDegrees(isRedAlliance ? 12 : 90))
+                {
+                currentState = MainState.DRIVE_UP_TO_HOPPER;
+                }
+            break;
+        case DRIVE_UP_TO_HOPPER:
+            // TODO see above todo.
+            if (Hardware.autoDrive.driveInches(isRedAlliance ? 12 : 90))
+                {
+                currentState = MainState.DONE;
+                }
         case ALIGN_TO_FIRE:
             if (false)
                 {
@@ -327,6 +377,7 @@ private static boolean rightSidePath ()
             break;
         case FIRE:
             currentState = MainState.DONE;
+            break;
         default:
             currentState = MainState.DONE;
         }
