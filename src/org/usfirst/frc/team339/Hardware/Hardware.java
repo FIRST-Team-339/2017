@@ -14,12 +14,22 @@
 // ====================================================================
 package org.usfirst.frc.team339.Hardware;
 
+<<<<<<< HEAD
+=======
+import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
+import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
+import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
+import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
+import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
@@ -28,6 +38,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
+
 
 // -------------------------------------------------------
 /**
@@ -107,7 +118,8 @@ public static Relay ringlightRelay = new Relay(0);
 // ------------------------------------
 // Single and double throw switches
 // ------------------------------------
-
+public static SingleThrowSwitch gearLimitSwitch = new SingleThrowSwitch(
+        5);
 // ------------------------------------
 // Gear Tooth Sensors
 // ------------------------------------
@@ -181,16 +193,21 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // ------------------------------------
 // Gyro class
 // ------------------------------------
+public static ADXRS450_Gyro driveGyro = new ADXRS450_Gyro();
 
 // -------------------------------------
 // Potentiometers
 // -------------------------------------
 // -------------------------------------
-
+public static Potentiometer delayPot = new Potentiometer(0, 270);// TODO max
+                                                                 // degree value
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------
 
+public static UltraSonic leftUS = new UltraSonic(1);
+
+public static UltraSonic rightUS = new UltraSonic(2);
 // **********************************************************
 // roboRIO CONNECTIONS CLASSES
 // **********************************************************
@@ -198,22 +215,39 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // Axis/USB Camera class
 // -------------------------------------
 
+<<<<<<< HEAD
 // public static KilroyCamera axisCamera = new KilroyCamera(true);
+=======
 
-// public static AxisCamera tempCamera = new AxisCamera("AxisCamera",
-// "10.3.39.11");
+public static UsbCamera cam0 = new UsbCamera("cam0", 0);
+public static UsbCamera cam1 = new UsbCamera("cam1", 1);
+
+//Used by the USB Cameras in robot init to set their FPS's
+public final static int USB_FPS = 15;
+
+public static KilroyCamera axisCamera = new KilroyCamera(true);
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
+
+//Used by the Axis Camera in robot init to limit its FPS
+public final static int AXIS_FPS = 15;
 
 public static VisionScript visionScript = new VisionScript(
         new HSLColorThresholdOperator(55, 147, 14, 255, 78, 255),
         new RemoveSmallObjectsOperator(3, true),
         new ConvexHullOperator(false));
 
+<<<<<<< HEAD
 // public static ImageProcessor imageProcessor = new ImageProcessor(
 // axisCamera, visionScript);
 // -------------------------------------
 // declare the USB camera server and the
 // USB camera it serves
 // -------------------------------------
+=======
+public static ImageProcessor imageProcessor = new ImageProcessor(
+        axisCamera, visionScript);
+
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
 // **********************************************************
 // DRIVER STATION CLASSES
@@ -284,6 +318,7 @@ public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
 public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
 
+<<<<<<< HEAD
 
 /**
  * are we using mecanum? set false for tank drive
@@ -295,6 +330,12 @@ public static boolean isUsingMecanum = true;
  */
 public static boolean twoJoystickControl = true;
 
+=======
+// Change when we get the robot for mecanum and two ultrasonic.
+public static Drive autoDrive = new Drive(tankDrive, axisCamera,
+        imageProcessor, leftRearEncoder, rightRearEncoder,
+        leftRearEncoder, rightRearEncoder, rightUS, rightUS);
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
 // -------------------
 // Assembly classes (e.g. forklift)
@@ -307,6 +348,8 @@ public static boolean twoJoystickControl = true;
  * Default timer.
  */
 public static final Timer kilroyTimer = new Timer();
+
+public static final Timer autoStateTimer = new Timer();
 
 /**
  * Default motor safety
@@ -328,5 +371,6 @@ public static final MotorSafetyHelper leftFrontMotorSafety = new MotorSafetyHelp
         leftFrontMotor);
 
 public static final int MINIMUM_AXIS_CAMERA_BRIGHTNESS = 6;
+
 
 } // end class
