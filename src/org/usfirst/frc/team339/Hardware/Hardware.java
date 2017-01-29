@@ -14,14 +14,9 @@
 // ====================================================================
 package org.usfirst.frc.team339.Hardware;
 
-<<<<<<< HEAD
-=======
-import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
-import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
 import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
->>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import org.usfirst.frc.team339.Vision.VisionScript;
@@ -38,7 +33,6 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
-
 
 // -------------------------------------------------------
 /**
@@ -87,16 +81,16 @@ public static boolean runningInLab = false;
 /**
  * Default motor controller.
  */
-public static TalonSRX rightRearMotor = new TalonSRX(2);// 2);
+public static TalonSRX rightRearMotor = new TalonSRX(4);// 2);
 
-public static TalonSRX rightFrontMotor = new TalonSRX(1);// 1);
+public static TalonSRX rightFrontMotor = new TalonSRX(2);// 1);
 
 /**
  * Default motor controller.
  */
 public static TalonSRX leftRearMotor = new TalonSRX(3);
 
-public static TalonSRX leftFrontMotor = new TalonSRX(4);// 4);
+public static TalonSRX leftFrontMotor = new TalonSRX(1);// 4);
 // ------------------------------------
 // Victor classes
 // ------------------------------------
@@ -215,9 +209,6 @@ public static UltraSonic rightUS = new UltraSonic(2);
 // Axis/USB Camera class
 // -------------------------------------
 
-<<<<<<< HEAD
-// public static KilroyCamera axisCamera = new KilroyCamera(true);
-=======
 
 public static UsbCamera cam0 = new UsbCamera("cam0", 0);
 public static UsbCamera cam1 = new UsbCamera("cam1", 1);
@@ -226,7 +217,6 @@ public static UsbCamera cam1 = new UsbCamera("cam1", 1);
 public final static int USB_FPS = 15;
 
 public static KilroyCamera axisCamera = new KilroyCamera(true);
->>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
 //Used by the Axis Camera in robot init to limit its FPS
 public final static int AXIS_FPS = 15;
@@ -236,18 +226,12 @@ public static VisionScript visionScript = new VisionScript(
         new RemoveSmallObjectsOperator(3, true),
         new ConvexHullOperator(false));
 
-<<<<<<< HEAD
-// public static ImageProcessor imageProcessor = new ImageProcessor(
-// axisCamera, visionScript);
+public static ImageProcessor imageProcessor = new ImageProcessor(
+ axisCamera, visionScript);
 // -------------------------------------
 // declare the USB camera server and the
 // USB camera it serves
 // -------------------------------------
-=======
-public static ImageProcessor imageProcessor = new ImageProcessor(
-        axisCamera, visionScript);
-
->>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
 // **********************************************************
 // DRIVER STATION CLASSES
@@ -318,7 +302,11 @@ public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
 public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
 
-<<<<<<< HEAD
+// Change when we get the robot for mecanum and two ultrasonic.
+
+public static Drive autoDrive = new Drive(tankDrive, axisCamera,
+        imageProcessor, leftRearEncoder, rightRearEncoder,
+        leftRearEncoder, rightRearEncoder, rightUS, rightUS);
 
 /**
  * are we using mecanum? set false for tank drive
@@ -330,12 +318,6 @@ public static boolean isUsingMecanum = true;
  */
 public static boolean twoJoystickControl = true;
 
-=======
-// Change when we get the robot for mecanum and two ultrasonic.
-public static Drive autoDrive = new Drive(tankDrive, axisCamera,
-        imageProcessor, leftRearEncoder, rightRearEncoder,
-        leftRearEncoder, rightRearEncoder, rightUS, rightUS);
->>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
 // -------------------
 // Assembly classes (e.g. forklift)
@@ -371,6 +353,5 @@ public static final MotorSafetyHelper leftFrontMotorSafety = new MotorSafetyHelp
         leftFrontMotor);
 
 public static final int MINIMUM_AXIS_CAMERA_BRIGHTNESS = 6;
-
 
 } // end class

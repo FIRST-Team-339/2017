@@ -77,6 +77,7 @@ public static void init ()
     // Hardware.RightUS.setConfidenceCalculationsOn(false);
 
 
+
 } // end Init
 
 /**
@@ -89,7 +90,6 @@ public static void init ()
 
 public static void periodic ()
 {
-<<<<<<< HEAD
 
     // if (Hardware.ringlightSwitch.isOnCheckNow())
     // {
@@ -99,16 +99,6 @@ public static void periodic ()
     // {
     // Hardware.ringlightRelay.set(Relay.Value.kOff);
     // }
-=======
-    if (Hardware.ringlightSwitch.isOnCheckNow())
-        {
-        Hardware.ringlightRelay.set(Relay.Value.kOn);
-        }
-    else
-        {
-        Hardware.ringlightRelay.set(Relay.Value.kOff);
-        }
->>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
     // Print out any data we want from the hardware elements.
     printStatements();
@@ -128,25 +118,37 @@ public static void periodic ()
         }
 
 
-<<<<<<< HEAD
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     if (Hardware.isUsingMecanum == true
             && Hardware.twoJoystickControl == false)
-=======
-    if (!isAligning)
-        if (Hardware.usingMecanum == true)
-            {
-            Hardware.mecanumDrive.drive(
-                    Hardware.rightDriver.getMagnitude(),
-                    Hardware.rightDriver.getDirectionDegrees(),
-                    rotationValue);
-            }
-        else
-            {
-            Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
-                    Hardware.leftDriver.getY());
-            }
+        {
+        Hardware.mecanumDrive.drive(Hardware.rightDriver.getMagnitude(),
+                Hardware.rightDriver.getDirectionDegrees(),
+                rotationValue, Hardware.rightDriver.getY(),
+                Hardware.rightDriver.getX());
+        }
+    else if (Hardware.isUsingMecanum == true
+            && Hardware.twoJoystickControl == true)
+        {
+        Hardware.mecanumDrive.drive(Hardware.rightDriver.getMagnitude(),
+                Hardware.rightDriver.getDirectionDegrees(),
+                Hardware.leftDriver.getX(),
+                Hardware.rightDriver.getY(),
+                Hardware.rightDriver.getX());
+        }
+    else
+        {
+        Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
+                Hardware.leftDriver.getY());
+        }
+    System.out.println(Hardware.rightDriver.getDirectionDegrees());
+    // System.out.println(Hardware.rightDriver.getTwist());
+    // System.out.println(Hardware.rightDriver.getMagnitude());
 
+    // Print out any data we want from the hardware elements.
+    printStatements();
+    // Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
+    // Hardware.leftDriver.getY());
 
     // Testing turn by degrees
     if (Hardware.leftDriver.getRawButton(2))
@@ -172,37 +174,19 @@ public static void periodic ()
         }
 
 
-    // -----------------------------------------------------------------
 
 
-    // =================================================================
-    // Camera Code
-    // =================================================================
 
-    // Starts the aligning process with button 8 on the left operator
-    if (Hardware.leftOperator.getRawButton(8))
->>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
-        {
-        Hardware.mecanumDrive.drive(Hardware.rightDriver.getMagnitude(),
-                Hardware.rightDriver.getDirectionDegrees(),
-                rotationValue, Hardware.rightDriver.getY(),
-                Hardware.rightDriver.getX());
-        }
-    else if (Hardware.isUsingMecanum == true
-            && Hardware.twoJoystickControl == true)
-        {
-        Hardware.mecanumDrive.drive(Hardware.rightDriver.getMagnitude(),
-                Hardware.rightDriver.getDirectionDegrees(),
-                Hardware.leftDriver.getX(),
-                Hardware.rightDriver.getY(),
-                Hardware.rightDriver.getX());
-        }
-    else
-        {
-<<<<<<< HEAD
-        Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
-                Hardware.leftDriver.getY());
-=======
+} // end Periodic
+
+static double rotationValue = 0.0;
+
+// private static boolean isSpeedTesting = false;
+
+
+public static void alignToGearPeg ()
+{
+
         isAligning = false;
         isStrafingToTarget = false;
         isDrivingInches = false;
@@ -237,27 +221,20 @@ public static void periodic ()
             System.out.println("We are good to go!");
             isStrafingToTarget = false;
             }
->>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
         }
-    System.out.println(Hardware.rightDriver.getDirectionDegrees());
-    // System.out.println(Hardware.rightDriver.getTwist());
-    // System.out.println(Hardware.rightDriver.getMagnitude());
 
-    // Print out any data we want from the hardware elements.
-    printStatements();
-    // Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
-    // Hardware.leftDriver.getY());
+    Hardware.axisCamera
+            .takeSinglePicture(Hardware.leftOperator.getRawButton(8));
 
 
+}
 
 
+    // -----------------------------------------------------------------
 } // end Periodic
 
-static double rotationValue = 0.0;
+private static double rotationValue = 0.0;
 
-<<<<<<< HEAD
-// private static boolean isSpeedTesting = false;
-=======
 private static Drive.AlignReturnType alignValue = Drive.AlignReturnType.MISALIGNED;
 
 private static boolean isAligning = false;
@@ -270,14 +247,8 @@ private static boolean isStrafingToTarget = false;
 
 private static boolean isDrivingInches = false;
 
->>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
 
-public static void alignToGearPeg ()
-{
-
-
-}
 
 /**
  * stores print statements for future use in the print "bank", statements
@@ -350,15 +321,13 @@ public static void printStatements ()
     // =================================
     // Analogs
     // =================================
-<<<<<<< HEAD
 
-=======
+
     System.out.println("LeftUS = "
             + Hardware.leftUS.getDistanceFromNearestBumper());
 
     System.out.println("RightUS = "
             + Hardware.rightUS.getDistanceFromNearestBumper());
->>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
     // ---------------------------------
     // pots
