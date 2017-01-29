@@ -24,6 +24,8 @@ import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
+
+import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
@@ -32,6 +34,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
+
 
 // -------------------------------------------------------
 /**
@@ -202,10 +205,17 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // Axis/USB Camera class
 // -------------------------------------
 
+
+public static UsbCamera cam0 = new UsbCamera("cam0", 0);
+public static UsbCamera cam1 = new UsbCamera("cam1", 1);
+
+//Used by the USB Cameras in robot init to set their FPS's
+public final static int USB_FPS = 15;
+
 public static KilroyCamera axisCamera = new KilroyCamera(true);
 
-// public static AxisCamera tempCamera = new AxisCamera("AxisCamera",
-// "10.3.39.11");
+//Used by the Axis Camera in robot init to limit its FPS
+public final static int AXIS_FPS = 15;
 
 public static VisionScript visionScript = new VisionScript(
         new HSLColorThresholdOperator(55, 147, 14, 255, 78, 255),
@@ -214,10 +224,7 @@ public static VisionScript visionScript = new VisionScript(
 
 public static ImageProcessor imageProcessor = new ImageProcessor(
         axisCamera, visionScript);
-// -------------------------------------
-// declare the USB camera server and the
-// USB camera it serves
-// -------------------------------------
+
 
 // **********************************************************
 // DRIVER STATION CLASSES
@@ -325,6 +332,6 @@ public static final MotorSafetyHelper rightFrontMotorSafety = new MotorSafetyHel
 public static final MotorSafetyHelper leftFrontMotorSafety = new MotorSafetyHelper(
         leftFrontMotor);
 
-public static final int MINIMUM_AXIS_CAMERA_BRIGHTNESS = 6;
+
 
 } // end class
