@@ -62,6 +62,11 @@ public void drive (double magnitude, double direction)
     this.drive(magnitude, direction, 0.0, 0.0, 0.0);
 }
 
+public void drive(double magnitude, double direction, double rotation)
+{
+	this.drive(magnitude, direction, rotation, 0.0,0.0);
+}
+
 /**
  * Drives the transmission in a four wheel drive . rightJoystickVal controls
  * both right motors, and vice versa for the left. It scales it according to

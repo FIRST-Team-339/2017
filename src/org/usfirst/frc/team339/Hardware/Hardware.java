@@ -14,11 +14,15 @@
 // ====================================================================
 package org.usfirst.frc.team339.Hardware;
 
+import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
 import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
+import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
+import org.usfirst.frc.team339.Utils.Drive;
+import org.usfirst.frc.team339.Vision.ImageProcessor;
 import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
@@ -264,8 +268,8 @@ public static Joystick rightDriver = new Joystick(1);
  */
 public static Joystick leftOperator = new Joystick(2);
 
-// public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
-// leftOperator, 2, false);
+public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
+        leftOperator, 2, false);
 
 
 /**
@@ -295,7 +299,6 @@ public static Joystick rightOperator = new Joystick(3);
 // ------------------------------------
 // Drive system
 // ------------------------------------
-
 public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
 
@@ -317,7 +320,6 @@ public static boolean isUsingMecanum = true;
  * are we using 2 joysticks?
  */
 public static boolean twoJoystickControl = true;
-
 
 // -------------------
 // Assembly classes (e.g. forklift)

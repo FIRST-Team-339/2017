@@ -192,4 +192,10 @@ public void stopMotor ()
     // TODO Auto-generated method stub
 
 }
+
+@Override
+public void set(double arg0, byte arg1) {
+	// TODO Auto-generated method stub
+	
+}
 } // end class
