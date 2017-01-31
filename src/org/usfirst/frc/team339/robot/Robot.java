@@ -60,7 +60,6 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
-
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
@@ -80,7 +79,8 @@ import edu.wpi.first.wpilibj.Relay;
  * @author Bob Brown
  * @written Jan 2, 2011 -------------------------------------------------------
  */
-public class Robot extends IterativeRobot {
+public class Robot extends IterativeRobot
+{
 
 // =================================================
 // private data for the class
@@ -96,7 +96,8 @@ public class Robot extends IterativeRobot {
  *          -------------------------------------------------------
  */
 @Override
-	public void autonomousInit() {
+public void autonomousInit ()
+{
     // ---------------------------------------
     // start setup - tell the user we are beginning
     // setup
@@ -124,10 +125,10 @@ public class Robot extends IterativeRobot {
 
 // -------------------------------------------------------
 /**
-	 * Non-User Periodic code for autonomous mode should go here. Will be called
-	 * periodically at a regular rate while the robot is in autonomous mode.
-	 * This in turn calls the Autonomous class's Periodic function, which is
-	 * where the user code should be placed.
+ * Non-User Periodic code for autonomous mode should go here. Will be called
+ * periodically at a regular rate while the robot is in autonomous mode.
+ * This in turn calls the Autonomous class's Periodic function, which is
+ * where the user code should be placed.
  *
  * @author Bob Brown
  * @written Jan 2, 2011
@@ -171,7 +172,8 @@ public void autonomousPeriodic ()
  *          -------------------------------------------------------
  */
 @Override
-	public void disabledInit() {
+public void disabledInit ()
+{
     // ---------------------------------------
     // start setup - tell the user we are beginning
     // setup
@@ -209,7 +211,8 @@ public void autonomousPeriodic ()
  *          -------------------------------------------------------
  */
 @Override
-	public void disabledPeriodic() {
+public void disabledPeriodic ()
+{
     // -------------------------------------
     // Watch dog code used to go here.
     // -------------------------------------
@@ -233,7 +236,8 @@ public void autonomousPeriodic ()
  *          -------------------------------------------------------
  */
 @Override
-	public void robotInit() {
+public void robotInit ()
+{
     // -------------------------------------
     // Watch dog code used to go here.
     // -------------------------------------
@@ -260,36 +264,37 @@ public void autonomousPeriodic ()
 
     // Hardware.rightFrontMotor.setInverted(true);
 
-		if (Hardware.runningInLab == true) {
-		} else {
-		}
+    if (Hardware.runningInLab == true)
+        {
+        }
+    else
+        {
+        }
 
-		// -------------------------------------
-		// Camera initialization
-		// -------------------------------------
+    // -------------------------------------
+    // Camera initialization
+    // -------------------------------------
 
-		// Sends video from both USB Cameras to the Smart Dashboard
-		// -last edited on 28 Jan 2017 by Cole Ramos
-		CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
-		CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
+    // Sends video from both USB Cameras to the Smart Dashboard
+    // -last edited on 28 Jan 2017 by Cole Ramos
+    CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
+    CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
+    CameraServer.getInstance().addAxisCamera("10.3.39.11");
+    // Sets the [max?] FPS's for the USB Cameras. The FPS will generally
+    // vary between -1 and +1
+    // this amount.
+    // -last edited on 28 Jan 2017 by Cole Ramos
+    Hardware.cam0.setFPS(Hardware.USB_FPS);
+    Hardware.cam1.setFPS(Hardware.USB_FPS);
 
-		// Sets the [max?] FPS's for the USB Cameras. The FPS will generally
-		// vary between -1 and +1
-		// this amount.
-		// -last edited on 28 Jan 2017 by Cole Ramos
-		Hardware.cam0.setFPS(Hardware.USB_FPS);
-		Hardware.cam1.setFPS(Hardware.USB_FPS);
-
-		// Sets the max FPS of the Axis Camera; also changes the FPS in the
-		// firmware/ web browser
-		// of the Axis Camera. If the FPS is not set in the code, the firmware
-		// will default to unlimited.
-		Hardware.axisCamera.writeMaxFPS(Hardware.AXIS_FPS);
+    // Sets the max FPS of the Axis Camera; also changes the FPS in the
+    // firmware/ web browser
+    // of the Axis Camera. If the FPS is not set in the code, the firmware
+    // will default to unlimited.
+    Hardware.axisCamera.writeMaxFPS(Hardware.AXIS_FPS);
 
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
-
-
 
     // =========================================================
     // User code goes above here
@@ -298,7 +303,8 @@ public void autonomousPeriodic ()
     // done setup - tell the user we are complete
     // setup
     // ---------------------------------------
-		System.out.println("Kilroy XVIII is started.  All hardware items created.");
+    System.out.println(
+            "Kilroy XVIII is started.  All hardware items created.");
     System.out.println();
     System.out.println();
 } // end robotInit
@@ -314,7 +320,8 @@ public void autonomousPeriodic ()
  *          -------------------------------------------------------
  */
 @Override
-	public void teleopInit() {
+public void teleopInit ()
+{
     // ---------------------------------------
     // start setup - tell the user we are beginning
     // setup
@@ -343,16 +350,17 @@ public void autonomousPeriodic ()
 
 // -------------------------------------------------------
 /**
-	 * Non-User Periodic code for teleop mode should go here. Will be called
-	 * periodically at a regular rate while the robot is in teleop mode, and
-	 * will in turn call the Teleop class's Periodic function.
+ * Non-User Periodic code for teleop mode should go here. Will be called
+ * periodically at a regular rate while the robot is in teleop mode, and
+ * will in turn call the Teleop class's Periodic function.
  *
  * @author Bob Brown
  * @written Jan 2, 2011
  *          -------------------------------------------------------
  */
 @Override
-	public void teleopPeriodic() {
+public void teleopPeriodic ()
+{
     // -------------------------------------
     // Call the Teleop class's Periodic function,
     // which contains the user code.
@@ -364,22 +372,20 @@ public void autonomousPeriodic ()
     Hardware.rightRearMotorSafety.feed();
     Hardware.leftFrontMotorSafety.feed();
     Hardware.rightFrontMotorSafety.feed();
-
-
-
 } // end teleopPeriodic
 
 // -------------------------------------------------------
 /**
-	 * Initialization code for test mode should go here. Will be called once
-	 * when the robot enters test mode.
+ * Initialization code for test mode should go here. Will be called once
+ * when the robot enters test mode.
  *
  * @author Bob Brown
  * @written Jan 2, 2015
  *          -------------------------------------------------------
  */
 @Override
-	public void testInit() {
+public void testInit ()
+{
     // =========================================================
     // User code goes below here
     // =========================================================
@@ -392,15 +398,16 @@ public void autonomousPeriodic ()
 
 // -------------------------------------------------------
 /**
-	 * Periodic code for test mode should go here. Will be called periodically
-	 * at a regular rate while the robot is in test mode.
+ * Periodic code for test mode should go here. Will be called periodically
+ * at a regular rate while the robot is in test mode.
  *
  * @author Bob Brown
  * @written Jan 2, 2015
  *          -------------------------------------------------------
  */
 @Override
-	public void testPeriodic() {
+public void testPeriodic ()
+{
     // =========================================================
     // User code goes below here
     // =========================================================

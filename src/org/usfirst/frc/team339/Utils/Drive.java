@@ -225,14 +225,14 @@ public boolean driveInches (double inches, double speed)
     if (Math.abs(this.getAveragedEncoderValues()) >= Math.abs(inches))
         {
         if (this.transmissionType == TransmissionType.MECANUM)
-            this.transmissionMecanum.drive(0.0, 0.0, 0.0);
+            this.transmissionMecanum.drive(0.0, 0.0, 0.0, 0, 0);
         else
             this.transmissionFourWheel.drive(0.0, 0.0);
         firstTimeDriveInches = true;
         return true;
         }
     if (this.transmissionType == TransmissionType.MECANUM)
-        this.transmissionMecanum.drive(speed, 0.0, 0.0);
+        this.transmissionMecanum.drive(speed, 0.0, 0.0, 0, 0);
     else
         this.transmissionFourWheel.drive(-speed, -speed);
 
@@ -357,7 +357,7 @@ public AlignReturnType strafeToGear (double driveSpeed,
             return AlignReturnType.CLOSE_ENOUGH;
 
         if (this.transmissionType == TransmissionType.MECANUM)
-            transmissionMecanum.drive(driveSpeed, 0.0, 0.0);
+            transmissionMecanum.drive(driveSpeed, 0.0, 0.0, 0, 0);
         else if (this.transmissionType == TransmissionType.TANK)
             transmissionFourWheel.drive(driveSpeed, driveSpeed);
         return AlignReturnType.ALIGNED;
@@ -366,7 +366,8 @@ public AlignReturnType strafeToGear (double driveSpeed,
     if (distanceToCenter > 0)
         {
         if (this.transmissionType == TransmissionType.MECANUM)
-            this.transmissionMecanum.drive(driveSpeed, alignVar, 0);
+            this.transmissionMecanum.drive(driveSpeed, alignVar, 0, 0,
+                    0);
         else if (this.transmissionType == TransmissionType.TANK)
             this.transmissionFourWheel.drive(driveSpeed - alignVar,
                     driveSpeed + alignVar);
@@ -374,7 +375,8 @@ public AlignReturnType strafeToGear (double driveSpeed,
     else if (distanceToCenter < 0)
         {
         if (this.transmissionType == TransmissionType.MECANUM)
-            this.transmissionMecanum.drive(driveSpeed, -alignVar, 0.0);
+            this.transmissionMecanum.drive(driveSpeed, -alignVar, 0.0,
+                    0, 0);
         else if (this.transmissionType == TransmissionType.TANK)
             this.transmissionFourWheel.drive(driveSpeed + alignVar,
                     driveSpeed - alignVar);
@@ -522,14 +524,14 @@ public boolean turnDegrees (double degrees)
         if (transmissionType == TransmissionType.TANK)
             transmissionFourWheel.drive(rotateSpeed, -rotateSpeed);
         else
-            transmissionMecanum.drive(0.0, 0.0, -rotateSpeed);
+            transmissionMecanum.drive(0.0, 0.0, -rotateSpeed, 0, 0);
         }
     else if (adjustedDegrees > 0)
         {
         if (transmissionType == TransmissionType.TANK)
             transmissionFourWheel.drive(-rotateSpeed, rotateSpeed);
         else
-            transmissionMecanum.drive(0.0, 0.0, rotateSpeed);
+            transmissionMecanum.drive(0.0, 0.0, rotateSpeed, 0, 0);
         }
     return false;
 }

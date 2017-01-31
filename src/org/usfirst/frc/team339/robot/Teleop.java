@@ -32,6 +32,8 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
+import org.usfirst.frc.team339.Utils.Drive;
+import edu.wpi.first.wpilibj.Relay;
 
 /**
  * This class contains all of the user code for the Autonomous part of the
@@ -65,7 +67,6 @@ public static void init ()
     Hardware.leftFrontMotor.set(0.0);
 
 
-
     Hardware.tankDrive.setGear(Hardware.tankDrive.getMaxGear());
     Hardware.leftUS.setScalingFactor(.13);
     Hardware.leftUS.setOffsetDistanceFromNearestBummper(0);
@@ -87,18 +88,16 @@ public static void init ()
  * @author Nathanial Lydick
  * @written Jan 13, 2015
  */
-
 public static void periodic ()
 {
-
-    // if (Hardware.ringlightSwitch.isOnCheckNow())
-    // {
-    // Hardware.ringlightRelay.set(Relay.Value.kOn);
-    // }
-    // else
-    // {
-    // Hardware.ringlightRelay.set(Relay.Value.kOff);
-    // }
+    if (Hardware.ringlightSwitch.isOnCheckNow())
+        {
+        Hardware.ringlightRelay.set(Relay.Value.kOn);
+        }
+    else
+        {
+        Hardware.ringlightRelay.set(Relay.Value.kOff);
+        }
 
     // Print out any data we want from the hardware elements.
     printStatements();
@@ -145,10 +144,6 @@ public static void periodic ()
     // System.out.println(Hardware.rightDriver.getTwist());
     // System.out.println(Hardware.rightDriver.getMagnitude());
 
-    // Print out any data we want from the hardware elements.
-    printStatements();
-    // Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
-    // Hardware.leftDriver.getY());
 
     // Testing turn by degrees
     if (Hardware.leftDriver.getRawButton(2))
@@ -179,8 +174,6 @@ public static void periodic ()
 
 } // end Periodic
 
-static double rotationValue = 0.0;
-
 // private static boolean isSpeedTesting = false;
 
 
@@ -190,9 +183,7 @@ public static void alignToGearPeg ()
         isAligning = false;
         isStrafingToTarget = false;
         isDrivingInches = false;
-        isTurning = false;
-        }
-
+        isTurning = false;//TODO Not sure what the above block is doing, just make sure it's supposed to be there
     // Testing strafe to target on button 8 on the RIGHT operator
     if (Hardware.rightOperator.getRawButton(8))
         isStrafingToTarget = true;
@@ -229,9 +220,6 @@ public static void alignToGearPeg ()
 
 }
 
-
-    // -----------------------------------------------------------------
-} // end Periodic
 
 private static double rotationValue = 0.0;
 
@@ -321,8 +309,6 @@ public static void printStatements ()
     // =================================
     // Analogs
     // =================================
-
-
     System.out.println("LeftUS = "
             + Hardware.leftUS.getDistanceFromNearestBumper());
 
@@ -349,7 +335,9 @@ public static void printStatements ()
     // Joysticks
     // information about the joysticks
     // ---------------------------------
-    // System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
+    // System.out.println("Left Joystick: " +
+    // Hardware.leftDriver.getDirectionDegrees());
+    // System.out.println("Twist: " + Hardware.leftDriver.getTwist());
     // System.out
     // .println("Right Joystick: " + Hardware.rightDriver.getY());
     // System.out
@@ -374,14 +362,13 @@ public static void printStatements ()
 private final static double CAMERA_ALIGN_SPEED = .5;
 
 // The dead zone for the aligning
-// private final static double CAMERA_ALIGN_DEADBAND = 10.0
-// Hardware.axisCamera.getHorizontalResolution();
+private final static double CAMERA_ALIGN_DEADBAND = 10.0
+        / Hardware.axisCamera.getHorizontalResolution();
 
 private final static double CAMERA_ALIGN_CENTER = 271.8;
 
 // ==========================================
 // TUNEABLES
 // ==========================================
-
 
 } // end class
