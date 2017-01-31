@@ -37,12 +37,7 @@
 			<attribute name="javadoc_location" value="file:/C:/Users/Kilroy%20Programming/wpilib/user/java/lib/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="USERLIBS_DIR/TalonSRXLibJava.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Users/Kilroy%20Programming/wpilib/user/java/lib/"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/Kilroy/wpilib/user/java/lib/CTRLib.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Kilroy/wpilib/user/java/lib/TalonSRXLibJava.jar"/>
+	<classpathentry kind="var" path="USERLIBS_DIR/CTRLib.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
