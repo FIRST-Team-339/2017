@@ -18,6 +18,7 @@ import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
 import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
+import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import org.usfirst.frc.team339.Utils.Drive;
@@ -268,8 +269,8 @@ public static Joystick rightDriver = new Joystick(1);
  */
 public static Joystick leftOperator = new Joystick(2);
 
-// public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
-// leftOperator, 2, false);
+public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
+        leftOperator, 2, false);
 
 
 /**
