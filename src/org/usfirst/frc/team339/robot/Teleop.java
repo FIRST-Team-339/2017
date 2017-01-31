@@ -66,7 +66,6 @@ public static void init ()
     Hardware.rightFrontMotor.set(0.0);
     Hardware.leftFrontMotor.set(0.0);
 
-    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
 
     Hardware.tankDrive.setGear(Hardware.tankDrive.getMaxGear());
     Hardware.leftUS.setScalingFactor(.13);
@@ -78,9 +77,9 @@ public static void init ()
     // Hardware.LeftUS.setConfidenceCalculationsOn(false);
     // Hardware.RightUS.setConfidenceCalculationsOn(false);
 
-    // Hardware.mecanumDrive.setDebugState(DebugState.DEBUG_MOTOR_DATA);
-} // end Init
 
+
+} // end Init
 
 /**
  * User Periodic code for teleop mode should go here. Will be called
@@ -107,6 +106,7 @@ public static void periodic ()
     // Driving code
     // =================================================================
 
+
     if (Hardware.rightDriver.getTrigger())
         {
         rotationValue = Hardware.rightDriver.getTwist();
@@ -116,21 +116,33 @@ public static void periodic ()
         rotationValue = 0.0;
         }
 
-    // creating new instance of Transmission Mecanum
 
-    if (!isAligning)
-        if (Hardware.usingMecanum == true)
-            {
-            Hardware.mecanumDrive.drive(
-                    Hardware.rightDriver.getMagnitude(),
-                    Hardware.rightDriver.getDirectionDegrees(),
-                    rotationValue);
-            }
-        else
-            {
-            Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
-                    Hardware.leftDriver.getY());
-            }
+    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+    if (Hardware.isUsingMecanum == true
+            && Hardware.twoJoystickControl == false)
+        {
+        Hardware.mecanumDrive.drive(Hardware.rightDriver.getMagnitude(),
+                Hardware.rightDriver.getDirectionDegrees(),
+                rotationValue, Hardware.rightDriver.getY(),
+                Hardware.rightDriver.getX());
+        }
+    else if (Hardware.isUsingMecanum == true
+            && Hardware.twoJoystickControl == true)
+        {
+        Hardware.mecanumDrive.drive(Hardware.rightDriver.getMagnitude(),
+                Hardware.rightDriver.getDirectionDegrees(),
+                Hardware.leftDriver.getX(),
+                Hardware.rightDriver.getY(),
+                Hardware.rightDriver.getX());
+        }
+    else
+        {
+        Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
+                Hardware.leftDriver.getY());
+        }
+    System.out.println(Hardware.rightDriver.getDirectionDegrees());
+    // System.out.println(Hardware.rightDriver.getTwist());
+    // System.out.println(Hardware.rightDriver.getMagnitude());
 
 
     // Testing turn by degrees
@@ -157,55 +169,21 @@ public static void periodic ()
         }
 
 
-    // -----------------------------------------------------------------
 
 
-    // =================================================================
-    // Camera Code
-    // =================================================================
 
-    // Starts the aligning process with button 8 on the left operator
-    if (Hardware.leftOperator.getRawButton(8))
-        {
-        isAligning = true;
+} // end Periodic
 
-        }
+// private static boolean isSpeedTesting = false;
 
-    // Determines whether or not we are aligned yet, and stops when we are.
-    // If we don't see any blobs, tell us and continue aligning.
-    if (isAligning)
-        {
-        alignValue = Hardware.autoDrive.alignToGear(
-                CAMERA_ALIGN_CENTER,
-                CAMERA_ALIGN_SPEED,
-                CAMERA_ALIGN_DEADBAND);
 
-        if (alignValue == Drive.AlignReturnType.MISALIGNED)
-            {
-            isAligning = true;
-            System.out.println("we are misaligned!!");
-            }
-        else if (alignValue == Drive.AlignReturnType.ALIGNED)
-            {
-            isAligning = false;
-            System.out.println("We are aligned!!");
-            }
-        else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
-            {
-            System.out.println("We don't see anything!");
-            isAligning = true;
-            }
-        }
+public static void alignToGearPeg ()
+{
 
-    // Cancel auto aligning
-    if (isAligning && Hardware.leftOperator.getRawButton(7))
-        {
         isAligning = false;
         isStrafingToTarget = false;
         isDrivingInches = false;
-        isTurning = false;
-        }
-
+        isTurning = false;//TODO Not sure what the above block is doing, just make sure it's supposed to be there
     // Testing strafe to target on button 8 on the RIGHT operator
     if (Hardware.rightOperator.getRawButton(8))
         isStrafingToTarget = true;
@@ -240,9 +218,8 @@ public static void periodic ()
             .takeSinglePicture(Hardware.leftOperator.getRawButton(8));
 
 
+}
 
-    // -----------------------------------------------------------------
-} // end Periodic
 
 private static double rotationValue = 0.0;
 
@@ -263,12 +240,12 @@ private static boolean isDrivingInches = false;
 
 /**
  * stores print statements for future use in the print "bank", statements
- * are commented out when not in use, when you write a new print statement,
- * "deposit" the statement in the correct "bank" do not "withdraw"
- * statements, unless directed to.
+ * are commented out when not in use, when you write a new print
+ * statement, "deposit" the statement in the correct "bank"
+ * do not "withdraw" statements, unless directed to.
  * 
- * NOTE: Keep the groupings below, which coorespond in number and order as
- * the hardware declarations in the HARDWARE class
+ * NOTE: Keep the groupings below, which coorespond in number and
+ * order as the hardware declarations in the HARDWARE class
  * 
  * @author Ashley Espeland
  * @written 1/28/16
@@ -287,6 +264,7 @@ public static void printStatements ()
     // CAN items
     // prints value of the CAN controllers
     // =================================
+    // Hardware.CAN.printAllPDPChannels();
 
     // =================================
     // Relay

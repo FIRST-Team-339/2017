@@ -8,8 +8,7 @@ public class TransmissionFourWheel extends Transmission
 {
 
 private final SpeedController rightRearSpeedController;
-private MotorDirection rightRearMotorDirection =
-        MotorDirection.REVERSED;
+private MotorDirection rightRearMotorDirection = MotorDirection.REVERSED;
 
 private final SpeedController leftRearSpeedController;
 private MotorDirection leftRearMotorDirection = MotorDirection.FORWARD;
@@ -66,11 +65,11 @@ public void drive (double rightJoystickVal, double leftJoystickVal)
     // check if either joystick is reversed
     if (this.isLeftJoystickReversed() == true)
         {
-        scaledRightVal *= -1.0;
+        scaledLeftVal *= -1.0; // TODO redo
         }
     if (this.isRightJoystickReversed() == true)
         {
-        scaledLeftVal *= -1.0;
+        scaledRightVal *= -1.0;
         }
 
     if ((this.getDebugState() == DebugState.DEBUG_MOTOR_DATA) ||
@@ -99,7 +98,7 @@ public void drive (double rightJoystickVal, double leftJoystickVal)
  * @date 9 July 2015
  */
 
-//"Anything can be solved with a big enough hammer, if not elegantly." -Michael
+// "Anything can be solved with a big enough hammer, if not elegantly." -Michael
 protected void driveLeftRearMotor (double motorValue)
 {
 
