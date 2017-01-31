@@ -18,6 +18,7 @@ private double directionalDeadzone = 0.0;
 private double directionalXOrthogonalZone = 0.0;
 private double directionalYOrthogonalZone = 0.0;
 private double firstGearPercentage = 0.0;
+private double Yvalue = 0.0;
 
 /** Sets whether or not the mecanum control joystick is reversed */
 private boolean mecanumJoystickReversed = false;
@@ -59,7 +60,7 @@ public TransmissionMecanum (SpeedController rightFrontSpeedController,
 @Deprecated
 public void drive (double magnitude, double direction)
 {
-    this.drive(magnitude, direction, 0.0, 0.0, 0.0);
+    this.drive(magnitude, direction, 0.0);
 }
 
 /**
@@ -91,14 +92,15 @@ public void drive (double magnitude, double direction)
  * @written 23 July 2015
  *          Edited By Becky Button
  */
-public void drive (double magnitude, double direction, double rotation,
-        double yValue, double xValue)
+public void drive (double magnitude, double direction, double rotation)
 {
 
     double tempRotation = rotation, tempMagnitude = magnitude,
             tempDirection = direction;
+    final double directionalXOrthogonalZone = getDirectionalDeadzoneX();
+    final double directionalYOrthogonalZone = getDirectionalDeadzoneY();
 
-    if (Math.abs(yValue) > directionalYOrthogonalZone
+    if (Math.abs(yvalu) > directionalYOrthogonalZone
             || Math.abs(xValue) > directionalXOrthogonalZone)
         {
         if (tempDirection > -10 && tempDirection < 10)
@@ -282,6 +284,7 @@ public void drive (double magnitude, double direction, double rotation,
             }
 
         final double gearPercentage = getFirstGearPercentage();
+
         // limit the values to our motor range of -1..1
         leftFrontSpeed = this.limit(leftFrontSpeed * gearPercentage);
         leftRearSpeed = this.limit(leftRearSpeed * gearPercentage);
@@ -348,6 +351,23 @@ public void setDirectionalDeadzone (double directionalXOrthogonalZone,
     this.directionalYOrthogonalZone = directionalYOrthogonalZone;
 
 
+}
+
+public double getDirectionalDeadzoneX ()
+{
+    return this.directionalXOrthogonalZone;
+
+}
+
+public double getDirectionalDeadzoneY ()
+{
+    return this.directionalYOrthogonalZone;
+
+}
+
+public void getY(double Yvalue) {
+ 
+ = Yvalue;
 }
 
 /**
