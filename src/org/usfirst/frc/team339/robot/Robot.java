@@ -277,9 +277,13 @@ public void robotInit ()
 
     // Sends video from both USB Cameras to the Smart Dashboard
     // -last edited on 28 Jan 2017 by Cole Ramos
+    
+    //CameraServer.getInstance().startAutomaticCapture(0);
+    //CameraServer.getInstance().startAutomaticCapture(1);
     CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
     CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
-    CameraServer.getInstance().addAxisCamera("10.3.39.11");
+    
+    // CameraServer.getInstance().addAxisCamera("10.3.39.11");
     // Sets the [max?] FPS's for the USB Cameras. The FPS will generally
     // vary between -1 and +1
     // this amount.
