@@ -168,23 +168,44 @@ public static void periodic ()
         Hardware.autoDrive.driveInches(24, .4);
         }
 
+    // =================================================================
+    // CAMERA CODE
+    // =================================================================
 
-
-
-
-} // end Periodic
-
-// private static boolean isSpeedTesting = false;
-
-
-public static void alignToGearPeg ()
-{
-
+    // "Cancel basically everything" button
+    if (Hardware.leftOperator.getRawButton(7))
+        {
         isAligning = false;
         isStrafingToTarget = false;
         isDrivingInches = false;
-        isTurning = false;//TODO Not sure what the above block is doing, just make sure it's supposed to be there
-    // Testing strafe to target on button 8 on the RIGHT operator
+        isTurning = false;
+        }
+
+    // Testing aligning to target
+    if (Hardware.leftOperator.getRawButton(8))
+        isAligning = true;
+    if (isAligning)
+        {
+        alignValue = Hardware.autoDrive.alignToGear(CAMERA_ALIGN_CENTER,
+                CAMERA_ALIGN_SPEED, CAMERA_ALIGN_DEADBAND);
+        if (alignValue == Drive.AlignReturnType.ALIGNED)
+            {
+            System.out.println("We are aligned!");
+            isAligning = false;
+            }
+        else if (alignValue == Drive.AlignReturnType.MISALIGNED)
+            {
+            System.out.println("We are not aligned!");
+            isAligning = true;
+            }
+        else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
+            {
+            System.out.println("We don't see anything!");
+            isAligning = true;
+            }
+        }
+
+    // Testing Strafe to target
     if (Hardware.rightOperator.getRawButton(8))
         isStrafingToTarget = true;
 
@@ -218,7 +239,9 @@ public static void alignToGearPeg ()
             .takeSinglePicture(Hardware.leftOperator.getRawButton(8));
 
 
-}
+} // end Periodic
+
+// private static boolean isSpeedTesting = false;
 
 
 private static double rotationValue = 0.0;
