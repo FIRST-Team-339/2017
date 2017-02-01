@@ -33,7 +33,6 @@ package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
-import edu.wpi.first.wpilibj.Relay;
 
 /**
  * This class contains all of the user code for the Autonomous part of the
@@ -67,13 +66,13 @@ public static void init ()
     Hardware.leftFrontMotor.set(0.0);
 
 
-    Hardware.tankDrive.setGear(Hardware.tankDrive.getMaxGear());
-    Hardware.leftUS.setScalingFactor(.13);
-    Hardware.leftUS.setOffsetDistanceFromNearestBummper(0);
-    Hardware.rightUS.setScalingFactor(.13);
-    Hardware.rightUS.setOffsetDistanceFromNearestBummper(0);
-    Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(1);
-    Hardware.leftUS.setNumberOfItemsToCheckBackwardForValidity(1);
+    // Hardware.tankDrive.setGear(Hardware.tankDrive.getMaxGear());
+    // Hardware.leftUS.setScalingFactor(.13);
+    // Hardware.leftUS.setOffsetDistanceFromNearestBummper(0);
+    // Hardware.rightUS.setScalingFactor(.13); TODO
+    // Hardware.rightUS.setOffsetDistanceFromNearestBummper(0);
+    // Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(1);
+    // Hardware.leftUS.setNumberOfItemsToCheckBackwardForValidity(1);
     // Hardware.LeftUS.setConfidenceCalculationsOn(false);
     // Hardware.RightUS.setConfidenceCalculationsOn(false);
 
@@ -90,14 +89,14 @@ public static void init ()
  */
 public static void periodic ()
 {
-    if (Hardware.ringlightSwitch.isOnCheckNow())
-        {
-        Hardware.ringlightRelay.set(Relay.Value.kOn);
-        }
-    else
-        {
-        Hardware.ringlightRelay.set(Relay.Value.kOff);
-        }
+    // if (Hardware.ringlightSwitch.isOnCheckNow())
+    // {
+    // Hardware.ringlightRelay.set(Relay.Value.kOn);
+    // }
+    // else
+    // {
+    // Hardware.ringlightRelay.set(Relay.Value.kOff);
+    // }
 
     // Print out any data we want from the hardware elements.
     printStatements();
@@ -145,28 +144,28 @@ public static void periodic ()
     // System.out.println(Hardware.rightDriver.getMagnitude());
 
 
-    // Testing turn by degrees
-    if (Hardware.leftDriver.getRawButton(2))
-        {
-        turnDegrees = 90;
-        isTurning = true;
-        }
-
-    if (isTurning)
-        {
-        isTurning = !Hardware.autoDrive.turnDegrees(turnDegrees);
-        }
-
-    // Testing driveInches
-    if (Hardware.rightDriver.getRawButton(2))
-        {
-        isDrivingInches = true;
-        }
-
-    if (isDrivingInches)
-        {
-        Hardware.autoDrive.driveInches(24, .4);
-        }
+    // Testing turn by degrees TODO
+    // if (Hardware.leftDriver.getRawButton(2))
+    // {
+    // turnDegrees = 90;
+    // isTurning = true;
+    // }
+    //
+    // if (isTurning)
+    // {
+    // isTurning = !Hardware.autoDrive.turnDegrees(turnDegrees);
+    // }
+    //
+    // // Testing driveInches
+    // if (Hardware.rightDriver.getRawButton(2))
+    // {
+    // isDrivingInches = true;
+    // }
+    //
+    // if (isDrivingInches)
+    // {
+    // Hardware.autoDrive.driveInches(24, .4);
+    // }
 
     // =================================================================
     // CAMERA CODE
@@ -181,63 +180,63 @@ public static void periodic ()
         isTurning = false;
         }
 
-    // Testing aligning to target
-    if (Hardware.leftOperator.getRawButton(8))
-        isAligning = true;
-    if (isAligning)
-        {
-        alignValue = Hardware.autoDrive.alignToGear(CAMERA_ALIGN_CENTER,
-                CAMERA_ALIGN_SPEED, CAMERA_ALIGN_DEADBAND);
-        if (alignValue == Drive.AlignReturnType.ALIGNED)
-            {
-            System.out.println("We are aligned!");
-            isAligning = false;
-            }
-        else if (alignValue == Drive.AlignReturnType.MISALIGNED)
-            {
-            System.out.println("We are not aligned!");
-            isAligning = true;
-            }
-        else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
-            {
-            System.out.println("We don't see anything!");
-            isAligning = true;
-            }
-        }
-
-    // Testing Strafe to target
-    if (Hardware.rightOperator.getRawButton(8))
-        isStrafingToTarget = true;
-
-    if (isStrafingToTarget)
-        {
-        alignValue = Hardware.autoDrive.strafeToGear(.4, .2,
-                CAMERA_ALIGN_DEADBAND, CAMERA_ALIGN_CENTER, 20);
-        if (alignValue == Drive.AlignReturnType.ALIGNED)
-            {
-            System.out.println("We are aligned!");
-            isStrafingToTarget = true;
-            }
-        else if (alignValue == Drive.AlignReturnType.MISALIGNED)
-            {
-            System.out.println("WE are NOT aligned!");
-            isStrafingToTarget = true;
-            }
-        else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
-            {
-            System.out.println("We have no blobs!");
-            isStrafingToTarget = true;
-            }
-        else if (alignValue == Drive.AlignReturnType.CLOSE_ENOUGH)
-            {
-            System.out.println("We are good to go!");
-            isStrafingToTarget = false;
-            }
-        }
-
-    Hardware.axisCamera
-            .takeSinglePicture(Hardware.leftOperator.getRawButton(8));
-
+    // // Testing aligning to target TODO
+    // if (Hardware.leftOperator.getRawButton(8))
+    // isAligning = true;
+    // if (isAligning)
+    // {
+    // alignValue = Hardware.autoDrive.alignToGear(CAMERA_ALIGN_CENTER,
+    // CAMERA_ALIGN_SPEED, CAMERA_ALIGN_DEADBAND);
+    // if (alignValue == Drive.AlignReturnType.ALIGNED)
+    // {
+    // System.out.println("We are aligned!");
+    // isAligning = false;
+    // }
+    // else if (alignValue == Drive.AlignReturnType.MISALIGNED)
+    // {
+    // System.out.println("We are not aligned!");
+    // isAligning = true;
+    // }
+    // else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
+    // {
+    // System.out.println("We don't see anything!");
+    // isAligning = true;
+    // }
+    // }
+    //
+    // // Testing Strafe to target
+    // if (Hardware.rightOperator.getRawButton(8))
+    // isStrafingToTarget = true;
+    //
+    // if (isStrafingToTarget)
+    // {
+    // alignValue = Hardware.autoDrive.strafeToGear(.4, .2,
+    // CAMERA_ALIGN_DEADBAND, CAMERA_ALIGN_CENTER, 20);
+    // if (alignValue == Drive.AlignReturnType.ALIGNED)
+    // {
+    // System.out.println("We are aligned!");
+    // isStrafingToTarget = true;
+    // }
+    // else if (alignValue == Drive.AlignReturnType.MISALIGNED)
+    // {
+    // System.out.println("WE are NOT aligned!");
+    // isStrafingToTarget = true;
+    // }
+    // else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
+    // {
+    // System.out.println("We have no blobs!");
+    // isStrafingToTarget = true;
+    // }
+    // else if (alignValue == Drive.AlignReturnType.CLOSE_ENOUGH)
+    // {
+    // System.out.println("We are good to go!");
+    // isStrafingToTarget = false;
+    // }
+    // }
+    //
+    // Hardware.axisCamera
+    // .takeSinglePicture(Hardware.leftOperator.getRawButton(8));
+    //
 
 } // end Periodic
 
@@ -306,10 +305,10 @@ public static void printStatements ()
     // Encoders
     // prints the distance from the encoders
     // ---------------------------------
-    System.out.println("Right Encoder: "
-            + Hardware.autoDrive.getRightRearEncoderDistance());
-    System.out.println("Left Encoder: "
-            + Hardware.autoDrive.getLeftRearEncoderDistance());
+    // System.out.println("Right Encoder: " TODO
+    // + Hardware.autoDrive.getRightRearEncoderDistance());
+    // System.out.println("Left Encoder: "
+    // + Hardware.autoDrive.getLeftRearEncoderDistance());
 
     // ---------------------------------
     // Red Light/IR Sensors
@@ -384,9 +383,9 @@ public static void printStatements ()
  */
 private final static double CAMERA_ALIGN_SPEED = .5;
 
-// The dead zone for the aligning
-private final static double CAMERA_ALIGN_DEADBAND = 10.0
-        / Hardware.axisCamera.getHorizontalResolution();
+//// The dead zone for the aligning TODO
+// private final static double CAMERA_ALIGN_DEADBAND = 10.0
+// / Hardware.axisCamera.getHorizontalResolution();
 
 private final static double CAMERA_ALIGN_CENTER = 271.8;
 

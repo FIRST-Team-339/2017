@@ -60,7 +60,6 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
 
@@ -188,6 +187,8 @@ public void disabledInit ()
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+    Hardware.isUsingMecanum = true;
+    Hardware.twoJoystickControl = false;
     // =========================================================
     // User code goes above here
     // =========================================================
@@ -253,6 +254,8 @@ public void robotInit ()
     // Hardware.leftRearMotor.setInverted(true);
     Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+    Hardware.isUsingMecanum = true;
+    Hardware.twoJoystickControl = false;
     // -------------------------------------
     // motor initialization
     // -------------------------------------
@@ -277,21 +280,21 @@ public void robotInit ()
 
     // Sends video from both USB Cameras to the Smart Dashboard
     // -last edited on 28 Jan 2017 by Cole Ramos
-    CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
-    CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
-    CameraServer.getInstance().addAxisCamera("10.3.39.11");
+    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam0); TODO
+    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
+    // CameraServer.getInstance().addAxisCamera("10.3.39.11");
     // Sets the [max?] FPS's for the USB Cameras. The FPS will generally
     // vary between -1 and +1
     // this amount.
     // -last edited on 28 Jan 2017 by Cole Ramos
-    Hardware.cam0.setFPS(Hardware.USB_FPS);
-    Hardware.cam1.setFPS(Hardware.USB_FPS);
+    // Hardware.cam0.setFPS(Hardware.USB_FPS);
+    // Hardware.cam1.setFPS(Hardware.USB_FPS); TODO
 
     // Sets the max FPS of the Axis Camera; also changes the FPS in the
     // firmware/ web browser
     // of the Axis Camera. If the FPS is not set in the code, the firmware
     // will default to unlimited.
-    Hardware.axisCamera.writeMaxFPS(Hardware.AXIS_FPS);
+    // Hardware.axisCamera.writeMaxFPS(Hardware.AXIS_FPS); TODO
 
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
@@ -338,6 +341,9 @@ public void teleopInit ()
     // Hardware.leftRearMotor.setInverted(true);
     Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+
+    Hardware.isUsingMecanum = true;
+    Hardware.twoJoystickControl = false;
     // =========================================================
     // User code goes above here
     // =========================================================
@@ -421,6 +427,6 @@ public void testPeriodic ()
 // ==========================================
 // TUNEABLES
 // ==========================================
-public static double firstGear = .7;
+public static double firstGear = 1;
 
 } // end class
