@@ -414,6 +414,16 @@ public static enum AlignReturnType
     CLOSE_ENOUGH
     }
 
+public void strafeStraight (double inches)
+{
+    resetEncoders();
+    double rightFrontSpeed = inches;
+    double rightRearSpeed = inches;
+    double leftFrontSpeed = inches;
+    double leftRearSpeed = inches;
+
+}
+
 /**
  * @return the distance the front left encoder has driven based on the
  *         distance per pulse set earlier.
