@@ -79,352 +79,343 @@ import edu.wpi.first.wpilibj.Relay;
  * @author Bob Brown
  * @written Jan 2, 2011 -------------------------------------------------------
  */
-public class Robot extends IterativeRobot
-{
+public class Robot extends IterativeRobot {
 
-// =================================================
-// private data for the class
-// =================================================
+	// =================================================
+	// private data for the class
+	// =================================================
 
-// -------------------------------------------------------
-/**
- * Initialization code for autonomous mode should go here. Will be called
- * once when the robot enters autonomous mode.
- *
- * @author Bob Brown
- * @written Jan 2, 2011
- *          -------------------------------------------------------
- */
-@Override
-public void autonomousInit ()
-{
-    // ---------------------------------------
-    // start setup - tell the user we are beginning
-    // setup
-    // ---------------------------------------
-    System.out.println("Started AutonousInit().");
-    Hardware.mecanumDrive.setFirstGearPercentage(firstGear);
-    // =========================================================
-    // User code goes below here
-    // =========================================================
-    // -------------------------------------
-    // Call the Autonomous class's Init function,
-    // which contains the user code.
-    // -------------------------------------
-    Autonomous.init();
-    Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
-    // =========================================================
-    // User code goes above here
-    // =========================================================
-    // ---------------------------------------
-    // done setup - tell the user we are complete
-    // setup
-    // ---------------------------------------
-    System.out.println("Completed AutonousInit().");
-} // end autonomousInit
+	// -------------------------------------------------------
+	/**
+	 * Initialization code for autonomous mode should go here. Will be called
+	 * once when the robot enters autonomous mode.
+	 *
+	 * @author Bob Brown
+	 * @written Jan 2, 2011
+	 *          -------------------------------------------------------
+	 */
+	@Override
+	public void autonomousInit() {
+		// ---------------------------------------
+		// start setup - tell the user we are beginning
+		// setup
+		// ---------------------------------------
+		System.out.println("Started AutonousInit().");
+		Hardware.mecanumDrive.setFirstGearPercentage(firstGear);
+		// =========================================================
+		// User code goes below here
+		// =========================================================
+		// -------------------------------------
+		// Call the Autonomous class's Init function,
+		// which contains the user code.
+		// -------------------------------------
+		Autonomous.init();
+		Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
+		// =========================================================
+		// User code goes above here
+		// =========================================================
+		// ---------------------------------------
+		// done setup - tell the user we are complete
+		// setup
+		// ---------------------------------------
+		System.out.println("Completed AutonousInit().");
+	} // end autonomousInit
 
-// -------------------------------------------------------
-/**
- * Non-User Periodic code for autonomous mode should go here. Will be called
- * periodically at a regular rate while the robot is in autonomous mode.
- * This in turn calls the Autonomous class's Periodic function, which is
- * where the user code should be placed.
- *
- * @author Bob Brown
- * @written Jan 2, 2011
- *          -------------------------------------------------------
- */
-@Override
-public void autonomousPeriodic ()
-{
-    // ---------------------------------------
-    // start setup - tell the user we are beginning
-    // setup
-    // ---------------------------------------
-    System.out.println("Started AutonomousPeriodic().");
+	// -------------------------------------------------------
+	/**
+	 * Non-User Periodic code for autonomous mode should go here. Will be called
+	 * periodically at a regular rate while the robot is in autonomous mode.
+	 * This in turn calls the Autonomous class's Periodic function, which is
+	 * where the user code should be placed.
+	 *
+	 * @author Bob Brown
+	 * @written Jan 2, 2011
+	 *          -------------------------------------------------------
+	 */
+	@Override
+	public void autonomousPeriodic() {
+		// ---------------------------------------
+		// start setup - tell the user we are beginning
+		// setup
+		// ---------------------------------------
+		System.out.println("Started AutonomousPeriodic().");
 
-    // =========================================================
-    // User code goes below here
-    // =========================================================
-    // -------------------------------------
-    // Call the Autonomous class's Periodic function,
-    // which contains the user code.
-    // -------------------------------------\
-    Autonomous.periodic();
+		// =========================================================
+		// User code goes below here
+		// =========================================================
+		// -------------------------------------
+		// Call the Autonomous class's Periodic function,
+		// which contains the user code.
+		// -------------------------------------\
+		Autonomous.periodic();
 
-    // =========================================================
-    // User code goes above here
-    // =========================================================
+		// =========================================================
+		// User code goes above here
+		// =========================================================
 
-    // feed all motor safeties
-    Hardware.leftRearMotorSafety.feed();
-    Hardware.rightRearMotorSafety.feed();
+		// feed all motor safeties
+		Hardware.leftRearMotorSafety.feed();
+		Hardware.rightRearMotorSafety.feed();
 
-} // end autonomousPeriodic
+	} // end autonomousPeriodic
 
-// -------------------------------------------------------
-/**
- * Initialization code for disabled mode should go here. Will be called once
- * when the robot enters disabled mode.
- *
- * @author Bob Brown
- * @written Jan 2, 2011
- *          -------------------------------------------------------
- */
-@Override
-public void disabledInit ()
-{
-    // ---------------------------------------
-    // start setup - tell the user we are beginning
-    // setup
-    // ---------------------------------------
-    System.out.println("Started DisabledInit().");
+	// -------------------------------------------------------
+	/**
+	 * Initialization code for disabled mode should go here. Will be called once
+	 * when the robot enters disabled mode.
+	 *
+	 * @author Bob Brown
+	 * @written Jan 2, 2011
+	 *          -------------------------------------------------------
+	 */
+	@Override
+	public void disabledInit() {
+		// ---------------------------------------
+		// start setup - tell the user we are beginning
+		// setup
+		// ---------------------------------------
+		System.out.println("Started DisabledInit().");
 
-    // =========================================================
-    // User code goes below here
-    // =========================================================
-    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
-    // Hardware.rightRearMotor.setInverted(true);
-    // Hardware.leftFrontMotor.setInverted(true);
-    // Hardware.leftRearMotor.setInverted(true);
-    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-    // =========================================================
-    // User code goes above here
-    // =========================================================
+		// =========================================================
+		// User code goes below here
+		// =========================================================
+		Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+		// Hardware.rightRearMotor.setInverted(true);
+		// Hardware.leftFrontMotor.setInverted(true);
+		// Hardware.leftRearMotor.setInverted(true);
+		Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+		// =========================================================
+		// User code goes above here
+		// =========================================================
 
-    // ---------------------------------------
-    // done setup - tell the user we are complete
-    // setup
-    // ---------------------------------------
-    System.out.println("Completed DisabledInit().");
-} // end disabledInit
+		// ---------------------------------------
+		// done setup - tell the user we are complete
+		// setup
+		// ---------------------------------------
+		System.out.println("Completed DisabledInit().");
+	} // end disabledInit
 
-// -------------------------------------------------------
-/**
- * Periodic code for disabled mode should go here. Will be called
- * periodically at a regular rate while the robot is in disabled mode. Code
- * that can be "triggered" by a joystick button can go here. This can set up
- * configuration things at the driver's station for instance before a match.
- *
- * @author Bob Brown
- * @written Jan 2, 2011
- *          -------------------------------------------------------
- */
-@Override
-public void disabledPeriodic ()
-{
-    // -------------------------------------
-    // Watch dog code used to go here.
-    // -------------------------------------
-    // =========================================================
-    // User code goes below here
-    // =========================================================
+	// -------------------------------------------------------
+	/**
+	 * Periodic code for disabled mode should go here. Will be called
+	 * periodically at a regular rate while the robot is in disabled mode. Code
+	 * that can be "triggered" by a joystick button can go here. This can set up
+	 * configuration things at the driver's station for instance before a match.
+	 *
+	 * @author Bob Brown
+	 * @written Jan 2, 2011
+	 *          -------------------------------------------------------
+	 */
+	@Override
+	public void disabledPeriodic() {
+		// -------------------------------------
+		// Watch dog code used to go here.
+		// -------------------------------------
+		// =========================================================
+		// User code goes below here
+		// =========================================================
 
-    // =========================================================
-    // User code goes above here
-    // =========================================================
+		// =========================================================
+		// User code goes above here
+		// =========================================================
 
-} // end disabledPeriodic
+	} // end disabledPeriodic
 
-// -------------------------------------------------------
-/**
- * This function is run when the robot is first started up and should be
- * used for any initialization code for the robot.
- *
- * @author Bob Brown
- * @written Jan 2, 2011
- *          -------------------------------------------------------
- */
-@Override
-public void robotInit ()
-{
-    // -------------------------------------
-    // Watch dog code used to go here.
-    // -------------------------------------
-    // =========================================================
-    // User code goes below here
-    // =========================================================
-    Hardware.leftRearEncoder.reset();
-    Hardware.rightRearEncoder.reset();
-    Hardware.mecanumDrive.setFirstGearPercentage(firstGear);
-    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
-    // Hardware.rightRearMotor.setInverted(true);
-    // Hardware.leftFrontMotor.setInverted(true);
-    // Hardware.leftRearMotor.setInverted(true);
-    Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
-    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-    // -------------------------------------
-    // motor initialization
-    // -------------------------------------
-    Hardware.leftRearMotorSafety.setSafetyEnabled(true);
-    Hardware.rightRearMotorSafety.setSafetyEnabled(true);
+	// -------------------------------------------------------
+	/**
+	 * This function is run when the robot is first started up and should be
+	 * used for any initialization code for the robot.
+	 *
+	 * @author Bob Brown
+	 * @written Jan 2, 2011
+	 *          -------------------------------------------------------
+	 */
+	@Override
+	public void robotInit() {
+		// -------------------------------------
+		// Watch dog code used to go here.
+		// -------------------------------------
+		// =========================================================
+		// User code goes below here
+		// =========================================================
+		Hardware.leftRearEncoder.reset();
+		Hardware.rightRearEncoder.reset();
+		Hardware.mecanumDrive.setFirstGearPercentage(firstGear);
+		Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+		// Hardware.rightRearMotor.setInverted(true);
+		// Hardware.leftFrontMotor.setInverted(true);
+		// Hardware.leftRearMotor.setInverted(true);
+		Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
+		Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+		// -------------------------------------
+		// motor initialization
+		// -------------------------------------
+		Hardware.leftRearMotorSafety.setSafetyEnabled(true);
+		Hardware.rightRearMotorSafety.setSafetyEnabled(true);
 
-    Hardware.leftRearMotorSafety.setExpiration(.25);
-    Hardware.rightRearMotorSafety.setExpiration(.25);
+		Hardware.leftRearMotorSafety.setExpiration(.25);
+		Hardware.rightRearMotorSafety.setExpiration(.25);
 
-    // Hardware.rightFrontMotor.setInverted(true);
+		// Hardware.rightFrontMotor.setInverted(true);
 
-    if (Hardware.runningInLab == true)
-        {
-        }
-    else
-        {
-        }
+		if (Hardware.runningInLab == true) {
+		} else {
+		}
 
-    // -------------------------------------
-    // Camera initialization
-    // -------------------------------------
+		// -------------------------------------
+		// Camera initialization
+		// -------------------------------------
 
-    // Sends video from both USB Cameras to the Smart Dashboard
-    // -last edited on 28 Jan 2017 by Cole Ramos
-    
-    //CameraServer.getInstance().startAutomaticCapture(0);
-    //CameraServer.getInstance().startAutomaticCapture(1);
-    CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
-    CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
-    
-    // CameraServer.getInstance().addAxisCamera("10.3.39.11");
-    // Sets the [max?] FPS's for the USB Cameras. The FPS will generally
-    // vary between -1 and +1
-    // this amount.
-    // -last edited on 28 Jan 2017 by Cole Ramos
-    Hardware.cam0.setFPS(Hardware.USB_FPS);
-    Hardware.cam1.setFPS(Hardware.USB_FPS);
+		// Sends video from both USB Cameras to the Smart Dashboard
+		// -last edited on 28 Jan 2017 by Cole Ramos
 
-    // Sets the max FPS of the Axis Camera; also changes the FPS in the
-    // firmware/ web browser
-    // of the Axis Camera. If the FPS is not set in the code, the firmware
-    // will default to unlimited.
-    Hardware.axisCamera.writeMaxFPS(Hardware.AXIS_FPS);
+		if (Hardware.MAKE_CAMERA_DROPDOWN_APPEAR == true) {
+			CameraServer.getInstance().startAutomaticCapture(0);
+			CameraServer.getInstance().startAutomaticCapture(1);
+			CameraServer.getInstance().addAxisCamera("10.3.39.11");
+		}
 
-    Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
-    Hardware.ringlightRelay.set(Relay.Value.kOff);
+		if (Hardware.MAKE_CAMERA_DROPDOWN_APPEAR == false) {
+			CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
+			CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
 
-    // =========================================================
-    // User code goes above here
-    // =========================================================
-    // ---------------------------------------
-    // done setup - tell the user we are complete
-    // setup
-    // ---------------------------------------
-    System.out.println(
-            "Kilroy XVIII is started.  All hardware items created.");
-    System.out.println();
-    System.out.println();
-} // end robotInit
+			// Sets the [max?] FPS's for the USB Cameras. The FPS will generally
+			// vary between -1 and +1
+			// this amount.
+			// -last edited on 28 Jan 2017 by Cole Ramos
+			//Hardware.cam0.setFPS(Hardware.USB_FPS);
+			//Hardware.cam1.setFPS(Hardware.USB_FPS);
+		}
 
-// -------------------------------------------------------
-/**
- * Non-User initialization code for teleop mode should go here. Will be
- * called once when the robot enters teleop mode, and will call the
- * Teleop class's Init function, where the User code should be placed.
- *
- * @author Bob Brown
- * @written Jan 2, 2011
- *          -------------------------------------------------------
- */
-@Override
-public void teleopInit ()
-{
-    // ---------------------------------------
-    // start setup - tell the user we are beginning
-    // setup
-    // ---------------------------------------
-    System.out.println("Started teleopInit().");
-    Hardware.mecanumDrive.setFirstGearPercentage(firstGear);
-    // =========================================================
-    // User code goes below here
-    // =========================================================
-    Teleop.init();
-    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
-    // Hardware.rightRearMotor.setInverted(true);
-    // Hardware.leftFrontMotor.setInverted(true);
-    // Hardware.leftRearMotor.setInverted(true);
-    Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
-    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-    // =========================================================
-    // User code goes above here
-    // =========================================================
-    // ---------------------------------------
-    // done setup - tell the user we are complete
-    // setup
-    // ---------------------------------------
-    System.out.println("Completed TeleopInit().");
-} // end teleopInit
+		// Sets the max FPS of the Axis Camera; also changes the FPS in the
+		// firmware/ web browser
+		// of the Axis Camera. If the FPS is not set in the code, the firmware
+		// will default to unlimited.
+		Hardware.axisCamera.writeMaxFPS(Hardware.AXIS_FPS);
 
-// -------------------------------------------------------
-/**
- * Non-User Periodic code for teleop mode should go here. Will be called
- * periodically at a regular rate while the robot is in teleop mode, and
- * will in turn call the Teleop class's Periodic function.
- *
- * @author Bob Brown
- * @written Jan 2, 2011
- *          -------------------------------------------------------
- */
-@Override
-public void teleopPeriodic ()
-{
-    // -------------------------------------
-    // Call the Teleop class's Periodic function,
-    // which contains the user code.
-    // -------------------------------------
-    Teleop.periodic();
+		Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
+		Hardware.ringlightRelay.set(Relay.Value.kOff);
 
-    // feed all motor safeties
-    Hardware.leftRearMotorSafety.feed();
-    Hardware.rightRearMotorSafety.feed();
-    Hardware.leftFrontMotorSafety.feed();
-    Hardware.rightFrontMotorSafety.feed();
-} // end teleopPeriodic
+		// =========================================================
+		// User code goes above here
+		// =========================================================
+		// ---------------------------------------
+		// done setup - tell the user we are complete
+		// setup
+		// ---------------------------------------
+		System.out.println("Kilroy XVIII is started.  All hardware items created.");
+		System.out.println();
+		System.out.println();
+	} // end robotInit
 
-// -------------------------------------------------------
-/**
- * Initialization code for test mode should go here. Will be called once
- * when the robot enters test mode.
- *
- * @author Bob Brown
- * @written Jan 2, 2015
- *          -------------------------------------------------------
- */
-@Override
-public void testInit ()
-{
-    // =========================================================
-    // User code goes below here
-    // =========================================================
+	// -------------------------------------------------------
+	/**
+	 * Non-User initialization code for teleop mode should go here. Will be
+	 * called once when the robot enters teleop mode, and will call the Teleop
+	 * class's Init function, where the User code should be placed.
+	 *
+	 * @author Bob Brown
+	 * @written Jan 2, 2011
+	 *          -------------------------------------------------------
+	 */
+	@Override
+	public void teleopInit() {
+		// ---------------------------------------
+		// start setup - tell the user we are beginning
+		// setup
+		// ---------------------------------------
+		System.out.println("Started teleopInit().");
+		Hardware.mecanumDrive.setFirstGearPercentage(firstGear);
+		// =========================================================
+		// User code goes below here
+		// =========================================================
+		Teleop.init();
+		Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+		// Hardware.rightRearMotor.setInverted(true);
+		// Hardware.leftFrontMotor.setInverted(true);
+		// Hardware.leftRearMotor.setInverted(true);
+		Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
+		Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+		// =========================================================
+		// User code goes above here
+		// =========================================================
+		// ---------------------------------------
+		// done setup - tell the user we are complete
+		// setup
+		// ---------------------------------------
+		System.out.println("Completed TeleopInit().");
+	} // end teleopInit
 
-    // =========================================================
-    // User code goes above here
-    // =========================================================
+	// -------------------------------------------------------
+	/**
+	 * Non-User Periodic code for teleop mode should go here. Will be called
+	 * periodically at a regular rate while the robot is in teleop mode, and
+	 * will in turn call the Teleop class's Periodic function.
+	 *
+	 * @author Bob Brown
+	 * @written Jan 2, 2011
+	 *          -------------------------------------------------------
+	 */
+	@Override
+	public void teleopPeriodic() {
+		// -------------------------------------
+		// Call the Teleop class's Periodic function,
+		// which contains the user code.
+		// -------------------------------------
+		Teleop.periodic();
 
-} // end testInit
+		// feed all motor safeties
+		Hardware.leftRearMotorSafety.feed();
+		Hardware.rightRearMotorSafety.feed();
+		Hardware.leftFrontMotorSafety.feed();
+		Hardware.rightFrontMotorSafety.feed();
+	} // end teleopPeriodic
 
-// -------------------------------------------------------
-/**
- * Periodic code for test mode should go here. Will be called periodically
- * at a regular rate while the robot is in test mode.
- *
- * @author Bob Brown
- * @written Jan 2, 2015
- *          -------------------------------------------------------
- */
-@Override
-public void testPeriodic ()
-{
-    // =========================================================
-    // User code goes below here
-    // =========================================================
+	// -------------------------------------------------------
+	/**
+	 * Initialization code for test mode should go here. Will be called once
+	 * when the robot enters test mode.
+	 *
+	 * @author Bob Brown
+	 * @written Jan 2, 2015
+	 *          -------------------------------------------------------
+	 */
+	@Override
+	public void testInit() {
+		// =========================================================
+		// User code goes below here
+		// =========================================================
 
-    // =========================================================
-    // User code goes above here
-    // =========================================================
+		// =========================================================
+		// User code goes above here
+		// =========================================================
 
-} // end testPeriodic
+	} // end testInit
 
-// ==========================================
-// TUNEABLES
-// ==========================================
-public static double firstGear = .7;
+	// -------------------------------------------------------
+	/**
+	 * Periodic code for test mode should go here. Will be called periodically
+	 * at a regular rate while the robot is in test mode.
+	 *
+	 * @author Bob Brown
+	 * @written Jan 2, 2015
+	 *          -------------------------------------------------------
+	 */
+	@Override
+	public void testPeriodic() {
+		// =========================================================
+		// User code goes below here
+		// =========================================================
+
+		// =========================================================
+		// User code goes above here
+		// =========================================================
+
+	} // end testPeriodic
+
+	// ==========================================
+	// TUNEABLES
+	// ==========================================
+	public static double firstGear = .7;
 
 } // end class
