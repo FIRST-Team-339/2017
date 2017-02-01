@@ -283,8 +283,8 @@ public class Robot extends IterativeRobot {
 			// vary between -1 and +1
 			// this amount.
 			// -last edited on 28 Jan 2017 by Cole Ramos
-			//Hardware.cam0.setFPS(Hardware.USB_FPS);
-			//Hardware.cam1.setFPS(Hardware.USB_FPS);
+			Hardware.cam0.setFPS(Hardware.USB_FPS);
+			Hardware.cam1.setFPS(Hardware.USB_FPS);
 		}
 
 		// Sets the max FPS of the Axis Camera; also changes the FPS in the
