@@ -140,7 +140,8 @@ public static void periodic ()
         Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
                 Hardware.leftDriver.getY());
         }
-    System.out.println(Hardware.rightDriver.getDirectionDegrees());
+    // TODO label your printouts.
+    // System.out.println(Hardware.rightDriver.getDirectionDegrees());
     // System.out.println(Hardware.rightDriver.getTwist());
     // System.out.println(Hardware.rightDriver.getMagnitude());
 
@@ -161,7 +162,8 @@ public static void periodic ()
                 "Gyro value: " + Hardware.driveGyro.getAngle());
         isTurning = !(Hardware.driveGyro.getAngle() >= turnDegrees);
         }
-    Hardware.mecanumDrive.drive(0, 0, 0);
+    else
+        Hardware.tankDrive.drive(0, 0);
 
 
     // Testing driveInches
@@ -313,10 +315,10 @@ public static void printStatements ()
     // Encoders
     // prints the distance from the encoders
     // ---------------------------------
-    System.out.println("Right Encoder: "
-            + Hardware.autoDrive.getRightRearEncoderDistance());
-    System.out.println("Left Encoder: "
-            + Hardware.autoDrive.getLeftRearEncoderDistance());
+    // System.out.println("Right Encoder: "
+    // + Hardware.autoDrive.getRightRearEncoderDistance());
+    // System.out.println("Left Encoder: "
+    // + Hardware.autoDrive.getLeftRearEncoderDistance());
 
     // ---------------------------------
     // Red Light/IR Sensors
@@ -339,11 +341,6 @@ public static void printStatements ()
     // =================================
     // Analogs
     // =================================
-    System.out.println("LeftUS = "
-            + Hardware.leftUS.getDistanceFromNearestBumper());
-
-    System.out.println("RightUS = "
-            + Hardware.rightUS.getDistanceFromNearestBumper());
 
     // ---------------------------------
     // pots
