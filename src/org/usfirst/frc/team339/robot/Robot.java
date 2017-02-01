@@ -184,7 +184,7 @@ public void disabledInit ()
     // =========================================================
     // User code goes below here
     // =========================================================
-    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    // Hardware.rightFrontMotor.setInverted(true); // TODO takeout
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
@@ -248,7 +248,7 @@ public void robotInit ()
     Hardware.leftRearEncoder.reset();
     Hardware.rightRearEncoder.reset();
     Hardware.mecanumDrive.setFirstGearPercentage(firstGear);
-    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    // Hardware.rightFrontMotor.setInverted(true); // TODO takeout
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
@@ -336,7 +336,7 @@ public void teleopInit ()
     // User code goes below here
     // =========================================================
     Teleop.init();
-    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    // Hardware.rightFrontMotor.setInverted(true); // TODO takeout
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
