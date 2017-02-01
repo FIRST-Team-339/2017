@@ -14,11 +14,20 @@
 // ====================================================================
 package org.usfirst.frc.team339.Hardware;
 
+import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
 import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
+import org.usfirst.frc.team339.Utils.Drive;
+import org.usfirst.frc.team339.Vision.ImageProcessor;
+import org.usfirst.frc.team339.Vision.VisionScript;
+import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
+import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
+import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
@@ -181,8 +190,7 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // ------------------------------------
 // Gyro class
 // ------------------------------------
-// public static ADXRS450_Gyro driveGyro = new ADXRS450_Gyro(); TODO
-
+public static ADXRS450_Gyro driveGyro = new ADXRS450_Gyro();
 // -------------------------------------
 // Potentiometers
 // -------------------------------------
@@ -202,27 +210,28 @@ public static UltraSonic rightUS = new UltraSonic(2);
 // -------------------------------------
 // Axis/USB Camera class
 // -------------------------------------
-
-// TODO
-// public static UsbCamera cam0 = new UsbCamera("cam0", 0);
-//
-// public static UsbCamera cam1 = new UsbCamera("cam1", 1);
-
-// Used by the USB Cameras in robot init to set their FPS's TODO
-// public final static int USB_FPS = 15;
-//
-// public static KilroyCamera axisCamera = new KilroyCamera(true);
-//
 //// Used by the Axis Camera in robot init to limit its FPS
 // public final static int AXIS_FPS = 15;
 //
-// public static VisionScript visionScript = new VisionScript(
-// new HSLColorThresholdOperator(55, 147, 14, 255, 78, 255),
-// new RemoveSmallObjectsOperator(3, true),
-// new ConvexHullOperator(false));
-//
-// public static ImageProcessor imageProcessor = new ImageProcessor(
-// axisCamera, visionScript);
+public static UsbCamera cam0 = new UsbCamera("cam0", 0);
+
+public static UsbCamera cam1 = new UsbCamera("cam1", 1);
+
+// Used by the USB Cameras in robot init to set their FPS's
+public final static int USB_FPS = 15;
+
+public static KilroyCamera axisCamera = new KilroyCamera(true);
+
+// Used by the Axis Camera in robot init to limit its FPS
+public final static int AXIS_FPS = 15;
+
+public static VisionScript visionScript = new VisionScript(
+        new HSLColorThresholdOperator(55, 147, 14, 255, 78, 255),
+        new RemoveSmallObjectsOperator(3, true),
+        new ConvexHullOperator(false));
+
+public static ImageProcessor imageProcessor = new ImageProcessor(
+        axisCamera, visionScript);
 // -------------------------------------
 // declare the USB camera server and the
 // USB camera it serves
@@ -299,9 +308,9 @@ public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
 
 // Change when we get the robot for mecanum and two ultrasonic.
 // TODO
-// public static Drive autoDrive = new Drive(tankDrive, axisCamera,
-// imageProcessor, leftRearEncoder, rightRearEncoder,
-// leftRearEncoder, rightRearEncoder, rightUS, rightUS);
+public static Drive autoDrive = new Drive(tankDrive, axisCamera,
+        imageProcessor, leftRearEncoder, rightRearEncoder,
+        leftRearEncoder, rightRearEncoder, rightUS, rightUS);
 
 /**
  * are we using mecanum? set false for tank drive

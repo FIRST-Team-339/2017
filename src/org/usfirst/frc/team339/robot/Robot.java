@@ -190,6 +190,11 @@ public void disabledInit ()
     // User code goes below here
     // =========================================================
 
+    // Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    // Hardware.rightRearMotor.setInverted(true);
+    // Hardware.leftFrontMotor.setInverted(true);
+    // Hardware.leftRearMotor.setInverted(true);
+    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     // =========================================================
     // User code goes above here
     // =========================================================
@@ -286,12 +291,16 @@ public void robotInit ()
     // CameraServer.getInstance().startAutomaticCapture(Hardware.cam0); TODO
     // CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
     // CameraServer.getInstance().addAxisCamera("10.3.39.11");
+    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
+    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
     // Sets the [max?] FPS's for the USB Cameras. The FPS will generally
     // vary between -1 and +1
     // this amount.
     // -last edited on 28 Jan 2017 by Cole Ramos
     // Hardware.cam0.setFPS(Hardware.USB_FPS);
     // Hardware.cam1.setFPS(Hardware.USB_FPS); TODO
+    // Hardware.cam0.setFPS(Hardware.USB_FPS);
+    // Hardware.cam1.setFPS(Hardware.USB_FPS);
 
     // Sets the max FPS of the Axis Camera; also changes the FPS in the
     // firmware/ web browser
@@ -340,6 +349,12 @@ public void teleopInit ()
     // =========================================================
     Teleop.init();
 
+    // Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    // Hardware.rightRearMotor.setInverted(true);
+    // Hardware.leftFrontMotor.setInverted(true);
+    // Hardware.leftRearMotor.setInverted(true);
+    Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
+    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     // =========================================================
     // User code goes above here
     // =========================================================
