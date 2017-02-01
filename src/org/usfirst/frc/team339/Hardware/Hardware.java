@@ -334,6 +334,7 @@ public static final Timer autoStateTimer = new Timer();
 public static final MotorSafetyHelper leftRearMotorSafety = new MotorSafetyHelper(
         leftRearMotor);
 
+
 /**
  * Default motor safety
  */

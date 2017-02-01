@@ -65,6 +65,15 @@ public static void init ()
     Hardware.rightFrontMotor.set(0.0);
     Hardware.leftFrontMotor.set(0.0);
 
+    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    // Hardware.rightRearMotor.setInverted(true);
+    // Hardware.leftFrontMotor.setInverted(true);
+    // Hardware.leftRearMotor.setInverted(true);
+    Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
+    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+
+    Hardware.isUsingMecanum = true;
+    Hardware.twoJoystickControl = false;
 
     // Hardware.tankDrive.setGear(Hardware.tankDrive.getMaxGear());
     // Hardware.leftUS.setScalingFactor(.13);

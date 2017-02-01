@@ -106,6 +106,13 @@ public void autonomousInit ()
     // =========================================================
     // User code goes below here
     // =========================================================
+    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    // Hardware.rightRearMotor.setInverted(true);
+    // Hardware.leftFrontMotor.setInverted(true);
+    // Hardware.leftRearMotor.setInverted(true);
+    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+    Hardware.isUsingMecanum = true;
+    Hardware.twoJoystickControl = false;
     // -------------------------------------
     // Call the Autonomous class's Init function,
     // which contains the user code.
@@ -182,13 +189,7 @@ public void disabledInit ()
     // =========================================================
     // User code goes below here
     // =========================================================
-    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
-    // Hardware.rightRearMotor.setInverted(true);
-    // Hardware.leftFrontMotor.setInverted(true);
-    // Hardware.leftRearMotor.setInverted(true);
-    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-    Hardware.isUsingMecanum = true;
-    Hardware.twoJoystickControl = false;
+
     // =========================================================
     // User code goes above here
     // =========================================================
@@ -261,10 +262,12 @@ public void robotInit ()
     // -------------------------------------
     Hardware.leftRearMotorSafety.setSafetyEnabled(true);
     Hardware.rightRearMotorSafety.setSafetyEnabled(true);
-
+    Hardware.leftFrontMotorSafety.setSafetyEnabled(true);
+    Hardware.rightFrontMotorSafety.setSafetyEnabled(true);
     Hardware.leftRearMotorSafety.setExpiration(.25);
     Hardware.rightRearMotorSafety.setExpiration(.25);
-
+    Hardware.leftFrontMotorSafety.setExpiration(.25);
+    Hardware.rightFrontMotorSafety.setExpiration(.25);
     // Hardware.rightFrontMotor.setInverted(true);
 
     if (Hardware.runningInLab == true)
@@ -310,7 +313,8 @@ public void robotInit ()
             "Kilroy XVIII is started.  All hardware items created.");
     System.out.println();
     System.out.println();
-} // end robotInit
+} // end
+  // robotInit
 
 // -------------------------------------------------------
 /**
@@ -335,15 +339,7 @@ public void teleopInit ()
     // User code goes below here
     // =========================================================
     Teleop.init();
-    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
-    // Hardware.rightRearMotor.setInverted(true);
-    // Hardware.leftFrontMotor.setInverted(true);
-    // Hardware.leftRearMotor.setInverted(true);
-    Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
-    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
 
-    Hardware.isUsingMecanum = true;
-    Hardware.twoJoystickControl = false;
     // =========================================================
     // User code goes above here
     // =========================================================
