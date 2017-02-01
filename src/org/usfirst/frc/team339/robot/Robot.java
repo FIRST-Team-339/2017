@@ -270,17 +270,17 @@ public class Robot extends IterativeRobot {
 		// -last edited on 28 Jan 2017 by Cole Ramos
 
 		if (Hardware.MAKE_CAMERA_DROPDOWN_APPEAR == true) {
-			CameraServer.getInstance().startAutomaticCapture(0);
-			CameraServer.getInstance().startAutomaticCapture(1);
-			CameraServer.getInstance().addAxisCamera("10.3.39.11");
+			//CameraServer.getInstance().startAutomaticCapture(0);
+			//CameraServer.getInstance().startAutomaticCapture(1);
+			//CameraServer.getInstance().addAxisCamera("10.3.39.11");
 		}
 
-		CameraServer.getInstance().removeServer(Hardware.cam0.getName());
-		CameraServer.getInstance().removeServer(Hardware.cam1.getName());
+		//CameraServer.getInstance().removeServer(Hardware.cam0.getName());
+		//CameraServer.getInstance().removeServer(Hardware.cam1.getName());
 		
 		
 		if (Hardware.MAKE_CAMERA_DROPDOWN_APPEAR == false) {
-			//CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
+			CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
 			//CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
 
 			// Sets the [max?] FPS's for the USB Cameras. The FPS will generally
