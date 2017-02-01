@@ -32,6 +32,7 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
+import org.usfirst.frc.team339.HardwareInterfaces.transmission.Transmission.MotorDirection;
 import org.usfirst.frc.team339.Utils.Drive;
 import edu.wpi.first.wpilibj.Relay;
 
@@ -77,6 +78,7 @@ public static void init ()
     // Hardware.LeftUS.setConfidenceCalculationsOn(false);
     // Hardware.RightUS.setConfidenceCalculationsOn(false);
 
+    Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
 
 
 } // end Init
@@ -156,14 +158,8 @@ public static void periodic ()
 
     if (isTurning)
         {
-        // isTurning = !Hardware.autoDrive.turnDegrees(turnDegrees);
-        Hardware.tankDrive.drive(.7, -.7);
-        System.out.println(
-                "Gyro value: " + Hardware.driveGyro.getAngle());
-        isTurning = !(Hardware.driveGyro.getAngle() >= turnDegrees);
+        isTurning = !Hardware.autoDrive.turnDegrees(turnDegrees);
         }
-    else
-        Hardware.tankDrive.drive(0, 0);
 
 
     // Testing driveInches

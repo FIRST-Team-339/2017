@@ -60,7 +60,6 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
 
@@ -159,6 +158,8 @@ public void autonomousPeriodic ()
     // feed all motor safeties
     Hardware.leftRearMotorSafety.feed();
     Hardware.rightRearMotorSafety.feed();
+    Hardware.leftFrontMotorSafety.feed();
+    Hardware.rightFrontMotorSafety.feed();
 
 } // end autonomousPeriodic
 
@@ -258,9 +259,13 @@ public void robotInit ()
     // -------------------------------------
     Hardware.leftRearMotorSafety.setSafetyEnabled(true);
     Hardware.rightRearMotorSafety.setSafetyEnabled(true);
+    Hardware.leftFrontMotorSafety.setSafetyEnabled(true);
+    Hardware.rightFrontMotorSafety.setSafetyEnabled(true);
 
     Hardware.leftRearMotorSafety.setExpiration(.25);
     Hardware.rightRearMotorSafety.setExpiration(.25);
+    Hardware.leftFrontMotorSafety.setExpiration(.25);
+    Hardware.rightFrontMotorSafety.setExpiration(.25);
 
     // Hardware.rightFrontMotor.setInverted(true);
 
@@ -277,8 +282,8 @@ public void robotInit ()
 
     // Sends video from both USB Cameras to the Smart Dashboard
     // -last edited on 28 Jan 2017 by Cole Ramos
-    CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
-    CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
+    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
+    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
     // Sets the [max?] FPS's for the USB Cameras. The FPS will generally
     // vary between -1 and +1
     // this amount.
