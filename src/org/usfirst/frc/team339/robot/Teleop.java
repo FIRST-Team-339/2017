@@ -142,12 +142,6 @@ public static void periodic ()
         Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
                 Hardware.leftDriver.getY());
         }
-    // TODO label your printouts.
-    // System.out.println(Hardware.rightDriver.getDirectionDegrees());
-    // System.out.println(Hardware.rightDriver.getTwist());
-    // System.out.println(Hardware.rightDriver.getMagnitude());
-
-
     // Testing turn by degrees
     if (Hardware.leftDriver.getRawButton(2))
         {
