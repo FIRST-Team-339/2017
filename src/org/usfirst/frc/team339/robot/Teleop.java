@@ -150,12 +150,19 @@ public static void periodic ()
         {
         turnDegrees = 90;
         isTurning = true;
+        Hardware.driveGyro.reset();
         }
 
     if (isTurning)
         {
-        isTurning = !Hardware.autoDrive.turnDegrees(turnDegrees);
+        // isTurning = !Hardware.autoDrive.turnDegrees(turnDegrees);
+        Hardware.tankDrive.drive(.7, -.7);
+        System.out.println(
+                "Gyro value: " + Hardware.driveGyro.getAngle());
+        isTurning = !(Hardware.driveGyro.getAngle() >= turnDegrees);
         }
+    Hardware.mecanumDrive.drive(0, 0, 0);
+
 
     // Testing driveInches
     if (Hardware.rightDriver.getRawButton(2))
