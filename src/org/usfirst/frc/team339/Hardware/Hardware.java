@@ -15,10 +15,10 @@
 package org.usfirst.frc.team339.Hardware;
 
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
+import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
 import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
-import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import org.usfirst.frc.team339.Utils.Drive;
@@ -316,12 +316,12 @@ public static Drive autoDrive = new Drive(tankDrive, axisCamera,
 /**
  * are we using mecanum? set false for tank drive
  */
-public static boolean isUsingMecanum = true;
+public static boolean isUsingMecanum = false;
 
 /**
  * are we using 2 joysticks?
  */
-public static boolean twoJoystickControl = true;
+public static boolean twoJoystickControl = false;
 
 
 // -------------------

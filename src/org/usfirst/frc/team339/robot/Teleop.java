@@ -117,30 +117,31 @@ public static void periodic ()
         }
 
 
-    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-    if (Hardware.isUsingMecanum == true
-            && Hardware.twoJoystickControl == false)
-        {
-        Hardware.mecanumDrive.drive(Hardware.rightDriver.getMagnitude(),
-                Hardware.rightDriver.getDirectionDegrees(),
-                rotationValue, Hardware.rightDriver.getY(),
-                Hardware.rightDriver.getX());
-        }
-    else if (Hardware.isUsingMecanum == true
-            && Hardware.twoJoystickControl == true)
-        {
-        Hardware.mecanumDrive.drive(Hardware.rightDriver.getMagnitude(),
-                Hardware.rightDriver.getDirectionDegrees(),
-                Hardware.leftDriver.getX(),
-                Hardware.rightDriver.getY(),
-                Hardware.rightDriver.getX());
-        }
-    else
-        {
-        Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
-                Hardware.leftDriver.getY());
-        }
-    System.out.println(Hardware.rightDriver.getDirectionDegrees());
+    if (!isAligning)
+        if (Hardware.isUsingMecanum == true
+                && Hardware.twoJoystickControl == false)
+            {
+            Hardware.mecanumDrive.drive(
+                    Hardware.rightDriver.getMagnitude(),
+                    Hardware.rightDriver.getDirectionDegrees(),
+                    rotationValue, Hardware.rightDriver.getY(),
+                    Hardware.rightDriver.getX());
+            }
+        else if (Hardware.isUsingMecanum == true
+                && Hardware.twoJoystickControl == true)
+            {
+            Hardware.mecanumDrive.drive(
+                    Hardware.rightDriver.getMagnitude(),
+                    Hardware.rightDriver.getDirectionDegrees(),
+                    Hardware.leftDriver.getX(),
+                    Hardware.rightDriver.getY(),
+                    Hardware.rightDriver.getX());
+            }
+        else
+            {
+            Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
+                    Hardware.leftDriver.getY());
+            }
     // System.out.println(Hardware.rightDriver.getTwist());
     // System.out.println(Hardware.rightDriver.getMagnitude());
 
@@ -173,8 +174,10 @@ public static void periodic ()
     // =================================================================
 
     // "Cancel basically everything" button
-    if (Hardware.leftOperator.getRawButton(7))
+    if (Hardware.leftOperator.getRawButton(7)
+            || Hardware.leftOperator.getRawButton(6))
         {
+        System.out.println("Cancelling everything");
         isAligning = false;
         isStrafingToTarget = false;
         isDrivingInches = false;
@@ -184,6 +187,7 @@ public static void periodic ()
     // Testing aligning to target
     if (Hardware.leftOperator.getRawButton(8))
         isAligning = true;
+
     if (isAligning)
         {
         alignValue = Hardware.autoDrive.alignToGear(CAMERA_ALIGN_CENTER,
@@ -196,12 +200,10 @@ public static void periodic ()
         else if (alignValue == Drive.AlignReturnType.MISALIGNED)
             {
             System.out.println("We are not aligned!");
-            isAligning = true;
             }
         else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
             {
             System.out.println("We don't see anything!");
-            isAligning = true;
             }
         }
 
@@ -216,17 +218,14 @@ public static void periodic ()
         if (alignValue == Drive.AlignReturnType.ALIGNED)
             {
             System.out.println("We are aligned!");
-            isStrafingToTarget = true;
             }
         else if (alignValue == Drive.AlignReturnType.MISALIGNED)
             {
             System.out.println("WE are NOT aligned!");
-            isStrafingToTarget = true;
             }
         else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
             {
             System.out.println("We have no blobs!");
-            isStrafingToTarget = true;
             }
         else if (alignValue == Drive.AlignReturnType.CLOSE_ENOUGH)
             {
@@ -306,10 +305,10 @@ public static void printStatements ()
     // Encoders
     // prints the distance from the encoders
     // ---------------------------------
-    System.out.println("Right Encoder: "
-            + Hardware.autoDrive.getRightRearEncoderDistance());
-    System.out.println("Left Encoder: "
-            + Hardware.autoDrive.getLeftRearEncoderDistance());
+    // System.out.println("Right Encoder: "
+    // + Hardware.autoDrive.getRightRearEncoderDistance());
+    // System.out.println("Left Encoder: "
+    // + Hardware.autoDrive.getLeftRearEncoderDistance());
 
     // ---------------------------------
     // Red Light/IR Sensors
@@ -332,11 +331,11 @@ public static void printStatements ()
     // =================================
     // Analogs
     // =================================
-    System.out.println("LeftUS = "
-            + Hardware.leftUS.getDistanceFromNearestBumper());
-
-    System.out.println("RightUS = "
-            + Hardware.rightUS.getDistanceFromNearestBumper());
+    // System.out.println("LeftUS = "
+    // + Hardware.leftUS.getDistanceFromNearestBumper());
+    //
+    // System.out.println("RightUS = "
+    // + Hardware.rightUS.getDistanceFromNearestBumper());
 
     // ---------------------------------
     // pots
