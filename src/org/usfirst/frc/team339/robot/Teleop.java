@@ -209,7 +209,6 @@ public static void periodic ()
             isAligning = true;
             }
         }
-
     // Testing Strafe to target
     if (Hardware.rightOperator.getRawButton(8))
         isStrafingToTarget = true;
