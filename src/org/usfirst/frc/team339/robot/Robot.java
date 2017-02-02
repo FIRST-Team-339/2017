@@ -267,19 +267,8 @@ public class Robot extends IterativeRobot {
 		// -------------------------------------
 
 		// Sends video from both USB Cameras to the Smart Dashboard
-		// -last edited on 28 Jan 2017 by Cole Ramos
+		// -last edited on 28 Jan 2017 by Cole Ramos	
 
-		//if (Hardware.MAKE_CAMERA_DROPDOWN_APPEAR == true) {
-			//CameraServer.getInstance().startAutomaticCapture(0);
-			//CameraServer.getInstance().startAutomaticCapture(1);
-			//CameraServer.getInstance().addAxisCamera("10.3.39.11");
-		//}
-
-		//CameraServer.getInstance().removeServer();
-		//CameraServer.getInstance().removeServer(Hardware.cam1.getName());
-		
-		
-		//if (Hardware.MAKE_CAMERA_DROPDOWN_APPEAR == false) {
 			CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
 			CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
 			// Sets the [max?] FPS's for the USB Cameras. The FPS will generally
@@ -287,12 +276,14 @@ public class Robot extends IterativeRobot {
 			// -last edited on 28 Jan 2017 by Cole Ramos
 			Hardware.cam0.setFPS(Hardware.USB_FPS);
 			Hardware.cam1.setFPS(Hardware.USB_FPS);
-		//}
+
 
 		// Sets the max FPS of the Axis Camera; also changes the FPS in the
 		// firmware/ web browser
 		// of the Axis Camera. If the FPS is not set in the code, the firmware
 		// will default to unlimited.
+		// TODO Fix this. It isn't actually changing the FPS on the Driver's Station
+		// but it is changing the website/ firmware
 		Hardware.axisCamera.writeMaxFPS(Hardware.AXIS_FPS);
 
 		Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
@@ -366,7 +357,6 @@ public class Robot extends IterativeRobot {
 		// which contains the user code.
 		// -------------------------------------
 		Teleop.periodic();
-		System.out.println("Camera Name: " + Hardware.cam0.getName());
 		// feed all motor safeties
 		Hardware.leftRearMotorSafety.feed();
 		Hardware.rightRearMotorSafety.feed();

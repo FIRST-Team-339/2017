@@ -216,12 +216,9 @@ public static UltraSonic rightUS = new UltraSonic(2);
 
 // If you are not getting the camera dropdowns on the driver station, make this ture, send, then make
 // make it false and send again.
-public final static boolean MAKE_CAMERA_DROPDOWN_APPEAR = true; 
 
-//public static UsbCamera cam0 = new UsbCamera("cam0", 0);
-//public static UsbCamera cam1 = new UsbCamera("cam1", 1);
-
-
+//Note: If causing problems, replace "USB_Camera_0" w/ "cam0", and
+// "USB_Camera_1" w/ "cam1"
 public static UsbCamera cam0 = new UsbCamera("USB_Camera_0", 0);
 public static UsbCamera cam1 = new UsbCamera("USB_Camera_1", 1);
 
@@ -231,7 +228,7 @@ public final static int USB_FPS = 15;
 public static KilroyCamera axisCamera = new KilroyCamera(true);
 
 // Used by the Axis Camera in robot init to limit its FPS
-public final static int AXIS_FPS = 7;
+public final static int AXIS_FPS = 15;
 
 public static VisionScript visionScript = new VisionScript(
         new HSLColorThresholdOperator(55, 147, 14, 255, 78, 255),
