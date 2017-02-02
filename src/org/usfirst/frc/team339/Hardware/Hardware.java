@@ -216,10 +216,12 @@ public static UltraSonic rightUS = new UltraSonic(2);
 
 // If you are not getting the camera dropdowns on the driver station, make this ture, send, then make
 // make it false and send again.
-public final static boolean MAKE_CAMERA_DROPDOWN_APPEAR = false; 
+public final static boolean MAKE_CAMERA_DROPDOWN_APPEAR = true; 
 
 //public static UsbCamera cam0 = new UsbCamera("cam0", 0);
 public static UsbCamera cam0 = new UsbCamera("USB Camera " + 0, 0);
+
+public static UsbCamera cam1 = new UsbCamera("USB Camera"+ 1, 1);
 
 //public static UsbCamera cam1 = new UsbCamera("cam1", 1);
 

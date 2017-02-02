@@ -269,26 +269,25 @@ public class Robot extends IterativeRobot {
 		// Sends video from both USB Cameras to the Smart Dashboard
 		// -last edited on 28 Jan 2017 by Cole Ramos
 
-		if (Hardware.MAKE_CAMERA_DROPDOWN_APPEAR == true) {
+		//if (Hardware.MAKE_CAMERA_DROPDOWN_APPEAR == true) {
 			//CameraServer.getInstance().startAutomaticCapture(0);
 			//CameraServer.getInstance().startAutomaticCapture(1);
 			//CameraServer.getInstance().addAxisCamera("10.3.39.11");
-		}
+		//}
 
-		//CameraServer.getInstance().removeServer(Hardware.cam0.getName());
+		//CameraServer.getInstance().removeServer();
 		//CameraServer.getInstance().removeServer(Hardware.cam1.getName());
 		
 		
-		if (Hardware.MAKE_CAMERA_DROPDOWN_APPEAR == false) {
+		//if (Hardware.MAKE_CAMERA_DROPDOWN_APPEAR == false) {
 			CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
-			//CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
-
+			CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
 			// Sets the [max?] FPS's for the USB Cameras. The FPS will generally
 			// vary between -1 and +1 this amount.
 			// -last edited on 28 Jan 2017 by Cole Ramos
 			//Hardware.cam0.setFPS(Hardware.USB_FPS);
 			//Hardware.cam1.setFPS(Hardware.USB_FPS);
-		}
+		//}
 
 		// Sets the max FPS of the Axis Camera; also changes the FPS in the
 		// firmware/ web browser
@@ -299,7 +298,6 @@ public class Robot extends IterativeRobot {
 		Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
 		Hardware.ringlightRelay.set(Relay.Value.kOff);
 				
-		System.out.println("We did a good. Cameras initialized!");
 
 		// =========================================================
 		// User code goes above here
@@ -368,7 +366,7 @@ public class Robot extends IterativeRobot {
 		// which contains the user code.
 		// -------------------------------------
 		Teleop.periodic();
-		System.out.println("WE KEEP DOING GOODS!");
+		//System.out.println("Camera Name: " + Hardware.cam0.getName());
 		// feed all motor safeties
 		Hardware.leftRearMotorSafety.feed();
 		Hardware.rightRearMotorSafety.feed();
