@@ -320,12 +320,12 @@ public static Drive autoDrive = new Drive(tankDrive, axisCamera,
 /**
  * are we using mecanum? set false for tank drive
  */
-public static boolean isUsingMecanum = true;
+public static boolean isUsingMecanum = false;
 
 /**
  * are we using 2 joysticks?
  */
-public static boolean twoJoystickControl = true;
+public static boolean twoJoystickControl = false;
 
 
 // -------------------

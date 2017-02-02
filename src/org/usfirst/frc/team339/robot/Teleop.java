@@ -32,8 +32,8 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
+import org.usfirst.frc.team339.HardwareInterfaces.transmission.Transmission.MotorDirection;
 import org.usfirst.frc.team339.Utils.Drive;
-import edu.wpi.first.wpilibj.Relay;
 
 /**
  * This class contains all of the user code for the Autonomous part of the
@@ -66,17 +66,27 @@ public static void init ()
     Hardware.rightFrontMotor.set(0.0);
     Hardware.leftFrontMotor.set(0.0);
 
+    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    // Hardware.rightRearMotor.setInverted(true);
+    // Hardware.leftFrontMotor.setInverted(true);
+    // Hardware.leftRearMotor.setInverted(true);
+    Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
+    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
 
-    Hardware.tankDrive.setGear(Hardware.tankDrive.getMaxGear());
-    Hardware.leftUS.setScalingFactor(.13);
-    Hardware.leftUS.setOffsetDistanceFromNearestBummper(0);
-    Hardware.rightUS.setScalingFactor(.13);
-    Hardware.rightUS.setOffsetDistanceFromNearestBummper(0);
-    Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(1);
-    Hardware.leftUS.setNumberOfItemsToCheckBackwardForValidity(1);
+    Hardware.isUsingMecanum = true;
+    Hardware.twoJoystickControl = false;
+
+    // Hardware.tankDrive.setGear(Hardware.tankDrive.getMaxGear());
+    // Hardware.leftUS.setScalingFactor(.13);
+    // Hardware.leftUS.setOffsetDistanceFromNearestBummper(0);
+    // Hardware.rightUS.setScalingFactor(.13); TODO
+    // Hardware.rightUS.setOffsetDistanceFromNearestBummper(0);
+    // Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(1);
+    // Hardware.leftUS.setNumberOfItemsToCheckBackwardForValidity(1);
     // Hardware.LeftUS.setConfidenceCalculationsOn(false);
     // Hardware.RightUS.setConfidenceCalculationsOn(false);
 
+    Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
 
 
 } // end Init
@@ -90,14 +100,14 @@ public static void init ()
  */
 public static void periodic ()
 {
-    if (Hardware.ringlightSwitch.isOnCheckNow())
-        {
-        Hardware.ringlightRelay.set(Relay.Value.kOn);
-        }
-    else
-        {
-        Hardware.ringlightRelay.set(Relay.Value.kOff);
-        }
+    // if (Hardware.ringlightSwitch.isOnCheckNow())
+    // {
+    // Hardware.ringlightRelay.set(Relay.Value.kOn);
+    // }
+    // else
+    // {
+    // Hardware.ringlightRelay.set(Relay.Value.kOff);
+    // }
 
     // Print out any data we want from the hardware elements.
     printStatements();
@@ -116,46 +126,47 @@ public static void periodic ()
         rotationValue = 0.0;
         }
 
-
-    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-    if (Hardware.isUsingMecanum == true
-            && Hardware.twoJoystickControl == false)
-        {
-        Hardware.mecanumDrive.drive(Hardware.rightDriver.getMagnitude(),
-                Hardware.rightDriver.getDirectionDegrees(),
-                rotationValue, Hardware.rightDriver.getY(),
-                Hardware.rightDriver.getX());
-        }
-    else if (Hardware.isUsingMecanum == true
-            && Hardware.twoJoystickControl == true)
-        {
-        Hardware.mecanumDrive.drive(Hardware.rightDriver.getMagnitude(),
-                Hardware.rightDriver.getDirectionDegrees(),
-                Hardware.leftDriver.getX(),
-                Hardware.rightDriver.getY(),
-                Hardware.rightDriver.getX());
-        }
-    else
-        {
-        Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
-                Hardware.leftDriver.getY());
-        }
-    System.out.println(Hardware.rightDriver.getDirectionDegrees());
+    if (!isAligning)
+        if (Hardware.isUsingMecanum == true
+                && Hardware.twoJoystickControl == false)
+            {
+            Hardware.mecanumDrive.drive(
+                    Hardware.rightDriver.getMagnitude(),
+                    Hardware.rightDriver.getDirectionDegrees(),
+                    rotationValue, Hardware.rightDriver.getY(),
+                    Hardware.rightDriver.getX());
+            }
+        else if (Hardware.isUsingMecanum == true
+                && Hardware.twoJoystickControl == true)
+            {
+            Hardware.mecanumDrive.drive(
+                    Hardware.rightDriver.getMagnitude(),
+                    Hardware.rightDriver.getDirectionDegrees(),
+                    Hardware.leftDriver.getX(),
+                    Hardware.rightDriver.getY(),
+                    Hardware.rightDriver.getX());
+            }
+        else
+            {
+            Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
+                    Hardware.leftDriver.getY());
+            }
     // System.out.println(Hardware.rightDriver.getTwist());
     // System.out.println(Hardware.rightDriver.getMagnitude());
-
 
     // Testing turn by degrees
     if (Hardware.leftDriver.getRawButton(2))
         {
         turnDegrees = 90;
         isTurning = true;
+        Hardware.driveGyro.reset();
         }
 
     if (isTurning)
         {
         isTurning = !Hardware.autoDrive.turnDegrees(turnDegrees);
         }
+
 
     // Testing driveInches
     if (Hardware.rightDriver.getRawButton(2))
@@ -169,22 +180,44 @@ public static void periodic ()
         }
 
 
+    // =================================================================
+    // CAMERA CODE
+    // =================================================================
 
-
-
-} // end Periodic
-
-// private static boolean isSpeedTesting = false;
-
-
-public static void alignToGearPeg ()
-{
-
+    // "Cancel basically everything" button
+    if (Hardware.leftOperator.getRawButton(7)
+            || Hardware.leftOperator.getRawButton(6))
+        {
+        System.out.println("Cancelling everything");
         isAligning = false;
         isStrafingToTarget = false;
         isDrivingInches = false;
-        isTurning = false;//TODO Not sure what the above block is doing, just make sure it's supposed to be there
-    // Testing strafe to target on button 8 on the RIGHT operator
+        isTurning = false;
+        }
+
+    // Testing aligning to target
+    if (Hardware.leftOperator.getRawButton(8))
+        isAligning = true;
+
+    if (isAligning)
+        {
+        alignValue = Hardware.autoDrive.alignToGear(CAMERA_ALIGN_CENTER,
+                CAMERA_ALIGN_SPEED, CAMERA_ALIGN_DEADBAND);
+        if (alignValue == Drive.AlignReturnType.ALIGNED)
+            {
+            System.out.println("We are aligned!");
+            isAligning = false;
+            }
+        else if (alignValue == Drive.AlignReturnType.MISALIGNED)
+            {
+            System.out.println("We are not aligned!");
+            }
+        else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
+            {
+            System.out.println("We don't see anything!");
+            }
+        }
+    // Testing Strafe to target
     if (Hardware.rightOperator.getRawButton(8))
         isStrafingToTarget = true;
 
@@ -195,17 +228,14 @@ public static void alignToGearPeg ()
         if (alignValue == Drive.AlignReturnType.ALIGNED)
             {
             System.out.println("We are aligned!");
-            isStrafingToTarget = true;
             }
         else if (alignValue == Drive.AlignReturnType.MISALIGNED)
             {
             System.out.println("WE are NOT aligned!");
-            isStrafingToTarget = true;
             }
         else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
             {
             System.out.println("We have no blobs!");
-            isStrafingToTarget = true;
             }
         else if (alignValue == Drive.AlignReturnType.CLOSE_ENOUGH)
             {
@@ -216,9 +246,9 @@ public static void alignToGearPeg ()
 
     Hardware.axisCamera
             .takeSinglePicture(Hardware.leftOperator.getRawButton(8));
+} // end Periodic
 
-
-}
+// private static boolean isSpeedTesting = false;
 
 
 private static double rotationValue = 0.0;
@@ -283,10 +313,10 @@ public static void printStatements ()
     // Encoders
     // prints the distance from the encoders
     // ---------------------------------
-    System.out.println("Right Encoder: "
-            + Hardware.autoDrive.getRightRearEncoderDistance());
-    System.out.println("Left Encoder: "
-            + Hardware.autoDrive.getLeftRearEncoderDistance());
+    // System.out.println("Right Encoder: "
+    // + Hardware.autoDrive.getRightRearEncoderDistance());
+    // System.out.println("Left Encoder: "
+    // + Hardware.autoDrive.getLeftRearEncoderDistance());
 
     // ---------------------------------
     // Red Light/IR Sensors
@@ -309,11 +339,13 @@ public static void printStatements ()
     // =================================
     // Analogs
     // =================================
-    System.out.println("LeftUS = "
-            + Hardware.leftUS.getDistanceFromNearestBumper());
 
-    System.out.println("RightUS = "
-            + Hardware.rightUS.getDistanceFromNearestBumper());
+    // System.out.println("LeftUS = "
+    // + Hardware.leftUS.getDistanceFromNearestBumper());
+    //
+    // System.out.println("RightUS = "
+    // + Hardware.rightUS.getDistanceFromNearestBumper());
+
 
     // ---------------------------------
     // pots
@@ -361,7 +393,7 @@ public static void printStatements ()
  */
 private final static double CAMERA_ALIGN_SPEED = .5;
 
-// The dead zone for the aligning
+//// The dead zone for the aligning TODO
 private final static double CAMERA_ALIGN_DEADBAND = 10.0
         / Hardware.axisCamera.getHorizontalResolution();
 

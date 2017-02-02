@@ -262,51 +262,77 @@ public AlignReturnType alignToGear (double relativeCenter,
         double movementSpeed,
         double deadband)
 {
-    imageProcessor.processImage();
-    if (imageProcessor.getNthSizeBlob(1) != null)
-        switch (this.transmissionType)
-            {
-            case TANK:
-                double distanceToCenter = imageProcessor
-                        .getPositionOfRobotToGear(
-                                imageProcessor.getNthSizeBlob(0),
-                                imageProcessor.getNthSizeBlob(1),
-                                relativeCenter);
-                System.out
-                        .println("Distance to center: "
-                                + distanceToCenter);
+    switch (this.transmissionType)
+        {
+        case TANK:
+            if (isTurning == false)
+                {
+                this.imageProcessor.processImage();
+                if (this.imageProcessor.getNthSizeBlob(1) != null)
+                    {
+                    double distanceToCenter = imageProcessor
+                            .getPositionOfRobotToGear(
+                                    imageProcessor
+                                            .getNthSizeBlob(0),
+                                    imageProcessor
+                                            .getNthSizeBlob(1),
+                                    relativeCenter);
+                    if (distanceToCenter > 0)
+                        {
+                        System.out.println("We are Left of target");
+                        }
+                    else if (distanceToCenter < 0)
+                        System.out
+                                .println("We are RIGHT of target");
+                    System.out
+                            .println("Distance to center: "
+                                    + distanceToCenter);
 
-                System.out.println("Deadband: " + (10.0
-                        / this.camera.getHorizontalResolution()));
-                if (distanceToCenter == Double.MAX_VALUE)
-                    {
-                    transmissionFourWheel.drive(0.0, 0.0);
-                    return AlignReturnType.NO_BLOBS;
+                    System.out.println("Deadband: " + (10.0
+                            / this.camera
+                                    .getHorizontalResolution()));
+                    if (distanceToCenter == Double.MAX_VALUE)
+                        {
+                        transmissionFourWheel.drive(0.0, 0.0);
+                        return AlignReturnType.NO_BLOBS;
+                        }
+                    if (Math.abs(distanceToCenter) <= deadband)
+                        {
+                        transmissionFourWheel.drive(0.0, 0.0);
+                        return AlignReturnType.ALIGNED;
+                        }
                     }
-                if (Math.abs(distanceToCenter) <= deadband)
-                    {
-                    transmissionFourWheel.drive(0.0, 0.0);
-                    return AlignReturnType.ALIGNED;
-                    }
-                else if (distanceToCenter > 0)
-                    {
-                    transmissionFourWheel.drive(movementSpeed,
-                            -movementSpeed);
-                    }
-                else if (distanceToCenter < 0)
-                    {
-                    transmissionFourWheel.drive(-movementSpeed,
-                            movementSpeed);
-                    }
-                break;
-            case MECANUM:
+                }
+            // Turns based on the average of the yaw angles of the
+            // two blobs, to account for a delayed axis camera.
+            double yawAngle = (this.imageProcessor
+                    .getYawAngleToTarget(
+                            this.imageProcessor.getNthSizeBlob(1))
+                    + this.imageProcessor.getYawAngleToTarget(
+                            this.imageProcessor.getNthSizeBlob(0))
+                            / 2.0);
+            System.out.println("Average yaw angle: " + yawAngle);
 
-                break;
-            default:
-                break;
-            }
+
+
+            isTurning = this.turnDegrees((this.imageProcessor
+                    .getYawAngleToTarget(this.imageProcessor
+                            .getNthSizeBlob(0))
+                    + this.imageProcessor.getYawAngleToTarget(
+                            this.imageProcessor
+                                    .getNthSizeBlob(1)))
+                    / 2.0, .5);
+            break;
+        case MECANUM:
+
+            break;
+        default:
+            break;
+        }
     return AlignReturnType.MISALIGNED;
 }
+
+private boolean isTurning = false;
 
 
 // TODO we need to test this!!
@@ -414,6 +440,16 @@ public static enum AlignReturnType
     CLOSE_ENOUGH
     }
 
+public void strafeStraight (double inches)
+{
+    resetEncoders();
+    double rightFrontSpeed = inches;
+    double rightRearSpeed = inches;
+    double leftFrontSpeed = inches;
+    double leftRearSpeed = inches;
+
+}
+
 /**
  * @return the distance the front left encoder has driven based on the
  *         distance per pulse set earlier.
@@ -481,9 +517,11 @@ public void resetEncoders ()
  * @param degrees
  *            Number of degrees to rotate by. Negative if left, positive if
  *            right.
+ * @param speed
+ *            How fast we want the robot to turn
  * @return Whether or not we have finished turning yet.
  */
-public boolean turnDegrees (double degrees)
+public boolean turnDegrees (double degrees, double speed)
 {
     if (firstAlign)
         {
@@ -522,18 +560,30 @@ public boolean turnDegrees (double degrees)
     if (adjustedDegrees < 0)
         {
         if (transmissionType == TransmissionType.TANK)
-            transmissionFourWheel.drive(rotateSpeed, -rotateSpeed);
+            transmissionFourWheel.drive(speed, -speed);
         else
-            transmissionMecanum.drive(0.0, 0.0, -rotateSpeed, 0, 0);
+            transmissionMecanum.drive(0.0, 0.0, -speed, 0, 0);
         }
     else if (adjustedDegrees > 0)
         {
         if (transmissionType == TransmissionType.TANK)
-            transmissionFourWheel.drive(-rotateSpeed, rotateSpeed);
+            transmissionFourWheel.drive(-speed, speed);
         else
-            transmissionMecanum.drive(0.0, 0.0, rotateSpeed, 0, 0);
+            transmissionMecanum.drive(0.0, 0.0, speed, 0, 0);
         }
     return false;
+}
+
+/**
+ * Method to turn degrees using the default or 'set' speed in this class
+ * 
+ * @param degrees
+ *            How far we want to turn
+ * @return
+ */
+public boolean turnDegrees (double degrees)
+{
+    return this.turnDegrees(degrees, rotateSpeed);
 }
 
 private double rotateSpeed = .6;
