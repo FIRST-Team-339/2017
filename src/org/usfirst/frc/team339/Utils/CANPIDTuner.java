@@ -108,9 +108,6 @@ public void setupMotorController (FeedbackDevice feedbackType,
  */
 public void setupDashboard ()
 {
-    this.P = 0;
-    this.I = 0;
-    this.D = 0;
     this.setpoint = 0;
     if (this.smartDashboard)
         {
