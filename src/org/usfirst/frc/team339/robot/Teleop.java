@@ -31,9 +31,13 @@
 // ====================================================================
 package org.usfirst.frc.team339.robot;
 
+import com.ctre.CANTalon.FeedbackDevice;
+import com.ctre.CANTalon.TalonControlMode;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.Transmission.MotorDirection;
+import org.usfirst.frc.team339.Utils.CANPIDTuner;
 import org.usfirst.frc.team339.Utils.Drive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class contains all of the user code for the Autonomous part of the
@@ -88,8 +92,21 @@ public static void init ()
 
     Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
 
+    testTuner.setupMotorController(
+            FeedbackDevice.CtreMagEncoder_Relative,
+            TalonControlMode.Speed, 1024, true);
+    testTuner.setupDashboard();
+    testTuner.setPID(0, 0, 0);
+    testTuner.setSetpoint(0);
+    testTuner.setErrorThreshold(15);
+    testTuner.update();
+    SmartDashboard.putNumber("F", 0.0);
 
 } // end Init
+
+private static CANPIDTuner testTuner = new CANPIDTuner(1,
+        Hardware.shooterMotor, true,
+        20);
 
 /**
  * User Periodic code for teleop mode should go here. Will be called
@@ -100,6 +117,17 @@ public static void init ()
  */
 public static void periodic ()
 {
+    testTuner.update();
+    Hardware.shooterMotor.setF(SmartDashboard.getNumber("F", 0.0));
+    System.out.println("Output voltage: "
+            + Hardware.shooterMotor.getOutputVoltage());
+    System.out.println("P, I, D: " + Hardware.shooterMotor.getP() + ", "
+            + Hardware.shooterMotor.getI() + ", "
+            + Hardware.shooterMotor.getD());
+    System.out.println(
+            "Setpoint: " + Hardware.shooterMotor.getSetpoint());
+    System.out.println("Error: " + Hardware.shooterMotor.getError());
+    System.out.println("Speed: " + Hardware.shooterMotor.getSpeed());
     // if (Hardware.ringlightSwitch.isOnCheckNow())
     // {
     // Hardware.ringlightRelay.set(Relay.Value.kOn);
@@ -115,7 +143,6 @@ public static void periodic ()
     // =================================================================
     // Driving code
     // =================================================================
-
 
     if (Hardware.rightDriver.getTrigger())
         {
@@ -159,7 +186,8 @@ public static void periodic ()
         {
         turnDegrees = 90;
         isTurning = true;
-        Hardware.driveGyro.reset();
+        // Hardware.driveGyro.reset();
+        // TODO
         }
 
     if (isTurning)

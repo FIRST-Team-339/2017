@@ -91,7 +91,7 @@ public void setupMotorController (FeedbackDevice feedbackType,
     this.tunedMotorController.configEncoderCodesPerRev(codesPerRev);
     this.tunedMotorController.reverseSensor(reverseSensor);
     this.tunedMotorController.setProfile(0);
-    this.tunedMotorController.configPeakOutputVoltage(12f, 0f);
+    this.tunedMotorController.configPeakOutputVoltage(12f, -12f);
     this.tunedMotorController.configNominalOutputVoltage(0f, 0f);
     wasIncorrect = false;
     time.stop();
@@ -108,6 +108,10 @@ public void setupMotorController (FeedbackDevice feedbackType,
  */
 public void setupDashboard ()
 {
+    this.P = 0;
+    this.I = 0;
+    this.D = 0;
+    this.setpoint = 0;
     if (this.smartDashboard)
         {
         SmartDashboard.putNumber("P", this.P);
@@ -118,6 +122,12 @@ public void setupDashboard ()
                 this.setpoint - this.tunedMotorController.getSpeed());
         SmartDashboard.putNumber("Speed",
                 this.tunedMotorController.getSpeed());
+        System.out.println(
+                "PID: " + this.P + ", " + this.I + ", " + this.D);
+        System.out.println("Setpoint, error: " + this.setpoint + ", "
+                + this.tunedMotorController.getClosedLoopError());
+        System.out.println(
+                "Speed: " + this.tunedMotorController.getSpeed());
         }
 }
 
@@ -140,6 +150,7 @@ public void update ()
         SmartDashboard.putNumber("Speed",
                 this.tunedMotorController.getSpeed());
         }
+    this.tunedMotorController.set(this.setpoint);
     this.tunedMotorController.setPID(this.P, this.I, this.D);
     if (Math.abs(
             this.tunedMotorController

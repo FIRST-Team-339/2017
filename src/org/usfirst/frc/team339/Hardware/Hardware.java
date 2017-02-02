@@ -14,6 +14,7 @@
 // ====================================================================
 package org.usfirst.frc.team339.Hardware;
 
+import com.ctre.CANTalon;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
 import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
@@ -26,8 +27,6 @@ import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
@@ -94,6 +93,8 @@ public static TalonSRX rightFrontMotor = new TalonSRX(1);// 1);
 public static TalonSRX leftRearMotor = new TalonSRX(3);
 
 public static TalonSRX leftFrontMotor = new TalonSRX(4);// 4);
+
+public static CANTalon shooterMotor = new CANTalon(1);
 // ------------------------------------
 // Victor classes
 // ------------------------------------
@@ -190,7 +191,8 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // ------------------------------------
 // Gyro class
 // ------------------------------------
-public static ADXRS450_Gyro driveGyro = new ADXRS450_Gyro();
+// public static ADXRS450_Gyro driveGyro = new ADXRS450_Gyro();TODO
+
 // -------------------------------------
 // Potentiometers
 // -------------------------------------
@@ -213,14 +215,14 @@ public static UltraSonic rightUS = new UltraSonic(2);
 //// Used by the Axis Camera in robot init to limit its FPS
 // public final static int AXIS_FPS = 15;
 //
-public static UsbCamera cam0 = new UsbCamera("cam0", 0);
-
-public static UsbCamera cam1 = new UsbCamera("cam1", 1);
+// public static UsbCamera cam0 = new UsbCamera("cam0", 0);
+//
+// public static UsbCamera cam1 = new UsbCamera("cam1", 1);//TODO
 
 // Used by the USB Cameras in robot init to set their FPS's
 public final static int USB_FPS = 15;
 
-public static KilroyCamera axisCamera = new KilroyCamera(true);
+public static KilroyCamera axisCamera = new KilroyCamera(false);
 
 // Used by the Axis Camera in robot init to limit its FPS
 public final static int AXIS_FPS = 15;
