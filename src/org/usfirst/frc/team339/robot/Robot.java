@@ -285,8 +285,8 @@ public class Robot extends IterativeRobot {
 			// Sets the [max?] FPS's for the USB Cameras. The FPS will generally
 			// vary between -1 and +1 this amount.
 			// -last edited on 28 Jan 2017 by Cole Ramos
-			//Hardware.cam0.setFPS(Hardware.USB_FPS);
-			//Hardware.cam1.setFPS(Hardware.USB_FPS);
+			Hardware.cam0.setFPS(Hardware.USB_FPS);
+			Hardware.cam1.setFPS(Hardware.USB_FPS);
 		//}
 
 		// Sets the max FPS of the Axis Camera; also changes the FPS in the
@@ -366,7 +366,7 @@ public class Robot extends IterativeRobot {
 		// which contains the user code.
 		// -------------------------------------
 		Teleop.periodic();
-		//System.out.println("Camera Name: " + Hardware.cam0.getName());
+		System.out.println("Camera Name: " + Hardware.cam0.getName());
 		// feed all motor safeties
 		Hardware.leftRearMotorSafety.feed();
 		Hardware.rightRearMotorSafety.feed();
