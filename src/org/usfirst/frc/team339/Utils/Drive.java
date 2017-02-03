@@ -301,27 +301,38 @@ public AlignReturnType alignToGear (double relativeCenter,
                         transmissionFourWheel.drive(0.0, 0.0);
                         return AlignReturnType.ALIGNED;
                         }
+                    else if (distanceToCenter > 0)
+                        {
+                        this.transmissionFourWheel.drive(movementSpeed,
+                                -movementSpeed);
+                        }
+                    else if (distanceToCenter < 0)
+                        {
+                        this.transmissionFourWheel.drive(-movementSpeed,
+                                movementSpeed);
+                        }
                     }
+
                 }
             // Turns based on the average of the yaw angles of the
             // two blobs, to account for a delayed axis camera.
-            double yawAngle = (this.imageProcessor
-                    .getYawAngleToTarget(
-                            this.imageProcessor.getNthSizeBlob(1))
-                    + this.imageProcessor.getYawAngleToTarget(
-                            this.imageProcessor.getNthSizeBlob(0))
-                            / 2.0);
-            System.out.println("Average yaw angle: " + yawAngle);
-
-
-
-            isTurning = this.turnDegrees((this.imageProcessor
-                    .getYawAngleToTarget(this.imageProcessor
-                            .getNthSizeBlob(0))
-                    + this.imageProcessor.getYawAngleToTarget(
-                            this.imageProcessor
-                                    .getNthSizeBlob(1)))
-                    / 2.0, .5);
+            // double yawAngle = (this.imageProcessor
+            // .getYawAngleToTarget(
+            // this.imageProcessor.getNthSizeBlob(1))
+            // + this.imageProcessor.getYawAngleToTarget(
+            // this.imageProcessor.getNthSizeBlob(0))
+            // / 2.0);
+            // System.out.println("Average yaw angle: " + yawAngle);
+            //
+            //
+            //
+            // isTurning = this.turnDegrees((this.imageProcessor
+            // .getYawAngleToTarget(this.imageProcessor
+            // .getNthSizeBlob(0))
+            // + this.imageProcessor.getYawAngleToTarget(
+            // this.imageProcessor
+            // .getNthSizeBlob(1)))
+            // / 2.0, .5);
             break;
         case MECANUM:
 

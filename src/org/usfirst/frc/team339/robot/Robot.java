@@ -60,6 +60,7 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
 
@@ -106,19 +107,19 @@ public void autonomousInit ()
     // =========================================================
     // User code goes below here
     // =========================================================
-    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    // Hardware.rightFrontMotor.setInverted(true); // TODO takeout
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-    Hardware.isUsingMecanum = true;
-    Hardware.twoJoystickControl = false;
     // -------------------------------------
     // Call the Autonomous class's Init function,
     // which contains the user code.
     // -------------------------------------
     Autonomous.init();
     Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
+
+    // Hardware.tankDrive.setRightJoystickReversed(true);
     // =========================================================
     // User code goes above here
     // =========================================================
@@ -164,7 +165,8 @@ public void autonomousPeriodic ()
 
     // feed all motor safeties
     Hardware.leftRearMotorSafety.feed();
-    Hardware.rightRearMotorSafety.feed();
+    Hardware.rightRearMotorSafety.feed();// TODO re-enable watchdogs when we
+    // fix it
 
 } // end autonomousPeriodic
 
@@ -254,26 +256,32 @@ public void robotInit ()
     Hardware.leftRearEncoder.reset();
     Hardware.rightRearEncoder.reset();
     Hardware.mecanumDrive.setFirstGearPercentage(firstGear);
-    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    // Hardware.rightFrontMotor.setInverted(true); // TODO takeout
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
     Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-    Hardware.isUsingMecanum = true;
-    Hardware.twoJoystickControl = false;
+
     // -------------------------------------
     // motor initialization
     // -------------------------------------
-    Hardware.leftRearMotorSafety.setSafetyEnabled(true);
-    Hardware.rightRearMotorSafety.setSafetyEnabled(true);
-    Hardware.leftFrontMotorSafety.setSafetyEnabled(true);
-    Hardware.rightFrontMotorSafety.setSafetyEnabled(true);
+    /*
+     * @TODO
+     */
+    // Hardware.leftRearMotorSafety.setSafetyEnabled(false);// TODO Figure out
+    // what
+    // is triggering the
+    // watchdog
+    Hardware.rightRearMotorSafety.setSafetyEnabled(false);
+    Hardware.leftFrontMotorSafety.setSafetyEnabled(false);
+    Hardware.rightFrontMotorSafety.setSafetyEnabled(false);
     Hardware.leftRearMotorSafety.setExpiration(.25);
     Hardware.rightRearMotorSafety.setExpiration(.25);
     Hardware.leftFrontMotorSafety.setExpiration(.25);
     Hardware.rightFrontMotorSafety.setExpiration(.25);
-    // Hardware.rightFrontMotor.setInverted(true);
+
+    // Hardware.tankDrive.setRightJoystickReversed(true);
 
     if (Hardware.runningInLab == true)
         {
@@ -290,7 +298,7 @@ public void robotInit ()
     // -last edited on 28 Jan 2017 by Cole Ramos
     // CameraServer.getInstance().startAutomaticCapture(Hardware.cam0); TODO
     // CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
-    // CameraServer.getInstance().addAxisCamera("10.3.39.11");
+    CameraServer.getInstance().addAxisCamera("10.3.39.11");
     // CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
     // CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
     // Sets the [max?] FPS's for the USB Cameras. The FPS will generally
@@ -385,7 +393,8 @@ public void teleopPeriodic ()
     Teleop.periodic();
 
     // feed all motor safeties
-    Hardware.leftRearMotorSafety.feed();
+    Hardware.leftRearMotorSafety.feed();// TODO re-enable watchdogs when we fix
+                                        // it
     Hardware.rightRearMotorSafety.feed();
     Hardware.leftFrontMotorSafety.feed();
     Hardware.rightFrontMotorSafety.feed();
