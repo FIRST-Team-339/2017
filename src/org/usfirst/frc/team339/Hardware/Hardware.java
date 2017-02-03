@@ -14,6 +14,7 @@
 // ====================================================================
 package org.usfirst.frc.team339.Hardware;
 
+import com.ctre.CANTalon;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
@@ -86,7 +87,9 @@ public static boolean runningInLab = false;
  */
 public static TalonSRX rightRearMotor = new TalonSRX(4);// 2);
 
+
 public static TalonSRX rightFrontMotor = new TalonSRX(2);// 1);// 1);
+
 
 /**
  * Default motor controller.
@@ -94,6 +97,9 @@ public static TalonSRX rightFrontMotor = new TalonSRX(2);// 1);// 1);
 public static TalonSRX leftRearMotor = new TalonSRX(3);
 
 public static TalonSRX leftFrontMotor = new TalonSRX(1);// 4);
+
+public static CANTalon shooterMotor = new CANTalon(1);
+
 // ------------------------------------
 // Victor classes
 // ------------------------------------
@@ -212,17 +218,6 @@ public static UltraSonic rightUS = new UltraSonic(2);
 // -------------------------------------
 // Axis/USB Camera class
 // -------------------------------------
-//// Used by the Axis Camera in robot init to limit its FPS
-// public final static int AXIS_FPS = 15;
-//
-// public static UsbCamera cam0 = CameraServer.getInstance()
-// .startAutomaticCapture("Usb Camera 0",
-// "/dev/video0");
-
-//
-// public static UsbCamera cam1 = CameraServer.getInstance()
-// .startAutomaticCapture("Usb Camera 1",
-// "/dev/video1");
 
 // Used by the USB Cameras in robot init to set their FPS's
 public final static int USB_FPS = 15;
@@ -314,7 +309,7 @@ public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
 
 // Change when we get the robot for mecanum and two ultrasonic.
-// TODO
+
 public static Drive autoDrive = new Drive(tankDrive, axisCamera,
         imageProcessor, leftRearEncoder, rightRearEncoder,
         leftRearEncoder, rightRearEncoder, rightUS);

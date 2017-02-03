@@ -59,6 +59,8 @@
 // ====================================================================
 package org.usfirst.frc.team339.robot;
 
+import com.ctre.CANTalon.FeedbackDevice;
+import com.ctre.CANTalon.TalonControlMode;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -191,8 +193,7 @@ public void disabledInit ()
     // =========================================================
     // User code goes below here
     // =========================================================
-
-    // Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
@@ -283,6 +284,18 @@ public void robotInit ()
 
     // Hardware.tankDrive.setRightJoystickReversed(true);
 
+    // initialize PID values and set the motor to 0.0 because it isn't safe if
+    // we don't.
+    Hardware.shooterMotor.changeControlMode(TalonControlMode.Speed);
+    Hardware.shooterMotor.configPeakOutputVoltage(12f, -12f);
+    Hardware.shooterMotor.configNominalOutputVoltage(0f, 0f);
+    Hardware.shooterMotor
+            .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+    Hardware.shooterMotor.configEncoderCodesPerRev(1024);
+    Hardware.shooterMotor.setPID(shooterP, shooterI, shooterD);
+    Hardware.shooterMotor.setSetpoint(0.0);
+    // Hardware.rightFrontMotor.setInverted(true);
+
     if (Hardware.runningInLab == true)
         {
         }
@@ -300,24 +313,25 @@ public void robotInit ()
     // CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
     CameraServer.getInstance().addAxisCamera("10.3.39.11");
     // CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
-    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
+    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);TODO
     // Sets the [max?] FPS's for the USB Cameras. The FPS will generally
-    // vary between -1 and +1
-    // this amount.
+    // vary between -1 and +1 this amount.
     // -last edited on 28 Jan 2017 by Cole Ramos
     // Hardware.cam0.setFPS(Hardware.USB_FPS);
-    // Hardware.cam1.setFPS(Hardware.USB_FPS); TODO
-    // Hardware.cam0.setFPS(Hardware.USB_FPS);
-    // Hardware.cam1.setFPS(Hardware.USB_FPS);
+    // Hardware.cam1.setFPS(Hardware.USB_FPS);TODO
+
 
     // Sets the max FPS of the Axis Camera; also changes the FPS in the
     // firmware/ web browser
     // of the Axis Camera. If the FPS is not set in the code, the firmware
     // will default to unlimited.
-    // Hardware.axisCamera.writeMaxFPS(Hardware.AXIS_FPS); TODO
+    // TODO Fix this. It isn't actually changing the FPS on the Driver's Station
+    // but it is changing the website/ firmware
+    Hardware.axisCamera.writeMaxFPS(Hardware.AXIS_FPS);
 
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
+
 
     // =========================================================
     // User code goes above here
@@ -330,14 +344,13 @@ public void robotInit ()
             "Kilroy XVIII is started.  All hardware items created.");
     System.out.println();
     System.out.println();
-} // end
-  // robotInit
+} // end robotInit
 
 // -------------------------------------------------------
 /**
  * Non-User initialization code for teleop mode should go here. Will be
- * called once when the robot enters teleop mode, and will call the
- * Teleop class's Init function, where the User code should be placed.
+ * called once when the robot enters teleop mode, and will call the Teleop
+ * class's Init function, where the User code should be placed.
  *
  * @author Bob Brown
  * @written Jan 2, 2011
@@ -356,8 +369,7 @@ public void teleopInit ()
     // User code goes below here
     // =========================================================
     Teleop.init();
-
-    // Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
@@ -391,7 +403,6 @@ public void teleopPeriodic ()
     // which contains the user code.
     // -------------------------------------
     Teleop.periodic();
-
     // feed all motor safeties
     Hardware.leftRearMotorSafety.feed();// TODO re-enable watchdogs when we fix
                                         // it
@@ -447,6 +458,12 @@ public void testPeriodic ()
 // ==========================================
 // TUNEABLES
 // ==========================================
-public static double firstGear = 1;
+public static double firstGear = .7;
+
+public static double shooterP = .1;
+
+public static double shooterI = .00052;
+
+public static double shooterD = .9;
 
 } // end class

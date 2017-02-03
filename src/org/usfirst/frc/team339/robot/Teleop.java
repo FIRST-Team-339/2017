@@ -82,15 +82,12 @@ public static void init ()
     // Hardware.leftUS.setNumberOfItemsToCheckBackwardForValidity(1);
     // Hardware.LeftUS.setConfidenceCalculationsOn(false);
     // Hardware.rightUS.setConfidenceCalculationsOn(false);
-
     // Hardware.tankDrive.setRightJoystickReversed(true);
 
     isAligning = false;
     isStrafingToTarget = false;
     isDrivingInches = false;
     isTurning = false;
-
-
 } // end Init
 
 /**
@@ -118,7 +115,6 @@ public static void periodic ()
     // =================================================================
     // Driving code
     // =================================================================
-
 
     if (Hardware.rightDriver.getTrigger())
         {
@@ -266,7 +262,8 @@ public static void periodic ()
 
     Hardware.axisCamera
             .takeSinglePicture(Hardware.leftOperator.getRawButton(8));
-} // end Periodic
+} // end
+  // Periodic
 
 // private static boolean isSpeedTesting = false;
 
