@@ -263,7 +263,7 @@ public void robotInit ()
 
     // initialize PID values and set the motor to 0.0 because it isn't safe if
     // we don't.
-    Hardware.shooterMotor.setPID(.1, .00052, .9);
+    Hardware.shooterMotor.setPID(shooterP, shooterI, shooterD);
     Hardware.shooterMotor.setSetpoint(0.0);
     // Hardware.rightFrontMotor.setInverted(true);
 
@@ -427,5 +427,11 @@ public void testPeriodic ()
 // TUNEABLES
 // ==========================================
 public static double firstGear = .7;
+
+public static double shooterP = .1;
+
+public static double shooterI = .00052;
+
+public static double shooterD = .9;
 
 } // end class
