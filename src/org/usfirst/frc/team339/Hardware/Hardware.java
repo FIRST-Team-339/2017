@@ -16,6 +16,7 @@ package org.usfirst.frc.team339.Hardware;
 
 import com.ctre.CANTalon;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
+import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
 import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
@@ -27,8 +28,11 @@ import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.MotorSafetyHelper;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Relay;
@@ -190,7 +194,7 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // ------------------------------------
 // Gyro class
 // ------------------------------------
-// public static ADXRS450_Gyro driveGyro = new ADXRS450_Gyro();TODO
+public static ADXRS450_Gyro driveGyro = new ADXRS450_Gyro();
 
 // -------------------------------------
 // Potentiometers
@@ -218,13 +222,14 @@ public static UltraSonic rightUS = new UltraSonic(2);
 
 // Note: If causing problems, replace "USB_Camera_0" w/ "cam0", and
 // "USB_Camera_1" w/ "cam1"
-// public static UsbCamera cam0 = new UsbCamera("USB_Camera_0", 0);
-// public static UsbCamera cam1 = new UsbCamera("USB_Camera_1", 1);//TODO
+public static UsbCamera cam0 = new UsbCamera("USB_Camera_0", 0);
+
+public static UsbCamera cam1 = new UsbCamera("USB_Camera_1", 1);
 
 // Used by the USB Cameras in robot init to set their FPS's
 public final static int USB_FPS = 15;
 
-public static KilroyCamera axisCamera = new KilroyCamera(false);// TODO
+public static KilroyCamera axisCamera = new KilroyCamera(true);
 
 // Used by the Axis Camera in robot init to limit its FPS
 public final static int AXIS_FPS = 15;
@@ -257,29 +262,29 @@ public static final DriverStation driverStation = DriverStation
 // ------------------------------------
 // Joystick classes
 // ------------------------------------
-/// **
-// * The left joystick controlling the drive train.
-// */
-// public static Joystick leftDriver = new Joystick(0);
-//
-/// **
-// * The right joystick controlling the drive train.
-// */
-// public static Joystick rightDriver = new Joystick(1);
-//
-/// **
-// * The left joystick controlling misc operations on the robot.
-// */
-// public static Joystick leftOperator = new Joystick(2);
-//
-// public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
-// leftOperator, 2, false);
-//
-//
-/// **
-// * The right joystick controlling misc operations on the robot.
-// */
-// public static Joystick rightOperator = new Joystick(3);TODO
+/**
+ * The left joystick controlling the drive train.
+ */
+public static Joystick leftDriver = new Joystick(0);
+
+/**
+ * The right joystick controlling the drive train.
+ */
+public static Joystick rightDriver = new Joystick(1);
+
+/**
+ * The left joystick controlling misc operations on the robot.
+ */
+public static Joystick leftOperator = new Joystick(2);
+
+public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
+        leftOperator, 2, false);
+
+
+/**
+ * The right joystick controlling misc operations on the robot.
+ */
+public static Joystick rightOperator = new Joystick(3);
 
 // **********************************************************
 // Kilroy's Ancillary classes
