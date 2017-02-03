@@ -187,8 +187,6 @@ public void disabledInit ()
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-    // Teleop.testTuner.setPID(0, 0, 0);
-    Teleop.testTuner.setSetpoint(0);
     // =========================================================
     // User code goes above here
     // =========================================================
@@ -263,6 +261,10 @@ public void robotInit ()
     Hardware.leftRearMotorSafety.setExpiration(.25);
     Hardware.rightRearMotorSafety.setExpiration(.25);
 
+    // initialize PID values and set the motor to 0.0 because it isn't safe if
+    // we don't.
+    Hardware.shooterMotor.setPID(.1, .00052, .9);
+    Hardware.shooterMotor.setSetpoint(0.0);
     // Hardware.rightFrontMotor.setInverted(true);
 
     if (Hardware.runningInLab == true)

@@ -149,25 +149,25 @@ public void update ()
         }
     this.tunedMotorController.set(this.setpoint);
     this.tunedMotorController.setPID(this.P, this.I, this.D);
-    if (Math.abs(
-            this.tunedMotorController
-                    .getClosedLoopError()) >= this.errorThresh
-            && wasIncorrect == false)
-        {
-        wasIncorrect = true;
-        time.reset();
-        time.start();
-        System.out.println("Error detected, timing...");
-        }
-    if (Math.abs(
-            this.tunedMotorController
-                    .getClosedLoopError()) <= this.errorThresh
-            && wasIncorrect == true)
-        {
-        wasIncorrect = false;
-        time.stop();
-        System.out.println("Time to correct error: " + time.get());
-        }
+    // if (Math.abs(
+    // this.tunedMotorController
+    // .getClosedLoopError()) >= this.errorThresh
+    // && wasIncorrect == false)
+    // {
+    // wasIncorrect = true;
+    // time.reset();
+    // time.start();
+    // System.out.println("Error detected, timing...");
+    // }
+    // if (Math.abs(
+    // this.tunedMotorController
+    // .getClosedLoopError()) <= this.errorThresh
+    // && wasIncorrect == true)
+    // {
+    // wasIncorrect = false;
+    // time.stop();
+    // System.out.println("Time to correct error: " + time.get());
+    // }
 }
 
 /**

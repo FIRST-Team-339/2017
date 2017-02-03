@@ -91,7 +91,7 @@ public static void init ()
     // Hardware.RightUS.setConfidenceCalculationsOn(false);
 
     Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
-    // testTuner.setPID(.27, 0.0005, 0.1);
+    testTuner.setPID(.15, 0.00065, 0.9);
     testTuner.setupMotorController(
             FeedbackDevice.CtreMagEncoder_Relative,
             TalonControlMode.Speed, 1024, true);
@@ -100,12 +100,13 @@ public static void init ()
     testTuner.setErrorThreshold(15);
     testTuner.update();
     SmartDashboard.putNumber("F", 0.0);
-
+    SmartDashboard.putNumber("Threshold",
+            testTuner.getErrorThreshold());
 } // end Init
 
 public static CANPIDTuner testTuner = new CANPIDTuner(1,
         Hardware.shooterMotor, true,
-        20);
+        10);
 
 /**
  * User Periodic code for teleop mode should go here. Will be called
@@ -121,6 +122,8 @@ static boolean errorDetected = false;
 public static void periodic ()
 {
     testTuner.update();
+    testTuner.setErrorThreshold(SmartDashboard.getNumber("Threshold",
+            testTuner.getErrorThreshold()));
     Hardware.shooterMotor.setF(SmartDashboard.getNumber("F", 0.0));
     // System.out.println("Output voltage: "
     // + Hardware.shooterMotor.getOutputVoltage());
@@ -132,7 +135,7 @@ public static void periodic ()
     // System.out.println("Error: " + Hardware.shooterMotor.getError());
     // System.out.println("Speed: " + Hardware.shooterMotor.getSpeed());
     if (Math.abs(Hardware.shooterMotor.getError()) > testTuner
-            .getErrorThreshold() / 4.0 && errorDetected == false)
+            .getErrorThreshold() * 4.0 && errorDetected == false)
         {
         System.out.println("Error detected: timing.");
         errorDetected = true;
@@ -146,7 +149,7 @@ public static void periodic ()
             }
         }
     else if (Math.abs(Hardware.shooterMotor.getError()) < testTuner
-            .getErrorThreshold() / 4.0 && errorDetected == true)
+            .getErrorThreshold() * 4.0 && errorDetected == true)
         {
         errorDetected = false;
         System.out.println("Took " + Hardware.kilroyTimer.get()
