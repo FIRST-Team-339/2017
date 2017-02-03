@@ -76,12 +76,12 @@ public static void init ()
     // Hardware.tankDrive.setGear(1);
     // Hardware.leftUS.setScalingFactor(.13);
     // Hardware.leftUS.setOffsetDistanceFromNearestBummper(0);
-    // Hardware.rightUS.setScalingFactor(.13); TODO
-    // Hardware.rightUS.setOffsetDistanceFromNearestBummper(0);
+    Hardware.rightUS.setScalingFactor(.13);
+    Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     // Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(1);
     // Hardware.leftUS.setNumberOfItemsToCheckBackwardForValidity(1);
     // Hardware.LeftUS.setConfidenceCalculationsOn(false);
-    // Hardware.RightUS.setConfidenceCalculationsOn(false);
+    // Hardware.rightUS.setConfidenceCalculationsOn(false);
 
     // Hardware.tankDrive.setRightJoystickReversed(true);
 
@@ -102,6 +102,7 @@ public static void init ()
  */
 public static void periodic ()
 {
+    // TODO Figure out why the ring light is flickering
     if (Hardware.ringlightSwitch.isOnCheckNow())
         {
         Hardware.ringlightRelay.set(Relay.Value.kOn);
@@ -368,8 +369,8 @@ public static void printStatements ()
     // System.out.println("LeftUS = "
     // + Hardware.leftUS.getDistanceFromNearestBumper());
     //
-    // System.out.println("RightUS = "
-    // + Hardware.rightUS.getDistanceFromNearestBumper());
+    System.out.println("RightUS = "
+            + Hardware.rightUS.getDistanceFromNearestBumper());
 
 
     // ---------------------------------

@@ -317,7 +317,7 @@ public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
 // TODO
 public static Drive autoDrive = new Drive(tankDrive, axisCamera,
         imageProcessor, leftRearEncoder, rightRearEncoder,
-        leftRearEncoder, rightRearEncoder, rightUS, rightUS);
+        leftRearEncoder, rightRearEncoder, rightUS);
 
 /**
  * are we using mecanum? set false for tank drive
