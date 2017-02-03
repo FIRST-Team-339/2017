@@ -42,7 +42,9 @@ private UltraSonic leftUlt = null;
 
 private UltraSonic rightUlt = null;
 
+public double correction = 0.0;
 
+public double encoderSlack = 0.0;
 
 /**
  * Creates an instance of the Drive class, with a mecanum drive system.
@@ -190,6 +192,23 @@ public void initEncoders (Encoder _leftFrontEncoder,
     this.setEncoderDistancePerPulse(DEFAULT_DISTANCE_PER_PULSE);
 }
 
+// public double encoderRate (Encoder _leftFrontEncoder,
+// Encoder _rightFrontEncoder, Encoder _leftRearEncoder,
+// Encoder _rightRearEncoder)
+// {
+//
+// return leftFrontRate = this.leftFrontEncoder.getRate();
+// return rightFrontRate = this.rightFrontEncoder.getRate();
+// return leftRearRate = this.leftRearEncoder.getRate();
+// return rightRearRate = this.rightRearEncoder.getRate();
+//
+// }
+//
+// private double leftFrontRate = 0.0;
+// private double rightFrontRate = 0.0;
+// private double leftRearRate = 0.0;
+// private double rightRearRate = 0.0;
+
 /**
  * Gets the averaged distance out of the four encoders
  * 
@@ -218,6 +237,13 @@ public boolean driveInches (double inches, double speed)
 {
     // Again, we don't know why it's going backwards...
 
+    double deltaX = (this.getLeftFrontEncoderDistance()
+            + this.getLeftRearEncoderDistance()) / 2;
+    double deltaY = (this.getRightFrontEncoderDistance()
+            + this.getRightRearEncoderDistance()) / 2;
+
+
+
     if (firstTimeDriveInches)
         {
         this.resetEncoders();
@@ -233,12 +259,26 @@ public boolean driveInches (double inches, double speed)
         firstTimeDriveInches = true;
         return true;
         }
+
     if (this.transmissionType == TransmissionType.MECANUM)
         this.transmissionMecanum.drive(speed, 0.0, 0.0, 0, 0);
+    if (deltaX > inches + getEncoderSlack())
+        this.transmissionFourWheel.drive(speed + getDriveCorrection(),
+                speed);
+    if (deltaX < inches - getEncoderSlack())
+        this.transmissionFourWheel.drive(speed - getDriveCorrection(),
+                speed);
+    if (deltaY > inches + getEncoderSlack())
+        this.transmissionFourWheel.drive(speed,
+                speed + getDriveCorrection());
+    if (deltaY < inches - getEncoderSlack())
+        this.transmissionFourWheel.drive(speed,
+                speed - getDriveCorrection());
     else
         this.transmissionFourWheel.drive(-speed, -speed);
 
     return false;
+
 }
 
 private boolean firstTimeDriveInches = true;
@@ -643,6 +683,26 @@ public void setTurningCircleRadius (double radius)
 }
 
 private boolean firstAlign = true;
+
+public void setEncoderSlack (double slack)
+{
+    this.encoderSlack = slack;
+}
+
+public double getEncoderSlack ()
+{
+    return encoderSlack;
+}
+
+public void setDriveCorrection (double correction)
+{
+    this.correction = correction;
+}
+
+public double getDriveCorrection ()
+{
+    return correction;
+}
 
 
 /**
