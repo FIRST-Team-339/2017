@@ -59,6 +59,8 @@
 // ====================================================================
 package org.usfirst.frc.team339.robot;
 
+import com.ctre.CANTalon.FeedbackDevice;
+import com.ctre.CANTalon.TalonControlMode;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
@@ -263,6 +265,12 @@ public void robotInit ()
 
     // initialize PID values and set the motor to 0.0 because it isn't safe if
     // we don't.
+    Hardware.shooterMotor.changeControlMode(TalonControlMode.Speed);
+    Hardware.shooterMotor.configPeakOutputVoltage(12f, -12f);
+    Hardware.shooterMotor.configNominalOutputVoltage(0f, 0f);
+    Hardware.shooterMotor
+            .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+    Hardware.shooterMotor.configEncoderCodesPerRev(1024);
     Hardware.shooterMotor.setPID(shooterP, shooterI, shooterD);
     Hardware.shooterMotor.setSetpoint(0.0);
     // Hardware.rightFrontMotor.setInverted(true);
