@@ -42,6 +42,8 @@ private UltraSonic leftUlt = null;
 
 private UltraSonic rightUlt = null;
 
+
+
 /**
  * Creates an instance of the Drive class, with a mecanum drive system.
  * If this is called, the mecanum versions of each method are used.
@@ -240,6 +242,8 @@ public boolean driveInches (double inches, double speed)
 }
 
 private boolean firstTimeDriveInches = true;
+
+
 
 /**
  * Aligns to the low dual targets for the gear peg. This finds the
@@ -440,6 +444,11 @@ public static enum AlignReturnType
     CLOSE_ENOUGH
     }
 
+/**
+ * Positive number will make robot strafe right
+ * 
+ * @param inches
+ */
 public void strafeStraight (double inches)
 {
     resetEncoders();
