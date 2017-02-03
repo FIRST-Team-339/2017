@@ -31,13 +31,9 @@
 // ====================================================================
 package org.usfirst.frc.team339.robot;
 
-import com.ctre.CANTalon.FeedbackDevice;
-import com.ctre.CANTalon.TalonControlMode;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.Transmission.MotorDirection;
-import org.usfirst.frc.team339.Utils.CANPIDTuner;
 import org.usfirst.frc.team339.Utils.Drive;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class contains all of the user code for the Autonomous part of the
@@ -91,22 +87,7 @@ public static void init ()
     // Hardware.RightUS.setConfidenceCalculationsOn(false);
 
     Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
-    testTuner.setPID(.15, 0.00065, 0.9);
-    testTuner.setupMotorController(
-            FeedbackDevice.CtreMagEncoder_Relative,
-            TalonControlMode.Speed, 1024, true);
-    testTuner.setupDashboard();
-    testTuner.setSetpoint(0);
-    testTuner.setErrorThreshold(15);
-    testTuner.update();
-    SmartDashboard.putNumber("F", 0.0);
-    SmartDashboard.putNumber("Threshold",
-            testTuner.getErrorThreshold());
 } // end Init
-
-public static CANPIDTuner testTuner = new CANPIDTuner(1,
-        Hardware.shooterMotor, true,
-        10);
 
 /**
  * User Periodic code for teleop mode should go here. Will be called
@@ -121,51 +102,15 @@ static boolean errorDetected = false;
 
 public static void periodic ()
 {
-    testTuner.update();
-    testTuner.setErrorThreshold(SmartDashboard.getNumber("Threshold",
-            testTuner.getErrorThreshold()));
-    Hardware.shooterMotor.setF(SmartDashboard.getNumber("F", 0.0));
-    // System.out.println("Output voltage: "
-    // + Hardware.shooterMotor.getOutputVoltage());
-    // System.out.println("P, I, D: " + Hardware.shooterMotor.getP() + ", "
-    // + Hardware.shooterMotor.getI() + ", "
-    // + Hardware.shooterMotor.getD());
-    // System.out.println(
-    // "Setpoint: " + Hardware.shooterMotor.getSetpoint());
-    // System.out.println("Error: " + Hardware.shooterMotor.getError());
-    // System.out.println("Speed: " + Hardware.shooterMotor.getSpeed());
-    if (Math.abs(Hardware.shooterMotor.getError()) > testTuner
-            .getErrorThreshold() * 4.0 && errorDetected == false)
-        {
-        System.out.println("Error detected: timing.");
-        errorDetected = true;
-        Hardware.kilroyTimer.reset();
-        Hardware.kilroyTimer.start();
-        if (Math.abs(
-                Hardware.shooterMotor.getError()) > currentLargestDrop)
-            {
-            currentLargestDrop = Math
-                    .abs(Hardware.shooterMotor.getError());
-            }
-        }
-    else if (Math.abs(Hardware.shooterMotor.getError()) < testTuner
-            .getErrorThreshold() * 4.0 && errorDetected == true)
-        {
-        errorDetected = false;
-        System.out.println("Took " + Hardware.kilroyTimer.get()
-                + " seconds to correct");
-        System.out.println("Largest error: " + currentLargestDrop);
-        currentLargestDrop = 0.0;
-        }
 
-    // if (Hardware.ringlightSwitch.isOnCheckNow())
-    // {
-    // Hardware.ringlightRelay.set(Relay.Value.kOn);
-    // }
-    // else
-    // {
-    // Hardware.ringlightRelay.set(Relay.Value.kOff);
-    // }
+     if (Hardware.ringlightSwitch.isOnCheckNow())
+     {
+     Hardware.ringlightRelay.set(Relay.Value.kOn);
+     }
+     else
+     {
+     Hardware.ringlightRelay.set(Relay.Value.kOff);
+     }
 
     // Print out any data we want from the hardware elements.
     printStatements();
@@ -174,137 +119,138 @@ public static void periodic ()
     // Driving code
     // =================================================================
 
-    // if (Hardware.rightDriver.getTrigger())
-    // {
-    // rotationValue = Hardware.rightDriver.getTwist();
-    // }
-    // else
-    // {
-    // rotationValue = 0.0;
-    // }
-    //
-    // if (!isAligning)
-    // if (Hardware.isUsingMecanum == true
-    // && Hardware.twoJoystickControl == false)
-    // {
-    // Hardware.mecanumDrive.drive(
-    // Hardware.rightDriver.getMagnitude(),
-    // Hardware.rightDriver.getDirectionDegrees(),
-    // rotationValue, Hardware.rightDriver.getY(),
-    // Hardware.rightDriver.getX());
-    // }
-    // else if (Hardware.isUsingMecanum == true
-    // && Hardware.twoJoystickControl == true)
-    // {
-    // Hardware.mecanumDrive.drive(
-    // Hardware.rightDriver.getMagnitude(),
-    // Hardware.rightDriver.getDirectionDegrees(),
-    // Hardware.leftDriver.getX(),
-    // Hardware.rightDriver.getY(),
-    // Hardware.rightDriver.getX());
-    // }
-    // else
-    // {
-    // Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
-    // Hardware.leftDriver.getY());
-    // }
-    // // System.out.println(Hardware.rightDriver.getTwist());
-    // // System.out.println(Hardware.rightDriver.getMagnitude());
-    //
-    // // Testing turn by degrees
-    // if (Hardware.leftDriver.getRawButton(2))
-    // {
-    // turnDegrees = 90;
-    // isTurning = true;
-    // // Hardware.driveGyro.reset();
-    // // TODO
-    // }
-    //
-    // if (isTurning)
-    // {
-    // isTurning = !Hardware.autoDrive.turnDegrees(turnDegrees);
-    // }
-    //
-    //
-    // // Testing driveInches
-    // if (Hardware.rightDriver.getRawButton(2))
-    // {
-    // isDrivingInches = true;
-    // }
-    //
-    // if (isDrivingInches)
-    // {
-    // Hardware.autoDrive.driveInches(24, .4);
-    // }
-    //
-    //
-    // // =================================================================
-    // // CAMERA CODE
-    // // =================================================================
-    //
-    // // "Cancel basically everything" button
-    // if (Hardware.leftOperator.getRawButton(7)
-    // || Hardware.leftOperator.getRawButton(6))
-    // {
-    // System.out.println("Cancelling everything");
-    // isAligning = false;
-    // isStrafingToTarget = false;
-    // isDrivingInches = false;
-    // isTurning = false;
-    // }
-    //
-    // // Testing aligning to target
-    // if (Hardware.leftOperator.getRawButton(8))
-    // isAligning = true;
-    //
-    // if (isAligning)
-    // {
-    // alignValue = Hardware.autoDrive.alignToGear(CAMERA_ALIGN_CENTER,
-    // CAMERA_ALIGN_SPEED, CAMERA_ALIGN_DEADBAND);
-    // if (alignValue == Drive.AlignReturnType.ALIGNED)
-    // {
-    // System.out.println("We are aligned!");
-    // isAligning = false;
-    // }
-    // else if (alignValue == Drive.AlignReturnType.MISALIGNED)
-    // {
-    // System.out.println("We are not aligned!");
-    // }
-    // else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
-    // {
-    // System.out.println("We don't see anything!");
-    // }
-    // }
-    // // Testing Strafe to target
-    // if (Hardware.rightOperator.getRawButton(8))
-    // isStrafingToTarget = true;
-    //
-    // if (isStrafingToTarget)
-    // {
-    // alignValue = Hardware.autoDrive.strafeToGear(.4, .2,
-    // CAMERA_ALIGN_DEADBAND, CAMERA_ALIGN_CENTER, 20);
-    // if (alignValue == Drive.AlignReturnType.ALIGNED)
-    // {
-    // System.out.println("We are aligned!");
-    // }
-    // else if (alignValue == Drive.AlignReturnType.MISALIGNED)
-    // {
-    // System.out.println("WE are NOT aligned!");
-    // }
-    // else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
-    // {
-    // System.out.println("We have no blobs!");
-    // }
-    // else if (alignValue == Drive.AlignReturnType.CLOSE_ENOUGH)
-    // {
-    // System.out.println("We are good to go!");
-    // isStrafingToTarget = false;
-    // }
-    // }
-    //
-    // Hardware.axisCamera
-    // .takeSinglePicture(Hardware.leftOperator.getRawButton(8));TODO
-} // end Periodic
+     if (Hardware.rightDriver.getTrigger())
+     {
+     rotationValue = Hardware.rightDriver.getTwist();
+     }
+     else
+     {
+     rotationValue = 0.0;
+     }
+    
+     if (!isAligning)
+     if (Hardware.isUsingMecanum == true
+     && Hardware.twoJoystickControl == false)
+     {
+     Hardware.mecanumDrive.drive(
+     Hardware.rightDriver.getMagnitude(),
+     Hardware.rightDriver.getDirectionDegrees(),
+     rotationValue, Hardware.rightDriver.getY(),
+     Hardware.rightDriver.getX());
+     }
+     else if (Hardware.isUsingMecanum == true
+     && Hardware.twoJoystickControl == true)
+     {
+     Hardware.mecanumDrive.drive(
+     Hardware.rightDriver.getMagnitude(),
+     Hardware.rightDriver.getDirectionDegrees(),
+     Hardware.leftDriver.getX(),
+     Hardware.rightDriver.getY(),
+     Hardware.rightDriver.getX());
+     }
+     else
+     {
+     Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
+     Hardware.leftDriver.getY());
+     }
+     // System.out.println(Hardware.rightDriver.getTwist());
+     // System.out.println(Hardware.rightDriver.getMagnitude());
+    
+     // Testing turn by degrees
+     if (Hardware.leftDriver.getRawButton(2))
+     {
+     turnDegrees = 90;
+     isTurning = true;
+     // Hardware.driveGyro.reset();
+     // TODO
+     }
+    
+     if (isTurning)
+     {
+     isTurning = !Hardware.autoDrive.turnDegrees(turnDegrees);
+     }
+    
+    
+     // Testing driveInches
+     if (Hardware.rightDriver.getRawButton(2))
+     {
+     isDrivingInches = true;
+     }
+    
+     if (isDrivingInches)
+     {
+     Hardware.autoDrive.driveInches(24, .4);
+     }
+    
+    
+     // =================================================================
+     // CAMERA CODE
+     // =================================================================
+    
+     // "Cancel basically everything" button
+     if (Hardware.leftOperator.getRawButton(7)
+     || Hardware.leftOperator.getRawButton(6))
+     {
+     System.out.println("Cancelling everything");
+     isAligning = false;
+     isStrafingToTarget = false;
+     isDrivingInches = false;
+     isTurning = false;
+     }
+    
+     // Testing aligning to target
+     if (Hardware.leftOperator.getRawButton(8))
+     isAligning = true;
+    
+     if (isAligning)
+     {
+     alignValue = Hardware.autoDrive.alignToGear(CAMERA_ALIGN_CENTER,
+     CAMERA_ALIGN_SPEED, CAMERA_ALIGN_DEADBAND);
+     if (alignValue == Drive.AlignReturnType.ALIGNED)
+     {
+     System.out.println("We are aligned!");
+     isAligning = false;
+     }
+     else if (alignValue == Drive.AlignReturnType.MISALIGNED)
+     {
+     System.out.println("We are not aligned!");
+     }
+     else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
+     {
+     System.out.println("We don't see anything!");
+     }
+     }
+     // Testing Strafe to target
+     if (Hardware.rightOperator.getRawButton(8))
+     isStrafingToTarget = true;
+    
+     if (isStrafingToTarget)
+     {
+     alignValue = Hardware.autoDrive.strafeToGear(.4, .2,
+     CAMERA_ALIGN_DEADBAND, CAMERA_ALIGN_CENTER, 20);
+     if (alignValue == Drive.AlignReturnType.ALIGNED)
+     {
+     System.out.println("We are aligned!");
+     }
+     else if (alignValue == Drive.AlignReturnType.MISALIGNED)
+     {
+     System.out.println("WE are NOT aligned!");
+     }
+     else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
+     {
+     System.out.println("We have no blobs!");
+     }
+     else if (alignValue == Drive.AlignReturnType.CLOSE_ENOUGH)
+     {
+     System.out.println("We are good to go!");
+     isStrafingToTarget = false;
+     }
+     }
+    
+     Hardware.axisCamera
+     .takeSinglePicture(Hardware.leftOperator.getRawButton(8));TODO
+} // end
+                                                                                   // Periodic
 
 // private static boolean isSpeedTesting = false;
 
