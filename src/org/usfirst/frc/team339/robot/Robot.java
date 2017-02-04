@@ -62,9 +62,11 @@ package org.usfirst.frc.team339.robot;
 import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 import org.usfirst.frc.team339.Hardware.Hardware;
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.vision.AxisCamera.ExposureControl;
+import edu.wpi.first.wpilibj.vision.AxisCamera.Resolution;
+import edu.wpi.first.wpilibj.vision.AxisCamera.WhiteBalance;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -105,11 +107,11 @@ public void autonomousInit ()
     // setup
     // ---------------------------------------
     System.out.println("Started AutonousInit().");
-    Hardware.mecanumDrive.setFirstGearPercentage(firstGear);
+    Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
     // =========================================================
     // User code goes below here
     // =========================================================
-    // Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    // Hardware.rightFrontMotor.setInverted(true);
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
@@ -167,8 +169,7 @@ public void autonomousPeriodic ()
 
     // feed all motor safeties
     Hardware.leftRearMotorSafety.feed();
-    Hardware.rightRearMotorSafety.feed();// TODO re-enable watchdogs when we
-    // fix it
+    Hardware.rightRearMotorSafety.feed();
 
 } // end autonomousPeriodic
 
@@ -193,7 +194,7 @@ public void disabledInit ()
     // =========================================================
     // User code goes below here
     // =========================================================
-    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    // Hardware.rightFrontMotor.setInverted(true);
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
@@ -256,8 +257,10 @@ public void robotInit ()
     // =========================================================
     Hardware.leftRearEncoder.reset();
     Hardware.rightRearEncoder.reset();
-    Hardware.mecanumDrive.setFirstGearPercentage(firstGear);
-    // Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    Hardware.tankDrive.setGearPercentage(1, FIRST_GEAR);
+    Hardware.tankDrive.setGearPercentage(2, SECOND_GEAR);
+    Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
+    // Hardware.rightFrontMotor.setInverted(true);
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
@@ -267,16 +270,11 @@ public void robotInit ()
     // -------------------------------------
     // motor initialization
     // -------------------------------------
-    /*
-     * @TODO
-     */
-    // Hardware.leftRearMotorSafety.setSafetyEnabled(false);// TODO Figure out
-    // what
-    // is triggering the
-    // watchdog
-    Hardware.rightRearMotorSafety.setSafetyEnabled(false);
-    Hardware.leftFrontMotorSafety.setSafetyEnabled(false);
-    Hardware.rightFrontMotorSafety.setSafetyEnabled(false);
+
+    Hardware.leftRearMotorSafety.setSafetyEnabled(true);
+    Hardware.rightRearMotorSafety.setSafetyEnabled(true);
+    Hardware.leftFrontMotorSafety.setSafetyEnabled(true);
+    Hardware.rightFrontMotorSafety.setSafetyEnabled(true);
     Hardware.leftRearMotorSafety.setExpiration(.25);
     Hardware.rightRearMotorSafety.setExpiration(.25);
     Hardware.leftFrontMotorSafety.setExpiration(.25);
@@ -309,16 +307,25 @@ public void robotInit ()
 
     // Sends video from both USB Cameras to the Smart Dashboard
     // -last edited on 28 Jan 2017 by Cole Ramos
-    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam0); TODO
-    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
-    CameraServer.getInstance().addAxisCamera("10.3.39.11");
     // CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
-    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);TODO
+    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
+    // CameraServer.getInstance().addAxisCamera("10.3.39.11");
+    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
+    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
     // Sets the [max?] FPS's for the USB Cameras. The FPS will generally
     // vary between -1 and +1 this amount.
     // -last edited on 28 Jan 2017 by Cole Ramos
     // Hardware.cam0.setFPS(Hardware.USB_FPS);
-    // Hardware.cam1.setFPS(Hardware.USB_FPS);TODO
+    // Hardware.cam1.setFPS(Hardware.USB_FPS);
+
+
+    Hardware.axisCamera.writeExposureControl(ExposureControl.kHold);
+    Hardware.axisCamera.writeBrightness(12);
+    Hardware.axisCamera.writeColorLevel(79);
+    Hardware.axisCamera.writeResolution(Resolution.k320x240);
+    Hardware.axisCamera
+            .writeWhiteBalance(WhiteBalance.kFixedFluorescent1);
+
 
 
     // Sets the max FPS of the Axis Camera; also changes the FPS in the
@@ -327,7 +334,7 @@ public void robotInit ()
     // will default to unlimited.
     // TODO Fix this. It isn't actually changing the FPS on the Driver's Station
     // but it is changing the website/ firmware
-    Hardware.axisCamera.writeMaxFPS(Hardware.AXIS_FPS);
+    // Hardware.axisCamera.writeMaxFPS(Hardware.AXIS_FPS);
 
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
@@ -344,7 +351,8 @@ public void robotInit ()
             "Kilroy XVIII is started.  All hardware items created.");
     System.out.println();
     System.out.println();
-} // end robotInit
+} // end
+  // robotInit
 
 // -------------------------------------------------------
 /**
@@ -364,12 +372,12 @@ public void teleopInit ()
     // setup
     // ---------------------------------------
     System.out.println("Started teleopInit().");
-    Hardware.mecanumDrive.setFirstGearPercentage(firstGear);
+    Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
     // =========================================================
     // User code goes below here
     // =========================================================
     Teleop.init();
-    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    // Hardware.rightFrontMotor.setInverted(true);
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
@@ -404,8 +412,7 @@ public void teleopPeriodic ()
     // -------------------------------------
     Teleop.periodic();
     // feed all motor safeties
-    Hardware.leftRearMotorSafety.feed();// TODO re-enable watchdogs when we fix
-                                        // it
+    Hardware.leftRearMotorSafety.feed();
     Hardware.rightRearMotorSafety.feed();
     Hardware.leftFrontMotorSafety.feed();
     Hardware.rightFrontMotorSafety.feed();
@@ -458,7 +465,15 @@ public void testPeriodic ()
 // ==========================================
 // TUNEABLES
 // ==========================================
-public static double firstGear = .7;
+/**
+ * The percentage we want the motors to run at while we are in first gear
+ */
+public static final double FIRST_GEAR = .7;
+
+/**
+ * The percentage we want the motors to run at while we are in second gear
+ */
+public static final double SECOND_GEAR = 1;
 
 public static double shooterP = .1;
 

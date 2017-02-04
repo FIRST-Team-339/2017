@@ -228,8 +228,8 @@ public static KilroyCamera axisCamera = new KilroyCamera(true);
 public final static int AXIS_FPS = 15;
 
 public static VisionScript visionScript = new VisionScript(
-        new HSLColorThresholdOperator(55, 147, 14, 255, 78, 255),
-        new RemoveSmallObjectsOperator(3, true),
+        new HSLColorThresholdOperator(90, 147, 140, 255, 64, 255),
+        new RemoveSmallObjectsOperator(1, true),
         new ConvexHullOperator(false));
 
 public static ImageProcessor imageProcessor = new ImageProcessor(
@@ -238,6 +238,7 @@ public static ImageProcessor imageProcessor = new ImageProcessor(
 // declare the USB camera server and the
 // USB camera it serves
 // -------------------------------------
+
 
 // **********************************************************
 // DRIVER STATION CLASSES
@@ -308,7 +309,11 @@ public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
 public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
 
-// Change when we get the robot for mecanum and two ultrasonic.
+// Change when we get the robot for mecanum
+
+// =====================================================================
+// Drive classes
+// =====================================================================
 
 public static Drive autoDrive = new Drive(tankDrive, axisCamera,
         imageProcessor, leftRearEncoder, rightRearEncoder,
@@ -338,6 +343,7 @@ public static boolean twoJoystickControl = false;
 public static final Timer kilroyTimer = new Timer();
 
 public static final Timer autoStateTimer = new Timer();
+
 
 /**
  * Default motor safety

@@ -78,11 +78,13 @@ public static void init ()
     // Hardware.leftUS.setOffsetDistanceFromNearestBummper(0);
     Hardware.rightUS.setScalingFactor(.13);
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
-    // Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(1);
+    Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
     // Hardware.leftUS.setNumberOfItemsToCheckBackwardForValidity(1);
     // Hardware.LeftUS.setConfidenceCalculationsOn(false);
     // Hardware.rightUS.setConfidenceCalculationsOn(false);
     // Hardware.tankDrive.setRightJoystickReversed(true);
+
+    Hardware.tankDrive.setGear(1);
 
     isAligning = false;
     isStrafingToTarget = false;
@@ -147,7 +149,7 @@ public static void periodic ()
     // }
     // else
     // {
-    if (!isAligning)
+    if (!isAligning && !isStrafingToTarget)
         Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
                 Hardware.leftDriver.getY());
     // }
@@ -178,6 +180,8 @@ public static void periodic ()
         {
         Hardware.autoDrive.driveInches(24, .4);
         }
+
+
 
 
     // =================================================================
@@ -261,7 +265,8 @@ public static void periodic ()
 
 
     Hardware.axisCamera
-            .takeSinglePicture(Hardware.leftOperator.getRawButton(8));
+            .takeSinglePicture(Hardware.leftOperator.getRawButton(8)
+                    || Hardware.rightOperator.getRawButton(8));
 } // end
   // Periodic
 
@@ -282,7 +287,7 @@ private static boolean isStrafingToTarget = false;
 
 private static boolean isDrivingInches = false;
 
-private static double movementSpeed = 0.5;
+private static double movementSpeed = 0.3;
 
 private static boolean hasPressedFour = false;
 
@@ -366,8 +371,10 @@ public static void printStatements ()
     // System.out.println("LeftUS = "
     // + Hardware.leftUS.getDistanceFromNearestBumper());
     //
-    System.out.println("RightUS = "
-            + Hardware.rightUS.getDistanceFromNearestBumper());
+    // We don't want the print statements to flood everything and go ahhhhhhhh
+    // if (Hardware.rightOperator.getRawButton(11))
+    // System.out.println("RightUS = "
+    // + Hardware.rightUS.getDistanceFromNearestBumper());
 
 
     // ---------------------------------
@@ -382,6 +389,22 @@ public static void printStatements ()
     // Cameras
     // prints any camera information required
     // ---------------------------------
+
+    // System.out.println("Expected center: " + CAMERA_ALIGN_CENTER);
+    //
+    // Hardware.imageProcessor.processImage();
+    //
+    // if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
+    // System.out
+    // .println("Actual center: " + ((Hardware.imageProcessor
+    // .getNthSizeBlob(0).center_mass_x
+    // + Hardware.imageProcessor
+    // .getNthSizeBlob(1).center_mass_x)
+    // / 2.0)
+    // / Hardware.axisCamera
+    // .getHorizontalResolution());
+    //
+    // System.out.println("Deadband: " + CAMERA_ALIGN_DEADBAND);
 
     // =================================
     // Driver station
@@ -420,10 +443,11 @@ public static void printStatements ()
 private final static double CAMERA_ALIGN_SPEED = .5;
 
 //// The dead zone for the aligning TODO
-private final static double CAMERA_ALIGN_DEADBAND = 10.0
+private final static double CAMERA_ALIGN_DEADBAND = 10.0 // +/- Pixels
         / Hardware.axisCamera.getHorizontalResolution();
 
-private final static double CAMERA_ALIGN_CENTER = 271.8;
+private final static double CAMERA_ALIGN_CENTER = .478;  // Relative coordinates
+
 
 // ==========================================
 // TUNEABLES
