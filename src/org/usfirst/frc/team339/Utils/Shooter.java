@@ -3,7 +3,7 @@ package org.usfirst.frc.team339.Utils;
 import com.ctre.CANTalon;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
-import edu.wpi.first.wpilibj.TalonSRX;
+import edu.wpi.first.wpilibj.PWMSpeedController;
 
 /**
  * Describes the shooter object for the 2017 game: FIRST Steamworks.
@@ -19,7 +19,7 @@ private CANTalon flywheelController = null;
 
 private IRSensor elevatorSensor = null;
 
-private TalonSRX elevatorController = null;
+private PWMSpeedController elevatorController = null;
 
 private double acceptableError = 0;
 
@@ -41,7 +41,8 @@ private ImageProcessor visionTargeter = null;
  *            Our vision processor object, used to target the high boiler.
  */
 public Shooter (CANTalon controller, IRSensor ballLoaderSensor,
-        TalonSRX elevator, double acceptableFlywheelSpeedError,
+        PWMSpeedController elevator,
+        double acceptableFlywheelSpeedError,
         ImageProcessor visionTargeting)
 {
     this.flywheelController = controller;
@@ -115,6 +116,12 @@ public boolean turnToBearing (double newBearing)
     return false;
 }
 
+/**
+ * Uses the vision processing to align the gimbal to the high boiler.
+ * 
+ * @return
+ *         True if we're aligned, false otherwise.
+ */
 public boolean turnToGoal ()
 {
     return false;
