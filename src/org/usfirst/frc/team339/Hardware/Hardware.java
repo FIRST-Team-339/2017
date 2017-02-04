@@ -14,6 +14,8 @@
 // ====================================================================
 package org.usfirst.frc.team339.Hardware;
 
+import com.ctre.CANTalon;
+import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
@@ -23,6 +25,7 @@ import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourW
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import org.usfirst.frc.team339.Utils.ChangeBoolValue;
 import org.usfirst.frc.team339.Utils.Drive;
+import org.usfirst.frc.team339.Utils.Shooter;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
 import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
@@ -38,6 +41,7 @@ import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Victor;
 
 // -------------------------------------------------------
 /**
@@ -99,13 +103,17 @@ public static TalonSRX rightFrontMotor = new TalonSRX(2);// 1);
 public static TalonSRX leftRearMotor = new TalonSRX(3);
 
 public static TalonSRX leftFrontMotor = new TalonSRX(1);// 4);
+
+public static CANTalon shooterMotor = new CANTalon(1);
+
 // ------------------------------------
 // Victor classes
 // ------------------------------------
-
+public static Victor elevatorMotor = new Victor(0);// PWM 0
 // ====================================
 // CAN classes
 // ====================================
+
 public static PowerDistributionPanel pdp = new PowerDistributionPanel(
         0);
 // ====================================
@@ -158,7 +166,7 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // -------------------------------------
 // Red Light/IR Sensor class
 // -------------------------------------
-
+public static IRSensor ballLoaderSensor = new IRSensor(8);
 // ====================================
 // I2C Classes
 // ====================================
@@ -203,6 +211,8 @@ public static ADXRS450_Gyro driveGyro = new ADXRS450_Gyro();
 // -------------------------------------
 public static Potentiometer delayPot = new Potentiometer(0, 270);// TODO max
                                                                  // degree value
+
+public static Potentiometer gimbalPot = new Potentiometer(3, 270);
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------
@@ -210,17 +220,13 @@ public static Potentiometer delayPot = new Potentiometer(0, 270);// TODO max
 public static UltraSonic leftUS = new UltraSonic(1);
 
 public static UltraSonic rightUS = new UltraSonic(2);
+
 // **********************************************************
 // roboRIO CONNECTIONS CLASSES
 // **********************************************************
 // -------------------------------------
 // Axis/USB Camera class
 // -------------------------------------
-
-
-// public static UsbCamera cam0 = new UsbCamera("cam0", 0);
-//
-// public static UsbCamera cam1 = new UsbCamera("cam1", 1);
 
 // Used by the USB Cameras in robot init to set their FPS's
 public final static int USB_FPS = 15;
@@ -231,8 +237,8 @@ public static KilroyCamera axisCamera = new KilroyCamera(true);
 public final static int AXIS_FPS = 15;
 
 public static VisionScript visionScript = new VisionScript(
-        new HSLColorThresholdOperator(55, 147, 14, 255, 78, 255),
-        new RemoveSmallObjectsOperator(3, true),
+        new HSLColorThresholdOperator(90, 147, 140, 255, 64, 255),
+        new RemoveSmallObjectsOperator(1, true),
         new ConvexHullOperator(false));
 
 public static ImageProcessor imageProcessor = new ImageProcessor(
@@ -241,6 +247,7 @@ public static ImageProcessor imageProcessor = new ImageProcessor(
 // declare the USB camera server and the
 // USB camera it serves
 // -------------------------------------
+
 
 // **********************************************************
 // DRIVER STATION CLASSES
@@ -311,11 +318,16 @@ public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
 public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
 
-// Change when we get the robot for mecanum and two ultrasonic.
+// Change when we get the robot for mecanum
+
+// =====================================================================
+// Drive classes
+// =====================================================================
+
 
 public static Drive autoDrive = new Drive(tankDrive, axisCamera,
         imageProcessor, leftRearEncoder, rightRearEncoder,
-        leftRearEncoder, rightRearEncoder, rightUS, rightUS);
+        leftRearEncoder, rightRearEncoder, rightUS);
 
 /**
  * are we using mecanum? set false for tank drive
@@ -331,6 +343,9 @@ public static boolean twoJoystickControl = false;
 // -------------------
 // Assembly classes (e.g. forklift)
 // -------------------
+public static Shooter shooter = new Shooter(shooterMotor,
+        ballLoaderSensor, elevatorMotor, 20, imageProcessor, gimbalPot,
+        3, null);
 
 // ------------------------------------
 // Utility classes
@@ -342,8 +357,11 @@ public static final Timer kilroyTimer = new Timer();
 
 public static final Timer autoStateTimer = new Timer();
 
+
 /**
  * Default motor safety
+ * 
+ * @TODO We REALLY need to fix the motor safety...
  */
 public static final MotorSafetyHelper leftRearMotorSafety = new MotorSafetyHelper(
         leftRearMotor);

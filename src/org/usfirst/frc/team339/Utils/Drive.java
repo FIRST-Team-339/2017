@@ -6,6 +6,7 @@ import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourW
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * This class allows us to drive semi-autonomously, and is to be implemented
@@ -38,9 +39,9 @@ private boolean isUsingEncoders = false;
 
 private boolean isUsingUltrasonics = false;
 
-private UltraSonic leftUlt = null;
-
 private UltraSonic rightUlt = null;
+
+private Timer timer = new Timer();
 
 /**
  * Creates an instance of the Drive class, with a mecanum drive system.
@@ -89,7 +90,7 @@ public Drive (TransmissionMecanum transmissionMecanum,
         KilroyCamera camera, ImageProcessor imageProcessor,
         Encoder rightFrontEncoder, Encoder rightRearEncoder,
         Encoder leftFrontEncoder, Encoder leftRearEncoder,
-        UltraSonic leftUlt, UltraSonic rightUlt)
+        UltraSonic rightUlt)
 {
     this(transmissionMecanum, camera, imageProcessor);
 
@@ -97,9 +98,8 @@ public Drive (TransmissionMecanum transmissionMecanum,
             leftRearEncoder, rightRearEncoder);
 
     this.rightUlt = rightUlt;
-    this.leftUlt = leftUlt;
-
     isUsingUltrasonics = true;
+
 }
 
 /**
@@ -132,31 +132,31 @@ public Drive (TransmissionFourWheel transmissionFourWheel,
  *            The camera we want to use for image saving
  * @param imageProcessor
  *            The processor we want to use for aiming and aligning
- * @param rightFrontEncoder
- *            The front right encoder
- * @param rightRearEncoder
- *            The back right encoder
  * @param leftFrontEncoder
  *            The front left encoder
+ * @param rightFrontEncoder
+ *            The front right encoder
  * @param leftRearEncoder
  *            The back left encoder
- * @param leftUlt
- *            The ultrasonic on the left side of the robot
+ * @param rightRearEncoder
+ *            The back right encoder
  * @param rightUlt
  *            The ultrasonic on the right side of the robot
+ * @param driveTimer
+ *            TODO
+ * @param leftUlt
+ *            The ultrasonic on the left side of the robot
  */
 public Drive (TransmissionFourWheel transmissionFourWheel,
         KilroyCamera camera, ImageProcessor imageProcessor,
         Encoder leftFrontEncoder, Encoder rightFrontEncoder,
         Encoder leftRearEncoder, Encoder rightRearEncoder,
-        UltraSonic leftUlt, UltraSonic rightUlt)
+        UltraSonic rightUlt)
 {
     this(transmissionFourWheel, camera, imageProcessor);
     this.initEncoders(leftFrontEncoder, rightFrontEncoder,
             leftRearEncoder, rightRearEncoder);
-    this.leftUlt = leftUlt;
     this.rightUlt = rightUlt;
-
     isUsingUltrasonics = true;
 }
 
@@ -268,60 +268,74 @@ public AlignReturnType alignToGear (double relativeCenter,
             if (isTurning == false)
                 {
                 this.imageProcessor.processImage();
-                if (this.imageProcessor.getNthSizeBlob(1) != null)
+                if (this.imageProcessor.getNthSizeBlob(1) == null)
                     {
-                    double distanceToCenter = imageProcessor
-                            .getPositionOfRobotToGear(
-                                    imageProcessor
-                                            .getNthSizeBlob(0),
-                                    imageProcessor
-                                            .getNthSizeBlob(1),
-                                    relativeCenter);
-                    if (distanceToCenter > 0)
-                        {
-                        System.out.println("We are Left of target");
-                        }
-                    else if (distanceToCenter < 0)
-                        System.out
-                                .println("We are RIGHT of target");
-                    System.out
-                            .println("Distance to center: "
-                                    + distanceToCenter);
-
-                    System.out.println("Deadband: " + (10.0
-                            / this.camera
-                                    .getHorizontalResolution()));
-                    if (distanceToCenter == Double.MAX_VALUE)
-                        {
-                        transmissionFourWheel.drive(0.0, 0.0);
-                        return AlignReturnType.NO_BLOBS;
-                        }
-                    if (Math.abs(distanceToCenter) <= deadband)
-                        {
-                        transmissionFourWheel.drive(0.0, 0.0);
-                        return AlignReturnType.ALIGNED;
-                        }
+                    transmissionFourWheel.drive(0.0, 0.0);
+                    return AlignReturnType.NO_BLOBS;
                     }
+                double distanceToCenter = imageProcessor
+                        .getPositionOfRobotToGear(
+                                imageProcessor
+                                        .getNthSizeBlob(0),
+                                imageProcessor
+                                        .getNthSizeBlob(1),
+                                relativeCenter);
+                if (distanceToCenter > 0)
+                    {
+                    System.out.println("We are Left of target");
+                    }
+                else if (distanceToCenter < 0)
+                    System.out
+                            .println("We are RIGHT of target");
+                System.out
+                        .println("Distance to center: "
+                                + distanceToCenter);
+
+                System.out.println("Deadband: " + (10.0
+                        / this.camera
+                                .getHorizontalResolution()));
+                if (distanceToCenter == Double.MAX_VALUE)
+                    {
+                    transmissionFourWheel.drive(0.0, 0.0);
+                    return AlignReturnType.NO_BLOBS;
+                    }
+                if (Math.abs(distanceToCenter) <= deadband)
+                    {
+                    transmissionFourWheel.drive(0.0, 0.0);
+                    return AlignReturnType.ALIGNED;
+                    }
+                else if (distanceToCenter > 0)
+                    {
+                    this.transmissionFourWheel.drive(movementSpeed,
+                            -movementSpeed);
+                    }
+                else if (distanceToCenter < 0)
+                    {
+                    this.transmissionFourWheel.drive(-movementSpeed,
+                            movementSpeed);
+                    }
+
+
                 }
             // Turns based on the average of the yaw angles of the
             // two blobs, to account for a delayed axis camera.
-            double yawAngle = (this.imageProcessor
-                    .getYawAngleToTarget(
-                            this.imageProcessor.getNthSizeBlob(1))
-                    + this.imageProcessor.getYawAngleToTarget(
-                            this.imageProcessor.getNthSizeBlob(0))
-                            / 2.0);
-            System.out.println("Average yaw angle: " + yawAngle);
-
-
-
-            isTurning = this.turnDegrees((this.imageProcessor
-                    .getYawAngleToTarget(this.imageProcessor
-                            .getNthSizeBlob(0))
-                    + this.imageProcessor.getYawAngleToTarget(
-                            this.imageProcessor
-                                    .getNthSizeBlob(1)))
-                    / 2.0, .5);
+            // double yawAngle = (this.imageProcessor
+            // .getYawAngleToTarget(
+            // this.imageProcessor.getNthSizeBlob(1))
+            // + this.imageProcessor.getYawAngleToTarget(
+            // this.imageProcessor.getNthSizeBlob(0))
+            // / 2.0);
+            // System.out.println("Average yaw angle: " + yawAngle);
+            //
+            //
+            //
+            // isTurning = this.turnDegrees((this.imageProcessor
+            // .getYawAngleToTarget(this.imageProcessor
+            // .getNthSizeBlob(0))
+            // + this.imageProcessor.getYawAngleToTarget(
+            // this.imageProcessor
+            // .getNthSizeBlob(1)))
+            // / 2.0, .5);
             break;
         case MECANUM:
 
@@ -360,58 +374,85 @@ public AlignReturnType strafeToGear (double driveSpeed,
         double alignVar, double deadband, double relativeCenter,
         int distanceToTarget)
 {
+    if (this.firstStrafe)
+        {
+        this.timer.reset();
+        this.timer.start();
+        this.firstStrafe = false;
+        }
+
+    if (this.purgingUltrasonic)
+        {
+        this.rightUlt.getDistanceFromNearestBumper();
+        if (this.timer.get() >= .25)
+            {
+            this.timer.stop();
+            this.purgingUltrasonic = false;
+            }
+        else
+            {
+            this.drive(0.0, 0.0);
+            return AlignReturnType.WAITING;
+            }
+        }
+
+    this.imageProcessor.processImage();
+
     // If we have no blobs, return so.
     if (this.imageProcessor.getNthSizeBlob(1) == null)
+        {
+        this.drive(0.0, 0.0);
         return AlignReturnType.NO_BLOBS;
-
+        }
     // If we don't have any ultrasonics in the constructor, stop aligning.
     if (this.isUsingUltrasonics == false)
+        {
+        this.drive(0.0, 0.0);
         return AlignReturnType.ALIGNED;
-
+        }
     double distanceToCenter = this.imageProcessor
             .getPositionOfRobotToGear(
                     this.imageProcessor.getNthSizeBlob(0),
                     this.imageProcessor.getNthSizeBlob(1),
                     relativeCenter);
+    if (distanceToCenter == Double.MAX_VALUE)
+        {
+        this.drive(0.0, 0.0);
+        return AlignReturnType.NO_BLOBS;
+        }
+
+    if (this.rightUlt
+            .getDistanceFromNearestBumper() <= distanceToTarget)
+        {
+        this.purgingUltrasonic = true;
+        this.firstStrafe = true;
+        this.drive(0.0, 0.0);
+        return AlignReturnType.CLOSE_ENOUGH;
+        }
+
 
     if (Math.abs(distanceToCenter) < deadband)
         {
-        if ((this.leftUlt
-                .getOffsetDistanceFromNearestBummper()
-                + this.rightUlt.getOffsetDistanceFromNearestBummper())
-                / 2.0 <= distanceToTarget)
-            return AlignReturnType.CLOSE_ENOUGH;
-
-        if (this.transmissionType == TransmissionType.MECANUM)
-            transmissionMecanum.drive(driveSpeed, 0.0, 0.0, 0, 0);
-        else if (this.transmissionType == TransmissionType.TANK)
-            transmissionFourWheel.drive(driveSpeed, driveSpeed);
+        this.drive(driveSpeed, 0);
         return AlignReturnType.ALIGNED;
         }
 
     if (distanceToCenter > 0)
         {
-        if (this.transmissionType == TransmissionType.MECANUM)
-            this.transmissionMecanum.drive(driveSpeed, alignVar, 0, 0,
-                    0);
-        else if (this.transmissionType == TransmissionType.TANK)
-            this.transmissionFourWheel.drive(driveSpeed - alignVar,
-                    driveSpeed + alignVar);
+        this.drive(driveSpeed, alignVar);
         }
     else if (distanceToCenter < 0)
         {
-        if (this.transmissionType == TransmissionType.MECANUM)
-            this.transmissionMecanum.drive(driveSpeed, -alignVar, 0.0,
-                    0, 0);
-        else if (this.transmissionType == TransmissionType.TANK)
-            this.transmissionFourWheel.drive(driveSpeed + alignVar,
-                    driveSpeed - alignVar);
+        this.drive(driveSpeed, -alignVar);
         }
 
 
     return AlignReturnType.MISALIGNED;
 }
 
+private boolean purgingUltrasonic = true;
+
+private boolean firstStrafe = true;
 
 
 /**
@@ -437,8 +478,67 @@ public static enum AlignReturnType
     /**
      * Only used if we are using an ultrasonic
      */
-    CLOSE_ENOUGH
+    CLOSE_ENOUGH,
+    /**
+     * We are waiting for the ultrasonic to purge bad values
+     * before starting
+     */
+    WAITING
+
+
     }
+
+/**
+ * Drives WITH rotation. If we are using tank drive, it only turns based
+ * on correction.
+ * 
+ * @param speed
+ * @param correction
+ * @param rotation
+ */
+public void drive (double speed, double correction, double rotation)
+{
+    switch (this.transmissionType)
+        {
+        case MECANUM:
+            this.transmissionMecanum.drive(speed, correction, rotation);
+            break;
+        case TANK:
+            this.transmissionFourWheel.driveWithoutCorrection(
+                    speed + correction, speed - correction);
+        }
+}
+
+/**
+ * Drives based on correction speed and driving speed
+ * 
+ * @param speed
+ *            how fast we drive and which direction (+forwards, -backwards)
+ * @param correction
+ *            how fast we correct, and which direction (+turn right, -turn left)
+ */
+public void drive (double speed, double correction)
+{
+    switch (transmissionType)
+        {
+        case MECANUM:
+            this.transmissionMecanum.drive(speed, correction, 0.0);
+            break;
+        case TANK:
+            this.transmissionFourWheel.driveWithoutCorrection(
+                    speed + correction, speed - correction);
+        }
+}
+
+public void strafeStraight (double inches)
+{
+    resetEncoders();
+    double rightFrontSpeed = inches;
+    double rightRearSpeed = inches;
+    double leftFrontSpeed = inches;
+    double leftRearSpeed = inches;
+
+}
 
 /**
  * @return the distance the front left encoder has driven based on the

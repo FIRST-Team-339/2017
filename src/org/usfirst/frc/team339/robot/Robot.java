@@ -59,11 +59,15 @@
 // ====================================================================
 package org.usfirst.frc.team339.robot;
 
+import com.ctre.CANTalon.FeedbackDevice;
+import com.ctre.CANTalon.TalonControlMode;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+import edu.wpi.first.wpilibj.vision.AxisCamera.ExposureControl;
+import edu.wpi.first.wpilibj.vision.AxisCamera.Resolution;
+import edu.wpi.first.wpilibj.vision.AxisCamera.WhiteBalance;
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -107,17 +111,23 @@ public void autonomousInit ()
     // setup
     // ---------------------------------------
     System.out.println("Started AutonousInit().");
-    Hardware.mecanumDrive.setFirstGearPercentage(firstGear);
+    Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
     // =========================================================
     // User code goes below here
     // =========================================================
+
+    // Hardware.rightFrontMotor.setInverted(true);
+    // Hardware.rightRearMotor.setInverted(true);
+    // Hardware.leftFrontMotor.setInverted(true);
+    // Hardware.leftRearMotor.setInverted(true);
+    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     // -------------------------------------
     // Call the Autonomous class's Init function,
     // which contains the user code.
     // -------------------------------------
     Autonomous.init();
     Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
-   
+    // Hardware.tankDrive.setRightJoystickReversed(true);
     // =========================================================
     // User code goes above here
     // =========================================================
@@ -191,7 +201,8 @@ public void disabledInit ()
     // =========================================================
     // User code goes below here
     // =========================================================
-    // Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+
+    // Hardware.rightFrontMotor.setInverted(true);
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
@@ -254,16 +265,20 @@ public void robotInit ()
     // =========================================================
     Hardware.leftRearEncoder.reset();
     Hardware.rightRearEncoder.reset();
-    Hardware.mecanumDrive.setFirstGearPercentage(firstGear);
-    // Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    Hardware.tankDrive.setGearPercentage(1, FIRST_GEAR);
+    Hardware.tankDrive.setGearPercentage(2, SECOND_GEAR);
+    Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
+    // Hardware.rightFrontMotor.setInverted(true);
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
     Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+
     // -------------------------------------
     // motor initialization
     // -------------------------------------
+
     Hardware.leftRearMotorSafety.setSafetyEnabled(true);
     Hardware.rightRearMotorSafety.setSafetyEnabled(true);
     Hardware.leftFrontMotorSafety.setSafetyEnabled(true);
@@ -274,6 +289,18 @@ public void robotInit ()
     Hardware.leftFrontMotorSafety.setExpiration(.25);
     Hardware.rightFrontMotorSafety.setExpiration(.25);
 
+    // Hardware.tankDrive.setRightJoystickReversed(true);
+
+    // initialize PID values and set the motor to 0.0 because it isn't safe if
+    // we don't.
+    Hardware.shooterMotor.changeControlMode(TalonControlMode.Speed);
+    Hardware.shooterMotor.configPeakOutputVoltage(12f, -12f);
+    Hardware.shooterMotor.configNominalOutputVoltage(0f, 0f);
+    Hardware.shooterMotor
+            .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+    Hardware.shooterMotor.configEncoderCodesPerRev(1024);
+    Hardware.shooterMotor.setPID(shooterP, shooterI, shooterD);
+    Hardware.shooterMotor.setSetpoint(0.0);
     // Hardware.rightFrontMotor.setInverted(true);
 
     if (Hardware.runningInLab == true)
@@ -291,21 +318,37 @@ public void robotInit ()
     // -last edited on 28 Jan 2017 by Cole Ramos
     // CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
     // CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
+    // CameraServer.getInstance().addAxisCamera("10.3.39.11");
+    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
+    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
     // Sets the [max?] FPS's for the USB Cameras. The FPS will generally
-    // vary between -1 and +1
-    // this amount.
+    // vary between -1 and +1 this amount.
     // -last edited on 28 Jan 2017 by Cole Ramos
     // Hardware.cam0.setFPS(Hardware.USB_FPS);
     // Hardware.cam1.setFPS(Hardware.USB_FPS);
+
+
+    Hardware.axisCamera.writeExposureControl(ExposureControl.kHold);
+    Hardware.axisCamera.writeBrightness(12);
+    Hardware.axisCamera.writeColorLevel(79);
+    Hardware.axisCamera.writeResolution(Resolution.k320x240);
+    Hardware.axisCamera
+            .writeWhiteBalance(WhiteBalance.kFixedFluorescent1);
+
+
 
     // Sets the max FPS of the Axis Camera; also changes the FPS in the
     // firmware/ web browser
     // of the Axis Camera. If the FPS is not set in the code, the firmware
     // will default to unlimited.
-    Hardware.axisCamera.writeMaxFPS(Hardware.AXIS_FPS);
+
+    // TODO Fix this. It isn't actually changing the FPS on the Driver's Station
+    // but it is changing the website/ firmware
+    // Hardware.axisCamera.writeMaxFPS(Hardware.AXIS_FPS);
 
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
+
 
     // =========================================================
     // User code goes above here
@@ -323,8 +366,8 @@ public void robotInit ()
 // -------------------------------------------------------
 /**
  * Non-User initialization code for teleop mode should go here. Will be
- * called once when the robot enters teleop mode, and will call the
- * Teleop class's Init function, where the User code should be placed.
+ * called once when the robot enters teleop mode, and will call the Teleop
+ * class's Init function, where the User code should be placed.
  *
  * @author Bob Brown
  * @written Jan 2, 2011
@@ -338,12 +381,12 @@ public void teleopInit ()
     // setup
     // ---------------------------------------
     System.out.println("Started teleopInit().");
-    Hardware.mecanumDrive.setFirstGearPercentage(firstGear);
+    Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
     // =========================================================
     // User code goes below here
     // =========================================================
     Teleop.init();
-    // Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    // Hardware.rightFrontMotor.setInverted(true);
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
@@ -377,7 +420,6 @@ public void teleopPeriodic ()
     // which contains the user code.
     // -------------------------------------
     Teleop.periodic();
-
     // feed all motor safeties
     Hardware.leftRearMotorSafety.feed();
     Hardware.rightRearMotorSafety.feed();
@@ -432,6 +474,21 @@ public void testPeriodic ()
 // ==========================================
 // TUNEABLES
 // ==========================================
-public static double firstGear = .7;
+
+/**
+ * The percentage we want the motors to run at while we are in first gear
+ */
+public static final double FIRST_GEAR = .7;
+
+/**
+ * The percentage we want the motors to run at while we are in second gear
+ */
+public static final double SECOND_GEAR = 1;
+
+public static double shooterP = .1;
+
+public static double shooterI = .00052;
+
+public static double shooterD = .9;
 
 } // end class

@@ -147,7 +147,7 @@ private static enum AutoProgram
 
 public static void init ()
 {
-	
+
 } // end Init
 
 /**
@@ -157,12 +157,6 @@ public static void init ()
  * @author Nathanial Lydick
  * @written Jan 13, 2015
  */
-
-	
-
-
-
-
 public static void periodic ()
 {
 	

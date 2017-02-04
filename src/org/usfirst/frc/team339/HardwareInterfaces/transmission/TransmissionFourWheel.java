@@ -8,9 +8,11 @@ public class TransmissionFourWheel extends Transmission
 {
 
 private final SpeedController rightRearSpeedController;
+
 private MotorDirection rightRearMotorDirection = MotorDirection.REVERSED;
 
 private final SpeedController leftRearSpeedController;
+
 private MotorDirection leftRearMotorDirection = MotorDirection.FORWARD;
 
 /**
@@ -85,6 +87,23 @@ public void drive (double rightJoystickVal, double leftJoystickVal)
     this.driveRightRearMotor(scaledRightVal);
     this.driveLeftMotor(scaledLeftVal);
     this.driveLeftRearMotor(scaledLeftVal);
+}
+
+/**
+ * This method helps with driving without using joysticks or gears, such as the
+ * Drive class.
+ * 
+ * @param leftSide
+ *            The left percentage
+ * @param rightSide
+ *            The right percentage
+ */
+public void driveWithoutCorrection (double leftSide, double rightSide)
+{
+    this.driveLeftMotor(leftSide);
+    this.driveLeftRearMotor(leftSide);
+    this.driveRightMotor(rightSide);
+    this.driveRightRearMotor(rightSide);
 }
 
 /**
