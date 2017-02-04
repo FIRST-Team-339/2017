@@ -34,6 +34,11 @@ package org.usfirst.frc.team339.robot;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.Transmission.MotorDirection;
 import org.usfirst.frc.team339.Utils.Drive;
+import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Sendable;
+import edu.wpi.first.wpilibj.command.Command;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class contains all of the user code for the Autonomous part of the
@@ -51,6 +56,7 @@ public class Teleop
  * @author Nathanial Lydick
  * @written Jan 13, 2015
  */
+	int control =1;
 public static void init ()
 {
     // --------------------------------------
@@ -66,29 +72,30 @@ public static void init ()
     Hardware.rightFrontMotor.set(0.0);
     Hardware.leftFrontMotor.set(0.0);
 
-    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
-    // Hardware.rightRearMotor.setInverted(true);
-    // Hardware.leftFrontMotor.setInverted(true);
-    // Hardware.leftRearMotor.setInverted(true);
-    Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
-    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
 
-    Hardware.isUsingMecanum = true;
-    Hardware.twoJoystickControl = false;
-
-    // Hardware.tankDrive.setGear(Hardware.tankDrive.getMaxGear());
-    // Hardware.leftUS.setScalingFactor(.13);
-    // Hardware.leftUS.setOffsetDistanceFromNearestBummper(0);
-    // Hardware.rightUS.setScalingFactor(.13); TODO
-    // Hardware.rightUS.setOffsetDistanceFromNearestBummper(0);
-    // Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(1);
-    // Hardware.leftUS.setNumberOfItemsToCheckBackwardForValidity(1);
+    Hardware.tankDrive.setGear(Hardware.tankDrive.getMaxGear());
+    Hardware.leftUS.setScalingFactor(.13);
+    Hardware.leftUS.setOffsetDistanceFromNearestBummper(0);
+    Hardware.rightUS.setScalingFactor(.13);
+    Hardware.rightUS.setOffsetDistanceFromNearestBummper(0);
+    Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(1);
+    Hardware.leftUS.setNumberOfItemsToCheckBackwardForValidity(1);
     // Hardware.LeftUS.setConfidenceCalculationsOn(false);
     // Hardware.RightUS.setConfidenceCalculationsOn(false);
 
     Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
+    boolean testchoosers = true;
+    
+  // SendableChooser sendablechoosetest;
+//   sendablechoosetest = new SendableChooser();
+//   sendablechoosetest.addDefault("default", testchoosers);
+  
+  //  Sendable testsendable = ;
+  //  SmartDashboard.putData("teleoptest", testsendable);
+    
+   
 
-
+   
 } // end Init
 
 /**
@@ -100,14 +107,35 @@ public static void init ()
  */
 public static void periodic ()
 {
-    // if (Hardware.ringlightSwitch.isOnCheckNow())
-    // {
-    // Hardware.ringlightRelay.set(Relay.Value.kOn);
-    // }
-    // else
-    // {
-    // Hardware.ringlightRelay.set(Relay.Value.kOff);
-    // }
+	Command chooseTrueorFalse;
+	SendableChooser testbool;
+	testbool = new SendableChooser();
+	testbool.addDefault("true",Hardware.changeBool.equals(true));
+	testbool.addObject(" false", Hardware.changeBool.equals(false));
+	int control = 1;
+	
+	SmartDashboard.putData("testbool",testbool );
+	switch(control){
+		case 1:
+			
+			System.out.println(Hardware.changeBool.getClass());
+			control = 1;
+		break;
+		case 2:
+			
+			break;
+		
+		}
+	
+	
+    if (Hardware.ringlightSwitch.isOnCheckNow())
+        {
+        Hardware.ringlightRelay.set(Relay.Value.kOn);
+        }
+    else
+        {
+        Hardware.ringlightRelay.set(Relay.Value.kOff);
+        }
 
     // Print out any data we want from the hardware elements.
     printStatements();
@@ -124,6 +152,7 @@ public static void periodic ()
     else
         {
         rotationValue = 0.0;
+       
         }
 
     if (!isAligning)
@@ -178,7 +207,6 @@ public static void periodic ()
         {
         Hardware.autoDrive.driveInches(24, .4);
         }
-
 
     // =================================================================
     // CAMERA CODE
@@ -246,6 +274,8 @@ public static void periodic ()
 
     Hardware.axisCamera
             .takeSinglePicture(Hardware.leftOperator.getRawButton(8));
+
+
 } // end Periodic
 
 // private static boolean isSpeedTesting = false;
@@ -393,7 +423,7 @@ public static void printStatements ()
  */
 private final static double CAMERA_ALIGN_SPEED = .5;
 
-//// The dead zone for the aligning TODO
+// The dead zone for the aligning
 private final static double CAMERA_ALIGN_DEADBAND = 10.0
         / Hardware.axisCamera.getHorizontalResolution();
 

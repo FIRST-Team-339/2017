@@ -62,6 +62,7 @@ package org.usfirst.frc.team339.robot;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -80,12 +81,14 @@ import edu.wpi.first.wpilibj.Relay;
  */
 public class Robot extends IterativeRobot
 {
-
+ boolean testdasboard = true;
 // =================================================
 // private data for the class
 // =================================================
 
 // -------------------------------------------------------
+	
+	
 /**
  * Initialization code for autonomous mode should go here. Will be called
  * once when the robot enters autonomous mode.
@@ -94,9 +97,11 @@ public class Robot extends IterativeRobot
  * @written Jan 2, 2011
  *          -------------------------------------------------------
  */
+	
 @Override
 public void autonomousInit ()
 {
+
     // ---------------------------------------
     // start setup - tell the user we are beginning
     // setup
@@ -106,19 +111,13 @@ public void autonomousInit ()
     // =========================================================
     // User code goes below here
     // =========================================================
-    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
-    // Hardware.rightRearMotor.setInverted(true);
-    // Hardware.leftFrontMotor.setInverted(true);
-    // Hardware.leftRearMotor.setInverted(true);
-    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-    Hardware.isUsingMecanum = true;
-    Hardware.twoJoystickControl = false;
     // -------------------------------------
     // Call the Autonomous class's Init function,
     // which contains the user code.
     // -------------------------------------
     Autonomous.init();
     Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
+   
     // =========================================================
     // User code goes above here
     // =========================================================
@@ -141,8 +140,9 @@ public void autonomousInit ()
  *          -------------------------------------------------------
  */
 @Override
-public void autonomousPeriodic ()
+/*public void autonomousPeriodic ()
 {
+
     // ---------------------------------------
     // start setup - tell the user we are beginning
     // setup
@@ -165,8 +165,10 @@ public void autonomousPeriodic ()
     // feed all motor safeties
     Hardware.leftRearMotorSafety.feed();
     Hardware.rightRearMotorSafety.feed();
+    Hardware.leftFrontMotorSafety.feed();
+    Hardware.rightFrontMotorSafety.feed();
 
-} // end autonomousPeriodic
+}*/ // end autonomousPeriodic
 
 // -------------------------------------------------------
 /**
@@ -177,7 +179,7 @@ public void autonomousPeriodic ()
  * @written Jan 2, 2011
  *          -------------------------------------------------------
  */
-@Override
+//@Override
 public void disabledInit ()
 {
     // ---------------------------------------
@@ -189,7 +191,6 @@ public void disabledInit ()
     // =========================================================
     // User code goes below here
     // =========================================================
-
     // Hardware.rightFrontMotor.setInverted(true); // TODO takeout
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
@@ -254,14 +255,12 @@ public void robotInit ()
     Hardware.leftRearEncoder.reset();
     Hardware.rightRearEncoder.reset();
     Hardware.mecanumDrive.setFirstGearPercentage(firstGear);
-    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    // Hardware.rightFrontMotor.setInverted(true); // TODO takeout
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
     Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-    Hardware.isUsingMecanum = true;
-    Hardware.twoJoystickControl = false;
     // -------------------------------------
     // motor initialization
     // -------------------------------------
@@ -269,10 +268,12 @@ public void robotInit ()
     Hardware.rightRearMotorSafety.setSafetyEnabled(true);
     Hardware.leftFrontMotorSafety.setSafetyEnabled(true);
     Hardware.rightFrontMotorSafety.setSafetyEnabled(true);
+
     Hardware.leftRearMotorSafety.setExpiration(.25);
     Hardware.rightRearMotorSafety.setExpiration(.25);
     Hardware.leftFrontMotorSafety.setExpiration(.25);
     Hardware.rightFrontMotorSafety.setExpiration(.25);
+
     // Hardware.rightFrontMotor.setInverted(true);
 
     if (Hardware.runningInLab == true)
@@ -288,9 +289,6 @@ public void robotInit ()
 
     // Sends video from both USB Cameras to the Smart Dashboard
     // -last edited on 28 Jan 2017 by Cole Ramos
-    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam0); TODO
-    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
-    // CameraServer.getInstance().addAxisCamera("10.3.39.11");
     // CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
     // CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
     // Sets the [max?] FPS's for the USB Cameras. The FPS will generally
@@ -298,15 +296,13 @@ public void robotInit ()
     // this amount.
     // -last edited on 28 Jan 2017 by Cole Ramos
     // Hardware.cam0.setFPS(Hardware.USB_FPS);
-    // Hardware.cam1.setFPS(Hardware.USB_FPS); TODO
-    // Hardware.cam0.setFPS(Hardware.USB_FPS);
     // Hardware.cam1.setFPS(Hardware.USB_FPS);
 
     // Sets the max FPS of the Axis Camera; also changes the FPS in the
     // firmware/ web browser
     // of the Axis Camera. If the FPS is not set in the code, the firmware
     // will default to unlimited.
-    // Hardware.axisCamera.writeMaxFPS(Hardware.AXIS_FPS); TODO
+    Hardware.axisCamera.writeMaxFPS(Hardware.AXIS_FPS);
 
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
@@ -322,8 +318,7 @@ public void robotInit ()
             "Kilroy XVIII is started.  All hardware items created.");
     System.out.println();
     System.out.println();
-} // end
-  // robotInit
+} // end robotInit
 
 // -------------------------------------------------------
 /**
@@ -348,7 +343,6 @@ public void teleopInit ()
     // User code goes below here
     // =========================================================
     Teleop.init();
-
     // Hardware.rightFrontMotor.setInverted(true); // TODO takeout
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
@@ -438,6 +432,6 @@ public void testPeriodic ()
 // ==========================================
 // TUNEABLES
 // ==========================================
-public static double firstGear = 1;
+public static double firstGear = .7;
 
 } // end class

@@ -33,6 +33,8 @@ package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 
 /**
  * An Autonomous class.
@@ -142,9 +144,10 @@ private static enum AutoProgram
  *
  * @written Jan 13, 2015
  */
+
 public static void init ()
 {
-
+	
 } // end Init
 
 /**
@@ -154,16 +157,24 @@ public static void init ()
  * @author Nathanial Lydick
  * @written Jan 13, 2015
  */
+
+	
+
+
+
+
 public static void periodic ()
 {
+	
     switch (autoPath)
         {
+   
         case INIT:
             // get the auto program we want to run, get delay pot.
             delayTime = Hardware.delayPot.get() * (5 / 270);
             if (Hardware.driverStation.getAlliance() == Alliance.Red)
                 isRedAlliance = true;
-            autoPath = AutoProgram.RIGHT_PATH;
+            //autoPath = AutoProgram.RIGHT_PATH;
             break;
         case CENTER_GEAR_PLACEMENT:
             if (placeCenterGearPath())
@@ -243,20 +254,19 @@ private static boolean placeCenterGearPath ()
             break;
         case DRIVE_FORWARD_TO_CENTER:
             // If we see blobs, hand over control to camera, otherwise, go
-            // forward. Check to make sure we haven't gone too far. TODO
-            // if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
-            // {
-            // currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
-            // }
-            // currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
-            // break;
+            // forward. Check to make sure we haven't gone too far.
+            if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
+                {
+                currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
+                }
+            currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
+            break;
         case DRIVE_TO_GEAR_WITH_CAMERA:
-            // if (Hardware.imageProcessor.getNthSizeBlob(1) == null)
-            // currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
-            // Hardware.autoDrive.strafeToGear(.6, 25, .1, 271.8, 10);// TODO
-            // magic
-            // // numbers TODO
-            // break;
+            if (Hardware.imageProcessor.getNthSizeBlob(1) == null)
+                currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
+            Hardware.autoDrive.strafeToGear(.6, 25, .1, 271.8, 10);// TODO magic
+                                                                   // numbers
+            break;
         case DRIVE_CAREFULLY_TO_PEG:
             if ((Hardware.rightUS.getDistanceFromNearestBumper()
                     + Hardware.leftUS.getDistanceFromNearestBumper())
@@ -278,13 +288,13 @@ private static boolean placeCenterGearPath ()
         case DELAY_AFTER_GEAR_EXODUS:
             if (Hardware.autoStateTimer.get() >= 1.5)
                 {
-                // Hardware.autoDrive.resetEncoders(); TODO
-                // currentState = MainState.DRIVE_AWAY_FROM_PEG;
+                Hardware.autoDrive.resetEncoders();
+                currentState = MainState.DRIVE_AWAY_FROM_PEG;
                 }
             break;
         case DRIVE_AWAY_FROM_PEG:
-            // if (Hardware.autoDrive.driveInches(-36.0, .5))
-            // currentState = MainState.DONE; TODO
+            if (Hardware.autoDrive.driveInches(-36.0, .5))
+                currentState = MainState.DONE;
             break;
         default:
         case DONE:
@@ -357,23 +367,23 @@ private static boolean rightSidePath ()
             if (false)
                 currentState = MainState.DRIVE_INTO_RANGE_WITH_CAMERA;
             // TODO random number I selected
-            // if (Hardware.autoDrive.driveInches(6, .6)) TODO
-            // currentState = MainState.ALIGN_TO_FIRE;
+            if (Hardware.autoDrive.driveInches(6, .6))
+                currentState = MainState.ALIGN_TO_FIRE;
             break;
         case TURN_TO_HOPPER:
             // TODO random numbers I selected
-            // if (Hardware.autoDrive.turnDegrees(isRedAlliance ? 12 : 90))
-            // {
-            // currentState = MainState.DRIVE_UP_TO_HOPPER;
-            // } TODO
+            if (Hardware.autoDrive.turnDegrees(isRedAlliance ? 12 : 90))
+                {
+                currentState = MainState.DRIVE_UP_TO_HOPPER;
+                }
             break;
         case DRIVE_UP_TO_HOPPER:
             // TODO see above todo.
-            // if (Hardware.autoDrive.driveInches(isRedAlliance ? 12 : 90,
-            // .6))
-            // {
-            // currentState = MainState.DONE;
-            // } TODO
+            if (Hardware.autoDrive.driveInches(isRedAlliance ? 12 : 90,
+                    .6))
+                {
+                currentState = MainState.DONE;
+                }
         case ALIGN_TO_FIRE:
             if (false)
                 {
@@ -407,9 +417,9 @@ private static void initializeDriveProgram ()
 {
     Hardware.autoStateTimer.stop();
     Hardware.autoStateTimer.reset();
-    // Hardware.driveGyro.calibrate();
-    // Hardware.driveGyro.reset(); TODO
-    // Hardware.autoDrive.resetEncoders();
+    Hardware.driveGyro.calibrate();
+    Hardware.driveGyro.reset();
+    Hardware.autoDrive.resetEncoders();
     Hardware.mecanumDrive.drive(0, 0, 0);
 }
 
