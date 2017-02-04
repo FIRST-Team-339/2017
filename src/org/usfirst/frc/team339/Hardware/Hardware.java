@@ -90,9 +90,7 @@ public static boolean runningInLab = false;
  */
 public static TalonSRX rightRearMotor = new TalonSRX(4);// 2);
 
-
-public static TalonSRX rightFrontMotor = new TalonSRX(2);// 1);// 1);
-
+public static TalonSRX rightFrontMotor = new TalonSRX(2);// 1);
 
 /**
  * Default motor controller.
