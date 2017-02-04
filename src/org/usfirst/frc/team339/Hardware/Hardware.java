@@ -30,7 +30,6 @@ import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
-import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
@@ -91,7 +90,9 @@ public static boolean runningInLab = false;
  */
 public static TalonSRX rightRearMotor = new TalonSRX(4);// 2);
 
-public static TalonSRX rightFrontMotor = new TalonSRX(2);// 1);
+
+public static TalonSRX rightFrontMotor = new TalonSRX(2);// 1);// 1);
+
 
 /**
  * Default motor controller.
@@ -216,6 +217,7 @@ public static Potentiometer gimbalPot = new Potentiometer(3, 270);
 public static UltraSonic leftUS = new UltraSonic(1);
 
 public static UltraSonic rightUS = new UltraSonic(2);
+
 // **********************************************************
 // roboRIO CONNECTIONS CLASSES
 // **********************************************************
@@ -223,20 +225,10 @@ public static UltraSonic rightUS = new UltraSonic(2);
 // Axis/USB Camera class
 // -------------------------------------
 
-// If you are not getting the camera dropdowns on the driver station, make this
-// ture, send, then make
-// make it false and send again.
-
-// Note: If causing problems, replace "USB_Camera_0" w/ "cam0", and
-// "USB_Camera_1" w/ "cam1"
-public static UsbCamera cam0 = new UsbCamera("USB_Camera_0", 0);
-
-public static UsbCamera cam1 = new UsbCamera("USB_Camera_1", 1);
-
 // Used by the USB Cameras in robot init to set their FPS's
 public final static int USB_FPS = 15;
 
-public static KilroyCamera axisCamera = new KilroyCamera(false);
+public static KilroyCamera axisCamera = new KilroyCamera(true);
 
 // Used by the Axis Camera in robot init to limit its FPS
 public final static int AXIS_FPS = 15;
@@ -326,7 +318,7 @@ public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
 
 public static Drive autoDrive = new Drive(tankDrive, axisCamera,
         imageProcessor, leftRearEncoder, rightRearEncoder,
-        leftRearEncoder, rightRearEncoder, rightUS, rightUS);
+        leftRearEncoder, rightRearEncoder, rightUS);
 
 /**
  * are we using mecanum? set false for tank drive
@@ -358,6 +350,8 @@ public static final Timer autoStateTimer = new Timer();
 
 /**
  * Default motor safety
+ * 
+ * @TODO We REALLY need to fix the motor safety...
  */
 public static final MotorSafetyHelper leftRearMotorSafety = new MotorSafetyHelper(
         leftRearMotor);

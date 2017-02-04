@@ -32,10 +32,8 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
-import org.usfirst.frc.team339.HardwareInterfaces.transmission.Transmission.MotorDirection;
 import org.usfirst.frc.team339.Utils.Drive;
 import edu.wpi.first.wpilibj.Relay;
-
 
 /**
  * This class contains all of the user code for the Autonomous part of the
@@ -68,27 +66,28 @@ public static void init ()
     Hardware.rightFrontMotor.set(0.0);
     Hardware.leftFrontMotor.set(0.0);
 
-    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    // Hardware.rightFrontMotor.setInverted(true); // TODO takeout
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
     Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
 
-    Hardware.isUsingMecanum = true;
-    Hardware.twoJoystickControl = false;
-
-    // Hardware.tankDrive.setGear(Hardware.tankDrive.getMaxGear());
+    // Hardware.tankDrive.setGear(1);
     // Hardware.leftUS.setScalingFactor(.13);
     // Hardware.leftUS.setOffsetDistanceFromNearestBummper(0);
-    // Hardware.rightUS.setScalingFactor(.13); TODO
-    // Hardware.rightUS.setOffsetDistanceFromNearestBummper(0);
+    Hardware.rightUS.setScalingFactor(.13);
+    Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     // Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(1);
     // Hardware.leftUS.setNumberOfItemsToCheckBackwardForValidity(1);
     // Hardware.LeftUS.setConfidenceCalculationsOn(false);
-    // Hardware.RightUS.setConfidenceCalculationsOn(false);
+    // Hardware.rightUS.setConfidenceCalculationsOn(false);
+    // Hardware.tankDrive.setRightJoystickReversed(true);
 
-    Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
+    isAligning = false;
+    isStrafingToTarget = false;
+    isDrivingInches = false;
+    isTurning = false;
 } // end Init
 
 /**
@@ -100,7 +99,7 @@ public static void init ()
  */
 public static void periodic ()
 {
-
+    // TODO Figure out why the ring light is flickering
     if (Hardware.ringlightSwitch.isOnCheckNow())
         {
         Hardware.ringlightRelay.set(Relay.Value.kOn);
@@ -126,31 +125,32 @@ public static void periodic ()
         rotationValue = 0.0;
         }
 
+    // if (!isAligning)
+    // if (Hardware.isUsingMecanum == true
+    // && Hardware.twoJoystickControl == false)
+    // {
+    // Hardware.mecanumDrive.drive(
+    // Hardware.rightDriver.getMagnitude(),
+    // Hardware.rightDriver.getDirectionDegrees(),
+    // rotationValue, Hardware.rightDriver.getY(),
+    // Hardware.rightDriver.getX());
+    // }
+    // else if (Hardware.isUsingMecanum == true
+    // && Hardware.twoJoystickControl == true)
+    // {
+    // Hardware.mecanumDrive.drive(
+    // Hardware.rightDriver.getMagnitude(),
+    // Hardware.rightDriver.getDirectionDegrees(),
+    // Hardware.leftDriver.getX(),
+    // Hardware.rightDriver.getY(),
+    // Hardware.rightDriver.getX());
+    // }
+    // else
+    // {
     if (!isAligning)
-        if (Hardware.isUsingMecanum == true
-                && Hardware.twoJoystickControl == false)
-            {
-            Hardware.mecanumDrive.drive(
-                    Hardware.rightDriver.getMagnitude(),
-                    Hardware.rightDriver.getDirectionDegrees(),
-                    rotationValue, Hardware.rightDriver.getY(),
-                    Hardware.rightDriver.getX());
-            }
-        else if (Hardware.isUsingMecanum == true
-                && Hardware.twoJoystickControl == true)
-            {
-            Hardware.mecanumDrive.drive(
-                    Hardware.rightDriver.getMagnitude(),
-                    Hardware.rightDriver.getDirectionDegrees(),
-                    Hardware.leftDriver.getX(),
-                    Hardware.rightDriver.getY(),
-                    Hardware.rightDriver.getX());
-            }
-        else
-            {
-            Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
-                    Hardware.leftDriver.getY());
-            }
+        Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
+                Hardware.leftDriver.getY());
+    // }
     // System.out.println(Hardware.rightDriver.getTwist());
     // System.out.println(Hardware.rightDriver.getMagnitude());
 
@@ -202,7 +202,7 @@ public static void periodic ()
     if (isAligning)
         {
         alignValue = Hardware.autoDrive.alignToGear(CAMERA_ALIGN_CENTER,
-                CAMERA_ALIGN_SPEED, CAMERA_ALIGN_DEADBAND);
+                movementSpeed, CAMERA_ALIGN_DEADBAND);
         if (alignValue == Drive.AlignReturnType.ALIGNED)
             {
             System.out.println("We are aligned!");
@@ -223,7 +223,7 @@ public static void periodic ()
 
     if (isStrafingToTarget)
         {
-        alignValue = Hardware.autoDrive.strafeToGear(.4, .2,
+        alignValue = Hardware.autoDrive.strafeToGear(movementSpeed, .2,
                 CAMERA_ALIGN_DEADBAND, CAMERA_ALIGN_CENTER, 20);
         if (alignValue == Drive.AlignReturnType.ALIGNED)
             {
@@ -243,6 +243,22 @@ public static void periodic ()
             isStrafingToTarget = false;
             }
         }
+
+    // Testing good speed values
+    if (Hardware.leftOperator.getRawButton(4) && !hasPressedFour)
+        {
+        movementSpeed += .05;
+        System.out.println(movementSpeed);
+        }
+    hasPressedFour = Hardware.leftOperator.getRawButton(4);
+
+    if (Hardware.leftOperator.getRawButton(5) && !hasPressedFive)
+        {
+        movementSpeed -= .05;
+        System.out.println(movementSpeed);
+        }
+    hasPressedFive = Hardware.leftOperator.getRawButton(5);
+
 
     Hardware.axisCamera
             .takeSinglePicture(Hardware.leftOperator.getRawButton(8));
@@ -265,6 +281,12 @@ private static double turnDegrees = 0.0;
 private static boolean isStrafingToTarget = false;
 
 private static boolean isDrivingInches = false;
+
+private static double movementSpeed = 0.5;
+
+private static boolean hasPressedFour = false;
+
+private static boolean hasPressedFive = false;
 
 
 
@@ -344,8 +366,8 @@ public static void printStatements ()
     // System.out.println("LeftUS = "
     // + Hardware.leftUS.getDistanceFromNearestBumper());
     //
-    // System.out.println("RightUS = "
-    // + Hardware.rightUS.getDistanceFromNearestBumper());
+    System.out.println("RightUS = "
+            + Hardware.rightUS.getDistanceFromNearestBumper());
 
 
     // ---------------------------------
@@ -371,6 +393,9 @@ public static void printStatements ()
     // System.out.println("Left Joystick: " +
     // Hardware.leftDriver.getDirectionDegrees());
     // System.out.println("Twist: " + Hardware.leftDriver.getTwist());
+
+    // System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
+    //
     // System.out
     // .println("Right Joystick: " + Hardware.rightDriver.getY());
     // System.out

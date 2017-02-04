@@ -38,8 +38,6 @@ private boolean isUsingEncoders = false;
 
 private boolean isUsingUltrasonics = false;
 
-private UltraSonic leftUlt = null;
-
 private UltraSonic rightUlt = null;
 
 /**
@@ -89,7 +87,7 @@ public Drive (TransmissionMecanum transmissionMecanum,
         KilroyCamera camera, ImageProcessor imageProcessor,
         Encoder rightFrontEncoder, Encoder rightRearEncoder,
         Encoder leftFrontEncoder, Encoder leftRearEncoder,
-        UltraSonic leftUlt, UltraSonic rightUlt)
+        UltraSonic rightUlt)
 {
     this(transmissionMecanum, camera, imageProcessor);
 
@@ -97,7 +95,6 @@ public Drive (TransmissionMecanum transmissionMecanum,
             leftRearEncoder, rightRearEncoder);
 
     this.rightUlt = rightUlt;
-    this.leftUlt = leftUlt;
 
     isUsingUltrasonics = true;
 }
@@ -149,12 +146,11 @@ public Drive (TransmissionFourWheel transmissionFourWheel,
         KilroyCamera camera, ImageProcessor imageProcessor,
         Encoder leftFrontEncoder, Encoder rightFrontEncoder,
         Encoder leftRearEncoder, Encoder rightRearEncoder,
-        UltraSonic leftUlt, UltraSonic rightUlt)
+        UltraSonic rightUlt)
 {
     this(transmissionFourWheel, camera, imageProcessor);
     this.initEncoders(leftFrontEncoder, rightFrontEncoder,
             leftRearEncoder, rightRearEncoder);
-    this.leftUlt = leftUlt;
     this.rightUlt = rightUlt;
 
     isUsingUltrasonics = true;
@@ -301,27 +297,38 @@ public AlignReturnType alignToGear (double relativeCenter,
                         transmissionFourWheel.drive(0.0, 0.0);
                         return AlignReturnType.ALIGNED;
                         }
+                    else if (distanceToCenter > 0)
+                        {
+                        this.transmissionFourWheel.drive(movementSpeed,
+                                -movementSpeed);
+                        }
+                    else if (distanceToCenter < 0)
+                        {
+                        this.transmissionFourWheel.drive(-movementSpeed,
+                                movementSpeed);
+                        }
                     }
+
                 }
             // Turns based on the average of the yaw angles of the
             // two blobs, to account for a delayed axis camera.
-            double yawAngle = (this.imageProcessor
-                    .getYawAngleToTarget(
-                            this.imageProcessor.getNthSizeBlob(1))
-                    + this.imageProcessor.getYawAngleToTarget(
-                            this.imageProcessor.getNthSizeBlob(0))
-                            / 2.0);
-            System.out.println("Average yaw angle: " + yawAngle);
-
-
-
-            isTurning = this.turnDegrees((this.imageProcessor
-                    .getYawAngleToTarget(this.imageProcessor
-                            .getNthSizeBlob(0))
-                    + this.imageProcessor.getYawAngleToTarget(
-                            this.imageProcessor
-                                    .getNthSizeBlob(1)))
-                    / 2.0, .5);
+            // double yawAngle = (this.imageProcessor
+            // .getYawAngleToTarget(
+            // this.imageProcessor.getNthSizeBlob(1))
+            // + this.imageProcessor.getYawAngleToTarget(
+            // this.imageProcessor.getNthSizeBlob(0))
+            // / 2.0);
+            // System.out.println("Average yaw angle: " + yawAngle);
+            //
+            //
+            //
+            // isTurning = this.turnDegrees((this.imageProcessor
+            // .getYawAngleToTarget(this.imageProcessor
+            // .getNthSizeBlob(0))
+            // + this.imageProcessor.getYawAngleToTarget(
+            // this.imageProcessor
+            // .getNthSizeBlob(1)))
+            // / 2.0, .5);
             break;
         case MECANUM:
 
@@ -374,14 +381,12 @@ public AlignReturnType strafeToGear (double driveSpeed,
                     this.imageProcessor.getNthSizeBlob(1),
                     relativeCenter);
 
+    if (this.rightUlt
+            .getOffsetDistanceFromNearestBummper() <= distanceToTarget)
+        return AlignReturnType.CLOSE_ENOUGH;
+
     if (Math.abs(distanceToCenter) < deadband)
         {
-        if ((this.leftUlt
-                .getOffsetDistanceFromNearestBummper()
-                + this.rightUlt.getOffsetDistanceFromNearestBummper())
-                / 2.0 <= distanceToTarget)
-            return AlignReturnType.CLOSE_ENOUGH;
-
         if (this.transmissionType == TransmissionType.MECANUM)
             transmissionMecanum.drive(driveSpeed, 0.0, 0.0, 0, 0);
         else if (this.transmissionType == TransmissionType.TANK)
