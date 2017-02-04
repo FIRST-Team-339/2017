@@ -2,6 +2,7 @@ package org.usfirst.frc.team339.Utils;
 
 import com.ctre.CANTalon;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
+import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
 import edu.wpi.first.wpilibj.PWMSpeedController;
 
@@ -25,6 +26,10 @@ private double acceptableError = 0;
 
 private ImageProcessor visionTargeter = null;
 
+private Potentiometer gimbalPot = null;
+
+private double acceptableGimbalError = 0;
+
 // TODO generalize to the PWM class or whatever
 /**
  * Creates a new shooter object for the 2017 season, SteamWorks
@@ -39,17 +44,23 @@ private ImageProcessor visionTargeter = null;
  *            The error we can handle on the flywheel without losing accuracy
  * @param visionTargeting
  *            Our vision processor object, used to target the high boiler.
+ * @param gimbalPot
+ *            The potentiometer that reads the bearing of the turret.
+ * @param acceptableGimbalError
+ *            TODO
  */
 public Shooter (CANTalon controller, IRSensor ballLoaderSensor,
         PWMSpeedController elevator,
         double acceptableFlywheelSpeedError,
-        ImageProcessor visionTargeting)
+        ImageProcessor visionTargeting, Potentiometer gimbalPot,
+        double acceptableGimbalError)
 {
     this.flywheelController = controller;
     this.elevatorSensor = ballLoaderSensor;
     this.elevatorController = elevator;
     this.acceptableError = acceptableFlywheelSpeedError;
     this.visionTargeter = visionTargeting;
+    this.gimbalPot = gimbalPot;
 }
 
 /**
@@ -113,6 +124,7 @@ public boolean prepareToFire ()
  */
 public boolean turnToBearing (double newBearing)
 {
+
     return false;
 }
 
