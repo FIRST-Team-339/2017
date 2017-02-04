@@ -144,7 +144,6 @@ private static enum AutoProgram
  */
 public static void init ()
 {
-
 } // end Init
 
 /**
