@@ -7,6 +7,9 @@ import org.usfirst.frc.team339.Vision.ImageProcessor;
 import edu.wpi.first.wpilibj.PWMSpeedController;
 import edu.wpi.first.wpilibj.Timer;
 
+// TODO write turn slow, medium, fast function which all call a private turn
+// function.
+
 /**
  * Describes the shooter object for the 2017 game: FIRST Steamworks.
  * It's a flywheel shooter with an elevator loader. Look at the technical packet
@@ -72,6 +75,44 @@ public Shooter (CANTalon controller, IRSensor ballLoaderSensor,
 }
 
 /**
+ * @param error
+ *            The allowed error deadband for our gimbal, in degrees.
+ */
+public void setAcceptableGimbalError (double error)
+{
+    this.acceptableGimbalError = error;
+}
+
+/**
+ * @return
+ *         The allowed error deadband for our gimbal, in degrees.
+ */
+public double getAcceptableGimbalError ()
+{
+    return this.acceptableGimbalError;
+}
+
+/**
+ * @param error
+ *            The acceptable flywheel RPM error at which we will still fire
+ *            balls.
+ */
+public void setAcceptableFlywheelError (double error)
+{
+    this.acceptableError = error;
+}
+
+/**
+ * @return
+ *         The acceptable flywheel RPM error at which we will still fire
+ *         balls.
+ */
+public double getAcceptableFlywheelError ()
+{
+    return this.acceptableError;
+}
+
+/**
  * Prepares to fire and fires a ball.
  * 
  * @return
@@ -132,24 +173,107 @@ public boolean prepareToFire ()
  *            The new angle, relative to the robot, to turn the turret to. (- is
  *            left, + is to the right)
  * @return
- *         True if we're at the target angle, false otherwise.
+ *         SUCCESS if we're at our angle (within our threshold), TOO_FAR if we
+ *         can't gimbal that much, or WORKING if we're not done yet.
  */
 // TODO slow down as we approach it
-public boolean turnToBearing (double newBearing)
+public turnReturn turnToBearing (double newBearing)
 {
-    if (Math.abs(newBearing - getBearing()) >= acceptableGimbalError)
+    if (Math.abs(
+            newBearing - getBearing()) >= acceptableGimbalError)
         {
-        /*
-         * TODO magic speed number and unsure about direction, but it will
-         * attempt to turn towards the error.
-         */
-        this.gimbalMotor.set(((newBearing - getBearing())
-                / Math.abs(newBearing - getBearing()))
-                * MAX_TURN_SPEED);
-        return false;
+        return this.turnGimbal(MEDIUM_TURN_SPEED
+                * (newBearing - getBearing() < 0 ? -1 : 1));
         }
-    return true;
+    return turnReturn.SUCCESS;
 }
+
+/**
+ * Turns the gimbal at our slow speed.
+ * 
+ * @param direction
+ *            Negative 1 or positive 1, positive for right, negative for left
+ * @return
+ *         see turnGimbal(double)
+ */
+public turnReturn turnGimbalSlow (int direction)
+{
+    return this.turnGimbal(direction * SLOW_TURN_SPEED);
+}
+
+/**
+ * Turns the gimbal at our medium speed.
+ * 
+ * @param direction
+ *            Negative 1 or positive 1, positive for right, negative for left
+ * @return
+ *         see turnGimbal(double)
+ */
+public turnReturn turnGimbalMedium (int direction)
+{
+    return this.turnGimbal(direction * MEDIUM_TURN_SPEED);
+}
+
+/**
+ * Turns the turrets as quickly as we can.
+ * 
+ * @param direction
+ *            Negative 1 or positive 1, positive for right, negative for left
+ * @return
+ *         see turnGimbal(double)
+ */
+public turnReturn turnGimbalFast (int direction)
+{
+    return this.turnGimbal(direction * MAX_TURN_SPEED);
+}
+
+/**
+ * Turns the gimbal if we're allowed to.
+ * 
+ * @param speed
+ *            The speed and direction we turn the gimbal at (+ right, - left)s
+ * @return
+ *         WORKING if we're turning, TOO_FAR if we're at or have passed our
+ *         limit.
+ */
+private turnReturn turnGimbal (double speed)
+{
+    if (this.getBearing() >= MAX_GIMBALING_ANGLE
+            || this.getBearing() <= MIN_GIMBALING_ANGLE)
+        return turnReturn.TOO_FAR;
+    // TODO direction
+    /*
+     * Make sure we never turn faster than the maximum speed. Ternary operator
+     * makes sure we use the correct direction comparisons.
+     */
+    this.gimbalMotor.set(
+            Math.min(speed, MAX_TURN_SPEED * (speed < 0 ? -1 : 1)));
+    return turnReturn.WORKING;
+}
+
+/**
+ * Returned from turnToBearing as well as the turn slow, medium, and fast
+ * functions.
+ * Provides additional information as to the state of the function.
+ * 
+ * @author Alexander H. Kneipp
+ */
+public static enum turnReturn
+    {
+    /**
+     * We cannot gimbal as far as the user wants us to. Quit state.
+     */
+    TOO_FAR,
+    /**
+     * We're still aligning, be patient! Not a quit state.
+     */
+    WORKING,
+    /**
+     * We've successfully turned to the target position, good job robot. Quit
+     * state.
+     */
+    SUCCESS
+    }
 
 /**
  * Uses the vision processing to align the gimbal to the high boiler.
@@ -159,29 +283,45 @@ public boolean turnToBearing (double newBearing)
  */
 public turnToGoalReturn turnToGoal ()
 {
+    // if we have at least one blob
     if (this.visionTargeter.getNthSizeBlob(0) != null)
         {
+        // if we have at least 2 blobs
         if (this.visionTargeter.getNthSizeBlob(1) != null)
             {
+            // If we haven't yet calculated our setpoint yet.
             if (gimbalTarget == Double.MIN_VALUE)
                 {
+                // calculate our setpoint
                 gimbalTarget = this.visionTargeter.getYawAngleToTarget(
                         this.visionTargeter.getNthSizeBlob(0));
                 }
             else
                 {
-                if (turnToBearing(gimbalTarget + this.getBearing()))
+                // turn to our new bearing
+                if (turnToBearing(gimbalTarget
+                        + this.getBearing()) == turnReturn.SUCCESS)
                     {
+                    // we're done!
                     gimbalTarget = Double.MIN_VALUE;
                     return turnToGoalReturn.SUCCESS;
                     }
+                else if (turnToBearing(gimbalTarget
+                        + this.getBearing()) == turnReturn.TOO_FAR)
+                    {
+                    gimbalTarget = Double.MIN_VALUE;
+                    return turnToGoalReturn.OUT_OF_GIMBALING_RANGE;
+                    }
                 }
+            // still working...l
             return turnToGoalReturn.WORKING;
             }
+        // Don't see enough
+        // TODO remove?
         return turnToGoalReturn.NOT_ENOUGH_BLOBS;
         }
+    // We don't see anything.
     return turnToGoalReturn.NO_BLOBS;
-
 }
 
 
@@ -189,16 +329,50 @@ private boolean firstTimeRun = false;
 
 private double gimbalTarget = Double.MIN_VALUE;
 
+/**
+ * 
+ * Return values for turnToGoal(), indicates different failure states and
+ * working state.
+ * 
+ * @author Alexander H. Kneipp
+ *
+ */
+// TODO decide about whether we quit on one blob.
 public static enum turnToGoalReturn
     {
-    NO_BLOBS, NOT_ENOUGH_BLOBS, SUCCESS, TIMEOUT, WORKING
+    /**
+     * We don't see any blobs. Quit state.
+     */
+    NO_BLOBS,
+    /**
+     * We see 1 blob, not enough to align. Quit state.
+     */
+    NOT_ENOUGH_BLOBS,
+    /**
+     * We have successfully aligned. Quit state.
+     */
+    SUCCESS,
+    /**
+     * Not currently used, but may be used if this often runs "working" for way
+     * to long. Quit state.
+     */
+    TIMEOUT,
+    /**
+     * Still aligning to target. NOT a quit state.
+     */
+    WORKING,
+    /**
+     * We see the target, but we can't gimbal to it. The robot will need to
+     * turn. Quit state.
+     */
+    OUT_OF_GIMBALING_RANGE
     }
 
 /**
  * @return
  *         The bearing of the shooter relative to the robot, with negative
  *         degrees to the left and positive to the right. Returns a range from
- *         -gimbalPot maxDegrees/2 to +gimbalPot maxDegrees/2
+ *         -gimbalPot.maxDegrees/2 to +gimbalPot.maxDegrees/2
  */
 public double getBearing ()
 {
@@ -207,7 +381,15 @@ public double getBearing ()
     return this.gimbalPot.get() - (this.gimbalPot.getMaxDegrees() / 2);
 }
 
-private final double MAX_TURN_SPEED = .5;
+private final double MAX_TURN_SPEED = .8;
+
+private final double MEDIUM_TURN_SPEED = .6;
+
+private final double SLOW_TURN_SPEED = .4;
 
 private final double ELEVATOR_SPEED = .4;// TODO tune
+
+private final double MAX_GIMBALING_ANGLE = 135;
+
+private final double MIN_GIMBALING_ANGLE = -135;
 }
