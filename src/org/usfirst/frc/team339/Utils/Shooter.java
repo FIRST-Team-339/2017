@@ -7,9 +7,6 @@ import org.usfirst.frc.team339.Vision.ImageProcessor;
 import edu.wpi.first.wpilibj.PWMSpeedController;
 import edu.wpi.first.wpilibj.Timer;
 
-// TODO write turn slow, medium, fast function which all call a private turn
-// function.
-
 /**
  * Describes the shooter object for the 2017 game: FIRST Steamworks.
  * It's a flywheel shooter with an elevator loader. Look at the technical packet
