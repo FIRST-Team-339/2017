@@ -15,14 +15,16 @@
 package org.usfirst.frc.team339.Hardware;
 
 import com.ctre.CANTalon;
+import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
+import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
 import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
-import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import org.usfirst.frc.team339.Utils.Drive;
+import org.usfirst.frc.team339.Utils.Shooter;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
 import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
@@ -38,6 +40,7 @@ import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Victor;
 
 // -------------------------------------------------------
 /**
@@ -98,13 +101,15 @@ public static TalonSRX leftRearMotor = new TalonSRX(3);
 public static TalonSRX leftFrontMotor = new TalonSRX(1);// 4);
 
 public static CANTalon shooterMotor = new CANTalon(1);
+
 // ------------------------------------
 // Victor classes
 // ------------------------------------
-
+public static Victor elevatorMotor = new Victor(0);// PWM 0
 // ====================================
 // CAN classes
 // ====================================
+
 public static PowerDistributionPanel pdp = new PowerDistributionPanel(
         0);
 // ====================================
@@ -157,7 +162,7 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // -------------------------------------
 // Red Light/IR Sensor class
 // -------------------------------------
-
+public static IRSensor ballLoaderSensor = new IRSensor(8);
 // ====================================
 // I2C Classes
 // ====================================
@@ -202,6 +207,8 @@ public static ADXRS450_Gyro driveGyro = new ADXRS450_Gyro();
 // -------------------------------------
 public static Potentiometer delayPot = new Potentiometer(0, 270);// TODO max
                                                                  // degree value
+
+public static Potentiometer gimbalPot = new Potentiometer(3, 270);
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------
@@ -335,6 +342,9 @@ public static boolean twoJoystickControl = false;
 // -------------------
 // Assembly classes (e.g. forklift)
 // -------------------
+public static Shooter shooter = new Shooter(shooterMotor,
+        ballLoaderSensor, elevatorMotor, 20, imageProcessor, gimbalPot,
+        3, null);
 
 // ------------------------------------
 // Utility classes

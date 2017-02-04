@@ -30,6 +30,8 @@ private Potentiometer gimbalPot = null;
 
 private double acceptableGimbalError = 0;
 
+private PWMSpeedController gimbalMotor = null;
+
 // TODO generalize to the PWM class or whatever
 /**
  * Creates a new shooter object for the 2017 season, SteamWorks
@@ -47,13 +49,16 @@ private double acceptableGimbalError = 0;
  * @param gimbalPot
  *            The potentiometer that reads the bearing of the turret.
  * @param acceptableGimbalError
+ *            The acceptable angular angle, in degrees, the gimbal turret is
+ *            allowed to be off.
+ * @param gimbalMotor
  *            TODO
  */
 public Shooter (CANTalon controller, IRSensor ballLoaderSensor,
         PWMSpeedController elevator,
         double acceptableFlywheelSpeedError,
         ImageProcessor visionTargeting, Potentiometer gimbalPot,
-        double acceptableGimbalError)
+        double acceptableGimbalError, PWMSpeedController gimbalMotor)
 {
     this.flywheelController = controller;
     this.elevatorSensor = ballLoaderSensor;
@@ -61,6 +66,7 @@ public Shooter (CANTalon controller, IRSensor ballLoaderSensor,
     this.acceptableError = acceptableFlywheelSpeedError;
     this.visionTargeter = visionTargeting;
     this.gimbalPot = gimbalPot;
+    this.gimbalMotor = gimbalMotor;
 }
 
 /**
@@ -124,8 +130,17 @@ public boolean prepareToFire ()
  */
 public boolean turnToBearing (double newBearing)
 {
-
-    return false;
+    if (Math.abs(newBearing - getBearing()) >= acceptableGimbalError)
+        {
+        /*
+         * TODO magic speed number and unsure about direction, but it will
+         * attempt to turn towards the error.
+         */
+        this.gimbalMotor.set(((newBearing - getBearing())
+                / Math.abs(newBearing - getBearing())) * .5);
+        return false;
+        }
+    return true;
 }
 
 /**
@@ -137,5 +152,18 @@ public boolean turnToBearing (double newBearing)
 public boolean turnToGoal ()
 {
     return false;
+}
+
+/**
+ * @return
+ *         The bearing of the shooter relative to the robot, with negative
+ *         degrees to the left and positive to the right. Returns a range from
+ *         -gimbalPot maxDegrees/2 to +gimbalPot maxDegrees/2
+ */
+public double getBearing ()
+{
+    // normalizes the bearing from -gimbalPot.getMaxDegrees()/2 to
+    // gimbalPot.getMaxDegrees()/2
+    return this.gimbalPot.get() - (this.gimbalPot.getMaxDegrees() / 2);
 }
 }
