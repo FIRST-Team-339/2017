@@ -5,6 +5,7 @@ import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
 import edu.wpi.first.wpilibj.PWMSpeedController;
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * Describes the shooter object for the 2017 game: FIRST Steamworks.
@@ -32,7 +33,8 @@ private double acceptableGimbalError = 0;
 
 private PWMSpeedController gimbalMotor = null;
 
-// TODO generalize to the PWM class or whatever
+private Timer shooterTimer = new Timer();
+
 /**
  * Creates a new shooter object for the 2017 season, SteamWorks
  * 
@@ -81,7 +83,7 @@ public boolean fire ()
         {
         if (this.elevatorSensor.isOn())
             {
-            this.elevatorController.set(.4);
+            this.elevatorController.set(ELEVATOR_SPEED);
             return false;
             }
         this.elevatorController.set(0);
@@ -117,17 +119,22 @@ public boolean prepareToFire ()
         }
     else
         {
-        this.elevatorController.set(.4);// TODO magic number
+        this.elevatorController.set(ELEVATOR_SPEED);// TODO magic number
         retVal = false;
         }
     return retVal;
 }
 
 /**
+ * Turns the turret to the new bearing on the robot.
  * 
  * @param newBearing
+ *            The new angle, relative to the robot, to turn the turret to. (- is
+ *            left, + is to the right)
  * @return
+ *         True if we're at the target angle, false otherwise.
  */
+// TODO slow down as we approach it
 public boolean turnToBearing (double newBearing)
 {
     if (Math.abs(newBearing - getBearing()) >= acceptableGimbalError)
@@ -137,7 +144,8 @@ public boolean turnToBearing (double newBearing)
          * attempt to turn towards the error.
          */
         this.gimbalMotor.set(((newBearing - getBearing())
-                / Math.abs(newBearing - getBearing())) * .5);
+                / Math.abs(newBearing - getBearing()))
+                * MAX_TURN_SPEED);
         return false;
         }
     return true;
@@ -149,10 +157,42 @@ public boolean turnToBearing (double newBearing)
  * @return
  *         True if we're aligned, false otherwise.
  */
-public boolean turnToGoal ()
+public turnToGoalReturn turnToGoal ()
 {
-    return false;
+    if (this.visionTargeter.getNthSizeBlob(0) != null)
+        {
+        if (this.visionTargeter.getNthSizeBlob(1) != null)
+            {
+            if (gimbalTarget == Double.MIN_VALUE)
+                {
+                gimbalTarget = this.visionTargeter.getYawAngleToTarget(
+                        this.visionTargeter.getNthSizeBlob(0));
+                }
+            else
+                {
+                if (turnToBearing(gimbalTarget + this.getBearing()))
+                    {
+                    gimbalTarget = Double.MIN_VALUE;
+                    return turnToGoalReturn.SUCCESS;
+                    }
+                }
+            return turnToGoalReturn.WORKING;
+            }
+        return turnToGoalReturn.NOT_ENOUGH_BLOBS;
+        }
+    return turnToGoalReturn.NO_BLOBS;
+
 }
+
+
+private boolean firstTimeRun = false;
+
+private double gimbalTarget = Double.MIN_VALUE;
+
+public static enum turnToGoalReturn
+    {
+    NO_BLOBS, NOT_ENOUGH_BLOBS, SUCCESS, TIMEOUT, WORKING
+    }
 
 /**
  * @return
@@ -166,4 +206,8 @@ public double getBearing ()
     // gimbalPot.getMaxDegrees()/2
     return this.gimbalPot.get() - (this.gimbalPot.getMaxDegrees() / 2);
 }
+
+private final double MAX_TURN_SPEED = .5;
+
+private final double ELEVATOR_SPEED = .4;// TODO tune
 }
