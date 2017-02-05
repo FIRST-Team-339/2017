@@ -204,6 +204,8 @@ private static boolean goForFire = false;
 
 private static boolean goForHopper = false;
 
+private static boolean driveToTargetFirstStart = true;
+
 private static boolean placeCenterGearPath ()
 {
     System.out.println("CurrentState = " + currentState);
@@ -248,6 +250,12 @@ private static boolean placeCenterGearPath ()
         case DRIVE_FORWARD_TO_CENTER:
             // If we see blobs, hand over control to camera, otherwise, go
             // forward. Check to make sure we haven't gone too far.
+
+            if (driveToTargetFirstStart)
+                {
+                Hardware.autoStateTimer.stop();
+                }
+
             if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
                 {
                 currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
@@ -393,6 +401,8 @@ private static boolean rightSidePath ()
         }
     return false;
 }
+
+private static boolean isDrivingByCamera = false;
 
 private static boolean leftSidePath ()
 {

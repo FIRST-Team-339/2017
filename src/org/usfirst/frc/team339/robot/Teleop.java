@@ -32,7 +32,6 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
-import org.usfirst.frc.team339.HardwareInterfaces.transmission.Transmission.MotorDirection;
 import org.usfirst.frc.team339.Utils.Drive;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.command.Command;
@@ -89,8 +88,7 @@ public static void init ()
     // Hardware.rightUS.setConfidenceCalculationsOn(false);
     // Hardware.tankDrive.setRightJoystickReversed(true);
 
-    Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
-    boolean testchoosers = true;
+    // boolean testchoosers = true;
 
     // SendableChooser sendablechoosetest;
     // sendablechoosetest = new SendableChooser();
@@ -130,7 +128,7 @@ public static void periodic ()
         {
         case 1:
 
-            System.out.println(Hardware.changeBool.getClass());
+            // System.out.println(Hardware.changeBool.getClass());
             control = 1;
             break;
         case 2:

@@ -62,6 +62,7 @@ package org.usfirst.frc.team339.robot;
 import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 import org.usfirst.frc.team339.Hardware.Hardware;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.vision.AxisCamera.ExposureControl;
@@ -181,7 +182,7 @@ public void autonomousInit ()
  * 
  * }
  */
- // end autonomousPeriodic
+// end autonomousPeriodic
 
 // -------------------------------------------------------
 /**
@@ -330,6 +331,9 @@ public void robotInit ()
     // Hardware.cam0.setFPS(Hardware.USB_FPS);
     // Hardware.cam1.setFPS(Hardware.USB_FPS);
 
+    CameraServer.getInstance().startAutomaticCapture(0);
+    CameraServer.getInstance().startAutomaticCapture(1);
+    CameraServer.getInstance().addAxisCamera("axis-camera.local");
 
     Hardware.axisCamera.writeExposureControl(ExposureControl.kHold);
     Hardware.axisCamera.writeBrightness(12);

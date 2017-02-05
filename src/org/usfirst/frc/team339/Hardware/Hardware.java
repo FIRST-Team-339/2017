@@ -231,13 +231,13 @@ public static UltraSonic rightUS = new UltraSonic(2);
 // Used by the USB Cameras in robot init to set their FPS's
 public final static int USB_FPS = 15;
 
-public static KilroyCamera axisCamera = new KilroyCamera(false);
+public static KilroyCamera axisCamera = new KilroyCamera(true);
 
 // Used by the Axis Camera in robot init to limit its FPS
 public final static int AXIS_FPS = 15;
 
 public static VisionScript visionScript = new VisionScript(
-        new HSLColorThresholdOperator(90, 147, 140, 255, 64, 255),
+        new HSLColorThresholdOperator(55, 147, 14, 255, 78, 255),
         new RemoveSmallObjectsOperator(1, true),
         new ConvexHullOperator(false));
 
