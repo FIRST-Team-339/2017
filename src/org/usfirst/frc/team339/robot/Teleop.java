@@ -32,7 +32,6 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
-import org.usfirst.frc.team339.HardwareInterfaces.transmission.Transmission.MotorDirection;
 import org.usfirst.frc.team339.Utils.Drive;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.command.Command;
@@ -81,6 +80,7 @@ public static void init ()
     // Hardware.tankDrive.setGear(1);
     // Hardware.leftUS.setScalingFactor(.13);
     // Hardware.leftUS.setOffsetDistanceFromNearestBummper(0);
+    // Sets the scaling factor and general ultrasonic stuff
     Hardware.rightUS.setScalingFactor(.13);
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
@@ -89,8 +89,7 @@ public static void init ()
     // Hardware.rightUS.setConfidenceCalculationsOn(false);
     // Hardware.tankDrive.setRightJoystickReversed(true);
 
-    Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
-    boolean testchoosers = true;
+    // boolean testchoosers = true;
 
     // SendableChooser sendablechoosetest;
     // sendablechoosetest = new SendableChooser();

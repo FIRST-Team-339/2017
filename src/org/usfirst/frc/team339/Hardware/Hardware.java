@@ -31,6 +31,8 @@ import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
@@ -209,15 +211,13 @@ public static IRSensor ballLoaderSensor = new IRSensor(8);
 // Potentiometers
 // -------------------------------------
 // -------------------------------------
-public static Potentiometer delayPot = new Potentiometer(0, 270);// TODO max
+public static Potentiometer delayPot = new Potentiometer(1, 270);// TODO max
                                                                  // degree value
 
 public static Potentiometer gimbalPot = new Potentiometer(3, 270);
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------
-
-public static UltraSonic leftUS = new UltraSonic(1);
 
 public static UltraSonic rightUS = new UltraSonic(2);
 
@@ -228,16 +228,22 @@ public static UltraSonic rightUS = new UltraSonic(2);
 // Axis/USB Camera class
 // -------------------------------------
 
+public static UsbCamera camForward = CameraServer.getInstance()
+        .startAutomaticCapture(0);
+
+public static UsbCamera camBackward = CameraServer.getInstance()
+        .startAutomaticCapture(1);
+
 // Used by the USB Cameras in robot init to set their FPS's
 public final static int USB_FPS = 15;
 
-public static KilroyCamera axisCamera = new KilroyCamera(false);
+public static KilroyCamera axisCamera = new KilroyCamera(true);
 
 // Used by the Axis Camera in robot init to limit its FPS
 public final static int AXIS_FPS = 15;
 
 public static VisionScript visionScript = new VisionScript(
-        new HSLColorThresholdOperator(90, 147, 140, 255, 64, 255),
+        new HSLColorThresholdOperator(55, 147, 14, 255, 78, 255),
         new RemoveSmallObjectsOperator(1, true),
         new ConvexHullOperator(false));
 

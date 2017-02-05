@@ -209,7 +209,6 @@ public double getAveragedEncoderValues ()
  */
 public boolean driveInches (double inches, double speed)
 {
-    // Again, we don't know why it's going backwards...
 
     if (firstTimeDriveInches)
         {
@@ -219,17 +218,11 @@ public boolean driveInches (double inches, double speed)
 
     if (Math.abs(this.getAveragedEncoderValues()) >= Math.abs(inches))
         {
-        if (this.transmissionType == TransmissionType.MECANUM)
-            this.transmissionMecanum.drive(0.0, 0.0, 0.0, 0, 0);
-        else
-            this.transmissionFourWheel.drive(0.0, 0.0);
+        this.drive(0.0, 0.0);
         firstTimeDriveInches = true;
         return true;
         }
-    if (this.transmissionType == TransmissionType.MECANUM)
-        this.transmissionMecanum.drive(speed, 0.0, 0.0, 0, 0);
-    else
-        this.transmissionFourWheel.drive(-speed, -speed);
+    this.drive(speed, 0.0);
 
     return false;
 }
@@ -306,7 +299,8 @@ public AlignReturnType alignToGear (double relativeCenter,
  * @param deadband
  *            If the camera's center is in this deadband, we are 'aligned'.
  * @param relativeCenter
- *            Where we want the center of the robot to be
+ *            Where we want the center of the robot to be (in RELATIVE
+ *            coordinates)
  * @param distanceToTarget
  *            What we want the distance to the wall from the bumper
  *            to be when we stop aligning

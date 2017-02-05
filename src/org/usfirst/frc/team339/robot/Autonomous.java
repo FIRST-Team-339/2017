@@ -32,7 +32,10 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
+import org.usfirst.frc.team339.Utils.Drive;
+import org.usfirst.frc.team339.Utils.Drive.AlignReturnType;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.Relay.Value;
 
 
 /**
@@ -130,10 +133,22 @@ private static enum AutoProgram
 // VARIABLES
 // ==================================
 
+private static Drive.AlignReturnType cameraState = Drive.AlignReturnType.NO_BLOBS;
 
 // ==========================================
 // TUNEABLES
 // ==========================================
+
+private static final double ALIGN_CORRECT_SPEED = .2;
+
+private static final double ALIGN_DRIVE_SPEED = .4;
+
+private static final double ALIGN_DEADBAND = 10 // +/- pixels
+        / Hardware.axisCamera.getHorizontalResolution();
+
+private static final double ALIGN_ACCEPTED_CENTER = .5; // Relative coordinates
+
+private static final int ALIGN_DISTANCE_FROM_GOAL = 20;
 
 /**
  * User-Initialization code for autonomous mode should go here. Will be
@@ -146,7 +161,10 @@ private static enum AutoProgram
 
 public static void init ()
 {
-
+    // Sets the scaling factor and general ultrasonic stuff
+    Hardware.rightUS.setScalingFactor(.13);
+    Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
+    Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
 } // end Init
 
 /**
@@ -167,7 +185,7 @@ public static void periodic ()
             delayTime = Hardware.delayPot.get() * (5 / 270);
             if (Hardware.driverStation.getAlliance() == Alliance.Red)
                 isRedAlliance = true;
-            // autoPath = AutoProgram.RIGHT_PATH;
+            autoPath = AutoProgram.CENTER_GEAR_PLACEMENT;
             break;
         case CENTER_GEAR_PLACEMENT:
             if (placeCenterGearPath())
@@ -203,6 +221,8 @@ private static boolean isRedAlliance = false;
 private static boolean goForFire = false;
 
 private static boolean goForHopper = false;
+
+private static boolean driveToTargetFirstStart = true;
 
 private static boolean placeCenterGearPath ()
 {
@@ -248,27 +268,69 @@ private static boolean placeCenterGearPath ()
         case DRIVE_FORWARD_TO_CENTER:
             // If we see blobs, hand over control to camera, otherwise, go
             // forward. Check to make sure we haven't gone too far.
+
+            if (driveToTargetFirstStart)
+                {
+                Hardware.autoStateTimer.stop();
+                Hardware.autoStateTimer.reset();
+                Hardware.autoStateTimer.start();
+                driveToTargetFirstStart = false;
+
+                Hardware.ringlightRelay.set(Value.kOn);
+
+                // Makes sure we actually process the image before asking
+                // whether or not we have any blobs
+                Hardware.imageProcessor.processImage();
+                currentState = MainState.DRIVE_FORWARD_TO_CENTER;
+                break;
+                }
+
+            if (Hardware.autoStateTimer.get() <= .25)
+                {
+                Hardware.imageProcessor.processImage();
+                currentState = MainState.DRIVE_FORWARD_TO_CENTER;
+                break;
+                }
+            Hardware.autoStateTimer.stop();
+
             if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
                 {
                 currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
                 }
-            currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
+            else
+                currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
             break;
         case DRIVE_TO_GEAR_WITH_CAMERA:
-            if (Hardware.imageProcessor.getNthSizeBlob(1) == null)
+            // Get our return type from the strafe to gear.
+
+            // NOTE: if the constructor for autoDrive uses a mecanum
+            // transmission,
+            // we will strafe. If it uses a four wheel transmission, it will
+            // wiggle wiggle on it's way to the peg
+            cameraState = Hardware.autoDrive.strafeToGear(
+                    ALIGN_DRIVE_SPEED, ALIGN_CORRECT_SPEED,
+                    ALIGN_DEADBAND, ALIGN_ACCEPTED_CENTER,
+                    ALIGN_DISTANCE_FROM_GOAL);
+            System.out.println(
+                    Hardware.rightUS.getDistanceFromNearestBumper());
+
+            if (cameraState == AlignReturnType.NO_BLOBS)
+                // If we don't see anything, just drive forwards till we are
+                // close enough
                 currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
-            Hardware.autoDrive.strafeToGear(.6, 25, .1, 271.8, 10);// TODO magic
-                                                                   // numbers
+            else if (cameraState == AlignReturnType.CLOSE_ENOUGH)
+                // If we are close enough to the wall, stop.
+                currentState = MainState.WAIT_FOR_GEAR_EXODUS;
+            else
+                currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
+
             break;
         case DRIVE_CAREFULLY_TO_PEG:
-            if ((Hardware.rightUS.getDistanceFromNearestBumper()
-                    + Hardware.leftUS.getDistanceFromNearestBumper())
-                    / 2 <= 6)// desired distance from wall when we start
-                currentState = MainState.WIGGLE_WIGGLE;
-            break;
-        case WIGGLE_WIGGLE:
-            // Find out how to wiggle wiggle.
-            currentState = MainState.WAIT_FOR_GEAR_EXODUS;
+            Hardware.ringlightRelay.set(Value.kOff);
+            if (Hardware.rightUS
+                    .getDistanceFromNearestBumper() <= ALIGN_DISTANCE_FROM_GOAL)
+                // desired distance from wall when we start
+                currentState = MainState.WAIT_FOR_GEAR_EXODUS;
             break;
         case WAIT_FOR_GEAR_EXODUS:
             if (Hardware.gearLimitSwitch.isOn() == false)
@@ -286,7 +348,7 @@ private static boolean placeCenterGearPath ()
                 }
             break;
         case DRIVE_AWAY_FROM_PEG:
-            if (Hardware.autoDrive.driveInches(-36.0, .5))
+            if (Hardware.autoDrive.driveInches(36.0, -.5))
                 currentState = MainState.DONE;
             break;
         default:
@@ -393,6 +455,8 @@ private static boolean rightSidePath ()
         }
     return false;
 }
+
+private static boolean isDrivingByCamera = false;
 
 private static boolean leftSidePath ()
 {

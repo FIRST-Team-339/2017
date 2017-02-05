@@ -62,6 +62,7 @@ package org.usfirst.frc.team339.robot;
 import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 import org.usfirst.frc.team339.Hardware.Hardware;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.vision.AxisCamera.ExposureControl;
@@ -150,37 +151,35 @@ public void autonomousInit ()
  *          -------------------------------------------------------
  */
 @Override
-/*
- * public void autonomousPeriodic ()
- * {
- * 
- * // ---------------------------------------
- * // start setup - tell the user we are beginning
- * // setup
- * // ---------------------------------------
- * System.out.println("Started AutonomousPeriodic().");
- * 
- * // =========================================================
- * // User code goes below here
- * // =========================================================
- * // -------------------------------------
- * // Call the Autonomous class's Periodic function,
- * // which contains the user code.
- * // -------------------------------------\
- * Autonomous.periodic();
- * 
- * // =========================================================
- * // User code goes above here
- * // =========================================================
- * 
- * // feed all motor safeties
- * Hardware.leftRearMotorSafety.feed();
- * Hardware.rightRearMotorSafety.feed();
- * Hardware.leftFrontMotorSafety.feed();
- * Hardware.rightFrontMotorSafety.feed();
- * 
- * }
- */
+public void autonomousPeriodic ()
+{
+
+    // ---------------------------------------
+    // start setup - tell the user we are beginning
+    // setup
+    // ---------------------------------------
+    System.out.println("Started AutonomousPeriodic().");
+
+    // =========================================================
+    // User code goes below here
+    // =========================================================
+    // -------------------------------------
+    // Call the Autonomous class's Periodic function,
+    // which contains the user code.
+    // -------------------------------------\
+    Autonomous.periodic();
+
+    // =========================================================
+    // User code goes above here
+    // =========================================================
+
+    // feed all motor safeties
+    Hardware.leftRearMotorSafety.feed();
+    Hardware.rightRearMotorSafety.feed();
+    Hardware.leftFrontMotorSafety.feed();
+    Hardware.rightFrontMotorSafety.feed();
+}
+
 // end autonomousPeriodic
 
 // -------------------------------------------------------
@@ -331,6 +330,7 @@ public void robotInit ()
     // Hardware.cam0.setFPS(Hardware.USB_FPS);
     // Hardware.cam1.setFPS(Hardware.USB_FPS);
 
+    CameraServer.getInstance().addAxisCamera("axis-camera.local");
 
     Hardware.axisCamera.writeExposureControl(ExposureControl.kHold);
     Hardware.axisCamera.writeBrightness(12);
@@ -353,6 +353,10 @@ public void robotInit ()
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
 
+    // Sets the scaling factor and general ultrasonic stuff
+    Hardware.rightUS.setScalingFactor(.13);
+    Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
+    Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
 
     // =========================================================
     // User code goes above here
