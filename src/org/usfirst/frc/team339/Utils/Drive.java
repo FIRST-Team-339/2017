@@ -244,12 +244,30 @@ public boolean driveInches (double inches, double speed)
 
 
 
+
     if (firstTimeDriveInches)
         {
         this.resetEncoders();
         firstTimeDriveInches = false;
         }
 
+    if (this.transmissionType == TransmissionType.MECANUM)
+        this.transmissionMecanum.drive(speed, 0.0, 0.0);
+    if (deltaLeft > deltaRight + getEncoderSlack())
+        this.transmissionFourWheel.drive(speed + getDriveCorrection(),
+                speed);
+    if (deltaLeft < deltaRight - getEncoderSlack())
+        this.transmissionFourWheel.drive(speed,
+                speed + getDriveCorrection());
+    if (deltaRight >= deltaLeft - getEncoderSlack())
+        bValue = true;
+    if (deltaRight <= deltaLeft + getEncoderSlack())
+        tValue = true;
+    if (bValue == true && tValue == true)
+        this.transmissionFourWheel.drive(speed,
+                speed);
+    else
+        this.transmissionFourWheel.drive(-speed, -speed);
     if (Math.abs(this.getAveragedEncoderValues()) >= Math.abs(inches))
         {
         if (this.transmissionType == TransmissionType.MECANUM)
@@ -259,27 +277,13 @@ public boolean driveInches (double inches, double speed)
         firstTimeDriveInches = true;
         return true;
         }
-
-    if (this.transmissionType == TransmissionType.MECANUM)
-        this.transmissionMecanum.drive(speed, 0.0, 0.0, 0, 0);
-    if (deltaLeft > deltaRight + getEncoderSlack())
-        this.transmissionFourWheel.drive(speed + getDriveCorrection(),
-                speed);
-    if (deltaLeft < deltaRight - getEncoderSlack())
-        this.transmissionFourWheel.drive(speed,
-                speed + getDriveCorrection());
-    if (deltaRight == deltaRight + getEncoderSlack())
-        this.transmissionFourWheel.drive(speed,
-                speed);
-
-    else
-        this.transmissionFourWheel.drive(-speed, -speed);
-
     return false;
 
 }
 
 private boolean firstTimeDriveInches = true;
+private boolean bValue = false;
+private boolean tValue = false;
 
 
 
