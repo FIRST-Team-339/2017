@@ -64,10 +64,10 @@ import com.ctre.CANTalon.TalonControlMode;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.vision.AxisCamera.ExposureControl;
 import edu.wpi.first.wpilibj.vision.AxisCamera.Resolution;
 import edu.wpi.first.wpilibj.vision.AxisCamera.WhiteBalance;
+
 /**
  * The VM is configured to automatically run this class, and to call the
  * functions corresponding to each mode, as described in the IterativeRobot
@@ -85,14 +85,14 @@ import edu.wpi.first.wpilibj.vision.AxisCamera.WhiteBalance;
  */
 public class Robot extends IterativeRobot
 {
- boolean testdasboard = true;
+boolean testdasboard = true;
 // =================================================
 // private data for the class
 // =================================================
 
 // -------------------------------------------------------
-	
-	
+
+
 /**
  * Initialization code for autonomous mode should go here. Will be called
  * once when the robot enters autonomous mode.
@@ -101,7 +101,7 @@ public class Robot extends IterativeRobot
  * @written Jan 2, 2011
  *          -------------------------------------------------------
  */
-	
+
 @Override
 public void autonomousInit ()
 {
@@ -150,35 +150,38 @@ public void autonomousInit ()
  *          -------------------------------------------------------
  */
 @Override
-/*public void autonomousPeriodic ()
-{
-
-    // ---------------------------------------
-    // start setup - tell the user we are beginning
-    // setup
-    // ---------------------------------------
-    System.out.println("Started AutonomousPeriodic().");
-
-    // =========================================================
-    // User code goes below here
-    // =========================================================
-    // -------------------------------------
-    // Call the Autonomous class's Periodic function,
-    // which contains the user code.
-    // -------------------------------------\
-    Autonomous.periodic();
-
-    // =========================================================
-    // User code goes above here
-    // =========================================================
-
-    // feed all motor safeties
-    Hardware.leftRearMotorSafety.feed();
-    Hardware.rightRearMotorSafety.feed();
-    Hardware.leftFrontMotorSafety.feed();
-    Hardware.rightFrontMotorSafety.feed();
-
-}*/ // end autonomousPeriodic
+/*
+ * public void autonomousPeriodic ()
+ * {
+ * 
+ * // ---------------------------------------
+ * // start setup - tell the user we are beginning
+ * // setup
+ * // ---------------------------------------
+ * System.out.println("Started AutonomousPeriodic().");
+ * 
+ * // =========================================================
+ * // User code goes below here
+ * // =========================================================
+ * // -------------------------------------
+ * // Call the Autonomous class's Periodic function,
+ * // which contains the user code.
+ * // -------------------------------------\
+ * Autonomous.periodic();
+ * 
+ * // =========================================================
+ * // User code goes above here
+ * // =========================================================
+ * 
+ * // feed all motor safeties
+ * Hardware.leftRearMotorSafety.feed();
+ * Hardware.rightRearMotorSafety.feed();
+ * Hardware.leftFrontMotorSafety.feed();
+ * Hardware.rightFrontMotorSafety.feed();
+ * 
+ * }
+ */
+ // end autonomousPeriodic
 
 // -------------------------------------------------------
 /**
@@ -189,7 +192,7 @@ public void autonomousInit ()
  * @written Jan 2, 2011
  *          -------------------------------------------------------
  */
-//@Override
+// @Override
 public void disabledInit ()
 {
     // ---------------------------------------
@@ -487,7 +490,7 @@ public static final double SECOND_GEAR = 1;
 
 public static double shooterP = .1;
 
-public static double shooterI = .00052;
+public static double shooterI = .00048;
 
 public static double shooterD = .9;
 

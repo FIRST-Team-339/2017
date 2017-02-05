@@ -33,7 +33,6 @@ package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 /**
@@ -159,16 +158,16 @@ public static void init ()
  */
 public static void periodic ()
 {
-	
+
     switch (autoPath)
         {
-   
+
         case INIT:
             // get the auto program we want to run, get delay pot.
             delayTime = Hardware.delayPot.get() * (5 / 270);
             if (Hardware.driverStation.getAlliance() == Alliance.Red)
                 isRedAlliance = true;
-            //autoPath = AutoProgram.RIGHT_PATH;
+            // autoPath = AutoProgram.RIGHT_PATH;
             break;
         case CENTER_GEAR_PLACEMENT:
             if (placeCenterGearPath())
@@ -411,8 +410,8 @@ private static void initializeDriveProgram ()
 {
     Hardware.autoStateTimer.stop();
     Hardware.autoStateTimer.reset();
-    Hardware.driveGyro.calibrate();
-    Hardware.driveGyro.reset();
+    // Hardware.driveGyro.calibrate();
+    // Hardware.driveGyro.reset();//TODO
     Hardware.autoDrive.resetEncoders();
     Hardware.mecanumDrive.drive(0, 0, 0);
 }

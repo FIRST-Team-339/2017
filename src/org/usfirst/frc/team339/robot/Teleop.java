@@ -35,7 +35,6 @@ import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.Transmission.MotorDirection;
 import org.usfirst.frc.team339.Utils.Drive;
 import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.command.Command;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -56,7 +55,8 @@ public class Teleop
  * @author Nathanial Lydick
  * @written Jan 13, 2015
  */
-	int control =1;
+int control = 1;
+
 public static void init ()
 {
     // --------------------------------------
@@ -91,13 +91,13 @@ public static void init ()
 
     Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
     boolean testchoosers = true;
-    
-  // SendableChooser sendablechoosetest;
-//   sendablechoosetest = new SendableChooser();
-//   sendablechoosetest.addDefault("default", testchoosers);
-  
-  //  Sendable testsendable = ;
-  //  SmartDashboard.putData("teleoptest", testsendable);
+
+    // SendableChooser sendablechoosetest;
+    // sendablechoosetest = new SendableChooser();
+    // sendablechoosetest.addDefault("default", testchoosers);
+
+    // Sendable testsendable = ;
+    // SmartDashboard.putData("teleoptest", testsendable);
 
     Hardware.tankDrive.setGear(1);
 
@@ -106,6 +106,7 @@ public static void init ()
     isStrafingToTarget = false;
     isDrivingInches = false;
     isTurning = false;
+
 } // end Init
 
 /**
@@ -117,25 +118,41 @@ public static void init ()
  */
 public static void periodic ()
 {
-	Command chooseTrueorFalse;
-	SendableChooser testbool;
-	testbool = new SendableChooser();
-	testbool.addDefault("true",Hardware.changeBool.equals(true));
-	testbool.addObject(" false", Hardware.changeBool.equals(false));
-	int control = 1;
-	
-	SmartDashboard.putData("testbool",testbool );
-	switch(control){
-		case 1:
-			
-			System.out.println(Hardware.changeBool.getClass());
-			control = 1;
-		break;
-		case 2:
-			
-			break;
-		
-		}
+    Command chooseTrueorFalse;
+    SendableChooser testbool;
+    testbool = new SendableChooser();
+    testbool.addDefault("true", Hardware.changeBool.equals(true));
+    testbool.addObject(" false", Hardware.changeBool.equals(false));
+    int control = 1;
+
+    SmartDashboard.putData("testbool", testbool);
+    switch (control)
+        {
+        case 1:
+
+            System.out.println(Hardware.changeBool.getClass());
+            control = 1;
+            break;
+        case 2:
+
+            break;
+
+        }
+    if (Hardware.leftDriver.getRawButton(6) && !previousPrepareButton)
+        {
+        Hardware.shooter.prepareToFire();
+        }
+    previousPrepareButton = Hardware.leftDriver.getRawButton(6);
+
+    if (Hardware.leftDriver.getTrigger() && !previousFireButton)
+        {
+        fireCount++;
+        }
+    previousFireButton = Hardware.leftDriver.getTrigger();
+
+    if (fireCount > 0)
+        if (Hardware.shooter.fire())
+            fireCount--;
 
     // TODO Figure out why the ring light is flickering
     if (Hardware.ringlightSwitch.isOnCheckNow())
@@ -161,7 +178,7 @@ public static void periodic ()
     else
         {
         rotationValue = 0.0;
-       
+
         }
 
     // if (!isAligning)
@@ -198,7 +215,7 @@ public static void periodic ()
         {
         turnDegrees = 90;
         isTurning = true;
-        Hardware.driveGyro.reset();
+        // Hardware.driveGyro.reset();TODO
         }
 
     if (isTurning)
@@ -328,6 +345,12 @@ private static double movementSpeed = 0.3;
 private static boolean hasPressedFour = false;
 
 private static boolean hasPressedFive = false;
+
+private static boolean previousFireButton = false;
+
+private static int fireCount = 0;
+
+private static boolean previousPrepareButton = false;
 
 
 

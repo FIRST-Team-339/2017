@@ -31,14 +31,12 @@ import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.MotorSafetyHelper;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.Sendable;
 import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
@@ -58,7 +56,7 @@ public class Hardware
 // ------------------------------------
 // Public Constants
 // ------------------------------------
-	public static boolean testbool = true;
+public static boolean testbool = true;
 
 /**
  * denote whether we are running in the lab or not. This will allow us to test
@@ -110,6 +108,8 @@ public static CANTalon shooterMotor = new CANTalon(1);
 // Victor classes
 // ------------------------------------
 public static Victor elevatorMotor = new Victor(0);// PWM 0
+
+public static Victor gimbalMotor = new Victor(9);
 // ====================================
 // CAN classes
 // ====================================
@@ -203,7 +203,7 @@ public static IRSensor ballLoaderSensor = new IRSensor(8);
 // ------------------------------------
 // Gyro class
 // ------------------------------------
-public static ADXRS450_Gyro driveGyro = new ADXRS450_Gyro();
+// public static ADXRS450_Gyro driveGyro = new ADXRS450_Gyro();
 
 // -------------------------------------
 // Potentiometers
@@ -231,7 +231,7 @@ public static UltraSonic rightUS = new UltraSonic(2);
 // Used by the USB Cameras in robot init to set their FPS's
 public final static int USB_FPS = 15;
 
-public static KilroyCamera axisCamera = new KilroyCamera(true);
+public static KilroyCamera axisCamera = new KilroyCamera(false);
 
 // Used by the Axis Camera in robot init to limit its FPS
 public final static int AXIS_FPS = 15;
@@ -325,7 +325,7 @@ public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
 // =====================================================================
 
 
-public static Drive autoDrive = new Drive(tankDrive, axisCamera,
+public static Drive autoDrive = new Drive(tankDrive,
         imageProcessor, leftRearEncoder, rightRearEncoder,
         leftRearEncoder, rightRearEncoder, rightUS);
 
@@ -345,7 +345,7 @@ public static boolean twoJoystickControl = false;
 // -------------------
 public static Shooter shooter = new Shooter(shooterMotor,
         ballLoaderSensor, elevatorMotor, 20, imageProcessor, gimbalPot,
-        3, null);
+        3, gimbalMotor);
 
 // ------------------------------------
 // Utility classes
@@ -381,6 +381,7 @@ public static final MotorSafetyHelper leftFrontMotorSafety = new MotorSafetyHelp
 
 public static final int MINIMUM_AXIS_CAMERA_BRIGHTNESS = 6;
 
-public static final ChangeBoolValue changeBool = new ChangeBoolValue(testbool);
+public static final ChangeBoolValue changeBool = new ChangeBoolValue(
+        testbool);
 
 } // end class

@@ -140,8 +140,8 @@ public boolean fire ()
 public boolean prepareToFire ()
 {
     boolean retVal;
-    this.flywheelController.setSetpoint(2500);// TODO read distance/lookup
-                                              // table/whatever.
+    this.flywheelController.setSetpoint(-2500);// TODO read distance/lookup
+                                               // table/whatever.
     if (Math.abs(
             this.flywheelController.getError()) > this.acceptableError)
         {
@@ -384,7 +384,7 @@ private final double MEDIUM_TURN_SPEED = .6;
 
 private final double SLOW_TURN_SPEED = .4;
 
-private final double ELEVATOR_SPEED = .4;// TODO tune
+private final double ELEVATOR_SPEED = .6;// TODO tune
 
 private final double MAX_GIMBALING_ANGLE = 135;
 

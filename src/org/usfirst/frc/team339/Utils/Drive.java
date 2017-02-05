@@ -1,6 +1,5 @@
 package org.usfirst.frc.team339.Utils;
 
-import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
@@ -24,8 +23,6 @@ private TransmissionMecanum transmissionMecanum = null;
 private TransmissionFourWheel transmissionFourWheel = null;
 
 private ImageProcessor imageProcessor = null;
-
-private KilroyCamera camera = null;
 
 private Encoder rightFrontEncoder = null;
 
@@ -55,11 +52,10 @@ private Timer timer = new Timer();
  *            The processor we want to use for aiming and aligning
  */
 public Drive (TransmissionMecanum transmissionMecanum,
-        KilroyCamera camera, ImageProcessor imageProcessor)
+        ImageProcessor imageProcessor)
 {
     this.transmissionMecanum = transmissionMecanum;
     this.transmissionType = TransmissionType.MECANUM;
-    this.camera = camera;
     this.imageProcessor = imageProcessor;
 }
 
@@ -87,12 +83,12 @@ public Drive (TransmissionMecanum transmissionMecanum,
  *            The ultrasonic on the right side of the robot
  */
 public Drive (TransmissionMecanum transmissionMecanum,
-        KilroyCamera camera, ImageProcessor imageProcessor,
+        ImageProcessor imageProcessor,
         Encoder rightFrontEncoder, Encoder rightRearEncoder,
         Encoder leftFrontEncoder, Encoder leftRearEncoder,
         UltraSonic rightUlt)
 {
-    this(transmissionMecanum, camera, imageProcessor);
+    this(transmissionMecanum, imageProcessor);
 
     this.initEncoders(leftFrontEncoder, rightFrontEncoder,
             leftRearEncoder, rightRearEncoder);
@@ -114,11 +110,10 @@ public Drive (TransmissionMecanum transmissionMecanum,
  *            The processor we want to use for aiming and aligning
  */
 public Drive (TransmissionFourWheel transmissionFourWheel,
-        KilroyCamera camera, ImageProcessor imageProcessor)
+        ImageProcessor imageProcessor)
 {
     this.transmissionFourWheel = transmissionFourWheel;
     this.transmissionType = TransmissionType.TANK;
-    this.camera = camera;
     this.imageProcessor = imageProcessor;
 }
 
@@ -148,12 +143,12 @@ public Drive (TransmissionFourWheel transmissionFourWheel,
  *            The ultrasonic on the left side of the robot
  */
 public Drive (TransmissionFourWheel transmissionFourWheel,
-        KilroyCamera camera, ImageProcessor imageProcessor,
+        ImageProcessor imageProcessor,
         Encoder leftFrontEncoder, Encoder rightFrontEncoder,
         Encoder leftRearEncoder, Encoder rightRearEncoder,
         UltraSonic rightUlt)
 {
-    this(transmissionFourWheel, camera, imageProcessor);
+    this(transmissionFourWheel, imageProcessor);
     this.initEncoders(leftFrontEncoder, rightFrontEncoder,
             leftRearEncoder, rightRearEncoder);
     this.rightUlt = rightUlt;
@@ -262,91 +257,39 @@ public AlignReturnType alignToGear (double relativeCenter,
         double movementSpeed,
         double deadband)
 {
-    switch (this.transmissionType)
         {
-        case TANK:
-            if (isTurning == false)
-                {
-                this.imageProcessor.processImage();
-                if (this.imageProcessor.getNthSizeBlob(1) == null)
-                    {
-                    transmissionFourWheel.drive(0.0, 0.0);
-                    return AlignReturnType.NO_BLOBS;
-                    }
-                double distanceToCenter = imageProcessor
-                        .getPositionOfRobotToGear(
-                                imageProcessor
-                                        .getNthSizeBlob(0),
-                                imageProcessor
-                                        .getNthSizeBlob(1),
-                                relativeCenter);
-                if (distanceToCenter > 0)
-                    {
-                    System.out.println("We are Left of target");
-                    }
-                else if (distanceToCenter < 0)
-                    System.out
-                            .println("We are RIGHT of target");
-                System.out
-                        .println("Distance to center: "
-                                + distanceToCenter);
+        this.imageProcessor.processImage();
+        if (this.imageProcessor.getNthSizeBlob(1) == null)
+            {
+            this.drive(0.0, 0.0);
+            return AlignReturnType.NO_BLOBS;
+            }
+        double distanceToCenter = imageProcessor
+                .getPositionOfRobotToGear(
+                        imageProcessor
+                                .getNthSizeBlob(0),
+                        imageProcessor
+                                .getNthSizeBlob(1),
+                        relativeCenter);
 
-                System.out.println("Deadband: " + (10.0
-                        / this.camera
-                                .getHorizontalResolution()));
-                if (distanceToCenter == Double.MAX_VALUE)
-                    {
-                    transmissionFourWheel.drive(0.0, 0.0);
-                    return AlignReturnType.NO_BLOBS;
-                    }
-                if (Math.abs(distanceToCenter) <= deadband)
-                    {
-                    transmissionFourWheel.drive(0.0, 0.0);
-                    return AlignReturnType.ALIGNED;
-                    }
-                else if (distanceToCenter > 0)
-                    {
-                    this.transmissionFourWheel.drive(movementSpeed,
-                            -movementSpeed);
-                    }
-                else if (distanceToCenter < 0)
-                    {
-                    this.transmissionFourWheel.drive(-movementSpeed,
-                            movementSpeed);
-                    }
-
-
-                }
-            // Turns based on the average of the yaw angles of the
-            // two blobs, to account for a delayed axis camera.
-            // double yawAngle = (this.imageProcessor
-            // .getYawAngleToTarget(
-            // this.imageProcessor.getNthSizeBlob(1))
-            // + this.imageProcessor.getYawAngleToTarget(
-            // this.imageProcessor.getNthSizeBlob(0))
-            // / 2.0);
-            // System.out.println("Average yaw angle: " + yawAngle);
-            //
-            //
-            //
-            // isTurning = this.turnDegrees((this.imageProcessor
-            // .getYawAngleToTarget(this.imageProcessor
-            // .getNthSizeBlob(0))
-            // + this.imageProcessor.getYawAngleToTarget(
-            // this.imageProcessor
-            // .getNthSizeBlob(1)))
-            // / 2.0, .5);
-            break;
-        case MECANUM:
-
-            break;
-        default:
-            break;
+        if (distanceToCenter == Double.MAX_VALUE)
+            {
+            this.drive(0.0, 0.0);
+            return AlignReturnType.NO_BLOBS;
+            }
+        if (Math.abs(distanceToCenter) <= deadband)
+            {
+            this.drive(0.0, 0.0);
+            return AlignReturnType.ALIGNED;
+            }
+        else if (distanceToCenter > 0)
+            this.drive(0, movementSpeed);
+        else if (distanceToCenter < 0)
+            this.drive(0.0, -movementSpeed);
         }
+
     return AlignReturnType.MISALIGNED;
 }
-
-private boolean isTurning = false;
 
 
 // TODO we need to test this!!
@@ -506,6 +449,8 @@ public void drive (double speed, double correction, double rotation)
         case TANK:
             this.transmissionFourWheel.driveWithoutCorrection(
                     speed + correction, speed - correction);
+        default:
+            break;
         }
 }
 
@@ -527,17 +472,9 @@ public void drive (double speed, double correction)
         case TANK:
             this.transmissionFourWheel.driveWithoutCorrection(
                     speed + correction, speed - correction);
+        default:
+            break;
         }
-}
-
-public void strafeStraight (double inches)
-{
-    resetEncoders();
-    double rightFrontSpeed = inches;
-    double rightRearSpeed = inches;
-    double leftFrontSpeed = inches;
-    double leftRearSpeed = inches;
-
 }
 
 /**
