@@ -70,7 +70,7 @@ public static void init ()
     Hardware.rightFrontMotor.set(0.0);
     Hardware.leftFrontMotor.set(0.0);
 
-    Hardware.rightFrontMotor.setInverted(true); // TODO takeout
+    Hardware.rightFrontMotor.setInverted(false); // TODO takeout
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
@@ -101,6 +101,8 @@ public static void init ()
     testTuner.setErrorThreshold(15);
     testTuner.update();
     SmartDashboard.putNumber("F", 0.0);
+    Hardware.autoDrive.setDriveCorrection(.2);
+    Hardware.autoDrive.setEncoderSlack(.5);
 
 } // end Init
 
@@ -204,8 +206,9 @@ public static void periodic ()
 
     if (isDrivingInches)
         {
-        Hardware.autoDrive.driveInches(24, .4);
+        Hardware.autoDrive.driveInches(12, .4);
         }
+
 
 
     // =================================================================
@@ -223,57 +226,57 @@ public static void periodic ()
         isTurning = false;
         }
 
-    // Testing aligning to target
-    if (Hardware.leftOperator.getRawButton(8))
-        isAligning = true;
-
-    if (isAligning)
-        {
-        alignValue = Hardware.autoDrive.alignToGear(CAMERA_ALIGN_CENTER,
-                CAMERA_ALIGN_SPEED, CAMERA_ALIGN_DEADBAND);
-        if (alignValue == Drive.AlignReturnType.ALIGNED)
-            {
-            System.out.println("We are aligned!");
-            isAligning = false;
-            }
-        else if (alignValue == Drive.AlignReturnType.MISALIGNED)
-            {
-            System.out.println("We are not aligned!");
-            }
-        else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
-            {
-            System.out.println("We don't see anything!");
-            }
-        }
+    // Testing aligning to target TODO
+    // if (Hardware.leftOperator.getRawButton(8))
+    // isAligning = true;
+    //
+    // if (isAligning)
+    // {
+    // alignValue = Hardware.autoDrive.alignToGear(CAMERA_ALIGN_CENTER,
+    // CAMERA_ALIGN_SPEED, CAMERA_ALIGN_DEADBAND);
+    // if (alignValue == Drive.AlignReturnType.ALIGNED)
+    // {
+    // System.out.println("We are aligned!");
+    // isAligning = false;
+    // }
+    // else if (alignValue == Drive.AlignReturnType.MISALIGNED)
+    // {
+    // System.out.println("We are not aligned!");
+    // }
+    // else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
+    // {
+    // System.out.println("We don't see anything!");
+    // }
+    // }
     // Testing Strafe to target
     if (Hardware.rightOperator.getRawButton(8))
         isStrafingToTarget = true;
 
-    if (isStrafingToTarget)
-        {
-        alignValue = Hardware.autoDrive.strafeToGear(.4, .2,
-                CAMERA_ALIGN_DEADBAND, CAMERA_ALIGN_CENTER, 20);
-        if (alignValue == Drive.AlignReturnType.ALIGNED)
-            {
-            System.out.println("We are aligned!");
-            }
-        else if (alignValue == Drive.AlignReturnType.MISALIGNED)
-            {
-            System.out.println("WE are NOT aligned!");
-            }
-        else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
-            {
-            System.out.println("We have no blobs!");
-            }
-        else if (alignValue == Drive.AlignReturnType.CLOSE_ENOUGH)
-            {
-            System.out.println("We are good to go!");
-            isStrafingToTarget = false;
-            }
-        }
-
-    Hardware.axisCamera
-            .takeSinglePicture(Hardware.leftOperator.getRawButton(8));
+    // if (isStrafingToTarget) TODO
+    // {
+    // alignValue = Hardware.autoDrive.strafeToGear(.4, .2,
+    // CAMERA_ALIGN_DEADBAND, CAMERA_ALIGN_CENTER, 20);
+    // if (alignValue == Drive.AlignReturnType.ALIGNED)
+    // {
+    // System.out.println("We are aligned!");
+    // }
+    // else if (alignValue == Drive.AlignReturnType.MISALIGNED)
+    // {
+    // System.out.println("WE are NOT aligned!");
+    // }
+    // else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
+    // {
+    // System.out.println("We have no blobs!");
+    // }
+    // else if (alignValue == Drive.AlignReturnType.CLOSE_ENOUGH)
+    // {
+    // System.out.println("We are good to go!");
+    // isStrafingToTarget = false;
+    // }
+    // }
+    //
+    // Hardware.axisCamera
+    // .takeSinglePicture(Hardware.leftOperator.getRawButton(8));
 } // end Periodic
 
 // private static boolean isSpeedTesting = false;

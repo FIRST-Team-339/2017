@@ -28,7 +28,6 @@ import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
-import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
@@ -221,8 +220,8 @@ public static UltraSonic rightUS = new UltraSonic(2);
 
 // Note: If causing problems, replace "USB_Camera_0" w/ "cam0", and
 // "USB_Camera_1" w/ "cam1"
-public static UsbCamera cam0 = new UsbCamera("USB_Camera_0", 0);
-public static UsbCamera cam1 = new UsbCamera("USB_Camera_1", 1);
+// public static UsbCamera cam0 = new UsbCamera("USB_Camera_0", 0);
+// public static UsbCamera cam1 = new UsbCamera("USB_Camera_1", 1);
 
 // Used by the USB Cameras in robot init to set their FPS's
 public final static int USB_FPS = 15;
