@@ -6,6 +6,7 @@ import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
 import edu.wpi.first.wpilibj.PWMSpeedController;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Victor;
 
 /**
  * Describes the shooter object for the 2017 game: FIRST Steamworks.
@@ -21,7 +22,7 @@ private CANTalon flywheelController = null;
 
 private IRSensor elevatorSensor = null;
 
-private PWMSpeedController elevatorController = null;
+private Victor elevatorController = null;
 
 private double acceptableError = 0;
 
@@ -57,7 +58,7 @@ private Timer shooterTimer = new Timer();
  *            TODO
  */
 public Shooter (CANTalon controller, IRSensor ballLoaderSensor,
-        PWMSpeedController elevator,
+        Victor elevator,
         double acceptableFlywheelSpeedError,
         ImageProcessor visionTargeting, Potentiometer gimbalPot,
         double acceptableGimbalError, PWMSpeedController gimbalMotor)
@@ -109,6 +110,27 @@ public double getAcceptableFlywheelError ()
     return this.acceptableError;
 }
 
+// TODO write stops for other motors.
+public void stopFlywheelMotor ()
+{
+    this.flywheelController.set(0.0);
+}
+
+public void loadBalls ()
+{
+    this.elevatorController.set(ELEVATOR_SPEED);
+}
+
+public void stopLoader ()
+{
+    this.elevatorController.set(0.0);
+}
+
+public void reverseLoader ()
+{
+    this.elevatorController.set(-ELEVATOR_SPEED);
+}
+
 /**
  * Prepares to fire and fires a ball.
  * 
@@ -117,18 +139,24 @@ public double getAcceptableFlywheelError ()
  */
 public boolean fire ()
 {
-    if (prepareToFire())
+    if (!readyToFire)
         {
-        if (this.elevatorSensor.isOn())
-            {
-            this.elevatorController.set(ELEVATOR_SPEED);
-            return false;
-            }
-        this.elevatorController.set(0);
-        return true;
+        readyToFire = prepareToFire();
+        return false;
         }
-    return false;
+
+    if (this.elevatorSensor.isOn())
+        {
+        this.elevatorController.set(ELEVATOR_SPEED);
+        return false;
+        }
+    // this.elevatorController.set(0);
+    readyToFire = false;
+    return true;
+
 }
+
+private boolean readyToFire = false;
 
 /**
  * Prepares to fire a ball by revving up the flywheel motor and sets up a ball
@@ -139,29 +167,28 @@ public boolean fire ()
  */
 public boolean prepareToFire ()
 {
-    boolean retVal;
-    this.flywheelController.setSetpoint(-2500);// TODO read distance/lookup
+    this.flywheelController.setSetpoint(-1725);// TODO read distance/lookup
                                                // table/whatever.
+    this.loadBalls();
     if (Math.abs(
-            this.flywheelController.getError()) > this.acceptableError)
+            this.flywheelController.getError()
+                    / 4.0) > this.acceptableError)
         {
-        retVal = false;
+        // this.stopLoader();
+        return false;
         }
-    else
-        {
-        retVal = true;
-        }
-    if (this.elevatorSensor.isOn())
-        {
-        retVal = retVal && true;
-        }
-    else
-        {
-        this.elevatorController.set(ELEVATOR_SPEED);// TODO magic number
-        retVal = false;
-        }
-    return retVal;
+    // if (this.elevatorSensor.isOn())
+    // {
+    // this.stopLoader();
+    // }
+    // else
+    // {
+    // this.loadBalls();
+    // return false;
+    // }
+    return true;
 }
+
 
 /**
  * Turns the turret to the new bearing on the robot.
@@ -384,7 +411,7 @@ private final double MEDIUM_TURN_SPEED = .6;
 
 private final double SLOW_TURN_SPEED = .4;
 
-private final double ELEVATOR_SPEED = .6;// TODO tune
+private final double ELEVATOR_SPEED = 1;// TODO tune
 
 private final double MAX_GIMBALING_ANGLE = 135;
 

@@ -344,7 +344,7 @@ public static boolean twoJoystickControl = false;
 // Assembly classes (e.g. forklift)
 // -------------------
 public static Shooter shooter = new Shooter(shooterMotor,
-        ballLoaderSensor, elevatorMotor, 20, imageProcessor, gimbalPot,
+        ballLoaderSensor, elevatorMotor, 25, imageProcessor, gimbalPot,
         3, gimbalMotor);
 
 // ------------------------------------

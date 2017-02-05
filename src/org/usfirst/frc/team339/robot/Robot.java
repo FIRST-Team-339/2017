@@ -181,7 +181,7 @@ public void autonomousInit ()
  * 
  * }
  */
- // end autonomousPeriodic
+// end autonomousPeriodic
 
 // -------------------------------------------------------
 /**
@@ -304,6 +304,7 @@ public void robotInit ()
     Hardware.shooterMotor.configEncoderCodesPerRev(1024);
     Hardware.shooterMotor.setPID(shooterP, shooterI, shooterD);
     Hardware.shooterMotor.setSetpoint(0.0);
+    Hardware.shooterMotor.reverseSensor(true);
     // Hardware.rightFrontMotor.setInverted(true);
 
     if (Hardware.runningInLab == true)
@@ -488,7 +489,7 @@ public static final double FIRST_GEAR = .7;
  */
 public static final double SECOND_GEAR = 1;
 
-public static double shooterP = .1;
+public static double shooterP = .07;
 
 public static double shooterI = .00048;
 

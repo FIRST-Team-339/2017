@@ -109,6 +109,8 @@ public static void init ()
 
 } // end Init
 
+
+
 /**
  * User Periodic code for teleop mode should go here. Will be called
  * periodically at a regular rate while the robot is in teleop mode.
@@ -124,13 +126,12 @@ public static void periodic ()
     testbool.addDefault("true", Hardware.changeBool.equals(true));
     testbool.addObject(" false", Hardware.changeBool.equals(false));
     int control = 1;
-
     SmartDashboard.putData("testbool", testbool);
     switch (control)
         {
         case 1:
 
-            System.out.println(Hardware.changeBool.getClass());
+            // System.out.println(Hardware.changeBool.getClass());
             control = 1;
             break;
         case 2:
@@ -138,21 +139,46 @@ public static void periodic ()
             break;
 
         }
-    if (Hardware.leftDriver.getRawButton(6) && !previousPrepareButton)
-        {
-        Hardware.shooter.prepareToFire();
-        }
-    previousPrepareButton = Hardware.leftDriver.getRawButton(6);
 
-    if (Hardware.leftDriver.getTrigger() && !previousFireButton)
+    if (Hardware.leftDriver.getRawButton(6))
         {
-        fireCount++;
+        preparingToFire = true;
         }
-    previousFireButton = Hardware.leftDriver.getTrigger();
+    if (preparingToFire && Hardware.shooter.prepareToFire())
+        preparingToFire = false;
+    System.out.println("PreparingToFire: " + preparingToFire);
+    if (Hardware.leftDriver.getTrigger() /* && !previousFireButton */)
+        {
+        Hardware.shooter.fire();
+        }
+    // previousFireButton = Hardware.leftDriver.getTrigger();
+    //
+    // if (fireCount > 0)
+    // {
+    // if (Hardware.shooter.fire())
+    // {
+    // fireCount--;
+    // }
+    // }
+    else if (preparingToFire == false)
+        Hardware.shooter.stopFlywheelMotor();
+    System.out.println("Firecount: " + fireCount);
 
-    if (fireCount > 0)
-        if (Hardware.shooter.fire())
-            fireCount--;
+    System.out.println(
+            "Flywheel speed: " + Hardware.shooterMotor.getSpeed());
+
+    if (Hardware.rightDriver.getRawButton(7))
+        {
+        Hardware.shooter.loadBalls();
+        }
+    else if (Hardware.rightDriver.getRawButton(8))
+        {
+        Hardware.shooter.reverseLoader();
+        }
+    else if (fireCount == 0 && preparingToFire == false)
+        ;
+    // Hardware.shooter.stopLoader();
+
 
     // TODO Figure out why the ring light is flickering
     if (Hardware.ringlightSwitch.isOnCheckNow())
@@ -351,6 +377,8 @@ private static boolean previousFireButton = false;
 private static int fireCount = 0;
 
 private static boolean previousPrepareButton = false;
+
+private static boolean preparingToFire = false;
 
 
 
