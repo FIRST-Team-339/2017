@@ -237,9 +237,9 @@ public boolean driveInches (double inches, double speed)
 {
     // Again, we don't know why it's going backwards...
 
-    double deltaX = (this.getLeftFrontEncoderDistance()
+    double deltaLeft = (this.getLeftFrontEncoderDistance()
             + this.getLeftRearEncoderDistance()) / 2;
-    double deltaY = (this.getRightFrontEncoderDistance()
+    double deltaRight = (this.getRightFrontEncoderDistance()
             + this.getRightRearEncoderDistance()) / 2;
 
 
@@ -262,18 +262,18 @@ public boolean driveInches (double inches, double speed)
 
     if (this.transmissionType == TransmissionType.MECANUM)
         this.transmissionMecanum.drive(speed, 0.0, 0.0, 0, 0);
-    if (deltaX > inches + getEncoderSlack())
+    if (deltaLeft > deltaRight + getEncoderSlack())
         this.transmissionFourWheel.drive(speed + getDriveCorrection(),
                 speed);
-    if (deltaX < inches - getEncoderSlack())
-        this.transmissionFourWheel.drive(speed - getDriveCorrection(),
-                speed);
-    if (deltaY > inches + getEncoderSlack())
+    if (deltaLeft < deltaRight - getEncoderSlack())
         this.transmissionFourWheel.drive(speed,
                 speed + getDriveCorrection());
-    if (deltaY < inches - getEncoderSlack())
-        this.transmissionFourWheel.drive(speed,
-                speed - getDriveCorrection());
+    // if (deltaRight > inches + getEncoderSlack())
+    // this.transmissionFourWheel.drive(speed,
+    // speed + getDriveCorrection());
+    // if (deltaRight < inches - getEncoderSlack())
+    // this.transmissionFourWheel.drive(speed,
+    // speed - getDriveCorrection());
     else
         this.transmissionFourWheel.drive(-speed, -speed);
 
