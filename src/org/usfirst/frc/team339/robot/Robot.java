@@ -331,6 +331,9 @@ public void robotInit ()
     // Hardware.cam1.setFPS(Hardware.USB_FPS);
 
     CameraServer.getInstance().addAxisCamera("axis-camera.local");
+    Hardware.camForward.setResolution(640, 480);
+    Hardware.camBackward.setResolution(640, 480);
+
 
     Hardware.axisCamera.writeExposureControl(ExposureControl.kHold);
     Hardware.axisCamera.writeBrightness(12);
