@@ -16,9 +16,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class CANPIDTuner
 {
-private int CANID = 0;// TODO either use or remove
-
 private CANTalon tunedMotorController = null;
+
+private double F;
 
 private double P;
 
@@ -35,37 +35,28 @@ private double errorThresh = 20;
 /**
  * Constructs a PID tuner object for a specific CANTalon motor.
  * 
- * @param canId
- *            Not currently used. There for future potential use.
  * @param talon
  *            The motor we're tuning on. It needs to have some form of rate
  *            sensor attached to it's breakout board.
- * @param smartDashboardAvailable
- *            If the smartdashboard is setup and used. We won't bother updating
- *            it if we have it.
  * @param errorThreshold
  *            The maximum error we find it acceptable to have (always positive,
  *            we use absolute value of the actual error).
  */
-public CANPIDTuner (int canId, CANTalon talon,
-        boolean smartDashboardAvailable, double errorThreshold)// TODO remove
-                                                               // the
-                                                               // smartDashboard
-                                                               // thingy
+public CANPIDTuner (CANTalon talon, double errorThreshold)
 {
     this.tunedMotorController = talon;
-    this.CANID = canId;
     this.P = 0;
     this.I = 0;
     this.D = 0;
     this.setpoint = 0;
-    this.smartDashboard = smartDashboardAvailable;
     this.errorThresh = errorThreshold;
 }
 
 private boolean wasIncorrect = false;
 
 private Timer time = new Timer();
+
+private FeedbackDevice feedbackType;
 
 // TODO reference CTRE doc
 /**
@@ -85,6 +76,7 @@ public void setupMotorController (FeedbackDevice feedbackType,
         TalonControlMode tunetype, int codesPerRev,
         boolean reverseSensor)
 {
+    this.feedbackType = feedbackType;
     this.tunedMotorController
             .setFeedbackDevice(feedbackType);
     this.tunedMotorController.changeControlMode(tunetype);
@@ -108,9 +100,6 @@ public void setupMotorController (FeedbackDevice feedbackType,
  */
 public void setupDashboard ()
 {
-    this.P = 0;
-    this.I = 0;
-    this.D = 0;
     this.setpoint = 0;
     if (this.smartDashboard)
         {
@@ -139,38 +128,54 @@ public void setupDashboard ()
  */
 public void update ()
 {
-    if (this.smartDashboard)
-        {
-        P = SmartDashboard.getNumber("P", 0);
-        I = SmartDashboard.getNumber("I", 0);
-        D = SmartDashboard.getNumber("D", 0);
-        this.setpoint = SmartDashboard.getNumber("Setpoint", 0);
-        SmartDashboard.putNumber("Error",
-                this.setpoint - this.tunedMotorController.getSpeed());
-        SmartDashboard.putNumber("Speed",
-                this.tunedMotorController.getSpeed());
-        }
+    P = SmartDashboard.getNumber("P", this.P);
+    I = SmartDashboard.getNumber("I", this.I);
+    D = SmartDashboard.getNumber("D", this.D);
+    this.setpoint = SmartDashboard.getNumber("Setpoint", this.setpoint);
+    SmartDashboard.putNumber("Error",
+            this.setpoint - this.tunedMotorController.getSpeed());
+    SmartDashboard.putNumber("Speed",
+            this.tunedMotorController.getSpeed());
     this.tunedMotorController.set(this.setpoint);
     this.tunedMotorController.setPID(this.P, this.I, this.D);
+    /*
+     * if the absolute value of the error (/4 if it's some form of quadrature)
+     * is greater than our threshold, tell the RIOlog and time how long it takes
+     * to return.
+     */
     if (Math.abs(
             this.tunedMotorController
-                    .getClosedLoopError()) >= this.errorThresh
-            && wasIncorrect == false)
+                    .getClosedLoopError()
+                    / (this.feedbackType == FeedbackDevice.CtreMagEncoder_Relative
+                            || this.feedbackType == FeedbackDevice.CtreMagEncoder_Absolute
+                            || this.feedbackType == FeedbackDevice.QuadEncoder
+                                    ? 4 : 1)) >= this.errorThresh
+            && this.wasIncorrect == false)// TODO clean up
         {
-        wasIncorrect = true;
-        time.reset();
-        time.start();
+        this.wasIncorrect = true;
+        this.time.reset();
+        this.time.start();
         System.out.println("Error detected, timing...");
         }
     if (Math.abs(
             this.tunedMotorController
                     .getClosedLoopError()) <= this.errorThresh
-            && wasIncorrect == true)
+            && this.wasIncorrect == true)
         {
-        wasIncorrect = false;
-        time.stop();
-        System.out.println("Time to correct error: " + time.get());
+        this.wasIncorrect = false;
+        this.time.stop();
+        System.out.println("Time to correct error: " + this.time.get());
         }
+}
+
+/**
+ * 
+ * @param F
+ *            The Feed-forward value for the FPID loop;
+ */
+public void setF (double F)
+{
+    this.F = F;
 }
 
 /**
@@ -211,12 +216,42 @@ public void setD (double D)
  *            The integral constant for the PID loop.
  * @param D
  *            The derivative constant for the PID loop.
+ * @deprecated by Alex Kneipp. Use setFPID(double, double, double, double)
+ *             instead.
  */
+@Deprecated
 public void setPID (double p, double i, double d)
 {
     this.P = p;
     this.I = i;
     this.D = d;
+}
+
+/**
+ * 
+ * @param f
+ *            The feed-forward constant for the FPID loop.
+ * @param p
+ *            The proportional constant for the FPID loop.
+ * @param i
+ *            The integral constant for the FPID loop.
+ * @param d
+ *            The derivative constant for the FPID loop.
+ */
+public void setFPID (double f, double p, double i, double d)
+{
+    this.setPID(p, i, d);
+    this.F = f;
+}
+
+/**
+ * 
+ * @return
+ *         the feed-forward value of the FPID loop.
+ */
+public double getF ()
+{
+    return this.F;
 }
 
 /**

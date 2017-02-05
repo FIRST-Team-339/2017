@@ -39,5 +39,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/Kilroy/wpilib/user/java/lib/CTRLib.jar"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/CTRLib.jar"/>
+	<classpathentry kind="var" path="USERLIBS_DIR/TalonSRXLibJava.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
