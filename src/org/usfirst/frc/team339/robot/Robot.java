@@ -329,8 +329,6 @@ public void robotInit ()
     // Hardware.cam0.setFPS(Hardware.USB_FPS);
     // Hardware.cam1.setFPS(Hardware.USB_FPS);
 
-    CameraServer.getInstance().startAutomaticCapture(0);
-    CameraServer.getInstance().startAutomaticCapture(1);
     CameraServer.getInstance().addAxisCamera("axis-camera.local");
 
     Hardware.axisCamera.writeExposureControl(ExposureControl.kHold);
