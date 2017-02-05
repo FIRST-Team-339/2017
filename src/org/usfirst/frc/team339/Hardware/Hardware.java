@@ -235,7 +235,7 @@ public static UltraSonic rightUS = new UltraSonic(2);
 // Used by the USB Cameras in robot init to set their FPS's
 public final static int USB_FPS = 15;
 
-public static KilroyCamera axisCamera = new KilroyCamera(false);
+public static KilroyCamera axisCamera = new KilroyCamera(true);
 
 // Used by the Axis Camera in robot init to limit its FPS
 public final static int AXIS_FPS = 15;
