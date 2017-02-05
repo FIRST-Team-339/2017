@@ -268,12 +268,10 @@ public boolean driveInches (double inches, double speed)
     if (deltaLeft < deltaRight - getEncoderSlack())
         this.transmissionFourWheel.drive(speed,
                 speed + getDriveCorrection());
-    // if (deltaRight > inches + getEncoderSlack())
-    // this.transmissionFourWheel.drive(speed,
-    // speed + getDriveCorrection());
-    // if (deltaRight < inches - getEncoderSlack())
-    // this.transmissionFourWheel.drive(speed,
-    // speed - getDriveCorrection());
+    if (deltaRight == deltaRight + getEncoderSlack())
+        this.transmissionFourWheel.drive(speed,
+                speed);
+
     else
         this.transmissionFourWheel.drive(-speed, -speed);
 
