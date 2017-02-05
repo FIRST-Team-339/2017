@@ -699,7 +699,8 @@ public double getZDistanceToGearTarget (ParticleReport leftTarget,
  * @param target2
  *            The other target for the gear peg
  * @param compareValue
- *            Where we want the center of the two targets to be
+ *            Where we want the center of the two targets to be (in RELATIVE
+ *            coordinates)
  * @return the number of pixels the center of the two targets are away
  *         from where we want it
  */

@@ -80,6 +80,7 @@ public static void init ()
     // Hardware.tankDrive.setGear(1);
     // Hardware.leftUS.setScalingFactor(.13);
     // Hardware.leftUS.setOffsetDistanceFromNearestBummper(0);
+    // Sets the scaling factor and general ultrasonic stuff
     Hardware.rightUS.setScalingFactor(.13);
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
