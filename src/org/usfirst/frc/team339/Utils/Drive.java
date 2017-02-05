@@ -233,12 +233,43 @@ public boolean driveInches (double inches, double speed)
 {
     // Again, we don't know why it's going backwards...
 
+    if (firstTimeDriveInches)
+        {
+        this.resetEncoders();
+        firstTimeDriveInches = false;
+        }
+
+    if (Math.abs(this.getAveragedEncoderValues()) >= Math.abs(inches))
+        {
+        this.drive(0.0, 0.0);
+        firstTimeDriveInches = true;
+        return true;
+        }
+
+    this.drive(speed, 0.0);
+
+    return false;
+
+}
+
+private boolean firstTimeDriveInches = true;
+
+
+/**
+ * @param inches
+ *            How far we want to go
+ * @param speed
+ *            How fast we want to go
+ * @return Whether or not we have finished driving yet
+ */
+public boolean driveStraightInches (double inches, double speed)
+{
+    // Again, we don't know why it's going backwards...
+
     double deltaLeft = (this.getLeftFrontEncoderDistance()
             + this.getLeftRearEncoderDistance()) / 2;
     double deltaRight = (this.getRightFrontEncoderDistance()
             + this.getRightRearEncoderDistance()) / 2;
-
-
 
 
     if (firstTimeDriveInches)
@@ -248,7 +279,7 @@ public boolean driveInches (double inches, double speed)
         }
 
     if (this.transmissionType == TransmissionType.MECANUM)
-        this.transmissionMecanum.drive(speed, 0.0, 0.0);
+        this.drive(speed, 0.0);
     if (deltaLeft > deltaRight + getEncoderSlack())
         this.transmissionFourWheel.drive(speed + getDriveCorrection(),
                 speed);
@@ -260,28 +291,21 @@ public boolean driveInches (double inches, double speed)
     if (deltaRight <= deltaLeft + getEncoderSlack())
         tValue = true;
     if (bValue == true && tValue == true)
-        this.transmissionFourWheel.drive(speed,
-                speed);
-    else
-        this.transmissionFourWheel.drive(-speed, -speed);
+        this.drive(speed, speed);
+
     if (Math.abs(this.getAveragedEncoderValues()) >= Math.abs(inches))
         {
-        if (this.transmissionType == TransmissionType.MECANUM)
-            this.transmissionMecanum.drive(0.0, 0.0, 0.0, 0, 0);
-        else
-            this.transmissionFourWheel.drive(0.0, 0.0);
+        this.drive(0.0, 0.0);
         firstTimeDriveInches = true;
         return true;
         }
+
     return false;
 
 }
 
-private boolean firstTimeDriveInches = true;
 private boolean bValue = false;
 private boolean tValue = false;
-
-
 
 /**
  * Aligns to the low dual targets for the gear peg. This finds the
@@ -304,36 +328,36 @@ public AlignReturnType alignToGear (double relativeCenter,
         double movementSpeed,
         double deadband)
 {
-                {
-                this.imageProcessor.processImage();
+        {
+        this.imageProcessor.processImage();
         if (this.imageProcessor.getNthSizeBlob(1) == null)
-                    {
+            {
             this.drive(0.0, 0.0);
             return AlignReturnType.NO_BLOBS;
             }
-                    double distanceToCenter = imageProcessor
-                            .getPositionOfRobotToGear(
-                                    imageProcessor
-                                            .getNthSizeBlob(0),
-                                    imageProcessor
-                                            .getNthSizeBlob(1),
-                                    relativeCenter);
+        double distanceToCenter = imageProcessor
+                .getPositionOfRobotToGear(
+                        imageProcessor
+                                .getNthSizeBlob(0),
+                        imageProcessor
+                                .getNthSizeBlob(1),
+                        relativeCenter);
 
-                    if (distanceToCenter == Double.MAX_VALUE)
-                        {
+        if (distanceToCenter == Double.MAX_VALUE)
+            {
             this.drive(0.0, 0.0);
-                        return AlignReturnType.NO_BLOBS;
-                        }
-                    if (Math.abs(distanceToCenter) <= deadband)
-                        {
+            return AlignReturnType.NO_BLOBS;
+            }
+        if (Math.abs(distanceToCenter) <= deadband)
+            {
             this.drive(0.0, 0.0);
-                        return AlignReturnType.ALIGNED;
-                        }
+            return AlignReturnType.ALIGNED;
+            }
         else if (distanceToCenter > 0)
             this.drive(0, movementSpeed);
         else if (distanceToCenter < 0)
             this.drive(0.0, -movementSpeed);
-                    }
+        }
 
     return AlignReturnType.MISALIGNED;
 }
@@ -418,7 +442,7 @@ public AlignReturnType strafeToGear (double driveSpeed,
         this.purgingUltrasonic = true;
         this.firstStrafe = true;
         this.drive(0.0, 0.0);
-            return AlignReturnType.CLOSE_ENOUGH;
+        return AlignReturnType.CLOSE_ENOUGH;
         }
 
 
@@ -495,7 +519,7 @@ public static enum AlignReturnType
 public void drive (double speed, double correction, double rotation)
 {
     switch (this.transmissionType)
-{
+        {
         case MECANUM:
             this.transmissionMecanum.drive(speed, correction, rotation);
             break;
