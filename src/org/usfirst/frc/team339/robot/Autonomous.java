@@ -182,7 +182,7 @@ public static void periodic ()
 
         case INIT:
             // get the auto program we want to run, get delay pot.
-            delayTime = Hardware.delayPot.get() * (5 / 270);
+            delayTime = 0;// Hardware.delayPot.get() * (5 / 270);
             if (Hardware.driverStation.getAlliance() == Alliance.Red)
                 isRedAlliance = true;
             autoPath = AutoProgram.CENTER_GEAR_PLACEMENT;
@@ -204,6 +204,9 @@ public static void periodic ()
             Hardware.leftFrontMotor.set(0);
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
+
+            Hardware.ringlightRelay.set(Value.kOff);
+
             break;
         }
 
@@ -330,7 +333,8 @@ private static boolean placeCenterGearPath ()
             if (Hardware.rightUS
                     .getDistanceFromNearestBumper() <= ALIGN_DISTANCE_FROM_GOAL)
                 // desired distance from wall when we start
-                currentState = MainState.WAIT_FOR_GEAR_EXODUS;
+                Hardware.autoDrive.drive(.4, 0);
+            currentState = MainState.WAIT_FOR_GEAR_EXODUS;
             break;
         case WAIT_FOR_GEAR_EXODUS:
             if (Hardware.gearLimitSwitch.isOn() == false)
