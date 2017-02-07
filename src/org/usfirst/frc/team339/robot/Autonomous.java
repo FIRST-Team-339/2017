@@ -141,7 +141,7 @@ private static Drive.AlignReturnType cameraState = Drive.AlignReturnType.NO_BLOB
 
 private static final double ALIGN_CORRECT_SPEED = .2;
 
-private static final double ALIGN_DRIVE_SPEED = .4;
+private static final double ALIGN_DRIVE_SPEED = .3;
 
 private static final double ALIGN_DEADBAND = 10 // +/- pixels
         / Hardware.axisCamera.getHorizontalResolution();
@@ -204,6 +204,9 @@ public static void periodic ()
             Hardware.leftFrontMotor.set(0);
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
+
+            Hardware.ringlightRelay.set(Value.kOff);
+
             break;
         }
 
@@ -329,8 +332,12 @@ private static boolean placeCenterGearPath ()
             Hardware.ringlightRelay.set(Value.kOff);
             if (Hardware.rightUS
                     .getDistanceFromNearestBumper() <= ALIGN_DISTANCE_FROM_GOAL)
+                Hardware.autoDrive.drive(.5, 0);
+            else
+                {
                 // desired distance from wall when we start
                 currentState = MainState.WAIT_FOR_GEAR_EXODUS;
+                }
             break;
         case WAIT_FOR_GEAR_EXODUS:
             if (Hardware.gearLimitSwitch.isOn() == false)
