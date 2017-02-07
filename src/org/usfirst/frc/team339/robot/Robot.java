@@ -336,7 +336,7 @@ public void robotInit ()
 
 
     Hardware.axisCamera.writeExposureControl(ExposureControl.kHold);
-    Hardware.axisCamera.writeBrightness(12);
+    Hardware.axisCamera.writeBrightness(1);
     Hardware.axisCamera.writeColorLevel(79);
     Hardware.axisCamera.writeResolution(Resolution.k320x240);
     Hardware.axisCamera

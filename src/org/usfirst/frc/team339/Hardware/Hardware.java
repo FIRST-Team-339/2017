@@ -243,7 +243,7 @@ public static KilroyCamera axisCamera = new KilroyCamera(true);
 public final static int AXIS_FPS = 15;
 
 public static VisionScript visionScript = new VisionScript(
-        new HSLColorThresholdOperator(55, 147, 14, 255, 78, 255),
+        new HSLColorThresholdOperator(98, 152, 202, 255, 115, 234),
         new RemoveSmallObjectsOperator(1, true),
         new ConvexHullOperator(false));
 

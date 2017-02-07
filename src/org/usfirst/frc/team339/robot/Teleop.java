@@ -462,6 +462,8 @@ public static void printStatements ()
     // System.out.println("RightUS = "
     // + Hardware.rightUS.getDistanceFromNearestBumper());
 
+    System.out.println("Delay Pot: " + Hardware.delayPot.get());
+
 
     // ---------------------------------
     // pots
