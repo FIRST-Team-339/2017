@@ -342,6 +342,7 @@ private static boolean placeCenterGearPath ()
         case WAIT_FOR_GEAR_EXODUS:
             if (Hardware.gearLimitSwitch.isOn() == false)
                 {
+                Hardware.autoDrive.drive(0.0, 0.0);
                 currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
                 Hardware.autoStateTimer.reset();
                 Hardware.autoStateTimer.start();
