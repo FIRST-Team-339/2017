@@ -105,8 +105,8 @@ public static void init ()
     isStrafingToTarget = false;
     isDrivingInches = false;
     isTurning = false;
-    Hardware.autoDrive.setDriveCorrection(.05);
-    Hardware.autoDrive.setEncoderSlack(3); // TODO
+    Hardware.autoDrive.setDriveCorrection(.3);
+    Hardware.autoDrive.setEncoderSlack(1); // TODO
 
 } // end Init
 
@@ -232,8 +232,15 @@ public static void periodic ()
 
     if (isDrivingInches)
         {
-        Hardware.autoDrive.driveInches(12, .4);
+        if (Hardware.autoDrive.driveStraightInches(108, .3) == true)
+            {
+            Hardware.autoDrive.driveStraightInches(0, 0);
+            isDrivingInches = false;
+            }
         }
+
+
+
 
 
     // =================================================================

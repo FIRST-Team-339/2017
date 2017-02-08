@@ -245,11 +245,9 @@ public boolean driveInches (double inches, double speed)
         firstTimeDriveInches = true;
         return true;
         }
-
     this.drive(speed, 0.0);
 
     return false;
-
 }
 
 private boolean firstTimeDriveInches = true;
@@ -261,16 +259,16 @@ private boolean firstTimeDriveInches = true;
  * @param speed
  *            How fast we want to go
  * @return Whether or not we have finished driving yet
+ * 
  */
 public boolean driveStraightInches (double inches, double speed)
 {
     // Again, we don't know why it's going backwards...
 
-    double deltaLeft = (this.getLeftFrontEncoderDistance()
+    double averageLeft = (this.getLeftFrontEncoderDistance()
             + this.getLeftRearEncoderDistance()) / 2;
-    double deltaRight = (this.getRightFrontEncoderDistance()
+    double averageRight = (this.getRightFrontEncoderDistance()
             + this.getRightRearEncoderDistance()) / 2;
-
 
     if (firstTimeDriveInches)
         {
@@ -278,21 +276,22 @@ public boolean driveStraightInches (double inches, double speed)
         firstTimeDriveInches = false;
         }
 
-    if (this.transmissionType == TransmissionType.MECANUM)
-        this.drive(speed, 0.0);
-    if (deltaLeft > deltaRight + getEncoderSlack())
-        this.transmissionFourWheel.drive(speed + getDriveCorrection(),
-                speed);
-    if (deltaLeft < deltaRight - getEncoderSlack())
-        this.transmissionFourWheel.drive(speed,
-                speed + getDriveCorrection());
-    if (deltaRight >= deltaLeft - getEncoderSlack())
-        bValue = true;
-    if (deltaRight <= deltaLeft + getEncoderSlack())
-        tValue = true;
-    if (bValue == true && tValue == true)
-        this.drive(speed, speed);
-
+    // if (this.transmissionType == TransmissionType.MECANUM)
+    // this.drive(speed, 0.0);
+    if (averageRight >= averageLeft + getEncoderSlack())
+        bottomValue = true;
+    if (averageRight <= averageLeft - getEncoderSlack())//
+        topValue = true;
+    if (bottomValue == true && topValue == true)
+        this.drive(-speed, -speed);
+    if (averageLeft > averageRight - getEncoderSlack())//
+        this.transmissionFourWheel.drive(
+                -speed - getDriveCorrection(),
+                -speed); // negate this because how drive takes into account of
+                         // negative joystick
+    if (averageLeft < averageRight + getEncoderSlack())//
+        this.transmissionFourWheel.drive(-speed,
+                -speed - getDriveCorrection());
     if (Math.abs(this.getAveragedEncoderValues()) >= Math.abs(inches))
         {
         this.drive(0.0, 0.0);
@@ -302,10 +301,11 @@ public boolean driveStraightInches (double inches, double speed)
 
     return false;
 
+
 }
 
-private boolean bValue = false;
-private boolean tValue = false;
+private boolean bottomValue = false;
+private boolean topValue = false;
 
 /**
  * Aligns to the low dual targets for the gear peg. This finds the
