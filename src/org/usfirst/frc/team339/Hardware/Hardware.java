@@ -23,6 +23,7 @@ import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
+import org.usfirst.frc.team339.Utils.BallIntake;
 import org.usfirst.frc.team339.Utils.ChangeBoolValue;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Shooter;
@@ -39,6 +40,7 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.MotorSafetyHelper;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
@@ -111,7 +113,10 @@ public static CANTalon shooterMotor = new CANTalon(1);
 // ------------------------------------
 public static Victor elevatorMotor = new Victor(0);// PWM 0
 
-public static Victor gimbalMotor = new Victor(9);
+public static Victor intakeMotor = new Victor(5);
+
+public static Spark gimbalMotor = new Spark(6);
+
 // ====================================
 // CAN classes
 // ====================================
@@ -352,6 +357,8 @@ public static boolean twoJoystickControl = false;
 public static Shooter shooter = new Shooter(shooterMotor,
         ballLoaderSensor, elevatorMotor, 25, imageProcessor, gimbalPot,
         3, gimbalMotor);
+
+public static BallIntake intake = new BallIntake(intakeMotor);
 
 // ------------------------------------
 // Utility classes
