@@ -81,6 +81,7 @@ public static void init ()
     // Hardware.tankDrive.setGear(1);
     // Hardware.leftUS.setScalingFactor(.13);
     // Hardware.leftUS.setOffsetDistanceFromNearestBummper(0);
+    // Sets the scaling factor and general ultrasonic stuff
     Hardware.rightUS.setScalingFactor(.13);
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
@@ -89,7 +90,7 @@ public static void init ()
     // Hardware.RightUS.setConfidenceCalculationsOn(false);
 
     // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
-    boolean testchoosers = true;
+    // boolean testchoosers = true;
 
     // SendableChooser sendablechoosetest;
     // sendablechoosetest = new SendableChooser();
@@ -131,7 +132,7 @@ public static void periodic ()
         {
         case 1:
 
-            System.out.println(Hardware.changeBool.getClass());
+            // System.out.println(Hardware.changeBool.getClass());
             control = 1;
             break;
         case 2:
@@ -139,21 +140,46 @@ public static void periodic ()
             break;
 
         }
-    if (Hardware.leftDriver.getRawButton(6) && !previousPrepareButton)
-        {
-        Hardware.shooter.prepareToFire();
-        }
-    previousPrepareButton = Hardware.leftDriver.getRawButton(6);
 
-    if (Hardware.leftDriver.getTrigger() && !previousFireButton)
+    if (Hardware.leftDriver.getRawButton(6))
         {
-        fireCount++;
+        preparingToFire = true;
         }
-    previousFireButton = Hardware.leftDriver.getTrigger();
+    if (preparingToFire && Hardware.shooter.prepareToFire())
+        preparingToFire = false;
+    System.out.println("PreparingToFire: " + preparingToFire);
+    if (Hardware.leftDriver.getTrigger() /* && !previousFireButton */)
+        {
+        Hardware.shooter.fire();
+        }
+    // previousFireButton = Hardware.leftDriver.getTrigger();
+    //
+    // if (fireCount > 0)
+    // {
+    // if (Hardware.shooter.fire())
+    // {
+    // fireCount--;
+    // }
+    // }
+    else if (preparingToFire == false)
+        Hardware.shooter.stopFlywheelMotor();
+    System.out.println("Firecount: " + fireCount);
 
-    if (fireCount > 0)
-        if (Hardware.shooter.fire())
-            fireCount--;
+    System.out.println(
+            "Flywheel speed: " + Hardware.shooterMotor.getSpeed());
+
+    if (Hardware.rightDriver.getRawButton(7))
+        {
+        Hardware.shooter.loadBalls();
+        }
+    else if (Hardware.rightDriver.getRawButton(8))
+        {
+        Hardware.shooter.reverseLoader();
+        }
+    else if (fireCount == 0 && preparingToFire == false)
+        ;
+    // Hardware.shooter.stopLoader();
+
 
     // TODO Figure out why the ring light is flickering
     if (Hardware.ringlightSwitch.isOnCheckNow())
@@ -358,6 +384,7 @@ private static int fireCount = 0;
 
 private static boolean previousPrepareButton = false;
 
+private static boolean preparingToFire = false;
 
 
 
@@ -440,6 +467,8 @@ public static void printStatements ()
     // if (Hardware.rightOperator.getRawButton(11))
     // System.out.println("RightUS = "
     // + Hardware.rightUS.getDistanceFromNearestBumper());
+
+    System.out.println("Delay Pot: " + Hardware.delayPot.get());
 
 
     // ---------------------------------

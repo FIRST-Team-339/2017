@@ -231,7 +231,6 @@ public double getAveragedEncoderValues ()
  */
 public boolean driveInches (double inches, double speed)
 {
-    // Again, we don't know why it's going backwards...
 
     if (firstTimeDriveInches)
         {
@@ -378,7 +377,8 @@ public AlignReturnType alignToGear (double relativeCenter,
  * @param deadband
  *            If the camera's center is in this deadband, we are 'aligned'.
  * @param relativeCenter
- *            Where we want the center of the robot to be
+ *            Where we want the center of the robot to be (in RELATIVE
+ *            coordinates)
  * @param distanceToTarget
  *            What we want the distance to the wall from the bumper
  *            to be when we stop aligning

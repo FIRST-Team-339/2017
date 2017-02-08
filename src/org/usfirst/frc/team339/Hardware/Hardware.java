@@ -31,6 +31,8 @@ import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
@@ -205,15 +207,13 @@ public static IRSensor ballLoaderSensor = new IRSensor(8);
 // Potentiometers
 // -------------------------------------
 // -------------------------------------
-public static Potentiometer delayPot = new Potentiometer(0, 270);// TODO max
+public static Potentiometer delayPot = new Potentiometer(1, 270);// TODO max
                                                                  // degree value
 
 public static Potentiometer gimbalPot = new Potentiometer(3, 270);
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------
-
-public static UltraSonic leftUS = new UltraSonic(1);
 
 public static UltraSonic rightUS = new UltraSonic(2);
 // **********************************************************
@@ -229,8 +229,12 @@ public static UltraSonic rightUS = new UltraSonic(2);
 
 // Note: If causing problems, replace "USB_Camera_0" w/ "cam0", and
 // "USB_Camera_1" w/ "cam1"
-// public static UsbCamera cam0 = new UsbCamera("USB_Camera_0", 0);
-// public static UsbCamera cam1 = new UsbCamera("USB_Camera_1", 1);
+
+public static UsbCamera camForward = CameraServer.getInstance()
+        .startAutomaticCapture(0);
+
+public static UsbCamera camBackward = CameraServer.getInstance()
+        .startAutomaticCapture(1);
 
 // Used by the USB Cameras in robot init to set their FPS's
 public final static int USB_FPS = 15;
@@ -241,7 +245,7 @@ public static KilroyCamera axisCamera = new KilroyCamera(true);
 public final static int AXIS_FPS = 15;
 
 public static VisionScript visionScript = new VisionScript(
-        new HSLColorThresholdOperator(90, 147, 140, 255, 64, 255),
+        new HSLColorThresholdOperator(98, 152, 202, 255, 115, 234),
         new RemoveSmallObjectsOperator(1, true),
         new ConvexHullOperator(false));
 
@@ -347,7 +351,7 @@ public static boolean twoJoystickControl = false;
 // Assembly classes (e.g. forklift)
 // -------------------
 public static Shooter shooter = new Shooter(shooterMotor,
-        ballLoaderSensor, elevatorMotor, 20, imageProcessor, gimbalPot,
+        ballLoaderSensor, elevatorMotor, 25, imageProcessor, gimbalPot,
         3, gimbalMotor);
 
 // ------------------------------------

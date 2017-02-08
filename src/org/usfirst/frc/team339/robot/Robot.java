@@ -62,6 +62,7 @@ package org.usfirst.frc.team339.robot;
 import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 import org.usfirst.frc.team339.Hardware.Hardware;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.vision.AxisCamera.ExposureControl;
@@ -149,6 +150,7 @@ public void autonomousInit ()
 @Override
 public void autonomousPeriodic ()
 {
+
     // ---------------------------------------
     // start setup - tell the user we are beginning
     // setup
@@ -171,8 +173,11 @@ public void autonomousPeriodic ()
     // feed all motor safeties
     Hardware.leftRearMotorSafety.feed();
     Hardware.rightRearMotorSafety.feed();
+    Hardware.leftFrontMotorSafety.feed();
+    Hardware.rightFrontMotorSafety.feed();
+}
 
-} // end autonomousPeriodic
+// end autonomousPeriodic
 
 // -------------------------------------------------------
 /**
@@ -293,6 +298,7 @@ public void robotInit ()
     Hardware.shooterMotor.configEncoderCodesPerRev(1024);
     Hardware.shooterMotor.setPID(shooterP, shooterI, shooterD);
     Hardware.shooterMotor.setSetpoint(0.0);
+    Hardware.shooterMotor.reverseSensor(true);
     // Hardware.rightFrontMotor.setInverted(true);
 
     if (Hardware.runningInLab == true)
@@ -319,9 +325,13 @@ public void robotInit ()
     // Hardware.cam0.setFPS(Hardware.USB_FPS);
     // Hardware.cam1.setFPS(Hardware.USB_FPS);
 
+    CameraServer.getInstance().addAxisCamera("10.3.39.11");
+    Hardware.camForward.setResolution(640, 480);
+    Hardware.camBackward.setResolution(640, 480);
+
 
     Hardware.axisCamera.writeExposureControl(ExposureControl.kHold);
-    Hardware.axisCamera.writeBrightness(12);
+    Hardware.axisCamera.writeBrightness(1);
     Hardware.axisCamera.writeColorLevel(79);
     Hardware.axisCamera.writeResolution(Resolution.k320x240);
     Hardware.axisCamera
@@ -340,6 +350,10 @@ public void robotInit ()
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
 
+    // Sets the scaling factor and general ultrasonic stuff
+    Hardware.rightUS.setScalingFactor(.13);
+    Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
+    Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
 
     // =========================================================
     // User code goes above here
@@ -477,7 +491,7 @@ public static final double FIRST_GEAR = .7;
  */
 public static final double SECOND_GEAR = 1;
 
-public static double shooterP = .1;
+public static double shooterP = .07;
 
 public static double shooterI = .00048;
 
