@@ -167,16 +167,28 @@ private boolean readyToFire = false;
  */
 public boolean prepareToFire ()
 {
-    this.flywheelController.setSetpoint(-1725);// TODO read distance/lookup
-                                               // table/whatever.
-    this.loadBalls();
-    if (Math.abs(
-            this.flywheelController.getError()
-                    / 4.0) > this.acceptableError)
+    double dist = this.visionTargeter.getZDistanceToFuelTarget(
+            this.visionTargeter.getLargestBlob(), this.visionTargeter
+                    .getNthSizeBlob(1)); /*
+                                          * I hope to god these blobs appear to
+                                          * the correct order
+                                          */
+    if (dist > 0)
         {
-        // this.stopLoader();
-        return false;
+        this.flywheelController
+                .setSetpoint(-2 * this.calculateRPMToMakeGoal(dist));
+        // multiplied by 2 for gear ratio.
+        this.loadBalls();
+        if (Math.abs(
+                this.flywheelController.getError()
+                        / 4.0) > this.acceptableError)
+            {
+            // this.stopLoader();
+            return false;
+            }
         }
+    else
+        return false;
     // if (this.elevatorSensor.isOn())
     // {
     // this.stopLoader();
@@ -393,6 +405,37 @@ public static enum turnToGoalReturn
     }
 
 /**
+ * Uses physics to figure out how fast we need to spin the flywheel. Uses the
+ * constant FLYWHEEL_SPEED_CORRECTION_CONSTANT to account for friction, air
+ * resistance, and calculation imprecision. Change if you're shooting too far or
+ * too close. Increase to increase shooting distance, decrese to decrease.
+ * 
+ * @param distance
+ *            The distance, in feet, the shooter is away from the goal across
+ *            the floor.
+ * @return
+ *         the RPM to run the flywheel wheel at.
+ */
+public double calculateRPMToMakeGoal (double distance)
+{
+    double distanceMeters = distance * 3.28084;// Convert the distance parameter
+                                               // meters, for easier
+                                               // computations.
+
+    return (60.0 / (2 * Math.PI) * (Math.sqrt(((4.9
+            * (Math.pow(distanceMeters, 2)))
+            / ((this.FLYWHEEL_RADIUS_METERS
+                    * this.FLYWHEEL_RADIUS_METERS)
+                    * (Math.pow(
+                            Math.cos(Math.toRadians(this.MOUNT_ANGLE)),
+                            2))
+                    * (distanceMeters
+                            * Math.tan(Math.toRadians(this.MOUNT_ANGLE))
+                            - this.RELATIVE_GOAL_HEIGHT_METERS))))))
+            + this.FLYWHEEL_SPEED_CORRECTION_CONSTANT;
+}
+
+/**
  * @return
  *         The bearing of the shooter relative to the robot, with negative
  *         degrees to the left and positive to the right. Returns a range from
@@ -416,4 +459,12 @@ private final double ELEVATOR_SPEED = 1;// TODO tune
 private final double MAX_GIMBALING_ANGLE = 135;
 
 private final double MIN_GIMBALING_ANGLE = -135;
+
+private final double MOUNT_ANGLE = 80;// TODO figure out the actual number.
+
+private final double RELATIVE_GOAL_HEIGHT_METERS = 1.93;
+
+private final double FLYWHEEL_RADIUS_METERS = 0.0508;
+
+private final double FLYWHEEL_SPEED_CORRECTION_CONSTANT = 200;// TODO tune
 }
