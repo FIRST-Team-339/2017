@@ -237,7 +237,7 @@ public static void periodic ()
         {
         turnDegrees = 90;
         isTurning = true;
-        // Hardware.driveGyro.reset();TODO
+        Hardware.driveGyro.reset();
         }
 
     if (isTurning)
@@ -377,8 +377,6 @@ private static boolean hasPressedFive = false;
 private static boolean previousFireButton = false;
 
 private static int fireCount = 0;
-
-private static boolean previousPrepareButton = false;
 
 private static boolean preparingToFire = false;
 

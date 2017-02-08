@@ -33,6 +33,7 @@ import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
 import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
@@ -105,6 +106,7 @@ public static TalonSRX leftRearMotor = new TalonSRX(3);
 public static TalonSRX leftFrontMotor = new TalonSRX(1);// 4);
 
 public static CANTalon shooterMotor = new CANTalon(1);
+
 // ------------------------------------
 // Victor classes
 // ------------------------------------
@@ -208,7 +210,7 @@ public static IRSensor ballLoaderSensor = new IRSensor(8);
 // ------------------------------------
 // Gyro class
 // ------------------------------------
-// public static ADXRS450_Gyro driveGyro = new ADXRS450_Gyro();
+public static ADXRS450_Gyro driveGyro = new ADXRS450_Gyro();
 
 // -------------------------------------
 // Potentiometers

@@ -502,8 +502,8 @@ private static void initializeDriveProgram ()
 {
     Hardware.autoStateTimer.stop();
     Hardware.autoStateTimer.reset();
-    // Hardware.driveGyro.calibrate();
-    // Hardware.driveGyro.reset();//TODO
+    Hardware.driveGyro.calibrate();
+    Hardware.driveGyro.reset();// TODO
     Hardware.autoDrive.resetEncoders();
     Hardware.mecanumDrive.drive(0, 0, 0);
 }
