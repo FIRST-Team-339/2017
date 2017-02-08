@@ -139,17 +139,13 @@ public static void periodic ()
 
         }
 
-    if (Hardware.leftDriver.getRawButton(6))
+    if (Hardware.leftDriver.getTrigger() && !previousFireButton)
         {
-        preparingToFire = true;
+        firing = !firing;
         }
-    if (preparingToFire && Hardware.shooter.prepareToFire())
-        preparingToFire = false;
-    System.out.println("PreparingToFire: " + preparingToFire);
-    if (Hardware.leftDriver.getTrigger() /* && !previousFireButton */)
-        {
+    if (firing)
         Hardware.shooter.fire();
-        }
+
     // previousFireButton = Hardware.leftDriver.getTrigger();
     //
     // if (fireCount > 0)
@@ -378,6 +374,8 @@ private static int fireCount = 0;
 private static boolean previousPrepareButton = false;
 
 private static boolean preparingToFire = false;
+
+private static boolean firing = false;
 
 
 
