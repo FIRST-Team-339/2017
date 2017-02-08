@@ -238,6 +238,10 @@ private static boolean placeCenterGearPath ()
             currentState = MainState.DELAY_BEFORE_START;
             break;
         case DELAY_BEFORE_START:
+            Hardware.leftRearMotor.set(0);
+            Hardware.leftFrontMotor.set(0);
+            Hardware.rightRearMotor.set(0);
+            Hardware.rightFrontMotor.set(0);
             // wait for timer to run out
             if (Hardware.autoStateTimer.get() >= delayTime)
                 {
@@ -349,6 +353,10 @@ private static boolean placeCenterGearPath ()
                 }
             break;
         case DELAY_AFTER_GEAR_EXODUS:
+            Hardware.leftRearMotor.set(0);
+            Hardware.leftFrontMotor.set(0);
+            Hardware.rightRearMotor.set(0);
+            Hardware.rightFrontMotor.set(0);
             if (Hardware.autoStateTimer.get() >= 1.5)
                 {
                 Hardware.autoDrive.resetEncoders();
@@ -372,11 +380,19 @@ private static boolean rightSidePath ()
     switch (currentState)
         {
         case INIT:
+            Hardware.leftRearMotor.set(0);
+            Hardware.leftFrontMotor.set(0);
+            Hardware.rightRearMotor.set(0);
+            Hardware.rightFrontMotor.set(0);
             Hardware.autoStateTimer.reset();
             Hardware.autoStateTimer.start();
             currentState = MainState.DELAY_BEFORE_START;
             break;
         case DELAY_BEFORE_START:
+            Hardware.leftRearMotor.set(0);
+            Hardware.leftFrontMotor.set(0);
+            Hardware.rightRearMotor.set(0);
+            Hardware.rightFrontMotor.set(0);
             if (Hardware.autoStateTimer.get() > delayTime)
                 currentState = MainState.DRIVE_FORWARD_TO_SIDES_SLOW;
             break;
@@ -411,6 +427,10 @@ private static boolean rightSidePath ()
             currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
             break;
         case DELAY_AFTER_GEAR_EXODUS:
+            Hardware.leftRearMotor.set(0);
+            Hardware.leftFrontMotor.set(0);
+            Hardware.rightRearMotor.set(0);
+            Hardware.rightFrontMotor.set(0);
             currentState = MainState.DRIVE_AWAY_FROM_PEG;
             break;
         case DRIVE_AWAY_FROM_PEG:

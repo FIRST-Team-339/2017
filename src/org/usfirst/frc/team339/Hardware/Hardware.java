@@ -71,8 +71,6 @@ public static boolean runningInLab = false;
 // Private Constants
 // -------------------------------------
 
-
-
 // ---------------------------------------
 // Hardware Tunables
 // ---------------------------------------
@@ -107,7 +105,6 @@ public static TalonSRX leftRearMotor = new TalonSRX(3);
 public static TalonSRX leftFrontMotor = new TalonSRX(1);// 4);
 
 public static CANTalon shooterMotor = new CANTalon(1);
-
 // ------------------------------------
 // Victor classes
 // ------------------------------------
@@ -120,7 +117,6 @@ public static Spark gimbalMotor = new Spark(6);
 // ====================================
 // CAN classes
 // ====================================
-
 public static PowerDistributionPanel pdp = new PowerDistributionPanel(
         0);
 // ====================================
@@ -227,13 +223,19 @@ public static Potentiometer gimbalPot = new Potentiometer(3, 270);
 // -------------------------------------
 
 public static UltraSonic rightUS = new UltraSonic(2);
-
 // **********************************************************
 // roboRIO CONNECTIONS CLASSES
 // **********************************************************
 // -------------------------------------
 // Axis/USB Camera class
 // -------------------------------------
+
+// If you are not getting the camera dropdowns on the driver station, make this
+// ture, send, then make
+// make it false and send again.
+
+// Note: If causing problems, replace "USB_Camera_0" w/ "cam0", and
+// "USB_Camera_1" w/ "cam1"
 
 public static UsbCamera camForward = CameraServer.getInstance()
         .startAutomaticCapture(0);
@@ -260,7 +262,6 @@ public static ImageProcessor imageProcessor = new ImageProcessor(
 // declare the USB camera server and the
 // USB camera it serves
 // -------------------------------------
-
 
 // **********************************************************
 // DRIVER STATION CLASSES
@@ -373,7 +374,6 @@ public static final Timer kilroyTimer = new Timer();
 
 public static final Timer autoStateTimer = new Timer();
 
-
 /**
  * Default motor safety
  * 
@@ -381,6 +381,7 @@ public static final Timer autoStateTimer = new Timer();
  */
 public static final MotorSafetyHelper leftRearMotorSafety = new MotorSafetyHelper(
         leftRearMotor);
+
 
 /**
  * Default motor safety

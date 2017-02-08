@@ -92,8 +92,6 @@ boolean testdasboard = true;
 // =================================================
 
 // -------------------------------------------------------
-
-
 /**
  * Initialization code for autonomous mode should go here. Will be called
  * once when the robot enters autonomous mode.
@@ -102,7 +100,6 @@ boolean testdasboard = true;
  * @written Jan 2, 2011
  *          -------------------------------------------------------
  */
-
 @Override
 public void autonomousInit ()
 {
@@ -191,7 +188,7 @@ public void autonomousPeriodic ()
  * @written Jan 2, 2011
  *          -------------------------------------------------------
  */
-// @Override
+@Override
 public void disabledInit ()
 {
     // ---------------------------------------
@@ -276,11 +273,9 @@ public void robotInit ()
     // Hardware.leftRearMotor.setInverted(true);
     Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-
     // -------------------------------------
     // motor initialization
     // -------------------------------------
-
     Hardware.leftRearMotorSafety.setSafetyEnabled(true);
     Hardware.rightRearMotorSafety.setSafetyEnabled(true);
     Hardware.leftFrontMotorSafety.setSafetyEnabled(true);
@@ -319,14 +314,14 @@ public void robotInit ()
 
     // Sends video from both USB Cameras to the Smart Dashboard
     // -last edited on 28 Jan 2017 by Cole Ramos
-    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
-    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
-    // CameraServer.getInstance().addAxisCamera("10.3.39.11");
+
     // CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
     // CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
     // Sets the [max?] FPS's for the USB Cameras. The FPS will generally
     // vary between -1 and +1 this amount.
     // -last edited on 28 Jan 2017 by Cole Ramos
+    // Hardware.cam0.setFPS(Hardware.USB_FPS);
+    // Hardware.cam1.setFPS(Hardware.USB_FPS);
     // Hardware.cam0.setFPS(Hardware.USB_FPS);
     // Hardware.cam1.setFPS(Hardware.USB_FPS);
 
@@ -348,7 +343,6 @@ public void robotInit ()
     // firmware/ web browser
     // of the Axis Camera. If the FPS is not set in the code, the firmware
     // will default to unlimited.
-
     // TODO Fix this. It isn't actually changing the FPS on the Driver's Station
     // but it is changing the website/ firmware
     // Hardware.axisCamera.writeMaxFPS(Hardware.AXIS_FPS);
@@ -485,6 +479,7 @@ public void testPeriodic ()
 // ==========================================
 // TUNEABLES
 // ==========================================
+
 
 /**
  * The percentage we want the motors to run at while we are in first gear

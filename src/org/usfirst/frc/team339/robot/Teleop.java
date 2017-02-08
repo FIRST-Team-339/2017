@@ -71,6 +71,7 @@ public static void init ()
     Hardware.rightFrontMotor.set(0.0);
     Hardware.leftFrontMotor.set(0.0);
 
+
     // Hardware.rightFrontMotor.setInverted(true); // TODO takeout
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
@@ -86,9 +87,9 @@ public static void init ()
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
     // Hardware.leftUS.setNumberOfItemsToCheckBackwardForValidity(1);
     // Hardware.LeftUS.setConfidenceCalculationsOn(false);
-    // Hardware.rightUS.setConfidenceCalculationsOn(false);
-    // Hardware.tankDrive.setRightJoystickReversed(true);
+    // Hardware.RightUS.setConfidenceCalculationsOn(false);
 
+    // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
     // boolean testchoosers = true;
 
     // SendableChooser sendablechoosetest;
@@ -105,10 +106,10 @@ public static void init ()
     isStrafingToTarget = false;
     isDrivingInches = false;
     isTurning = false;
+    Hardware.autoDrive.setDriveCorrection(.3);
+    Hardware.autoDrive.setEncoderSlack(1); // TODO
 
 } // end Init
-
-
 
 /**
  * User Periodic code for teleop mode should go here. Will be called
@@ -125,6 +126,7 @@ public static void periodic ()
     testbool.addDefault("true", Hardware.changeBool.equals(true));
     testbool.addObject(" false", Hardware.changeBool.equals(false));
     int control = 1;
+
     SmartDashboard.putData("testbool", testbool);
     switch (control)
         {
@@ -199,7 +201,6 @@ public static void periodic ()
     else
         {
         rotationValue = 0.0;
-
         }
 
     // if (!isAligning)
@@ -245,7 +246,7 @@ public static void periodic ()
         }
 
 
-    // Testing driveInches
+    // Testing driveInches TODO
     if (Hardware.rightDriver.getRawButton(2))
         {
         isDrivingInches = true;
@@ -253,8 +254,14 @@ public static void periodic ()
 
     if (isDrivingInches)
         {
-        Hardware.autoDrive.driveInches(24, .4);
+        if (Hardware.autoDrive.driveStraightInches(108, .3) == true)
+            {
+            Hardware.autoDrive.driveStraightInches(0, 0);
+            isDrivingInches = false;
+            }
         }
+
+
 
 
 
@@ -376,7 +383,6 @@ private static boolean previousPrepareButton = false;
 private static boolean preparingToFire = false;
 
 private static boolean firing = false;
-
 
 
 
@@ -527,7 +533,6 @@ public static void printStatements ()
  * ===============================================
  */
 private final static double CAMERA_ALIGN_SPEED = .5;
-
 
 //// The dead zone for the aligning TODO
 private final static double CAMERA_ALIGN_DEADBAND = 10.0 // +/- Pixels

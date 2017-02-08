@@ -40,6 +40,10 @@ private UltraSonic rightUlt = null;
 
 private Timer timer = new Timer();
 
+public double correction = 0.0;
+
+public double encoderSlack = 0.0;
+
 /**
  * Creates an instance of the Drive class, with a mecanum drive system.
  * If this is called, the mecanum versions of each method are used.
@@ -152,6 +156,7 @@ public Drive (TransmissionFourWheel transmissionFourWheel,
     this.initEncoders(leftFrontEncoder, rightFrontEncoder,
             leftRearEncoder, rightRearEncoder);
     this.rightUlt = rightUlt;
+
     isUsingUltrasonics = true;
 }
 
@@ -182,6 +187,23 @@ public void initEncoders (Encoder _leftFrontEncoder,
 
     this.setEncoderDistancePerPulse(DEFAULT_DISTANCE_PER_PULSE);
 }
+
+// public double encoderRate (Encoder _leftFrontEncoder,
+// Encoder _rightFrontEncoder, Encoder _leftRearEncoder,
+// Encoder _rightRearEncoder)
+// {
+//
+// return leftFrontRate = this.leftFrontEncoder.getRate();
+// return rightFrontRate = this.rightFrontEncoder.getRate();
+// return leftRearRate = this.leftRearEncoder.getRate();
+// return rightRearRate = this.rightRearEncoder.getRate();
+//
+// }
+//
+// private double leftFrontRate = 0.0;
+// private double rightFrontRate = 0.0;
+// private double leftRearRate = 0.0;
+// private double rightRearRate = 0.0;
 
 /**
  * Gets the averaged distance out of the four encoders
@@ -228,6 +250,61 @@ public boolean driveInches (double inches, double speed)
 }
 
 private boolean firstTimeDriveInches = true;
+
+
+/**
+ * @param inches
+ *            How far we want to go
+ * @param speed
+ *            How fast we want to go
+ * @return Whether or not we have finished driving yet
+ * 
+ */
+public boolean driveStraightInches (double inches, double speed)
+{
+    // Again, we don't know why it's going backwards...
+
+    double averageLeft = (this.getLeftFrontEncoderDistance()
+            + this.getLeftRearEncoderDistance()) / 2;
+    double averageRight = (this.getRightFrontEncoderDistance()
+            + this.getRightRearEncoderDistance()) / 2;
+
+    if (firstTimeDriveInches)
+        {
+        this.resetEncoders();
+        firstTimeDriveInches = false;
+        }
+
+    // if (this.transmissionType == TransmissionType.MECANUM)
+    // this.drive(speed, 0.0);
+    if (averageRight >= averageLeft + getEncoderSlack())
+        bottomValue = true;
+    if (averageRight <= averageLeft - getEncoderSlack())//
+        topValue = true;
+    if (bottomValue == true && topValue == true)
+        this.drive(-speed, -speed);
+    if (averageLeft > averageRight - getEncoderSlack())//
+        this.transmissionFourWheel.drive(
+                -speed - getDriveCorrection(),
+                -speed); // negate this because how drive takes into account of
+                         // negative joystick
+    if (averageLeft < averageRight + getEncoderSlack())//
+        this.transmissionFourWheel.drive(-speed,
+                -speed - getDriveCorrection());
+    if (Math.abs(this.getAveragedEncoderValues()) >= Math.abs(inches))
+        {
+        this.drive(0.0, 0.0);
+        firstTimeDriveInches = true;
+        return true;
+        }
+
+    return false;
+
+
+}
+
+private boolean bottomValue = false;
+private boolean topValue = false;
 
 /**
  * Aligns to the low dual targets for the gear peg. This finds the
@@ -283,6 +360,7 @@ public AlignReturnType alignToGear (double relativeCenter,
 
     return AlignReturnType.MISALIGNED;
 }
+
 
 
 // TODO we need to test this!!
@@ -425,6 +503,11 @@ public static enum AlignReturnType
 
     }
 
+/**
+ * Positive number will make robot strafe right
+ * 
+ * @param inches
+ */
 /**
  * Drives WITH rotation. If we are using tank drive, it only turns based
  * on correction.
@@ -655,6 +738,26 @@ public void setTurningCircleRadius (double radius)
 }
 
 private boolean firstAlign = true;
+
+public void setEncoderSlack (double slack)
+{
+    this.encoderSlack = slack;
+}
+
+public double getEncoderSlack ()
+{
+    return encoderSlack;
+}
+
+public void setDriveCorrection (double correction)
+{
+    this.correction = correction;
+}
+
+public double getDriveCorrection ()
+{
+    return correction;
+}
 
 
 /**
