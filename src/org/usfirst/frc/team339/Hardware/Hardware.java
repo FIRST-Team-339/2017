@@ -129,6 +129,8 @@ public static PowerDistributionPanel pdp = new PowerDistributionPanel(
 
 public static Relay ringlightRelay = new Relay(0);
 
+public static Relay agitatorRelay = new Relay(1);
+
 // ====================================
 // Digital Inputs
 // ====================================
@@ -358,7 +360,8 @@ public static Shooter shooter = new Shooter(shooterMotor,
         ballLoaderSensor, elevatorMotor, 25, imageProcessor, gimbalPot,
         3, gimbalMotor);
 
-public static BallIntake intake = new BallIntake(intakeMotor);
+public static BallIntake intake = new BallIntake(intakeMotor,
+        agitatorRelay);
 
 // ------------------------------------
 // Utility classes
