@@ -254,7 +254,7 @@ public static KilroyCamera axisCamera = new KilroyCamera(true);
 public final static int AXIS_FPS = 15;
 
 public static VisionScript visionScript = new VisionScript(
-        new HSLColorThresholdOperator(98, 152, 202, 255, 115, 234),
+        new HSLColorThresholdOperator(76, 200, 71, 255, 50, 255),
         new RemoveSmallObjectsOperator(1, true),
         new ConvexHullOperator(false));
 

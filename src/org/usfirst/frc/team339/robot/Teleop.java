@@ -159,10 +159,12 @@ public static void periodic ()
     // }
     else if (preparingToFire == false)
         Hardware.shooter.stopFlywheelMotor();
-    System.out.println("Firecount: " + fireCount);
-
-    System.out.println(
-            "Flywheel speed: " + Hardware.shooterMotor.getSpeed());
+    /*
+     * System.out.println("Firecount: " + fireCount);
+     * 
+     * System.out.println(
+     * "Flywheel speed: " + Hardware.shooterMotor.getSpeed());
+     */
 
     if (Hardware.rightDriver.getRawButton(7))
         {
@@ -172,10 +174,6 @@ public static void periodic ()
         {
         Hardware.shooter.reverseLoader();
         }
-    else if (fireCount == 0 && preparingToFire == false)
-        ;
-    // Hardware.shooter.stopLoader();
-
 
     // TODO Figure out why the ring light is flickering
     if (Hardware.ringlightSwitch.isOnCheckNow())
@@ -464,7 +462,7 @@ public static void printStatements ()
     // System.out.println("RightUS = "
     // + Hardware.rightUS.getDistanceFromNearestBumper());
 
-    System.out.println("Delay Pot: " + Hardware.delayPot.get());
+    // System.out.println("Delay Pot: " + Hardware.delayPot.get());
 
 
     // ---------------------------------
@@ -482,8 +480,9 @@ public static void printStatements ()
 
     // System.out.println("Expected center: " + CAMERA_ALIGN_CENTER);
     //
-    // Hardware.imageProcessor.processImage();
-    //
+    Hardware.imageProcessor.processImage();
+    System.out.println("Number of blobs: " + Hardware.imageProcessor
+            .getParticleAnalysisReports().length);
     // if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
     // System.out
     // .println("Actual center: " + ((Hardware.imageProcessor

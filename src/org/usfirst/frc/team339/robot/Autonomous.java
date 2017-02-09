@@ -238,6 +238,7 @@ private static boolean placeCenterGearPath ()
             currentState = MainState.DELAY_BEFORE_START;
             break;
         case DELAY_BEFORE_START:
+            // stop all the motors to feed the watchdog
             Hardware.leftRearMotor.set(0);
             Hardware.leftFrontMotor.set(0);
             Hardware.rightRearMotor.set(0);

@@ -304,6 +304,7 @@ public boolean driveStraightInches (double inches, double speed)
 }
 
 private boolean bottomValue = false;
+
 private boolean topValue = false;
 
 /**
@@ -327,6 +328,7 @@ public AlignReturnType alignToGear (double relativeCenter,
         double movementSpeed,
         double deadband)
 {
+    if (!isTurning)
         {
         this.imageProcessor.processImage();
         if (this.imageProcessor.getNthSizeBlob(1) == null)
@@ -352,14 +354,26 @@ public AlignReturnType alignToGear (double relativeCenter,
             this.drive(0.0, 0.0);
             return AlignReturnType.ALIGNED;
             }
-        else if (distanceToCenter > 0)
-            this.drive(0, movementSpeed);
-        else if (distanceToCenter < 0)
-            this.drive(0.0, -movementSpeed);
         }
+    // else if (distanceToCenter > 0)
+    // this.drive(0, movementSpeed);
+    // else if (distanceToCenter < 0)
+    // this.drive(0.0, -movementSpeed);
+    this.isTurning = this
+            .turnDegrees(-Math.toDegrees(this.imageProcessor
+                    .getYawAngleToTarget(this.imageProcessor
+                            .getNthSizeBlob(0))
+                    + this.imageProcessor
+                            .getYawAngleToTarget(this.imageProcessor
+                                    .getNthSizeBlob(1)))
+                    / 2.0);
+
+
 
     return AlignReturnType.MISALIGNED;
 }
+
+private boolean isTurning = false;
 
 
 

@@ -317,6 +317,7 @@ public static enum turnReturn
  * @return
  *         True if we're aligned, false otherwise.
  */
+// TODO Radians and degrees
 public turnToGoalReturn turnToGoal ()
 {
     // if we have at least one blob
