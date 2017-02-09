@@ -184,7 +184,8 @@ public static void periodic ()
         {
         Hardware.ringlightRelay.set(Relay.Value.kOff);
         }
-
+    // Hardware.gearServo.setAngle(200);
+    Hardware.gearServo.getAngle();
     // Print out any data we want from the hardware elements.
     printStatements();
 

@@ -491,6 +491,68 @@ private static boolean leftSidePath ()
 {
     switch (currentState)
         {
+        case INIT:
+            Hardware.leftRearMotor.set(0);
+            Hardware.leftFrontMotor.set(0);
+            Hardware.rightRearMotor.set(0);
+            Hardware.rightFrontMotor.set(0);
+            Hardware.autoStateTimer.reset();
+            Hardware.autoStateTimer.start();
+            currentState = MainState.DELAY_BEFORE_START;
+            break;
+        case DELAY_BEFORE_START:
+            Hardware.leftRearMotor.set(0);
+            Hardware.leftFrontMotor.set(0);
+            Hardware.rightRearMotor.set(0);
+            Hardware.rightFrontMotor.set(0);
+            if (Hardware.autoStateTimer.get() > delayTime)
+                currentState = MainState.DRIVE_FORWARD_TO_SIDES_SLOW;
+            break;
+        case DRIVE_FORWARD_TO_SIDES_SLOW:
+            currentState = MainState.DRIVE_FORWARD_TO_SIDES_MED;
+            break;
+        case DRIVE_FORWARD_TO_SIDES_MED:
+            currentState = MainState.DRIVE_FORWARD_TO_SIDES;
+            break;
+        case DRIVE_FORWARD_TO_SIDES:
+            currentState = MainState.TURN_TO_GEAR_PEG;
+            break;
+        case TURN_TO_GEAR_PEG:
+            // turn left on both red and blue
+            if (false)
+                currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
+            currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
+            break;
+        case DRIVE_TO_GEAR_WITH_CAMERA:
+            if (false)
+                {
+                currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
+                }
+            break;
+        case DRIVE_CAREFULLY_TO_PEG:
+            currentState = MainState.WIGGLE_WIGGLE;
+            break;
+        case WIGGLE_WIGGLE:
+            currentState = MainState.WAIT_FOR_GEAR_EXODUS;
+            break;
+        case WAIT_FOR_GEAR_EXODUS:
+            currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
+            break;
+        case DELAY_AFTER_GEAR_EXODUS:
+            Hardware.leftRearMotor.set(0);
+            Hardware.leftFrontMotor.set(0);
+            Hardware.rightRearMotor.set(0);
+            Hardware.rightFrontMotor.set(0);
+            currentState = MainState.TURN_TO_HOPPER;
+            break;
+        case TURN_TO_HOPPER:
+            currentState = MainState.DRIVE_UP_TO_HOPPER;
+            break;
+        case DRIVE_UP_TO_HOPPER:
+            // currentState = MainState.
+
+
+
 
         }
     return false;
