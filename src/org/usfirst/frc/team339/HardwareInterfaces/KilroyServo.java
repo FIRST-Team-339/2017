@@ -21,7 +21,7 @@ public KilroyServo (int portNumber, double maxDegrees)
     this.maxDegrees = maxDegrees;
 }
 
-private double maxDegrees = 0;
+private double maxDegrees = 0; // max degrees servo can go
 
 /**
  * Scales raw set value to degrees
@@ -42,7 +42,8 @@ public void setAngle (double degree)
  */
 public double getAngle ()
 {
-    double angleValue = this.servo.get() * this.maxDegrees;
+    double angleValue = this.servo.get() * this.maxDegrees; // scaled value for
+                                                            // servo
     return angleValue;
 
 }
