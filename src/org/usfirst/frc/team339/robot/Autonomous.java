@@ -490,6 +490,26 @@ private static boolean leftSidePath ()
 {
     switch (currentState)
         {
+        case INIT:
+            Hardware.leftRearMotor.set(0);
+            Hardware.leftFrontMotor.set(0);
+            Hardware.rightRearMotor.set(0);
+            Hardware.rightFrontMotor.set(0);
+            Hardware.autoStateTimer.reset();
+            Hardware.autoStateTimer.start();
+            currentState = MainState.DELAY_BEFORE_START;
+            break;
+        case DELAY_BEFORE_START:
+            Hardware.leftRearMotor.set(0);
+            Hardware.leftFrontMotor.set(0);
+            Hardware.rightRearMotor.set(0);
+            Hardware.rightFrontMotor.set(0);
+            if (Hardware.autoStateTimer.get() > delayTime)
+                currentState = MainState.DRIVE_FORWARD_TO_SIDES_SLOW;
+            break;
+        case DRIVE_FORWARD_TO_SIDES_SLOW:
+        cu
+     
 
         }
     return false;
