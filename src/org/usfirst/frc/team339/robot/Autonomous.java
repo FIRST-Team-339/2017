@@ -230,8 +230,8 @@ private static boolean driveToTargetFirstStart = true;
 private static boolean placeCenterGearPath ()
 {
     // System.out.println("CurrentState = " + currentState);
-    System.out.println("Right US: "
-            + Hardware.rightUS.getDistanceFromNearestBumper());
+    // System.out.println("Right US: "
+    // + Hardware.rightUS.getDistanceFromNearestBumper());
     switch (currentState)
         {
         case INIT:
@@ -370,14 +370,11 @@ private static boolean placeCenterGearPath ()
             if (Hardware.autoDrive.driveInches(36.0, -.5))
                 {
                 currentState = MainState.DONE;
-                System.out.println("Attempting to stop");
                 }
 
             break;
         default:
         case DONE:
-            System.out.println("Encoder values: "
-                    + Hardware.autoDrive.getAveragedEncoderValues());
             return true;
         }
     return false;
@@ -463,7 +460,7 @@ private static boolean rightSidePath ()
                 currentState = MainState.ALIGN_TO_FIRE;
             break;
         case TURN_TO_HOPPER:
-            // TODO random numbers I selected
+            // TODO random magic numbers I selected
             if (Hardware.autoDrive.turnDegrees(isRedAlliance ? 12 : 90))
                 {
                 currentState = MainState.DRIVE_UP_TO_HOPPER;
@@ -574,7 +571,7 @@ private static void initializeDriveProgram ()
     Hardware.autoStateTimer.stop();
     Hardware.autoStateTimer.reset();
     Hardware.driveGyro.calibrate();
-    Hardware.driveGyro.reset();// TODO
+    Hardware.driveGyro.reset();
     Hardware.autoDrive.resetEncoders();
     Hardware.mecanumDrive.drive(0, 0, 0);
 }
