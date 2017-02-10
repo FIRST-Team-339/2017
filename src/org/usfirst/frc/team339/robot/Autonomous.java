@@ -229,7 +229,9 @@ private static boolean driveToTargetFirstStart = true;
 
 private static boolean placeCenterGearPath ()
 {
-    System.out.println("CurrentState = " + currentState);
+    // System.out.println("CurrentState = " + currentState);
+    System.out.println("Right US: "
+            + Hardware.rightUS.getDistanceFromNearestBumper());
     switch (currentState)
         {
         case INIT:
@@ -366,7 +368,11 @@ private static boolean placeCenterGearPath ()
             break;
         case DRIVE_AWAY_FROM_PEG:
             if (Hardware.autoDrive.driveInches(36.0, -.5))
+                {
                 currentState = MainState.DONE;
+                System.out.println("Attempting to stop");
+                }
+
             break;
         default:
         case DONE:
