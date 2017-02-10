@@ -370,6 +370,8 @@ private static boolean placeCenterGearPath ()
             break;
         default:
         case DONE:
+            System.out.println("Encoder values: "
+                    + Hardware.autoDrive.getAveragedEncoderValues());
             return true;
         }
     return false;
