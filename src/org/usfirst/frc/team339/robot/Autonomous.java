@@ -69,24 +69,46 @@ public class Autonomous
  */
 private static enum MainState
     {
+    /**
+     * Reset Encoder Values, determine alliance, determine delay time,
+     * determine path
+     */
     INIT,
-
+    /**
+     * Max is 5 secounds
+     */
     DELAY_BEFORE_START,
-
+    /**
+     * Drive slower to air ship
+     */
     DRIVE_FORWARD_TO_CENTER_SLOW,
-
+    /**
+     * Drive at a medium speed to air ship
+     */
     DRIVE_FORWARD_TO_CENTER_MED,
-
+    /**
+     * Drive normal speed to airship
+     */
     DRIVE_FORWARD_TO_CENTER,
-
+    /**
+     * Drive to the side of the airship slowly
+     */
     DRIVE_FORWARD_TO_SIDES_SLOW,
-
+    /**
+     * Drive to the side of the airship at medium speed
+     */
     DRIVE_FORWARD_TO_SIDES_MED,
-
+    /**
+     * Drive to the side of the airship at normal speed
+     */
     DRIVE_FORWARD_TO_SIDES,
-
+    /**
+     * Turn to the peg deposit place on the airship
+     */
     TURN_TO_GEAR_PEG,
-
+    /**
+     * Align with the vision strips to deposit gear
+     */
     DRIVE_TO_GEAR_WITH_CAMERA,
 
     DRIVE_CAREFULLY_TO_PEG,
