@@ -64,6 +64,8 @@ public class Hardware
 // ------------------------------------
 public static boolean testbool = true;
 
+public static double joystickDeadzone = .2;
+
 /**
  * denote whether we are running in the lab or not. This will allow us to test
  * in the lab once the robot is bagged

@@ -76,7 +76,6 @@ public static void init ()
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
-    Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     // Hardware.tankDrive.setGear(1);
     // Hardware.leftUS.setScalingFactor(.13);
@@ -164,14 +163,6 @@ public static void periodic ()
      * "Flywheel speed: " + Hardware.shooterMotor.getSpeed());
      */
 
-    if (Hardware.rightDriver.getRawButton(4))
-        {
-        Hardware.shooter.loadBalls();
-        }
-    else if (Hardware.rightDriver.getRawButton(5))
-        {
-        Hardware.shooter.reverseLoader();
-        }
 
     // TODO Figure out why the ring light is flickering
     if (Hardware.ringlightSwitch.isOnCheckNow())
@@ -191,14 +182,13 @@ public static void periodic ()
     // Driving code
     // =================================================================
 
-    if (Hardware.rightDriver.getTrigger())
+    if (Hardware.leftDriver.getTrigger())
         {
-        rotationValue = Hardware.rightDriver.getTwist();
+        rotationValue = Hardware.leftDriver.getTwist();
+        System.out.println("Twist: " + Hardware.leftDriver.getTwist());
         }
     else
-        {
         rotationValue = 0.0;
-        }
 
     if (!isAligning && !isStrafingToTarget)
         if (Hardware.isUsingMecanum == true)
@@ -381,8 +371,8 @@ public static void printStatements ()
     // Switches
     // prints state of switches
     // ---------------------------------
-    System.out.println("Gear Limit Switch: "
-            + Hardware.gearLimitSwitch.isOn());
+    // System.out.println("Gear Limit Switch: "
+    // + Hardware.gearLimitSwitch.isOn());
 
 
     // ---------------------------------
@@ -402,7 +392,7 @@ public static void printStatements ()
     // Red Light/IR Sensors
     // prints the state of the sensor
     // ---------------------------------
-    System.out.println("Ball IR: " + Hardware.ballLoaderSensor.isOn());
+    // System.out.println("Ball IR: " + Hardware.ballLoaderSensor.isOn());
 
     // =================================
     // Pneumatics
@@ -438,7 +428,7 @@ public static void printStatements ()
     // pots
     // where the pot is turned to
     // ---------------------------------
-    System.out.println("Delay Pot Degrees" + Hardware.delayPot.get());
+    // System.out.println("Delay Pot Degrees" + Hardware.delayPot.get());
     // System.out.println("Gimbal Pot Degrees" + Hardware.gimbalPot);
 
 
