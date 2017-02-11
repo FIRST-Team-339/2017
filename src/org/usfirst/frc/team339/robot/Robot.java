@@ -118,6 +118,7 @@ public void autonomousInit ()
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     Hardware.leftRearMotor.setInverted(true);
+    Hardware.intakeMotor.setInverted(true);
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     // -------------------------------------
     // Call the Autonomous class's Init function,
@@ -238,6 +239,11 @@ public void disabledPeriodic ()
     // User code goes below here
     // =========================================================
 
+    Hardware.leftFrontMotor.set(0);
+    Hardware.rightFrontMotor.set(0);
+    Hardware.leftRearMotor.set(0);
+    Hardware.rightRearMotor.set(0);
+
     // =========================================================
     // User code goes above here
     // =========================================================
@@ -271,6 +277,7 @@ public void robotInit ()
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     Hardware.leftRearMotor.setInverted(true);
+    Hardware.intakeMotor.setInverted(true);
     // Hardware.mecanumDrive.setDirectionalDeadzone(0.05);
     Hardware.mecanumDrive
             .setDeadbandPercentageZone(Hardware.joystickDeadzone);
@@ -419,6 +426,7 @@ public void teleopInit ()
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     Hardware.leftRearMotor.setInverted(true);
+    Hardware.intakeMotor.setInverted(true);
     // Hardware.mecanumDrive.setDirectionalDeadzone(0.2);
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     // =========================================================

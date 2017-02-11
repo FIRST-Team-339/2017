@@ -106,6 +106,7 @@ public static void init ()
     Hardware.autoDrive.setDriveCorrection(.3);
     Hardware.autoDrive.setEncoderSlack(1); // TODO
 
+
 } // end Init
 
 /**
@@ -178,6 +179,8 @@ public static void periodic ()
     // Print out any data we want from the hardware elements.
     printStatements();
 
+    // TESTING CODE:
+
     // =================================================================
     // Driving code
     // =================================================================
@@ -208,79 +211,79 @@ public static void periodic ()
     // =================================================================
 
     // "Cancel basically everything" button
-    if (Hardware.leftOperator.getRawButton(7)
-            || Hardware.leftOperator.getRawButton(6))
-        {
-        System.out.println("Cancelling everything");
-        isAligning = false;
-        isStrafingToTarget = false;
-        }
-
-    // Testing aligning to target
-    if (Hardware.rightOperator.getRawButton(4))
-        isAligning = true;
-
-    if (isAligning)
-        {
-        alignValue = Hardware.autoDrive.alignToGear(CAMERA_ALIGN_CENTER,
-                movementSpeed, CAMERA_ALIGN_DEADBAND);
-        if (alignValue == Drive.AlignReturnType.ALIGNED)
-            {
-            System.out.println("We are aligned!");
-            isAligning = false;
-            }
-        else if (alignValue == Drive.AlignReturnType.MISALIGNED)
-            {
-            System.out.println("We are not aligned!");
-            }
-        else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
-            {
-            System.out.println("We don't see anything!");
-            }
-        }
-    // Testing Strafe to target
-    if (Hardware.rightOperator.getRawButton(8))
-        isStrafingToTarget = true;
-
-    if (isStrafingToTarget)
-        {
-        alignValue = Hardware.autoDrive.strafeToGear(movementSpeed, .2,
-                CAMERA_ALIGN_DEADBAND, CAMERA_ALIGN_CENTER, 20);
-        if (alignValue == Drive.AlignReturnType.ALIGNED)
-            {
-            System.out.println("We are aligned!");
-            }
-        else if (alignValue == Drive.AlignReturnType.MISALIGNED)
-            {
-            System.out.println("WE are NOT aligned!");
-            }
-        else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
-            {
-            System.out.println("We have no blobs!");
-            }
-        else if (alignValue == Drive.AlignReturnType.CLOSE_ENOUGH)
-            {
-            System.out.println("We are good to go!");
-            isStrafingToTarget = false;
-            }
-        }
+    // if (Hardware.leftOperator.getRawButton(7)
+    // || Hardware.leftOperator.getRawButton(6))
+    // {
+    // System.out.println("Cancelling everything");
+    // isAligning = false;
+    // isStrafingToTarget = false;
+    // }
+    //
+    // // Testing aligning to target
+    // if (Hardware.rightOperator.getRawButton(4))
+    // isAligning = true;
+    //
+    // if (isAligning)
+    // {
+    // alignValue = Hardware.autoDrive.alignToGear(CAMERA_ALIGN_CENTER,
+    // movementSpeed, CAMERA_ALIGN_DEADBAND);
+    // if (alignValue == Drive.AlignReturnType.ALIGNED)
+    // {
+    // System.out.println("We are aligned!");
+    // isAligning = false;
+    // }
+    // else if (alignValue == Drive.AlignReturnType.MISALIGNED)
+    // {
+    // System.out.println("We are not aligned!");
+    // }
+    // else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
+    // {
+    // System.out.println("We don't see anything!");
+    // }
+    // }
+    // // Testing Strafe to target
+    // if (Hardware.rightOperator.getRawButton(8))
+    // isStrafingToTarget = true;
+    //
+    // if (isStrafingToTarget)
+    // {
+    // alignValue = Hardware.autoDrive.strafeToGear(movementSpeed, .2,
+    // CAMERA_ALIGN_DEADBAND, CAMERA_ALIGN_CENTER, 20);
+    // if (alignValue == Drive.AlignReturnType.ALIGNED)
+    // {
+    // System.out.println("We are aligned!");
+    // }
+    // else if (alignValue == Drive.AlignReturnType.MISALIGNED)
+    // {
+    // System.out.println("WE are NOT aligned!");
+    // }
+    // else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
+    // {
+    // System.out.println("We have no blobs!");
+    // }
+    // else if (alignValue == Drive.AlignReturnType.CLOSE_ENOUGH)
+    // {
+    // System.out.println("We are good to go!");
+    // isStrafingToTarget = false;
+    // }
+    // }
 
     // Testing good speed values
-    if (Hardware.leftOperator.getRawButton(4) && !hasPressedFive)
-        {
-        // adds .05 to movement speed then prints movementSpeed
-        movementSpeed += .05;
-        System.out.println(movementSpeed);
-        }
-    hasPressedFour = Hardware.leftOperator.getRawButton(4);
+    // if (Hardware.leftOperator.getRawButton(4) && !hasPressedFive)
+    // {
+    // // adds .05 to movement speed then prints movementSpeed
+    // movementSpeed += .05;
+    // System.out.println(movementSpeed);
+    // }
+    // hasPressedFour = Hardware.leftOperator.getRawButton(4);
 
-    if (Hardware.leftOperator.getRawButton(5) && !hasPressedFour)
-        {
-        // subtracts .05 from movement speed then prints movementSpeed
-        movementSpeed -= .05;
-        System.out.println(movementSpeed);
-        }
-    hasPressedFive = Hardware.leftOperator.getRawButton(5);
+    // if (Hardware.leftOperator.getRawButton(5) && !hasPressedFour)
+    // {
+    // // subtracts .05 from movement speed then prints movementSpeed
+    // movementSpeed -= .05;
+    // System.out.println(movementSpeed);
+    // }
+    // hasPressedFive = Hardware.leftOperator.getRawButton(5);
 
 
     Hardware.axisCamera
@@ -345,6 +348,11 @@ public static void printStatements ()
     // System.out.println("Left Rear Motor Controller: " +
     // Hardware.leftRearMotor.get());
 
+    // System.out
+    // .println("Flywheel Motor: " + Hardware.shooterMotor.get());
+    //
+    // System.out.println("Intake Motor: " + Hardware.intakeMotor.get());
+
     // =================================
     // CAN items
     // prints value of the CAN controllers
@@ -374,6 +382,14 @@ public static void printStatements ()
     // System.out.println("Gear Limit Switch: "
     // + Hardware.gearLimitSwitch.isOn());
 
+    // System.out
+    // .println("Backup or fire: " + Hardware.backupOrFire.isOn());
+    // System.out.println(
+    // "Enable Auto: " + Hardware.enableAutonomous.isOn());
+
+    // System.out.println(
+    // "Path Selector: " + Hardware.pathSelector.getPosition());
+
 
     // ---------------------------------
     // Encoders
@@ -392,7 +408,7 @@ public static void printStatements ()
     // Red Light/IR Sensors
     // prints the state of the sensor
     // ---------------------------------
-    // System.out.println("Ball IR: " + Hardware.ballLoaderSensor.isOn());
+    System.out.println("Ball IR: " + Hardware.ballLoaderSensor.isOn());
 
     // =================================
     // Pneumatics
