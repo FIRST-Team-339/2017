@@ -630,6 +630,94 @@ public void resetEncoders ()
 }
 
 /**
+ * 
+ * @param lBreakSpeed
+ * @param rBreakSpeed
+ * @return have we finished true = yes
+ */
+public boolean brake (final double lBreakSpeed,
+        final double rBreakSpeed)
+{
+    if (((Math.abs(
+            leftFrontEncoder.getDistance()) >= this.prevBrakeDistanceLF
+                    - this.ENCODER_THRESHOLD
+            && Math.abs(leftFrontEncoder
+                    .getDistance()) <= this.prevBrakeDistanceLF
+                            + ENCODER_THRESHOLD)))
+        {
+        withinLeftFrontRange = true;
+        }
+    if (((Math.abs(
+            leftRearEncoder.getDistance()) >= this.prevBrakeDistanceLR
+                    - this.ENCODER_THRESHOLD
+            && Math.abs(leftRearEncoder
+                    .getDistance()) <= this.prevBrakeDistanceLR
+                            + ENCODER_THRESHOLD)))
+        {
+        withinLeftRearRange = true;
+        }
+    if (((Math.abs(
+            rightFrontEncoder.getDistance()) >= this.prevBrakeDistanceRF
+                    - this.ENCODER_THRESHOLD
+            && Math.abs(rightFrontEncoder
+                    .getDistance()) <= this.prevBrakeDistanceRF
+                            + ENCODER_THRESHOLD)))
+        {
+        withinRightFrontRange = true;
+        }
+    if (((Math.abs(
+            rightRearEncoder.getDistance()) >= this.prevBrakeDistanceRR
+                    - this.ENCODER_THRESHOLD
+            && Math.abs(rightRearEncoder
+                    .getDistance()) <= this.prevBrakeDistanceRR
+                            + ENCODER_THRESHOLD)))
+        {
+        withinRightRearRange = true;
+        }
+
+
+    if (transmissionType == TransmissionType.MECANUM)
+        {
+        this.transmissionMecanum.drive(lBreakSpeed, 0, 0);
+        }
+    if (transmissionType == TransmissionType.TANK)
+        {
+        this.transmissionFourWheel.drive(rBreakSpeed, lBreakSpeed);
+        }
+
+
+    this.prevBrakeDistanceLF = leftFrontEncoder.getDistance();
+    this.prevBrakeDistanceLR = leftRearEncoder.getDistance();
+    this.prevBrakeDistanceRF = rightFrontEncoder.getDistance();
+    this.prevBrakeDistanceRR = rightRearEncoder.getDistance();
+    if (withinRightRearRange && withinRightFrontRange
+            && withinLeftFrontRange && withinLeftRearRange)
+        {
+        this.transmissionFourWheel.drive(0, 0);
+        return true;
+        }
+    return false;
+
+}
+
+private double prevBrakeDistanceRR = 0;
+private double prevBrakeDistanceRF = 0;
+private double prevBrakeDistanceLR = 0;
+private double prevBrakeDistanceLF = 0;
+
+// private double prevPrevBrakeDistanceRR = 0;
+// private double prevPrevBrakeDistanceRF = 0;
+// private double prevPrevBrakeDistanceLR = 0;
+// private double prevPrevBrakeDistanceLF = 0;
+
+private boolean withinRightFrontRange = false;
+private boolean withinRightRearRange = false;
+private boolean withinLeftFrontRange = false;
+private boolean withinLeftRearRange = false;
+
+private double ENCODER_THRESHOLD = .25;
+
+/**
  * Rotates the robot by degrees.
  * 
  * @param degrees
