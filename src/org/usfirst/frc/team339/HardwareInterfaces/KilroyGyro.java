@@ -23,7 +23,7 @@ public KilroyGyro (boolean hasGyro)
         this.gyro = null;
 }
 
-void calibrateToZero ()
+public void calibrateToZero ()
 {
     if (m_spi == null)
         {
@@ -33,4 +33,22 @@ void calibrateToZero ()
     m_spi.setAccumulatorCenter(0);
 }
 
+public void reset ()
+{
+    if (m_spi == null)
+        {
+        return;
+        }
+    m_spi.resetAccumulator();
+}
+
+public double getAngle ()
+{
+    if (m_spi == null)
+        {
+        return 888888;
+        }
+    return m_spi.getAccumulatorValue();
+
+}
 }
