@@ -69,6 +69,8 @@ public static boolean testbool = true;
  * in the lab once the robot is bagged
  */
 public static boolean runningInLab = false;
+
+public static boolean isRunningOnKilroyXVIII = true;
 // -------------------------------------
 // Private Constants
 // -------------------------------------
