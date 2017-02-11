@@ -41,6 +41,15 @@ public void startIntake ()
 }
 
 /**
+ * Pushes out balls in our hopper. Only use as an override.
+ */
+public void reverseIntake ()
+{
+    this.intakeMotor.set(-this.INTAKE_SPEED);
+    this.agitatorMotor.set(Value.kOff);
+}
+
+/**
  * Stop the intake motors to stop sucking in all the balls. Also stops agitator.
  */
 public void stopIntake ()

@@ -117,14 +117,15 @@ public void autonomousInit ()
     // Hardware.rightFrontMotor.setInverted(true);
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
-    // Hardware.leftRearMotor.setInverted(true);
+    Hardware.leftRearMotor.setInverted(true);
+    Hardware.intakeMotor.setInverted(true);
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     // -------------------------------------
     // Call the Autonomous class's Init function,
     // which contains the user code.
     // -------------------------------------
     Autonomous.init();
-    Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
+    // Hardware.mecanumDrive.setDirectionalDeadzone(0.2);
     // Hardware.tankDrive.setRightJoystickReversed(true);
     // =========================================================
     // User code goes above here
@@ -238,6 +239,11 @@ public void disabledPeriodic ()
     // User code goes below here
     // =========================================================
 
+    Hardware.leftFrontMotor.set(0);
+    Hardware.rightFrontMotor.set(0);
+    Hardware.leftRearMotor.set(0);
+    Hardware.rightRearMotor.set(0);
+
     // =========================================================
     // User code goes above here
     // =========================================================
@@ -267,7 +273,14 @@ public void robotInit ()
     Hardware.tankDrive.setGearPercentage(1, FIRST_GEAR);
     Hardware.tankDrive.setGearPercentage(2, SECOND_GEAR);
     Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
-    Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
+    // Hardware.rightFrontMotor.setInverted(true);
+    // Hardware.rightRearMotor.setInverted(true);
+    // Hardware.leftFrontMotor.setInverted(true);
+    Hardware.leftRearMotor.setInverted(true);
+    Hardware.intakeMotor.setInverted(true);
+    // Hardware.mecanumDrive.setDirectionalDeadzone(0.05);
+    Hardware.mecanumDrive
+            .setDeadbandPercentageZone(Hardware.joystickDeadzone);
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     // -------------------------------------
     // motor initialization
@@ -422,8 +435,12 @@ public void teleopInit ()
     // User code goes below here
     // =========================================================
     Teleop.init();
-
-    Hardware.mecanumDrive.setDirectionalDeadzone(0.2, 0);
+    // Hardware.rightFrontMotor.setInverted(true);
+    // Hardware.rightRearMotor.setInverted(true);
+    // Hardware.leftFrontMotor.setInverted(true);
+    Hardware.leftRearMotor.setInverted(true);
+    Hardware.intakeMotor.setInverted(true);
+    // Hardware.mecanumDrive.setDirectionalDeadzone(0.2);
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     // =========================================================
     // User code goes above here
@@ -512,7 +529,7 @@ public void testPeriodic ()
 /**
  * The percentage we want the motors to run at while we are in first gear
  */
-public static final double FIRST_GEAR = .7;
+public static final double FIRST_GEAR = .6;
 
 /**
  * The percentage we want the motors to run at while we are in second gear

@@ -63,7 +63,7 @@ public static enum MotorDirection
  * because it's too close to zero. So if we read a value around 0.1 from
  * the joystick, we probably don't want to actually send values.
  */
-private final double deadbandPercentageZone = 0.2;
+private double deadbandPercentageZone = 0.2;
 
 /**
  * If we want to print out extra debug info from Transmission, we can
@@ -368,7 +368,7 @@ public double getCurrentGearPercentage ()
  *
  * @return
  */
-public double getDeadbandPercentageZone ()
+protected double getDeadbandPercentageZone ()
 {
     return this.deadbandPercentageZone;
 }
@@ -559,6 +559,20 @@ public double scaleJoystickValue (double joystickValue)
 public void setDebugState (DebugState newState)
 {
     this.debugState = newState;
+}
+
+/**
+ * Sets the deadband percentage to use for the joysticks.
+ * 
+ * @param percentage
+ *            new percentage to set the deadband to
+ * 
+ * @author Ryan McGee
+ * @written 2/11/17
+ */
+public void setDeadbandPercentageZone (double percentage)
+{
+    this.deadbandPercentageZone = percentage;
 }
 
 /**
