@@ -647,9 +647,11 @@ private static boolean rightSidePath ()
                 {
                 currentState = MainState.DONE;
                 }
+        case TURN_TO_FACE_GOAL:
+
+            break;
         case DRIVE_BACKWARDS_TO_FIRERANGE:
-            if (false)
-                currentState = MainState.DRIVE_INTO_RANGE_WITH_CAMERA;
+            currentState = MainState.DRIVE_INTO_RANGE_WITH_CAMERA;
             // TODO random number I selected
             if (Hardware.autoDrive.driveInches(6, getRealSpeed(.6)))
                 currentState = MainState.ALIGN_TO_FIRE;
