@@ -246,7 +246,7 @@ public static void periodic ()
 
 
     // Testing driveInches TODO
-    if (Hardware.rightDriver.getRawButton(2))
+    if (Hardware.rightDriver.getRawButton(8))
         {
         isDrivingInches = true;
         }
@@ -280,7 +280,7 @@ public static void periodic ()
         }
 
     // Testing aligning to target
-    if (Hardware.rightOperator.getRawButton(2))
+    if (Hardware.rightOperator.getRawButton(4))
         isAligning = true;
 
     if (isAligning)
@@ -331,6 +331,7 @@ public static void periodic ()
     // Testing good speed values
     if (Hardware.leftOperator.getRawButton(4) && !hasPressedFour)
         {
+        // adds .05 to movement speed then prints movementSpeed
         movementSpeed += .05;
         System.out.println(movementSpeed);
         }
@@ -338,6 +339,7 @@ public static void periodic ()
 
     if (Hardware.leftOperator.getRawButton(5) && !hasPressedFive)
         {
+        // subtracts .05 from movement speed then prints movementSpeed
         movementSpeed -= .05;
         System.out.println(movementSpeed);
         }
