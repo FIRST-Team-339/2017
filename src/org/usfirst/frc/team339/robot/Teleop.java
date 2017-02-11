@@ -396,6 +396,7 @@ private static boolean firing = false;
  * @written 1/28/16
  * 
  *          Edited by Ryan McGee
+ *          Also Edited by Josef Liebl
  * 
  */
 public static void printStatements ()
@@ -404,6 +405,14 @@ public static void printStatements ()
     // Motor controllers
     // prints value of the motors
     // =================================
+    // System.out.println("Right Front Motor Controller: "
+    // + Hardware.rightFrontMotor);
+    // System.out.println("Left Front Motor Controller: " +
+    // Hardware.leftFrontMotor);
+    // System.out.println("Right Rear Motor Controller: " +
+    // Hardware.rightRearMotor);
+    // System.out.println("Left Rear Motor Controller: " +
+    // Hardware.leftRearMotor);
 
     // =================================
     // CAN items
@@ -415,6 +424,14 @@ public static void printStatements ()
     // Relay
     // prints value of the relay states
     // =================================
+    // if(Hardware.ringLightRelay.isOn == true)
+    // {
+    // System.out.println("The ring light relay is on");
+    // }
+    // else if(Hardware.ringLightRelay.isOn == false)
+    // {
+    // System.out.println("The ring light relay is off");
+    // }
 
     // =================================
     // Digital Inputs
@@ -423,20 +440,34 @@ public static void printStatements ()
     // Switches
     // prints state of switches
     // ---------------------------------
+    // System.out.println("Gear Limit Switch: "
+    // + Hardware.gearLimitSwitch);
 
     // ---------------------------------
     // Encoders
     // prints the distance from the encoders
     // ---------------------------------
-    // System.out.println("Right Encoder: "
-    // + Hardware.autoDrive.getRightRearEncoderDistance());
-    // System.out.println("Left Encoder: "
+    // System.out.println("Right Front Encoder: "
+    // + Hardware.autoDrive.getRightFrontEncoderDistance());
+    // System.out.println("Left Front Encoder: "
+    // + Hardware.autoDrive.getLeftFrontEncoderDistance());
+    // System.out.println("Left Rear Encoder: "
     // + Hardware.autoDrive.getLeftRearEncoderDistance());
+    // System.out.println("Right Rear Encoder: "
+    // + Hardware.autoDrive.getRightRearEncoderDistance());
 
     // ---------------------------------
     // Red Light/IR Sensors
     // prints the state of the sensor
     // ---------------------------------
+    // if(Hardware.ballLoaderSensor.isOn() == true)
+    // {
+    // System.out.println("The IR Sensor is on");
+    // }
+    // else if(Hardware.ballLoaderSensor.isOn() == false)
+    // {
+    // System.out.println("The IR Sensor is off");
+    // }
 
     // =================================
     // Pneumatics
@@ -445,11 +476,13 @@ public static void printStatements ()
     // Compressor
     // prints information on the compressor
     // ---------------------------------
+    // There isn't one
 
     // ---------------------------------
     // Solenoids
     // prints the state of solenoids
     // ---------------------------------
+    // There are none
 
     // =================================
     // Analogs
@@ -459,10 +492,10 @@ public static void printStatements ()
     // + Hardware.leftUS.getDistanceFromNearestBumper());
     //
     // We don't want the print statements to flood everything and go ahhhhhhhh
+    //
     // if (Hardware.rightOperator.getRawButton(11))
     // System.out.println("RightUS = "
     // + Hardware.rightUS.getDistanceFromNearestBumper());
-
     // System.out.println("Delay Pot: " + Hardware.delayPot.get());
 
 
@@ -470,6 +503,9 @@ public static void printStatements ()
     // pots
     // where the pot is turned to
     // ---------------------------------
+    // System.out.println("Delay Pot Degrees" + Hardware.delayPot);
+    // System.out.println("Gimbal Pot Degrees" + Hardware.gimbalPot);
+
 
     // =================================
     // Connection Items
