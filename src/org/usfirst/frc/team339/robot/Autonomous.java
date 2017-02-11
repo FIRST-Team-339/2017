@@ -75,35 +75,39 @@ private static enum MainState
      */
     INIT,
     /**
-     * Max is 5 secounds
+     * Delays anywhere between 0 and 5 seconds, controlled by a potentiometer on
+     * the robot
      */
     DELAY_BEFORE_START,
     /**
-     * Drive slower to air ship
+     * Beginning state of our acceleration in our drive up to the airship.
      */
     DRIVE_FORWARD_TO_CENTER_SLOW,
     /**
-     * Drive at a medium speed to air ship
+     * Medium state of our acceleration in our drive up to the airship.
      */
     DRIVE_FORWARD_TO_CENTER_MED,
     /**
-     * Drive normal speed to airship
+     * We're done accelerating, just drive!
      */
     DRIVE_FORWARD_TO_CENTER,
     /**
-     * Drive to the side of the airship slowly
+     * Drive to the side of the airship slowly. See
+     * DRIVE_FORWARD_TO_CENTER_SLOW.
      */
     DRIVE_FORWARD_TO_SIDES_SLOW,
     /**
-     * Drive to the side of the airship at medium speed
+     * Drive to the side of the airship at medium speed.See
+     * DRIVE_FORWARD_TO_CENTER_MED.
      */
     DRIVE_FORWARD_TO_SIDES_MED,
     /**
-     * Drive to the side of the airship at normal speed
+     * Drive to the side of the airship at normal speed. See
+     * DRIVE_FORWARD_TO_CENTER.
      */
     DRIVE_FORWARD_TO_SIDES,
     /**
-     * Turn to the peg deposit place on the airship
+     * Turn towards the peg deposit place on the airship
      */
     TURN_TO_GEAR_PEG,
     /**
@@ -111,28 +115,58 @@ private static enum MainState
      */
     DRIVE_TO_GEAR_WITH_CAMERA,
 
+    /**
+     * Drive up to the gear peg when we don't see any blobs.
+     */
     DRIVE_CAREFULLY_TO_PEG,
 
+    /**
+     * Currently unused, may be used to regain vision targets, or make sure the
+     * gear is on the spring. It's a bit of a wildcard at the moment.
+     */
     WIGGLE_WIGGLE,
-
+    /**
+     * We've got the gear on the peg (probably), but we're waiting for the human
+     * player to pull the gear out of our thingy.
+     */
     WAIT_FOR_GEAR_EXODUS,
-
+    /**
+     * Wait after we detect the gear leaving our mechanism to make sure it's
+     * clear before we try and drive back.
+     */
     DELAY_AFTER_GEAR_EXODUS,
-
+    /**
+     * Back away from whatever peg we're currently on.
+     */
     DRIVE_AWAY_FROM_PEG,
-
+    /**
+     * On paths where we go for the hopper, Turn so we're facing it
+     */
     TURN_TO_HOPPER,
-
+    /**
+     * On paths where we go for the hopper, drive until we slam into it.
+     */
     DRIVE_UP_TO_HOPPER,
-
+    /**
+     * On paths where we fire, back away from the gear peg and towards the
+     * boiler until we're in range to fire.
+     */
     DRIVE_BACKWARDS_TO_FIRERANGE,
-
+    /**
+     * Use the camera to figure out if we're in range of the top boiler
+     */
     DRIVE_INTO_RANGE_WITH_CAMERA,
-
+    /**
+     * Turn the turret so it's facing the boiler
+     */
     ALIGN_TO_FIRE,
-
+    /**
+     * Empty out the hopper or fire until time out
+     */
     FIRE,
-
+    /**
+     * Quit the path.
+     */
     DONE
     }
 
