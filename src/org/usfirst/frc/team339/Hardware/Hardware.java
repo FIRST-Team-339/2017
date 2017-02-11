@@ -15,9 +15,9 @@
 package org.usfirst.frc.team339.Hardware;
 
 import com.ctre.CANTalon;
+import org.usfirst.frc.team339.HardwareInterfaces.DoubleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
-import org.usfirst.frc.team339.HardwareInterfaces.KilroyServo;
 import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
 import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
@@ -69,6 +69,8 @@ public static boolean testbool = true;
  * in the lab once the robot is bagged
  */
 public static boolean runningInLab = false;
+
+public static boolean isRunningOnKilroyXVIII = true; // 18
 // -------------------------------------
 // Private Constants
 // -------------------------------------
@@ -83,7 +85,7 @@ public static boolean runningInLab = false;
 // ====================================
 // PWM classes
 // ====================================
-public static KilroyServo gearServo = new KilroyServo(2, 270);
+// public static KilroyServo gearServo = new KilroyServo(2, 270);
 // ------------------------------------
 // Jaguar classes
 // ------------------------------------
@@ -92,19 +94,14 @@ public static KilroyServo gearServo = new KilroyServo(2, 270);
 // Talon classes
 // ------------------------------------
 
-/**
- * Default motor controller.
- */
-public static TalonSRX rightRearMotor = new TalonSRX(4);// 2);
+// changed these to kilroy equipment list 2017
+public static TalonSRX rightRearMotor = new TalonSRX(2);
 
-public static TalonSRX rightFrontMotor = new TalonSRX(2);// 1);
+public static TalonSRX rightFrontMotor = new TalonSRX(1);
 
-/**
- * Default motor controller.
- */
 public static TalonSRX leftRearMotor = new TalonSRX(3);
 
-public static TalonSRX leftFrontMotor = new TalonSRX(1);// 4);
+public static TalonSRX leftFrontMotor = new TalonSRX(4);
 
 public static CANTalon shooterMotor = new CANTalon(1);
 
@@ -138,6 +135,18 @@ public static Relay agitatorRelay = new Relay(1);
 // ------------------------------------
 public static SingleThrowSwitch gearLimitSwitch = new SingleThrowSwitch(
         5);
+
+public static SingleThrowSwitch backupOrFire = new SingleThrowSwitch(3);
+
+public static SingleThrowSwitch rightPath = new SingleThrowSwitch(7);
+
+public static SingleThrowSwitch leftPath = new SingleThrowSwitch(8);
+
+public static DoubleThrowSwitch pathSelector = new DoubleThrowSwitch(
+        rightPath, leftPath);
+
+public static SingleThrowSwitch enableAutonomous = new SingleThrowSwitch(
+        4);
 // ------------------------------------
 // Gear Tooth Sensors
 // ------------------------------------
@@ -145,15 +154,15 @@ public static SingleThrowSwitch gearLimitSwitch = new SingleThrowSwitch(
 // ------------------------------------
 // Encoders
 // ------------------------------------
-/**
- * Default motor encoder
- */
+
 public static Encoder leftRearEncoder = new Encoder(10, 11);
 
-/**
- * Default motor encoder
- */
 public static Encoder rightRearEncoder = new Encoder(12, 13);
+
+public static Encoder leftFrontEncoder = new Encoder(14, 15);
+
+public static Encoder rightFrontEncoder = new Encoder(16, 17);
+
 
 // -----------------------
 // Wiring diagram
@@ -174,7 +183,7 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // -------------------------------------
 // Red Light/IR Sensor class
 // -------------------------------------
-public static IRSensor ballLoaderSensor = new IRSensor(8);
+public static IRSensor ballLoaderSensor = new IRSensor(6);
 // ====================================
 // I2C Classes
 // ====================================
@@ -217,14 +226,13 @@ public static ADXRS450_Gyro driveGyro = new ADXRS450_Gyro();
 // Potentiometers
 // -------------------------------------
 // -------------------------------------
-public static Potentiometer delayPot = new Potentiometer(1, 270);// TODO max
+public static Potentiometer delayPot = new Potentiometer(1, 270);// TODO max //
                                                                  // degree value
 
 public static Potentiometer gimbalPot = new Potentiometer(3, 270);
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------
-
 public static UltraSonic rightUS = new UltraSonic(2);
 // **********************************************************
 // roboRIO CONNECTIONS CLASSES

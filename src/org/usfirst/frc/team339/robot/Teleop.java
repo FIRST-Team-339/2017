@@ -166,11 +166,11 @@ public static void periodic ()
      * "Flywheel speed: " + Hardware.shooterMotor.getSpeed());
      */
 
-    if (Hardware.rightDriver.getRawButton(7))
+    if (Hardware.rightDriver.getRawButton(4))
         {
         Hardware.shooter.loadBalls();
         }
-    else if (Hardware.rightDriver.getRawButton(8))
+    else if (Hardware.rightDriver.getRawButton(5))
         {
         Hardware.shooter.reverseLoader();
         }
@@ -185,7 +185,7 @@ public static void periodic ()
         Hardware.ringlightRelay.set(Relay.Value.kOff);
         }
     // Hardware.gearServo.setAngle(200);
-    Hardware.gearServo.getAngle();
+    // Hardware.gearServo.getAngle();
     // Print out any data we want from the hardware elements.
     printStatements();
 
@@ -232,7 +232,7 @@ public static void periodic ()
     // System.out.println(Hardware.rightDriver.getMagnitude());
 
     // Testing turn by degrees
-    if (Hardware.leftDriver.getRawButton(2))
+    if (Hardware.leftDriver.getRawButton(3))
         {
         turnDegrees = 90;
         isTurning = true;
@@ -246,7 +246,7 @@ public static void periodic ()
 
 
     // Testing driveInches TODO
-    if (Hardware.rightDriver.getRawButton(2))
+    if (Hardware.rightDriver.getRawButton(8))
         {
         isDrivingInches = true;
         }
@@ -280,7 +280,7 @@ public static void periodic ()
         }
 
     // Testing aligning to target
-    if (Hardware.leftOperator.getRawButton(8))
+    if (Hardware.rightOperator.getRawButton(4))
         isAligning = true;
 
     if (isAligning)
@@ -331,6 +331,7 @@ public static void periodic ()
     // Testing good speed values
     if (Hardware.leftOperator.getRawButton(4) && !hasPressedFour)
         {
+        // adds .05 to movement speed then prints movementSpeed
         movementSpeed += .05;
         System.out.println(movementSpeed);
         }
@@ -338,6 +339,7 @@ public static void periodic ()
 
     if (Hardware.leftOperator.getRawButton(5) && !hasPressedFive)
         {
+        // subtracts .05 from movement speed then prints movementSpeed
         movementSpeed -= .05;
         System.out.println(movementSpeed);
         }
@@ -517,9 +519,9 @@ public static void printStatements ()
 
     // System.out.println("Expected center: " + CAMERA_ALIGN_CENTER);
     //
-    Hardware.imageProcessor.processImage();
-    System.out.println("Number of blobs: " + Hardware.imageProcessor
-            .getParticleAnalysisReports().length);
+    // Hardware.imageProcessor.processImage();
+    // System.out.println("Number of blobs: " + Hardware.imageProcessor
+    // .getParticleAnalysisReports().length);
     // if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
     // System.out
     // .println("Actual center: " + ((Hardware.imageProcessor
