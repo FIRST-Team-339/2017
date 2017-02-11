@@ -70,7 +70,7 @@ public static boolean testbool = true;
  */
 public static boolean runningInLab = false;
 
-public static boolean isRunningOnKilroyXVIII = true;
+public static boolean isRunningOnKilroyXVIII = true; // 18
 // -------------------------------------
 // Private Constants
 // -------------------------------------
@@ -336,9 +336,6 @@ public static Joystick rightOperator = new Joystick(3);
 // ------------------------------------
 // Drive system
 // ------------------------------------
-
-public static boolean isUsingTestRobot = true; // if true, we are using ball bot
-
 
 public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
