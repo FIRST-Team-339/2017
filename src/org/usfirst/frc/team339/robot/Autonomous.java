@@ -165,6 +165,15 @@ public static void init ()
     Hardware.rightUS.setScalingFactor(.13);
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
+
+    if (Hardware.isRunningOnKilroyXVIII)
+        {
+        robotSpeedScalar = KILROY_XVIII_DEFAULT_SPEED;
+        }
+    else
+        {
+        robotSpeedScalar = KILROY_XVII_DEFAULT_SPEED;
+        }
 } // end Init
 
 /**
@@ -280,7 +289,8 @@ private static boolean placeCenterGearPath ()
         case DRIVE_FORWARD_TO_CENTER_SLOW:
             // drive at our slow speed. wait a certain time. Could also check
             // distance for safety
-            Hardware.mecanumDrive.drive(.4, 0, 0);// TODO magic number
+            Hardware.mecanumDrive.drive(getRealSpeed(.4), 0, 0);// TODO magic
+                                                                // number
             if (Hardware.autoStateTimer.get() >= .3)
                 {
                 currentState = MainState.DRIVE_FORWARD_TO_CENTER_MED;
@@ -290,7 +300,7 @@ private static boolean placeCenterGearPath ()
             break;
         case DRIVE_FORWARD_TO_CENTER_MED:
             // drive at our medium speed. wait a certain time to move on.
-            Hardware.mecanumDrive.drive(.6, 0, 0);
+            Hardware.mecanumDrive.drive(getRealSpeed(.6), 0, 0);
             if (Hardware.autoStateTimer.get() >= .3)
                 {
                 currentState = MainState.DRIVE_FORWARD_TO_CENTER;
@@ -318,7 +328,10 @@ private static boolean placeCenterGearPath ()
             // we will strafe. If it uses a four wheel transmission, it will
             // wiggle wiggle on it's way to the peg
             cameraState = Hardware.autoDrive.strafeToGear(
-                    ALIGN_DRIVE_SPEED, ALIGN_CORRECT_SPEED,
+                    getRealSpeed(ALIGN_DRIVE_SPEED),
+                    getRealSpeed(ALIGN_CORRECT_SPEED),// TODO decide whether to
+                                                      // keep the getRealSpeed
+                                                      // here.
                     ALIGN_DEADBAND, ALIGN_ACCEPTED_CENTER,
                     ALIGN_DISTANCE_FROM_GOAL);
             System.out.println(
@@ -340,7 +353,7 @@ private static boolean placeCenterGearPath ()
             if (Hardware.rightUS
                     .getDistanceFromNearestBumper() >= ALIGN_DISTANCE_FROM_GOAL)
                 {
-                Hardware.autoDrive.drive(.5, 0);
+                Hardware.autoDrive.drive(getRealSpeed(.5), 0);
                 }
             else
                 {
@@ -370,7 +383,7 @@ private static boolean placeCenterGearPath ()
                 }
             break;
         case DRIVE_AWAY_FROM_PEG:
-            if (Hardware.autoDrive.driveInches(36.0, -.5))
+            if (Hardware.autoDrive.driveInches(36.0, getRealSpeed(-.5)))
                 {
                 currentState = MainState.DONE;
                 }
@@ -459,7 +472,7 @@ private static boolean rightSidePath ()
             if (false)
                 currentState = MainState.DRIVE_INTO_RANGE_WITH_CAMERA;
             // TODO random number I selected
-            if (Hardware.autoDrive.driveInches(6, .6))
+            if (Hardware.autoDrive.driveInches(6, getRealSpeed(.6)))
                 currentState = MainState.ALIGN_TO_FIRE;
             break;
         case TURN_TO_HOPPER:
@@ -471,8 +484,9 @@ private static boolean rightSidePath ()
             break;
         case DRIVE_UP_TO_HOPPER:
             // TODO see above todo.
+            // TODO comment terneries
             if (Hardware.autoDrive.driveInches(isRedAlliance ? 12 : 90,
-                    .6))
+                    getRealSpeed(.6)))
                 {
                 currentState = MainState.DONE;
                 }
@@ -558,10 +572,6 @@ private static boolean leftSidePath ()
             break;
         case DRIVE_UP_TO_HOPPER:
             // currentState = MainState.
-
-
-
-
         }
     return false;
 }
@@ -578,5 +588,25 @@ private static void initializeDriveProgram ()
     Hardware.autoDrive.resetEncoders();
     Hardware.mecanumDrive.drive(0, 0, 0);
 }
+
+/**
+ * Corrects the speed based on which robot we're using. Uses the
+ * isRunningOnKilroyXVIII boolean to decide which speed scalar to use.
+ * 
+ * @param fakeSpeed
+ *            The speed you want the robot to use, don't worry about it.
+ * @return
+ *         The correct speed for whichever robot we're on.
+ */
+private static double getRealSpeed (double fakeSpeed)
+{
+    return fakeSpeed * robotSpeedScalar;
+}
+
+private static double robotSpeedScalar = 1.0;
+
+private static final double KILROY_XVIII_DEFAULT_SPEED = 1.0;
+
+private static final double KILROY_XVII_DEFAULT_SPEED = .7;
 
 } // end class
