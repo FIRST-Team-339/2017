@@ -237,7 +237,7 @@ public boolean driveInches (double inches, double speed)
         this.resetEncoders();
         firstTimeDriveInches = false;
         }
-
+    System.out.println(this.getAveragedEncoderValues());
     if (Math.abs(this.getAveragedEncoderValues()) >= Math.abs(inches))
         {
         this.drive(0.0, 0.0);

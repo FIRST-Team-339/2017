@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.PWMSpeedController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
 
+
+// TODO shooter encoder instead of pot
 /**
  * Describes the shooter object for the 2017 game: FIRST Steamworks.
  * It's a flywheel shooter with an elevator loader. Look at the technical packet

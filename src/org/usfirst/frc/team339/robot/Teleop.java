@@ -185,7 +185,7 @@ public static void periodic ()
         Hardware.ringlightRelay.set(Relay.Value.kOff);
         }
     // Hardware.gearServo.setAngle(200);
-    Hardware.gearServo.getAngle();
+    // Hardware.gearServo.getAngle();
     // Print out any data we want from the hardware elements.
     printStatements();
 
@@ -519,9 +519,9 @@ public static void printStatements ()
 
     // System.out.println("Expected center: " + CAMERA_ALIGN_CENTER);
     //
-    Hardware.imageProcessor.processImage();
-    System.out.println("Number of blobs: " + Hardware.imageProcessor
-            .getParticleAnalysisReports().length);
+    // Hardware.imageProcessor.processImage();
+    // System.out.println("Number of blobs: " + Hardware.imageProcessor
+    // .getParticleAnalysisReports().length);
     // if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
     // System.out
     // .println("Actual center: " + ((Hardware.imageProcessor

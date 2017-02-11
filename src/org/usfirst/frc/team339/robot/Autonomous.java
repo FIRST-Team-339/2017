@@ -69,24 +69,46 @@ public class Autonomous
  */
 private static enum MainState
     {
+    /**
+     * Reset Encoder Values, determine alliance, determine delay time,
+     * determine path
+     */
     INIT,
-
+    /**
+     * Max is 5 secounds
+     */
     DELAY_BEFORE_START,
-
+    /**
+     * Drive slower to air ship
+     */
     DRIVE_FORWARD_TO_CENTER_SLOW,
-
+    /**
+     * Drive at a medium speed to air ship
+     */
     DRIVE_FORWARD_TO_CENTER_MED,
-
+    /**
+     * Drive normal speed to airship
+     */
     DRIVE_FORWARD_TO_CENTER,
-
+    /**
+     * Drive to the side of the airship slowly
+     */
     DRIVE_FORWARD_TO_SIDES_SLOW,
-
+    /**
+     * Drive to the side of the airship at medium speed
+     */
     DRIVE_FORWARD_TO_SIDES_MED,
-
+    /**
+     * Drive to the side of the airship at normal speed
+     */
     DRIVE_FORWARD_TO_SIDES,
-
+    /**
+     * Turn to the peg deposit place on the airship
+     */
     TURN_TO_GEAR_PEG,
-
+    /**
+     * Align with the vision strips to deposit gear
+     */
     DRIVE_TO_GEAR_WITH_CAMERA,
 
     DRIVE_CAREFULLY_TO_PEG,
@@ -165,6 +187,15 @@ public static void init ()
     Hardware.rightUS.setScalingFactor(.13);
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
+
+    if (Hardware.isRunningOnKilroyXVIII)
+        {
+        robotSpeedScalar = KILROY_XVIII_DEFAULT_SPEED;
+        }
+    else
+        {
+        robotSpeedScalar = KILROY_XVII_DEFAULT_SPEED;
+        }
 } // end Init
 
 /**
@@ -182,10 +213,35 @@ public static void periodic ()
 
         case INIT:
             // get the auto program we want to run, get delay pot.
-            delayTime = Hardware.delayPot.get() * (5 / 270);
-            if (Hardware.driverStation.getAlliance() == Alliance.Red)
-                isRedAlliance = true;
-            autoPath = AutoProgram.CENTER_GEAR_PLACEMENT;
+            if (Hardware.enableAutonomous.isOn())
+                {
+                delayTime = Hardware.delayPot.get() * (5 / 270);
+                if (Hardware.driverStation
+                        .getAlliance() == Alliance.Red)
+                    {
+                    isRedAlliance = true;
+                    }
+                if (Hardware.pathSelector.isOn())
+                    {
+                    autoPath = AutoProgram.CENTER_GEAR_PLACEMENT;
+                    break;
+                    }
+                if (Hardware.rightPath.isOn())
+                    {
+                    autoPath = AutoProgram.RIGHT_PATH;
+                    break;
+                    }
+                if (Hardware.leftPath.isOn())
+                    {
+                    autoPath = AutoProgram.LEFT_PATH;
+                    break;
+                    }
+                autoPath = AutoProgram.DONE;
+                }
+            else
+                {
+                autoPath = AutoProgram.DONE;
+                }
             break;
         case CENTER_GEAR_PLACEMENT:
             if (placeCenterGearPath())
@@ -204,9 +260,7 @@ public static void periodic ()
             Hardware.leftFrontMotor.set(0);
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
-
             Hardware.ringlightRelay.set(Value.kOff);
-
             break;
         }
 
@@ -230,11 +284,14 @@ private static boolean driveToTargetFirstStart = true;
 private static boolean placeCenterGearPath ()
 {
     System.out.println("CurrentState = " + currentState);
+    System.out.println("Right US: "
+            + Hardware.rightUS.getDistanceFromNearestBumper());
     switch (currentState)
         {
         case INIT:
             // zero out all the sensors, reset timers, etc.
             Hardware.autoStateTimer.start();
+            Hardware.ringlightRelay.set(Value.kOn);
             currentState = MainState.DELAY_BEFORE_START;
             break;
         case DELAY_BEFORE_START:
@@ -254,7 +311,8 @@ private static boolean placeCenterGearPath ()
         case DRIVE_FORWARD_TO_CENTER_SLOW:
             // drive at our slow speed. wait a certain time. Could also check
             // distance for safety
-            Hardware.mecanumDrive.drive(.4, 0, 0);// TODO magic number
+            Hardware.mecanumDrive.drive(getRealSpeed(.4), 0, 0);// TODO magic
+                                                                // number
             if (Hardware.autoStateTimer.get() >= .3)
                 {
                 currentState = MainState.DRIVE_FORWARD_TO_CENTER_MED;
@@ -264,7 +322,7 @@ private static boolean placeCenterGearPath ()
             break;
         case DRIVE_FORWARD_TO_CENTER_MED:
             // drive at our medium speed. wait a certain time to move on.
-            Hardware.mecanumDrive.drive(.6, 0, 0);
+            Hardware.mecanumDrive.drive(getRealSpeed(.6), 0, 0);
             if (Hardware.autoStateTimer.get() >= .3)
                 {
                 currentState = MainState.DRIVE_FORWARD_TO_CENTER;
@@ -276,31 +334,7 @@ private static boolean placeCenterGearPath ()
         case DRIVE_FORWARD_TO_CENTER:
             // If we see blobs, hand over control to camera, otherwise, go
             // forward. Check to make sure we haven't gone too far.
-
-            if (driveToTargetFirstStart)
-                {
-                Hardware.autoStateTimer.stop();
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                driveToTargetFirstStart = false;
-
-                Hardware.ringlightRelay.set(Value.kOn);
-
-                // Makes sure we actually process the image before asking
-                // whether or not we have any blobs
-                Hardware.imageProcessor.processImage();
-                currentState = MainState.DRIVE_FORWARD_TO_CENTER;
-                break;
-                }
-
-            if (Hardware.autoStateTimer.get() <= .25)
-                {
-                Hardware.imageProcessor.processImage();
-                currentState = MainState.DRIVE_FORWARD_TO_CENTER;
-                break;
-                }
-            Hardware.autoStateTimer.stop();
-
+            Hardware.imageProcessor.processImage();
             if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
                 {
                 currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
@@ -316,7 +350,10 @@ private static boolean placeCenterGearPath ()
             // we will strafe. If it uses a four wheel transmission, it will
             // wiggle wiggle on it's way to the peg
             cameraState = Hardware.autoDrive.strafeToGear(
-                    ALIGN_DRIVE_SPEED, ALIGN_CORRECT_SPEED,
+                    getRealSpeed(ALIGN_DRIVE_SPEED),
+                    getRealSpeed(ALIGN_CORRECT_SPEED),// TODO decide whether to
+                                                      // keep the getRealSpeed
+                                                      // here.
                     ALIGN_DEADBAND, ALIGN_ACCEPTED_CENTER,
                     ALIGN_DISTANCE_FROM_GOAL);
             System.out.println(
@@ -334,10 +371,12 @@ private static boolean placeCenterGearPath ()
 
             break;
         case DRIVE_CAREFULLY_TO_PEG:
-            Hardware.ringlightRelay.set(Value.kOff);
+
             if (Hardware.rightUS
-                    .getDistanceFromNearestBumper() <= ALIGN_DISTANCE_FROM_GOAL)
-                Hardware.autoDrive.drive(.5, 0);
+                    .getDistanceFromNearestBumper() >= ALIGN_DISTANCE_FROM_GOAL)
+                {
+                Hardware.autoDrive.drive(getRealSpeed(.5), 0);
+                }
             else
                 {
                 // desired distance from wall when we start
@@ -345,6 +384,7 @@ private static boolean placeCenterGearPath ()
                 }
             break;
         case WAIT_FOR_GEAR_EXODUS:
+            Hardware.ringlightRelay.set(Value.kOff);
             if (Hardware.gearLimitSwitch.isOn() == false)
                 {
                 Hardware.autoDrive.drive(0.0, 0.0);
@@ -365,8 +405,11 @@ private static boolean placeCenterGearPath ()
                 }
             break;
         case DRIVE_AWAY_FROM_PEG:
-            if (Hardware.autoDrive.driveInches(36.0, -.5))
+            if (Hardware.autoDrive.driveInches(36.0, getRealSpeed(-.5)))
+                {
                 currentState = MainState.DONE;
+                }
+
             break;
         default:
         case DONE:
@@ -451,11 +494,11 @@ private static boolean rightSidePath ()
             if (false)
                 currentState = MainState.DRIVE_INTO_RANGE_WITH_CAMERA;
             // TODO random number I selected
-            if (Hardware.autoDrive.driveInches(6, .6))
+            if (Hardware.autoDrive.driveInches(6, getRealSpeed(.6)))
                 currentState = MainState.ALIGN_TO_FIRE;
             break;
         case TURN_TO_HOPPER:
-            // TODO random numbers I selected
+            // TODO random magic numbers I selected
             if (Hardware.autoDrive.turnDegrees(isRedAlliance ? 12 : 90))
                 {
                 currentState = MainState.DRIVE_UP_TO_HOPPER;
@@ -463,8 +506,9 @@ private static boolean rightSidePath ()
             break;
         case DRIVE_UP_TO_HOPPER:
             // TODO see above todo.
+            // TODO comment terneries
             if (Hardware.autoDrive.driveInches(isRedAlliance ? 12 : 90,
-                    .6))
+                    getRealSpeed(.6)))
                 {
                 currentState = MainState.DONE;
                 }
@@ -550,10 +594,6 @@ private static boolean leftSidePath ()
             break;
         case DRIVE_UP_TO_HOPPER:
             // currentState = MainState.
-
-
-
-
         }
     return false;
 }
@@ -566,9 +606,29 @@ private static void initializeDriveProgram ()
     Hardware.autoStateTimer.stop();
     Hardware.autoStateTimer.reset();
     Hardware.driveGyro.calibrate();
-    Hardware.driveGyro.reset();// TODO
+    Hardware.driveGyro.reset();
     Hardware.autoDrive.resetEncoders();
     Hardware.mecanumDrive.drive(0, 0, 0);
 }
+
+/**
+ * Corrects the speed based on which robot we're using. Uses the
+ * isRunningOnKilroyXVIII boolean to decide which speed scalar to use.
+ * 
+ * @param fakeSpeed
+ *            The speed you want the robot to use, don't worry about it.
+ * @return
+ *         The correct speed for whichever robot we're on.
+ */
+private static double getRealSpeed (double fakeSpeed)
+{
+    return fakeSpeed * robotSpeedScalar;
+}
+
+private static double robotSpeedScalar = 1.0;
+
+private static final double KILROY_XVIII_DEFAULT_SPEED = 1.0;
+
+private static final double KILROY_XVII_DEFAULT_SPEED = .7;
 
 } // end class
