@@ -396,6 +396,7 @@ private static boolean firing = false;
  * @written 1/28/16
  * 
  *          Edited by Ryan McGee
+ *          Also Edited by Josef Liebl
  * 
  */
 public static void printStatements ()
@@ -502,6 +503,9 @@ public static void printStatements ()
     // pots
     // where the pot is turned to
     // ---------------------------------
+    // System.out.println("Delay Pot Degrees" + Hardware.delayPot);
+    // System.out.println("Gimbal Pot Degrees" + Hardware.gimbalPot);
+
 
     // =================================
     // Connection Items
