@@ -182,10 +182,35 @@ public static void periodic ()
 
         case INIT:
             // get the auto program we want to run, get delay pot.
-            delayTime = Hardware.delayPot.get() * (5 / 270);
-            if (Hardware.driverStation.getAlliance() == Alliance.Red)
-                isRedAlliance = true;
-            autoPath = AutoProgram.CENTER_GEAR_PLACEMENT;
+            if (Hardware.enableAutonomous.isOn())
+                {
+                delayTime = Hardware.delayPot.get() * (5 / 270);
+                if (Hardware.driverStation
+                        .getAlliance() == Alliance.Red)
+                    {
+                    isRedAlliance = true;
+                    }
+                if (Hardware.pathSelector.isOn())
+                    {
+                    autoPath = AutoProgram.CENTER_GEAR_PLACEMENT;
+                    break;
+                    }
+                if (Hardware.rightPath.isOn())
+                    {
+                    autoPath = AutoProgram.RIGHT_PATH;
+                    break;
+                    }
+                if (Hardware.leftPath.isOn())
+                    {
+                    autoPath = AutoProgram.LEFT_PATH;
+                    break;
+                    }
+                autoPath = AutoProgram.DONE;
+                }
+            else
+                {
+                autoPath = AutoProgram.DONE;
+                }
             break;
         case CENTER_GEAR_PLACEMENT:
             if (placeCenterGearPath())
@@ -204,9 +229,7 @@ public static void periodic ()
             Hardware.leftFrontMotor.set(0);
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
-
             Hardware.ringlightRelay.set(Value.kOff);
-
             break;
         }
 
@@ -230,11 +253,14 @@ private static boolean driveToTargetFirstStart = true;
 private static boolean placeCenterGearPath ()
 {
     System.out.println("CurrentState = " + currentState);
+    System.out.println("Right US: "
+            + Hardware.rightUS.getDistanceFromNearestBumper());
     switch (currentState)
         {
         case INIT:
             // zero out all the sensors, reset timers, etc.
             Hardware.autoStateTimer.start();
+            Hardware.ringlightRelay.set(Value.kOn);
             currentState = MainState.DELAY_BEFORE_START;
             break;
         case DELAY_BEFORE_START:
@@ -276,31 +302,7 @@ private static boolean placeCenterGearPath ()
         case DRIVE_FORWARD_TO_CENTER:
             // If we see blobs, hand over control to camera, otherwise, go
             // forward. Check to make sure we haven't gone too far.
-
-            if (driveToTargetFirstStart)
-                {
-                Hardware.autoStateTimer.stop();
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                driveToTargetFirstStart = false;
-
-                Hardware.ringlightRelay.set(Value.kOn);
-
-                // Makes sure we actually process the image before asking
-                // whether or not we have any blobs
-                Hardware.imageProcessor.processImage();
-                currentState = MainState.DRIVE_FORWARD_TO_CENTER;
-                break;
-                }
-
-            if (Hardware.autoStateTimer.get() <= .25)
-                {
-                Hardware.imageProcessor.processImage();
-                currentState = MainState.DRIVE_FORWARD_TO_CENTER;
-                break;
-                }
-            Hardware.autoStateTimer.stop();
-
+            Hardware.imageProcessor.processImage();
             if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
                 {
                 currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
@@ -334,10 +336,12 @@ private static boolean placeCenterGearPath ()
 
             break;
         case DRIVE_CAREFULLY_TO_PEG:
-            Hardware.ringlightRelay.set(Value.kOff);
+
             if (Hardware.rightUS
-                    .getDistanceFromNearestBumper() <= ALIGN_DISTANCE_FROM_GOAL)
+                    .getDistanceFromNearestBumper() >= ALIGN_DISTANCE_FROM_GOAL)
+                {
                 Hardware.autoDrive.drive(.5, 0);
+                }
             else
                 {
                 // desired distance from wall when we start
@@ -345,6 +349,7 @@ private static boolean placeCenterGearPath ()
                 }
             break;
         case WAIT_FOR_GEAR_EXODUS:
+            Hardware.ringlightRelay.set(Value.kOff);
             if (Hardware.gearLimitSwitch.isOn() == false)
                 {
                 Hardware.autoDrive.drive(0.0, 0.0);
@@ -366,7 +371,10 @@ private static boolean placeCenterGearPath ()
             break;
         case DRIVE_AWAY_FROM_PEG:
             if (Hardware.autoDrive.driveInches(36.0, -.5))
+                {
                 currentState = MainState.DONE;
+                }
+
             break;
         default:
         case DONE:
@@ -455,7 +463,7 @@ private static boolean rightSidePath ()
                 currentState = MainState.ALIGN_TO_FIRE;
             break;
         case TURN_TO_HOPPER:
-            // TODO random numbers I selected
+            // TODO random magic numbers I selected
             if (Hardware.autoDrive.turnDegrees(isRedAlliance ? 12 : 90))
                 {
                 currentState = MainState.DRIVE_UP_TO_HOPPER;
@@ -566,7 +574,7 @@ private static void initializeDriveProgram ()
     Hardware.autoStateTimer.stop();
     Hardware.autoStateTimer.reset();
     Hardware.driveGyro.calibrate();
-    Hardware.driveGyro.reset();// TODO
+    Hardware.driveGyro.reset();
     Hardware.autoDrive.resetEncoders();
     Hardware.mecanumDrive.drive(0, 0, 0);
 }

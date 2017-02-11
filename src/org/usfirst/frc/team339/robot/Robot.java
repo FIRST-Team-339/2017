@@ -155,7 +155,7 @@ public void autonomousPeriodic ()
     // start setup - tell the user we are beginning
     // setup
     // ---------------------------------------
-    System.out.println("Started AutonomousPeriodic().");
+    // System.out.println("Started AutonomousPeriodic().");
 
     // =========================================================
     // User code goes below here
@@ -355,6 +355,8 @@ public void robotInit ()
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
 
+    Hardware.rightRearEncoder.setDistancePerPulse(.0197);
+    Hardware.leftRearEncoder.setDistancePerPulse(.0197);
     // =========================================================
     // User code goes above here
     // =========================================================
