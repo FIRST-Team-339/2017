@@ -543,13 +543,22 @@ private static boolean leftSidePath ()
             Hardware.leftFrontMotor.set(0);
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
-            currentState = MainState.TURN_TO_HOPPER;
+            currentState = MainState.DONE;
             break;
-        case TURN_TO_HOPPER:
-            currentState = MainState.DRIVE_UP_TO_HOPPER;
+        case DONE:
+            Hardware.leftRearMotor.set(0);
+            Hardware.leftFrontMotor.set(0);
+            Hardware.rightRearMotor.set(0);
+            Hardware.rightFrontMotor.set(0);
             break;
-        case DRIVE_UP_TO_HOPPER:
-            // currentState = MainState.
+
+
+        // case TURN_TO_HOPPER:
+        // currentState = MainState.DRIVE_UP_TO_HOPPER;
+        // break;
+        // case DRIVE_UP_TO_HOPPER:
+        // // currentState = MainState.
+        // break;
 
 
 
