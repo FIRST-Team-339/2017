@@ -10,15 +10,16 @@ private boolean hasGyro = true;
 
 public KilroyGyro (boolean hasGyro)
 {
+    this.hasGyro = hasGyro;
     if (hasGyro == false)
         {
         System.out.println("Gyro not connected");
-        this.hasGyro = false;
+
         }
     if (hasGyro)
         {
         this.gyro = new ADXRS450_Gyro();
-        this.hasGyro = true;
+
         }
     else
         this.gyro = null;
@@ -26,7 +27,7 @@ public KilroyGyro (boolean hasGyro)
 
 public void calibrate ()
 {
-    if (hasGyro == false)
+    if (this.hasGyro == false)
         {
         return;
         }
@@ -35,7 +36,7 @@ public void calibrate ()
 
 public void reset ()
 {
-    if (hasGyro == false)
+    if (this.hasGyro == false)
         {
         return;
         }
@@ -44,7 +45,7 @@ public void reset ()
 
 public double getAngle ()
 {
-    if (hasGyro == false)
+    if (this.hasGyro == false)
         {
         return 339339;
         }
@@ -54,7 +55,7 @@ public double getAngle ()
 
 public double getRate ()
 {
-    if (hasGyro == false)
+    if (this.hasGyro == false)
         {
         return 339339;
         }
