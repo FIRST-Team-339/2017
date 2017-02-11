@@ -166,11 +166,11 @@ public static void periodic ()
      * "Flywheel speed: " + Hardware.shooterMotor.getSpeed());
      */
 
-    if (Hardware.rightDriver.getRawButton(7))
+    if (Hardware.rightDriver.getRawButton(4))
         {
         Hardware.shooter.loadBalls();
         }
-    else if (Hardware.rightDriver.getRawButton(8))
+    else if (Hardware.rightDriver.getRawButton(5))
         {
         Hardware.shooter.reverseLoader();
         }
@@ -232,7 +232,7 @@ public static void periodic ()
     // System.out.println(Hardware.rightDriver.getMagnitude());
 
     // Testing turn by degrees
-    if (Hardware.leftDriver.getRawButton(2))
+    if (Hardware.leftDriver.getRawButton(3))
         {
         turnDegrees = 90;
         isTurning = true;
@@ -280,7 +280,7 @@ public static void periodic ()
         }
 
     // Testing aligning to target
-    if (Hardware.leftOperator.getRawButton(8))
+    if (Hardware.rightOperator.getRawButton(2))
         isAligning = true;
 
     if (isAligning)
