@@ -92,19 +92,14 @@ public static KilroyServo gearServo = new KilroyServo(2, 270);
 // Talon classes
 // ------------------------------------
 
-/**
- * Default motor controller.
- */
-public static TalonSRX rightRearMotor = new TalonSRX(4);// 2);
+// changed these to kilroy equipment list 2017
+public static TalonSRX rightRearMotor = new TalonSRX(2);
 
-public static TalonSRX rightFrontMotor = new TalonSRX(2);// 1);
+public static TalonSRX rightFrontMotor = new TalonSRX(1);
 
-/**
- * Default motor controller.
- */
 public static TalonSRX leftRearMotor = new TalonSRX(3);
 
-public static TalonSRX leftFrontMotor = new TalonSRX(1);// 4);
+public static TalonSRX leftFrontMotor = new TalonSRX(4);
 
 public static CANTalon shooterMotor = new CANTalon(1);
 
@@ -145,14 +140,9 @@ public static SingleThrowSwitch gearLimitSwitch = new SingleThrowSwitch(
 // ------------------------------------
 // Encoders
 // ------------------------------------
-/**
- * Default motor encoder
- */
+
 public static Encoder leftRearEncoder = new Encoder(10, 11);
 
-/**
- * Default motor encoder
- */
 public static Encoder rightRearEncoder = new Encoder(12, 13);
 
 // -----------------------
@@ -174,7 +164,7 @@ public static Encoder rightRearEncoder = new Encoder(12, 13);
 // -------------------------------------
 // Red Light/IR Sensor class
 // -------------------------------------
-public static IRSensor ballLoaderSensor = new IRSensor(8);
+public static IRSensor ballLoaderSensor = new IRSensor(6);
 // ====================================
 // I2C Classes
 // ====================================
@@ -328,6 +318,9 @@ public static Joystick rightOperator = new Joystick(3);
 // ------------------------------------
 // Drive system
 // ------------------------------------
+
+public static boolean isUsingTestRobot = true; // if true, we are using ball bot
+
 
 public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
