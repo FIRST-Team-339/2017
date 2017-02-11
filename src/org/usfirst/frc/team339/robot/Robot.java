@@ -308,7 +308,6 @@ public void robotInit ()
     Hardware.shooterMotor.setPID(shooterP, shooterI, shooterD);
     Hardware.shooterMotor.setSetpoint(0.0);
     Hardware.shooterMotor.reverseSensor(true);
-    // Hardware.rightFrontMotor.setInverted(true);
 
     if (Hardware.runningInLab == true)
         {
@@ -317,6 +316,20 @@ public void robotInit ()
         {
         }
 
+    if (Hardware.isRunningOnKilroyXVIII == true)
+        {
+        Hardware.rightFrontMotor.setInverted(false);
+        Hardware.rightRearMotor.setInverted(false);
+        Hardware.leftFrontMotor.setInverted(false);
+        Hardware.leftRearMotor.setInverted(true);
+        }
+    else
+        {
+        Hardware.rightFrontMotor.setInverted(true);
+        Hardware.rightRearMotor.setInverted(false);
+        Hardware.leftFrontMotor.setInverted(false);
+        Hardware.leftRearMotor.setInverted(false);
+        }
     // -------------------------------------
     // Camera initialization
     // -------------------------------------

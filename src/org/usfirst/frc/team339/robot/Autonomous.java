@@ -215,16 +215,16 @@ public static void periodic ()
             // get the auto program we want to run, get delay pot.
             if (Hardware.enableAutonomous.isOn())
                 {
-                delayTime = Hardware.delayPot.get() * (5 / 270);
+            delayTime = Hardware.delayPot.get() * (5 / 270);
                 if (Hardware.driverStation
                         .getAlliance() == Alliance.Red)
                     {
-                    isRedAlliance = true;
+                isRedAlliance = true;
                     }
                 if (Hardware.pathSelector.isOn())
                     {
-                    autoPath = AutoProgram.CENTER_GEAR_PLACEMENT;
-                    break;
+            autoPath = AutoProgram.CENTER_GEAR_PLACEMENT;
+            break;
                     }
                 if (Hardware.rightPath.isOn())
                     {
@@ -260,7 +260,9 @@ public static void periodic ()
             Hardware.leftFrontMotor.set(0);
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
+
             Hardware.ringlightRelay.set(Value.kOff);
+
             break;
         }
 
@@ -334,7 +336,7 @@ private static boolean placeCenterGearPath ()
         case DRIVE_FORWARD_TO_CENTER:
             // If we see blobs, hand over control to camera, otherwise, go
             // forward. Check to make sure we haven't gone too far.
-            Hardware.imageProcessor.processImage();
+                Hardware.imageProcessor.processImage();
             if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
                 {
                 currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
@@ -587,13 +589,26 @@ private static boolean leftSidePath ()
             Hardware.leftFrontMotor.set(0);
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
-            currentState = MainState.TURN_TO_HOPPER;
+            currentState = MainState.DONE;
             break;
-        case TURN_TO_HOPPER:
-            currentState = MainState.DRIVE_UP_TO_HOPPER;
+        case DONE:
+            Hardware.leftRearMotor.set(0);
+            Hardware.leftFrontMotor.set(0);
+            Hardware.rightRearMotor.set(0);
+            Hardware.rightFrontMotor.set(0);
             break;
-        case DRIVE_UP_TO_HOPPER:
-            // currentState = MainState.
+
+
+        // case TURN_TO_HOPPER:
+        // currentState = MainState.DRIVE_UP_TO_HOPPER;
+        // break;
+        // case DRIVE_UP_TO_HOPPER:
+        // // currentState = MainState.
+        // break;
+
+
+
+
         }
     return false;
 }
