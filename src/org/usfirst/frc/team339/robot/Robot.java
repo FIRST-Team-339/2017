@@ -355,8 +355,28 @@ public void robotInit ()
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
 
-    Hardware.rightRearEncoder.setDistancePerPulse(.0197);
-    Hardware.leftRearEncoder.setDistancePerPulse(.0197);
+    if (Hardware.isRunningOnKilroyXVIII)
+        {
+        Hardware.rightRearEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
+        Hardware.leftRearEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
+        Hardware.rightFrontEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
+        Hardware.leftFrontEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
+        }
+    else
+        {
+        Hardware.rightRearEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
+        Hardware.leftRearEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
+        Hardware.leftFrontEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
+        Hardware.rightFrontEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
+        }
     // =========================================================
     // User code goes above here
     // =========================================================
@@ -492,6 +512,10 @@ public static final double FIRST_GEAR = .7;
  * The percentage we want the motors to run at while we are in second gear
  */
 public static final double SECOND_GEAR = 1;
+
+public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = .5;
+
+public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVII = .0197;
 
 public static double shooterP = .07;
 
