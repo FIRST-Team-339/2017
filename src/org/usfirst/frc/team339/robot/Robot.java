@@ -355,6 +355,8 @@ public void robotInit ()
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
 
+    Hardware.rightRearEncoder.setDistancePerPulse(.0197);
+    Hardware.leftRearEncoder.setDistancePerPulse(.0197);
     // =========================================================
     // User code goes above here
     // =========================================================

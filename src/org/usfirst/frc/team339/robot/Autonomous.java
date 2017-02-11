@@ -229,14 +229,15 @@ private static boolean driveToTargetFirstStart = true;
 
 private static boolean placeCenterGearPath ()
 {
-    // System.out.println("CurrentState = " + currentState);
-    // System.out.println("Right US: "
-    // + Hardware.rightUS.getDistanceFromNearestBumper());
+    System.out.println("CurrentState = " + currentState);
+    System.out.println("Right US: "
+            + Hardware.rightUS.getDistanceFromNearestBumper());
     switch (currentState)
         {
         case INIT:
             // zero out all the sensors, reset timers, etc.
             Hardware.autoStateTimer.start();
+            Hardware.ringlightRelay.set(Value.kOn);
             currentState = MainState.DELAY_BEFORE_START;
             break;
         case DELAY_BEFORE_START:
@@ -278,31 +279,7 @@ private static boolean placeCenterGearPath ()
         case DRIVE_FORWARD_TO_CENTER:
             // If we see blobs, hand over control to camera, otherwise, go
             // forward. Check to make sure we haven't gone too far.
-
-            if (driveToTargetFirstStart)
-                {
-                Hardware.autoStateTimer.stop();
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                driveToTargetFirstStart = false;
-
-                Hardware.ringlightRelay.set(Value.kOn);
-
-                // Makes sure we actually process the image before asking
-                // whether or not we have any blobs
-                Hardware.imageProcessor.processImage();
-                currentState = MainState.DRIVE_FORWARD_TO_CENTER;
-                break;
-                }
-
-            if (Hardware.autoStateTimer.get() <= .25)
-                {
-                Hardware.imageProcessor.processImage();
-                currentState = MainState.DRIVE_FORWARD_TO_CENTER;
-                break;
-                }
-            Hardware.autoStateTimer.stop();
-
+            Hardware.imageProcessor.processImage();
             if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
                 {
                 currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
@@ -336,10 +313,12 @@ private static boolean placeCenterGearPath ()
 
             break;
         case DRIVE_CAREFULLY_TO_PEG:
-            Hardware.ringlightRelay.set(Value.kOff);
+
             if (Hardware.rightUS
-                    .getDistanceFromNearestBumper() <= ALIGN_DISTANCE_FROM_GOAL)
+                    .getDistanceFromNearestBumper() >= ALIGN_DISTANCE_FROM_GOAL)
+                {
                 Hardware.autoDrive.drive(.5, 0);
+                }
             else
                 {
                 // desired distance from wall when we start
@@ -347,6 +326,7 @@ private static boolean placeCenterGearPath ()
                 }
             break;
         case WAIT_FOR_GEAR_EXODUS:
+            Hardware.ringlightRelay.set(Value.kOff);
             if (Hardware.gearLimitSwitch.isOn() == false)
                 {
                 Hardware.autoDrive.drive(0.0, 0.0);
