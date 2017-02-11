@@ -136,7 +136,8 @@ public static Relay agitatorRelay = new Relay(1);
 public static SingleThrowSwitch gearLimitSwitch = new SingleThrowSwitch(
         5);
 
-public static SingleThrowSwitch backupOrFire = new SingleThrowSwitch(3);
+public static SingleThrowSwitch backupOrFireOrHopper = new SingleThrowSwitch(
+        3);
 
 public static SingleThrowSwitch rightPath = new SingleThrowSwitch(7);
 
@@ -230,6 +231,7 @@ public static Potentiometer delayPot = new Potentiometer(1, 270);// TODO max //
                                                                  // degree value
 
 public static Potentiometer gimbalPot = new Potentiometer(3, 270);
+
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------

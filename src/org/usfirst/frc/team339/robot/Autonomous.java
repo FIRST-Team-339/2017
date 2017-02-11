@@ -156,7 +156,7 @@ private static enum MainState
      * On paths where we fire, back away from the gear peg and towards the
      * boiler until we're in range to fire.
      */
-    DRIVE_BACKWARDS_TO_FIRERANGE,
+    DRIVE_TO_FIRERANGE,
     /**
      * Use the camera to figure out if we're in range of the top boiler
      */
@@ -635,26 +635,43 @@ private static boolean rightSidePath ()
                 }
             break;
         case DRIVE_AWAY_FROM_PEG:
-            if (isRedAlliance && goForFire)
+            if (Hardware.autoDrive.driveInches(24, -.3))
                 {
-                currentState = MainState.DRIVE_BACKWARDS_TO_FIRERANGE;
+                if (isRedAlliance && goForFire)
+                    {
+                    currentState = MainState.TURN_TO_FACE_GOAL;
+                    }
+                if (!isRedAlliance && goForHopper)
+                    {
+                    currentState = MainState.TURN_TO_HOPPER;
+                    }
+                else
+                    {
+                    currentState = MainState.DONE;
+                    }
                 }
-            else if (goForHopper)
+            break;
+        case TURN_TO_FACE_GOAL:
+            if (Hardware.autoDrive.turnDegrees(180))
                 {
-                currentState = MainState.TURN_TO_HOPPER;
+                currentState = MainState.DRIVE_TO_FIRERANGE;
+                }
+            break;
+        case DRIVE_TO_FIRERANGE:
+            Hardware.imageProcessor.processImage();
+            if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
+                {
+                currentState = MainState.DRIVE_INTO_RANGE_WITH_CAMERA;
                 }
             else
                 {
-                currentState = MainState.DONE;
+                // TODO random number I selected
+                if (Hardware.autoDrive.driveInches(6, getRealSpeed(.6)))
+                    currentState = MainState.ALIGN_TO_FIRE;
                 }
-        case TURN_TO_FACE_GOAL:
-
             break;
-        case DRIVE_BACKWARDS_TO_FIRERANGE:
-            currentState = MainState.DRIVE_INTO_RANGE_WITH_CAMERA;
-            // TODO random number I selected
-            if (Hardware.autoDrive.driveInches(6, getRealSpeed(.6)))
-                currentState = MainState.ALIGN_TO_FIRE;
+        case DRIVE_INTO_RANGE_WITH_CAMERA:
+            Hardware.imageProcessor.processImage();
             break;
         case TURN_TO_HOPPER:
             // TODO random magic numbers I selected
