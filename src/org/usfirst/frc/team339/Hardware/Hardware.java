@@ -134,8 +134,7 @@ public static Relay agitatorRelay = new Relay(1);
 public static SingleThrowSwitch gearLimitSwitch = new SingleThrowSwitch(
         5);
 
-// TODO random numbers on all the next ones.
-public static SingleThrowSwitch backupOrFire = new SingleThrowSwitch(6);
+public static SingleThrowSwitch backupOrFire = new SingleThrowSwitch(3);
 
 public static SingleThrowSwitch rightPath = new SingleThrowSwitch(7);
 
@@ -145,7 +144,7 @@ public static DoubleThrowSwitch pathSelector = new DoubleThrowSwitch(
         rightPath, leftPath);
 
 public static SingleThrowSwitch enableAutonomous = new SingleThrowSwitch(
-        10);
+        4);
 // ------------------------------------
 // Gear Tooth Sensors
 // ------------------------------------
@@ -157,6 +156,11 @@ public static SingleThrowSwitch enableAutonomous = new SingleThrowSwitch(
 public static Encoder leftRearEncoder = new Encoder(10, 11);
 
 public static Encoder rightRearEncoder = new Encoder(12, 13);
+
+public static Encoder leftFrontEncoder = new Encoder(14, 15);
+
+public static Encoder rightFrontEncoder = new Encoder(16, 17);
+
 
 // -----------------------
 // Wiring diagram
@@ -220,14 +224,13 @@ public static ADXRS450_Gyro driveGyro = new ADXRS450_Gyro();
 // Potentiometers
 // -------------------------------------
 // -------------------------------------
-public static Potentiometer delayPot = new Potentiometer(1, 270);// TODO max
+public static Potentiometer delayPot = new Potentiometer(1, 270);// TODO max //
                                                                  // degree value
 
 public static Potentiometer gimbalPot = new Potentiometer(3, 270);
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------
-
 public static UltraSonic rightUS = new UltraSonic(2);
 // **********************************************************
 // roboRIO CONNECTIONS CLASSES
