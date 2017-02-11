@@ -64,6 +64,8 @@ public class Hardware
 // ------------------------------------
 public static boolean testbool = true;
 
+public static double joystickDeadzone = .2;
+
 /**
  * denote whether we are running in the lab or not. This will allow us to test
  * in the lab once the robot is bagged
@@ -230,6 +232,7 @@ public static Potentiometer delayPot = new Potentiometer(1, 270);// TODO max //
                                                                  // degree value
 
 public static Potentiometer gimbalPot = new Potentiometer(3, 270);
+
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------
@@ -290,6 +293,7 @@ public static final DriverStation driverStation = DriverStation
 // ------------------------------------
 // Joystick classes
 // ------------------------------------
+
 /**
  * The left joystick controlling the drive train.
  */
@@ -343,21 +347,20 @@ public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
 public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
 
-// Change when we get the robot for mecanum
 
 // =====================================================================
 // Drive classes
 // =====================================================================
 
 
-public static Drive autoDrive = new Drive(tankDrive,
+public static Drive autoDrive = new Drive(mecanumDrive,
         imageProcessor, leftRearEncoder, rightRearEncoder,
         leftRearEncoder, rightRearEncoder, rightUS);
 
 /**
  * are we using mecanum? set false for tank drive
  */
-public static boolean isUsingMecanum = false;
+public static boolean isUsingMecanum = true;
 
 /**
  * are we using 2 joysticks?

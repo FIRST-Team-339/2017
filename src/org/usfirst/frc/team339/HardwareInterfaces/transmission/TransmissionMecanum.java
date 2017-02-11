@@ -15,8 +15,11 @@ public class TransmissionMecanum extends TransmissionFourWheel
  * @written 23 July 2015
  */
 private double directionalDeadzone = 0.0;
+
 private double directionalXOrthogonalZone = 0.0;
+
 private double directionalYOrthogonalZone = 0.0;
+
 private double firstGearPercentage = 0.0;
 
 /** Sets whether or not the mecanum control joystick is reversed */
@@ -62,9 +65,11 @@ public void drive (double magnitude, double direction)
     this.drive(magnitude, direction, 0.0, 0.0, 0.0);
 }
 
-public void drive(double magnitude, double direction, double rotation)
+public void drive (double magnitude, double direction, double rotation)
 {
-	this.drive(magnitude, direction, rotation, 0.0,0.0);
+    this.drive(magnitude, direction, rotation,
+            super.getDeadbandPercentageZone(),
+            super.getDeadbandPercentageZone());
 }
 
 /**
@@ -103,50 +108,43 @@ public void drive (double magnitude, double direction, double rotation,
     double tempRotation = rotation, tempMagnitude = magnitude,
             tempDirection = direction;
 
-    if (Math.abs(yValue) > directionalYOrthogonalZone
-            || Math.abs(xValue) > directionalXOrthogonalZone)
+    if ((Math.abs(yValue) >= super.getDeadbandPercentageZone()
+            || Math.abs(xValue) >= super.getDeadbandPercentageZone())
+            || Math.abs(
+                    tempRotation) >= super.getDeadbandPercentageZone())
         {
-        if (tempDirection > -10 && tempDirection < 10)
-            tempDirection = 0;
-        if (tempDirection > 10 && tempDirection < 30)
-            tempDirection = 20;
-        if (tempDirection > 30 && tempDirection < 50)
-            tempDirection = 40;
-        if (tempDirection > 50 && tempDirection < 70)
-            tempDirection = 60;
-        if (tempDirection > 70 && tempDirection < 90)
-            tempDirection = 80;
-        if (tempDirection > 90 && tempDirection < 110)
-            tempDirection = 100;
-        if (tempDirection > 110 && tempDirection < 130)
-            tempDirection = 120;
-        if (tempDirection > 130 && tempDirection < 150)
-            tempDirection = 140;
-        if (tempDirection > 150 && tempDirection < 170)
-            tempDirection = 160;
-        if (tempDirection > 170 && tempDirection <= 180)
-            tempDirection = 175;
-        if (tempDirection > -180 && tempDirection < -170)
-            tempDirection = 175;
-        if (tempDirection > -170 && tempDirection < -150)
-            tempDirection = -160;
-        if (tempDirection > -150 && tempDirection < -130)
-            tempDirection = -140;
-        if (tempDirection > -130 && tempDirection < -110)
-            tempDirection = -120;
-        if (tempDirection > -110 && tempDirection < -90)
-            tempDirection = -100;
-        if (tempDirection > -90 && tempDirection < -70)
-            tempDirection = -80;
-        if (tempDirection > -70 && tempDirection < -50)
-            tempDirection = -60;
-        if (tempDirection > -50 && tempDirection < -30)
-            tempDirection = -40;
-        if (tempDirection > -30 && tempDirection < -10)
-            tempDirection = -20;
 
 
-        // System.out.println("not straight strafing");
+        // double tempDirectionalDeadzone = 5;// this.getDirectionalDeadzone()
+        // * 180;
+
+        // if (tempDirection < tempDirectionalDeadzone
+        // && tempDirection > -tempDirectionalDeadzone)
+        // tempDirection = 0;
+        // else if (tempDirection < 45 + tempDirectionalDeadzone
+        // && tempDirection > 45 - tempDirectionalDeadzone)
+        // tempDirection = 45;
+        // else if (tempDirection < 90 + tempDirectionalDeadzone
+        // && tempDirection > 90 - tempDirectionalDeadzone)
+        // tempDirection = 90;
+        // else if (tempDirection < 135 + tempDirectionalDeadzone
+        // && tempDirection > 135 - tempDirectionalDeadzone)
+        // tempDirection = 135;
+        // else if (tempDirection < -180 + tempDirectionalDeadzone
+        // && tempDirection > 180 - tempDirectionalDeadzone)
+        // tempDirection = 180;
+        // else if (tempDirection < -135 + tempDirectionalDeadzone
+        // && tempDirection > -135 - tempDirectionalDeadzone)
+        // tempDirection = -135;
+        // else if (tempDirection < -90 + tempDirectionalDeadzone
+        // && tempDirection > -90 - tempDirectionalDeadzone)
+        // tempDirection = -90;
+        // else if (tempDirection < -45 + tempDirectionalDeadzone
+        // && tempDirection > -45 - tempDirectionalDeadzone)
+        // tempDirection = -45;
+        //
+        // System.out.println("Direction: " + tempDirection);
+
         // Magnitude and rotation deadzones
 
         // Deadzone for Rotation
@@ -166,17 +164,8 @@ public void drive (double magnitude, double direction, double rotation,
         // {
         // tempRotation = 0.0;
         // }
-        if (Math.abs(tempRotation) < this
-                .getDeadbandPercentageZone())
-            {
-            tempRotation = 0.0;
-            }
 
-        if (Math.abs(tempMagnitude) < this
-                .getDeadbandPercentageZone())
-            {
-            tempMagnitude = 0.0;
-            }
+
 
         // Deadzone for Magnitude
         // if (Math.abs(magnitude) > this.getDeadbandPercentageZone() &&
@@ -307,6 +296,13 @@ public void drive (double magnitude, double direction, double rotation,
         this.driveRightRearMotor(rightRearSpeed);
         // }
         }
+    else
+        {
+        this.driveLeftMotor(0.0);
+        this.driveRightMotor(0.0);
+        this.driveLeftRearMotor(0.0);
+        this.driveRightRearMotor(0.0);
+        }
 }
 
 /**
@@ -333,26 +329,20 @@ public boolean isMecanumJoystickReversed ()
 }
 
 /**
- * Gets the current directional deadzone for the joystick angle. If we are
- * within this many degrees of being "purely" up, down, left, or right, then
- * we just send that "pure" degree value to account for human error in
- * joystick directional input.
+ * Sets the deadzone for the direction. The perecentage is changed in the
+ * drive code to be in between a certain amount of degrees.
+ * aka, +/- percentage * 180
  *
  *
- * @author Becky Button
- * @param directionalXOrthogonalZone
- *            x deadband
- * @param directionalYOrthogonalZone
- *            y deadband
+ * @author Ryan McGee
+ * @param deadZonePercentage
+ *            the percentage that we want the joystick angle
+ *            to snap to.
  * @written 29 January 2017
  */
-public void setDirectionalDeadzone (double directionalXOrthogonalZone,
-        double directionalYOrthogonalZone)
+public void setDirectionalDeadzone (double deadZonePercentage)
 {
-    this.directionalXOrthogonalZone = directionalXOrthogonalZone;
-    this.directionalYOrthogonalZone = directionalYOrthogonalZone;
-
-
+    this.directionalDeadzone = deadZonePercentage;
 }
 
 /**
