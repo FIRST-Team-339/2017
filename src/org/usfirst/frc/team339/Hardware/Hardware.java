@@ -15,6 +15,7 @@
 package org.usfirst.frc.team339.Hardware;
 
 import com.ctre.CANTalon;
+import org.usfirst.frc.team339.HardwareInterfaces.DoubleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
@@ -137,6 +138,19 @@ public static Relay agitatorRelay = new Relay(1);
 // ------------------------------------
 public static SingleThrowSwitch gearLimitSwitch = new SingleThrowSwitch(
         5);
+
+// TODO random numbers on all the next ones.
+public static SingleThrowSwitch backupOrFire = new SingleThrowSwitch(6);
+
+public static SingleThrowSwitch rightPath = new SingleThrowSwitch(7);
+
+public static SingleThrowSwitch leftPath = new SingleThrowSwitch(8);
+
+public static DoubleThrowSwitch pathSelector = new DoubleThrowSwitch(
+        rightPath, leftPath);
+
+public static SingleThrowSwitch enableAutonomous = new SingleThrowSwitch(
+        10);
 // ------------------------------------
 // Gear Tooth Sensors
 // ------------------------------------

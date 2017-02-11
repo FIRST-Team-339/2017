@@ -182,10 +182,35 @@ public static void periodic ()
 
         case INIT:
             // get the auto program we want to run, get delay pot.
-            delayTime = Hardware.delayPot.get() * (5 / 270);
-            if (Hardware.driverStation.getAlliance() == Alliance.Red)
-                isRedAlliance = true;
-            autoPath = AutoProgram.CENTER_GEAR_PLACEMENT;
+            if (Hardware.enableAutonomous.isOn())
+                {
+                delayTime = Hardware.delayPot.get() * (5 / 270);
+                if (Hardware.driverStation
+                        .getAlliance() == Alliance.Red)
+                    {
+                    isRedAlliance = true;
+                    }
+                if (Hardware.pathSelector.isOn())
+                    {
+                    autoPath = AutoProgram.CENTER_GEAR_PLACEMENT;
+                    break;
+                    }
+                if (Hardware.rightPath.isOn())
+                    {
+                    autoPath = AutoProgram.RIGHT_PATH;
+                    break;
+                    }
+                if (Hardware.leftPath.isOn())
+                    {
+                    autoPath = AutoProgram.LEFT_PATH;
+                    break;
+                    }
+                autoPath = AutoProgram.DONE;
+                }
+            else
+                {
+                autoPath = AutoProgram.DONE;
+                }
             break;
         case CENTER_GEAR_PLACEMENT:
             if (placeCenterGearPath())
@@ -204,9 +229,7 @@ public static void periodic ()
             Hardware.leftFrontMotor.set(0);
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
-
             Hardware.ringlightRelay.set(Value.kOff);
-
             break;
         }
 
