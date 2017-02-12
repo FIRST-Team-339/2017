@@ -165,6 +165,8 @@ public static Encoder leftFrontEncoder = new Encoder(14, 15);
 
 public static Encoder rightFrontEncoder = new Encoder(16, 17);
 
+// public static Encoder gimbalTurretEncoder = new Encoder();
+
 
 // -----------------------
 // Wiring diagram
@@ -237,6 +239,8 @@ public static Potentiometer gimbalPot = new Potentiometer(3, 270);
 // Sonar/Ultrasonic
 // -------------------------------------
 public static UltraSonic rightUS = new UltraSonic(2);
+
+public static UltraSonic leftUS = new UltraSonic(2);
 // **********************************************************
 // roboRIO CONNECTIONS CLASSES
 // **********************************************************
