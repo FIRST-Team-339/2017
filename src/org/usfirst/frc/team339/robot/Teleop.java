@@ -404,12 +404,12 @@ public static void printStatements ()
     // Encoders
     // prints the distance from the encoders
     // ---------------------------------
-    // System.out.println("Right Front Encoder: "
-    // + Hardware.autoDrive.getRightFrontEncoderDistance());
+    System.out.println("Right Front Encoder: "
+            + Hardware.rightFrontEncoder.get());
     // System.out.println("Left Front Encoder: "
     // + Hardware.autoDrive.getLeftFrontEncoderDistance());
-    // System.out.println("Left Rear Encoder: "
-    // + Hardware.autoDrive.getLeftRearEncoderDistance());
+    System.out.println("Left Rear Encoder: "
+            + Hardware.leftRearEncoder.get());
     // System.out.println("Right Rear Encoder: "
     // + Hardware.autoDrive.getRightRearEncoderDistance());
 
@@ -452,7 +452,7 @@ public static void printStatements ()
     // + Hardware.leftUS.getDistanceFromNearestBumper());
     // System.out.println("RightUS = "
     // + Hardware.rightUS.getDistanceFromNearestBumper());
-    System.out.println("Delay Pot: " + Hardware.delayPot.get());
+    // System.out.println("Delay Pot: " + Hardware.delayPot.get());
 
 
     // ---------------------------------
