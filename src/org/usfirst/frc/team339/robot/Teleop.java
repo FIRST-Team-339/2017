@@ -61,6 +61,8 @@ public static void init ()
     // --------------------------------------
     // initialize all encoders here
     // --------------------------------------
+    Hardware.leftFrontEncoder.reset();
+    Hardware.rightFrontEncoder.reset();
     Hardware.rightRearEncoder.reset();
     Hardware.leftRearEncoder.reset();
     // --------------------------------------
@@ -180,6 +182,13 @@ public static void periodic ()
     printStatements();
 
     // TESTING CODE:
+
+    if (Hardware.rightOperator.getRawButton(2))
+        Hardware.intake.startIntake();
+    else if (Hardware.rightOperator.getRawButton(3))
+        Hardware.intake.reverseIntake();
+    else
+        Hardware.intake.stopIntake();
 
     // =================================================================
     // Driving code
@@ -367,13 +376,13 @@ public static void printStatements ()
     // Relay
     // prints value of the relay states
     // =================================
-    // if(Hardware.ringLightRelay.isOn == true)
+    // if (Hardware.ringlightSwitch.isOnCheckNow())
     // {
-    // System.out.println("The ring light relay is on");
+    // System.out.println("Ring light relay is on");
     // }
-    // else if(Hardware.ringLightRelay.isOn == false)
+    // else if (!Hardware.ringlightSwitch.isOnCheckNow())
     // {
-    // System.out.println("The ring light relay is off");
+    // System.out.println("Ring light relay is off");
     // }
 
     // =================================
@@ -412,7 +421,14 @@ public static void printStatements ()
     // Red Light/IR Sensors
     // prints the state of the sensor
     // ---------------------------------
-    System.out.println("Ball IR: " + Hardware.ballLoaderSensor.isOn());
+    // if (Hardware.ballLoaderSensor.isOn() == true)
+    // {
+    // System.out.println("Ball IR Sensor is On");
+    // }
+    // else if (Hardware.ballLoaderSensor.isOn() == false)
+    // {
+    // System.out.println("Ball IR Sensor is Off");
+    // }
 
     // =================================
     // Pneumatics
@@ -432,13 +448,12 @@ public static void printStatements ()
     // =================================
     // Analogs
     // =================================
-
-    // System.out.println("LeftUS = "
-    // + Hardware.leftUS.getDistanceFromNearestBumper());
     //
     // We don't want the print statements to flood everything and go ahhhhhhhh
     //
     // if (Hardware.rightOperator.getRawButton(11))
+    // System.out.println("LeftUS = "
+    // + Hardware.leftUS.getDistanceFromNearestBumper());
     // System.out.println("RightUS = "
     // + Hardware.rightUS.getDistanceFromNearestBumper());
     // System.out.println("Delay Pot: " + Hardware.delayPot.get());
@@ -449,7 +464,6 @@ public static void printStatements ()
     // where the pot is turned to
     // ---------------------------------
     // System.out.println("Delay Pot Degrees" + Hardware.delayPot.get());
-    // System.out.println("Gimbal Pot Degrees" + Hardware.gimbalPot);
 
 
     // =================================
