@@ -268,8 +268,11 @@ public void robotInit ()
     // =========================================================
     // User code goes below here
     // =========================================================
+    Hardware.leftFrontEncoder.reset();
     Hardware.leftRearEncoder.reset();
+    Hardware.rightFrontEncoder.reset();
     Hardware.rightRearEncoder.reset();
+    Hardware.rightFrontEncoder.setReverseDirection(true);
     Hardware.tankDrive.setGearPercentage(1, FIRST_GEAR);
     Hardware.tankDrive.setGearPercentage(2, SECOND_GEAR);
     Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
