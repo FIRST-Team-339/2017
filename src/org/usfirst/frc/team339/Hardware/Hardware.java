@@ -166,7 +166,7 @@ public static Encoder leftFrontEncoder = new Encoder(14, 15);
 
 public static Encoder rightFrontEncoder = new Encoder(16, 17);
 
-// public static Encoder gimbalTurretEncoder = new Encoder();
+public static Encoder gimbalEnc = new Encoder(18, 19);
 
 
 // -----------------------
@@ -225,7 +225,7 @@ public static IRSensor ballLoaderSensor = new IRSensor(6);
 // ------------------------------------
 // Gyro class
 // ------------------------------------
-public static KilroyGyro driveGyro = new KilroyGyro(true);
+public static KilroyGyro driveGyro = new KilroyGyro(false);
 
 // -------------------------------------
 // Potentiometers
@@ -234,14 +234,14 @@ public static KilroyGyro driveGyro = new KilroyGyro(true);
 public static Potentiometer delayPot = new Potentiometer(1, 270);// TODO max //
                                                                  // degree value
 
-public static Encoder gimablEncoder = new Encoder(3, 270);
+// public static Encoder gimbalEncoder = new Encoder(3, 270);
 
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------
 public static UltraSonic rightUS = new UltraSonic(2);
 
-public static UltraSonic leftUS = new UltraSonic(2);
+// public static UltraSonic leftUS = new UltraSonic(2);
 // **********************************************************
 // roboRIO CONNECTIONS CLASSES
 // **********************************************************
@@ -315,7 +315,7 @@ public static Joystick rightDriver = new Joystick(1);
 public static Joystick leftOperator = new Joystick(2);
 
 public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
-        leftOperator, 2, false);
+        leftOperator, 3, false);
 
 
 /**
@@ -377,8 +377,7 @@ public static boolean twoJoystickControl = false;
 // Assembly classes (e.g. forklift)
 // -------------------
 public static Shooter shooter = new Shooter(shooterMotor,
-        ballLoaderSensor, elevatorMotor, 25, imageProcessor,
-        gimablEncoder,
+        ballLoaderSensor, elevatorMotor, 25, imageProcessor, gimbalEnc,
         3, gimbalMotor);// TODO switch out pot to encoder.
 
 public static BallIntake intake = new BallIntake(intakeMotor,
