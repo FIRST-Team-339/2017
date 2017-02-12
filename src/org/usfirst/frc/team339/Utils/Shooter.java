@@ -2,8 +2,8 @@ package org.usfirst.frc.team339.Utils;
 
 import com.ctre.CANTalon;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
-import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PWMSpeedController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
@@ -30,7 +30,7 @@ private double acceptableError = 0;
 
 private ImageProcessor visionTargeter = null;
 
-private Potentiometer gimbalPot = null;
+private Encoder gimbalEncoder = null;
 
 private double acceptableGimbalError = 0;
 
@@ -51,7 +51,7 @@ private Timer shooterTimer = new Timer();
  *            The error we can handle on the flywheel without losing accuracy
  * @param visionTargeting
  *            Our vision processor object, used to target the high boiler.
- * @param gimbalPot
+ * @param gimbalEnc
  *            The potentiometer that reads the bearing of the turret.
  * @param acceptableGimbalError
  *            The acceptable angular angle, in degrees, the gimbal turret is
@@ -62,7 +62,7 @@ private Timer shooterTimer = new Timer();
 public Shooter (CANTalon controller, IRSensor ballLoaderSensor,
         Victor elevator,
         double acceptableFlywheelSpeedError,
-        ImageProcessor visionTargeting, Potentiometer gimbalPot,
+        ImageProcessor visionTargeting, Encoder gimbalEnc,
         double acceptableGimbalError, PWMSpeedController gimbalMotor)
 {
     this.flywheelController = controller;
@@ -70,8 +70,9 @@ public Shooter (CANTalon controller, IRSensor ballLoaderSensor,
     this.elevatorController = elevator;
     this.acceptableError = acceptableFlywheelSpeedError;
     this.visionTargeter = visionTargeting;
-    this.gimbalPot = gimbalPot;
+    this.gimbalEncoder = gimbalEnc;
     this.gimbalMotor = gimbalMotor;
+    this.gimbalEncoder.setDistancePerPulse((360.0 / 256.0));
 }
 
 /**
@@ -323,41 +324,35 @@ public static enum turnReturn
 public turnToGoalReturn turnToGoal ()
 {
     // if we have at least one blob
+    this.visionTargeter.processImage();
     if (this.visionTargeter.getNthSizeBlob(0) != null)
         {
-        // if we have at least 2 blobs
-        if (this.visionTargeter.getNthSizeBlob(1) != null)
+        // If we haven't yet calculated our setpoint yet.
+        if (gimbalTarget == Double.MIN_VALUE)
             {
-            // If we haven't yet calculated our setpoint yet.
-            if (gimbalTarget == Double.MIN_VALUE)
-                {
-                // calculate our setpoint
-                gimbalTarget = this.visionTargeter.getYawAngleToTarget(
-                        this.visionTargeter.getNthSizeBlob(0));
-                }
-            else
-                {
-                // turn to our new bearing
-                if (turnToBearing(gimbalTarget
-                        + this.getBearing()) == turnReturn.SUCCESS)
-                    {
-                    // we're done!
-                    gimbalTarget = Double.MIN_VALUE;
-                    return turnToGoalReturn.SUCCESS;
-                    }
-                else if (turnToBearing(gimbalTarget
-                        + this.getBearing()) == turnReturn.TOO_FAR)
-                    {
-                    gimbalTarget = Double.MIN_VALUE;
-                    return turnToGoalReturn.OUT_OF_GIMBALING_RANGE;
-                    }
-                }
-            // still working...l
-            return turnToGoalReturn.WORKING;
+            // calculate our setpoint
+            gimbalTarget = this.visionTargeter.getYawAngleToTarget(
+                    this.visionTargeter.getNthSizeBlob(0));
             }
-        // Don't see enough
-        // TODO remove?
-        return turnToGoalReturn.NOT_ENOUGH_BLOBS;
+        else
+            {
+            // turn to our new bearing
+            if (turnToBearing(gimbalTarget
+                    + this.getBearing()) == turnReturn.SUCCESS)
+                {
+                // we're done!
+                gimbalTarget = Double.MIN_VALUE;
+                return turnToGoalReturn.SUCCESS;
+                }
+            else if (turnToBearing(gimbalTarget
+                    + this.getBearing()) == turnReturn.TOO_FAR)
+                {
+                gimbalTarget = Double.MIN_VALUE;
+                return turnToGoalReturn.OUT_OF_GIMBALING_RANGE;
+                }
+            }
+        // still working...l
+        return turnToGoalReturn.WORKING;
         }
     // We don't see anything.
     return turnToGoalReturn.NO_BLOBS;
@@ -424,8 +419,7 @@ public double calculateRPMToMakeGoal (double distance)
     double distanceMeters = distance * 3.28084;// Convert the distance parameter
                                                // meters, for easier
                                                // computations.
-
-    return (60.0 / (2 * Math.PI) * (Math.sqrt(((4.9
+    double perfectRPM = (60.0 / (2 * Math.PI) * (Math.sqrt(((4.9
             * (Math.pow(distanceMeters, 2)))
             / ((this.FLYWHEEL_RADIUS_METERS
                     * this.FLYWHEEL_RADIUS_METERS)
@@ -434,8 +428,9 @@ public double calculateRPMToMakeGoal (double distance)
                             2))
                     * (distanceMeters
                             * Math.tan(Math.toRadians(this.MOUNT_ANGLE))
-                            - this.RELATIVE_GOAL_HEIGHT_METERS))))))
-            + this.FLYWHEEL_SPEED_CORRECTION_CONSTANT;
+                            - this.RELATIVE_GOAL_HEIGHT_METERS))))));
+    return perfectRPM
+            + this.FLYWHEEL_SPEED_CORRECTION_CONSTANT * perfectRPM;
 }
 
 /**
@@ -444,11 +439,11 @@ public double calculateRPMToMakeGoal (double distance)
  *         degrees to the left and positive to the right. Returns a range from
  *         -gimbalPot.maxDegrees/2 to +gimbalPot.maxDegrees/2
  */
-public double getBearing ()
+public double getBearing ()// TODO should work.
 {
     // normalizes the bearing from -gimbalPot.getMaxDegrees()/2 to
     // gimbalPot.getMaxDegrees()/2
-    return this.gimbalPot.get() - (this.gimbalPot.getMaxDegrees() / 2);
+    return this.gimbalEncoder.get();
 }
 
 private final double MAX_TURN_SPEED = .8;
@@ -463,11 +458,11 @@ private final double MAX_GIMBALING_ANGLE = 135;
 
 private final double MIN_GIMBALING_ANGLE = -135;
 
-private final double MOUNT_ANGLE = 80;// TODO figure out the actual number.
+private final double MOUNT_ANGLE = 64;// TODO figure out the actual number.
 
 private final double RELATIVE_GOAL_HEIGHT_METERS = 1.93;
 
 private final double FLYWHEEL_RADIUS_METERS = 0.0508;
 
-private final double FLYWHEEL_SPEED_CORRECTION_CONSTANT = 200;// TODO tune
+private final double FLYWHEEL_SPEED_CORRECTION_CONSTANT = .3;// TODO tune
 }

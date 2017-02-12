@@ -60,6 +60,8 @@ public class Teleop {
 		// --------------------------------------
 		// initialize all encoders here
 		// --------------------------------------
+		Hardware.leftFrontEncoder.reset();
+		Hardware.rightFrontEncoder.reset();
 		Hardware.rightRearEncoder.reset();
 		Hardware.leftRearEncoder.reset();
 		// --------------------------------------
@@ -170,6 +172,12 @@ public class Teleop {
 
 		// TESTING CODE:
 
+		if (Hardware.rightOperator.getRawButton(2))
+			Hardware.intake.startIntake();
+		else if (Hardware.rightOperator.getRawButton(3))
+			Hardware.intake.reverseIntake();
+		else
+			Hardware.intake.stopIntake();
 		// =================================================================
 		// Driving code
 		// =================================================================
@@ -364,7 +372,6 @@ public class Teleop {
 		// ---------------------------------
 		// System.out.println("Gear Limit Switch: "
 		// + Hardware.gearLimitSwitch.isOn());
-
 		// System.out
 		// .println("Backup or fire: " + Hardware.backupOrFire.isOn());
 		// System.out.println(
@@ -390,7 +397,7 @@ public class Teleop {
 		// Red Light/IR Sensors
 		// prints the state of the sensor
 		// ---------------------------------
-//		System.out.println("Ball IR: " + Hardware.ballLoaderSensor.isOn());
+		// System.out.println("Ball IR: " + Hardware.ballLoaderSensor.isOn());
 
 		// =================================
 		// Pneumatics
@@ -406,10 +413,24 @@ public class Teleop {
 		// prints the state of solenoids
 		// ---------------------------------
 		// There are none
-
-		// =================================
+		// ================
 		// Analogs
 		// =================================
+		//
+		// We don't want the print statements to flood everything and go
+		// ahhhhhhhh
+		//
+		// if (Hardware.rightOperator.getRawButton(11))
+		// System.out.println("LeftUS = "
+		// + Hardware.leftUS.getDistanceFromNearestBumper());
+		// System.out.println("RightUS = "
+		// + Hardware.rightUS.getDistanceFromNearestBumper());
+		// System.out.println("Delay Pot: " + Hardware.delayPot.get());
+		// ---------------------------------
+		// pots
+		// where the pot is turned to
+		// ---------------------------------
+		// System.out.println("Delay Pot Degrees" + Hardware.delayPot.get());
 
 		// System.out.println("LeftUS = "
 		// + Hardware.leftUS.getDistanceFromNearestBumper());
