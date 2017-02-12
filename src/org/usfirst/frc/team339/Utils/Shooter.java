@@ -2,8 +2,8 @@ package org.usfirst.frc.team339.Utils;
 
 import com.ctre.CANTalon;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
-import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.PWMSpeedController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
@@ -30,7 +30,7 @@ private double acceptableError = 0;
 
 private ImageProcessor visionTargeter = null;
 
-private Potentiometer gimbalPot = null;
+private Encoder gimbalEncoder = null;
 
 private double acceptableGimbalError = 0;
 
@@ -51,7 +51,7 @@ private Timer shooterTimer = new Timer();
  *            The error we can handle on the flywheel without losing accuracy
  * @param visionTargeting
  *            Our vision processor object, used to target the high boiler.
- * @param gimbalPot
+ * @param gimbalEnc
  *            The potentiometer that reads the bearing of the turret.
  * @param acceptableGimbalError
  *            The acceptable angular angle, in degrees, the gimbal turret is
@@ -62,7 +62,7 @@ private Timer shooterTimer = new Timer();
 public Shooter (CANTalon controller, IRSensor ballLoaderSensor,
         Victor elevator,
         double acceptableFlywheelSpeedError,
-        ImageProcessor visionTargeting, Potentiometer gimbalPot,
+        ImageProcessor visionTargeting, Encoder gimbalEnc,
         double acceptableGimbalError, PWMSpeedController gimbalMotor)
 {
     this.flywheelController = controller;
@@ -70,8 +70,9 @@ public Shooter (CANTalon controller, IRSensor ballLoaderSensor,
     this.elevatorController = elevator;
     this.acceptableError = acceptableFlywheelSpeedError;
     this.visionTargeter = visionTargeting;
-    this.gimbalPot = gimbalPot;
+    this.gimbalEncoder = gimbalEnc;
     this.gimbalMotor = gimbalMotor;
+    this.gimbalEncoder.setDistancePerPulse((360.0 / 256.0));
 }
 
 /**
@@ -438,11 +439,11 @@ public double calculateRPMToMakeGoal (double distance)
  *         degrees to the left and positive to the right. Returns a range from
  *         -gimbalPot.maxDegrees/2 to +gimbalPot.maxDegrees/2
  */
-public double getBearing ()
+public double getBearing ()// TODO should work.
 {
     // normalizes the bearing from -gimbalPot.getMaxDegrees()/2 to
     // gimbalPot.getMaxDegrees()/2
-    return this.gimbalPot.get() - (this.gimbalPot.getMaxDegrees() / 2);
+    return this.gimbalEncoder.get();
 }
 
 private final double MAX_TURN_SPEED = .8;

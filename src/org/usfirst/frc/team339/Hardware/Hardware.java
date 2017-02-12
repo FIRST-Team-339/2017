@@ -232,7 +232,7 @@ public static KilroyGyro driveGyro = new KilroyGyro(true);
 public static Potentiometer delayPot = new Potentiometer(1, 270);// TODO max //
                                                                  // degree value
 
-public static Potentiometer gimbalPot = new Potentiometer(3, 270);
+public static Encoder gimablEncoder = new Encoder(3, 270);
 
 // -------------------------------------
 // Sonar/Ultrasonic
@@ -373,7 +373,8 @@ public static boolean twoJoystickControl = false;
 // Assembly classes (e.g. forklift)
 // -------------------
 public static Shooter shooter = new Shooter(shooterMotor,
-        ballLoaderSensor, elevatorMotor, 25, imageProcessor, gimbalPot,
+        ballLoaderSensor, elevatorMotor, 25, imageProcessor,
+        gimablEncoder,
         3, gimbalMotor);// TODO switch out pot to encoder.
 
 public static BallIntake intake = new BallIntake(intakeMotor,
