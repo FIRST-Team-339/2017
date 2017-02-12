@@ -160,12 +160,13 @@ public static void periodic ()
     prevAccButton = Hardware.leftOperator.getTrigger();
     if (isAccing)
         {
-        if (Hardware.autoDrive.accelerate(.5, 1))
+        if (Hardware.autoDrive.accelerate(.5, 5.0))
             {
             isAccing = false;
             Hardware.autoDrive.drive(0.0, 0.0);
             }
         }
+    System.out.println(isAccing);
 
     // previousFireButton = Hardware.leftDriver.getTrigger();
     //
@@ -176,7 +177,7 @@ public static void periodic ()
     // fireCount--;
     // }
     // }
-    else if (preparingToFire == false)
+    if (preparingToFire == false)
         Hardware.shooter.stopFlywheelMotor();
     /*
      * System.out.println("Firecount: " + fireCount);
@@ -221,16 +222,17 @@ public static void periodic ()
     else
         rotationValue = 0.0;
 
-    if (!isAligning && !isStrafingToTarget)
+    if (!isAligning && !isStrafingToTarget && !isAccing)
+        {
         if (Hardware.isUsingMecanum == true)
             Hardware.mecanumDrive.drive(
                     Hardware.leftDriver.getMagnitude(),
                     Hardware.leftDriver.getDirectionDegrees(),
-                    rotationValue, Hardware.leftDriver.getY(),
-                    Hardware.leftDriver.getX());
+                    rotationValue);
         else
             Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
                     Hardware.leftDriver.getY());
+        }
 
 
 

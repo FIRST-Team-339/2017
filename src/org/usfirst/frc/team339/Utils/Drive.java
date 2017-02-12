@@ -555,7 +555,7 @@ public void drive (double speed, double correction, double rotation)
  */
 public void drive (double speed, double correction)
 {
-    switch (transmissionType)
+    switch (this.transmissionType)
         {
         case MECANUM:
             this.transmissionMecanum.drive(speed, correction, 0.0);
@@ -587,16 +587,31 @@ public boolean accelerate (double targetSpeed,
         this.timer.stop();
         this.timer.reset();
         this.timer.start();
+        firstTimeAccelerateRun = false;
+        this.savedDeadband = this.transmissionMecanum
+                .getDeadbandPercentageZone();
+        this.transmissionMecanum.setDeadbandPercentageZone(0.0);
         }
-    this.drive(targetSpeed * (timer.get() / timeInWhichToAccelerate),
-            0);// Continuously accelerate to targetSpeed in
-               // timInWhichToAccelerate
+    this.drive(
+            targetSpeed * (this.timer.get() / timeInWhichToAccelerate),
+            0);
+    // this.transmissionMecanum.drive(
+    // targetSpeed * (this.timer.get() / timeInWhichToAccelerate),
+    // 0.0, 0.0);
+    // Continuously accelerate to targetSpeed in timInWhichToAccelerate
     if (this.timer.get() > timeInWhichToAccelerate)
+        {
+        firstTimeAccelerateRun = true;
+        this.transmissionMecanum
+                .setDeadbandPercentageZone(savedDeadband);
         return true;
+        }
     return false;
 }
 
 private boolean firstTimeAccelerateRun = true;
+
+private double savedDeadband = 0.0;
 
 /**
  * @return the distance the front left encoder has driven based on the
@@ -710,14 +725,14 @@ public boolean turnDegrees (double degrees, double speed)
         if (transmissionType == TransmissionType.TANK)
             transmissionFourWheel.drive(speed, -speed);
         else
-            transmissionMecanum.drive(0.0, 0.0, -speed, 0, 0);
+            transmissionMecanum.drive(0.0, 0.0, -speed);
         }
     else if (adjustedDegrees > 0)
         {
         if (transmissionType == TransmissionType.TANK)
             transmissionFourWheel.drive(-speed, speed);
         else
-            transmissionMecanum.drive(0.0, 0.0, speed, 0, 0);
+            transmissionMecanum.drive(0.0, 0.0, speed);
         }
     return false;
 }
