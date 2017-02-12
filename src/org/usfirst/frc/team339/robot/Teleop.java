@@ -426,13 +426,17 @@ public static void printStatements ()
     // prints the distance from the encoders
     // ---------------------------------
     // System.out.println("Right Front Encoder: "
-    // + Hardware.autoDrive.getRightFrontEncoderDistance());
-    // System.out.println("Left Front Encoder: "
-    // + Hardware.autoDrive.getLeftFrontEncoderDistance());
-    // System.out.println("Left Rear Encoder: "
-    // + Hardware.autoDrive.getLeftRearEncoderDistance());
+    // + Hardware.rightFrontEncoder.get());
     // System.out.println("Right Rear Encoder: "
-    // + Hardware.autoDrive.getRightRearEncoderDistance());
+    // + Hardware.rightRearEncoder.get());
+    // // System.out.println("Left Front Encoder: "
+    // // + Hardware.autoDrive.getLeftFrontEncoderDistance());
+    // System.out.println("Left Front Encoder: "
+    // + Hardware.leftFrontEncoder.get());
+    // System.out.println("Left Rear Encoder: "
+    // + Hardware.leftRearEncoder.get());
+    // // System.out.println("Right Rear Encoder: "
+    // // + Hardware.autoDrive.getRightRearEncoderDistance());
 
     // ---------------------------------
     // Red Light/IR Sensors
@@ -473,14 +477,14 @@ public static void printStatements ()
     // + Hardware.leftUS.getDistanceFromNearestBumper());
     // System.out.println("RightUS = "
     // + Hardware.rightUS.getDistanceFromNearestBumper());
-    System.out.println("Delay Pot: " + Hardware.delayPot.get());
+    // System.out.println("Delay Pot: " + Hardware.delayPot.get());
 
 
     // ---------------------------------
     // pots
     // where the pot is turned to
     // ---------------------------------
-    // System.out.println("Delay Pot Degrees" + Hardware.delayPot.get());
+    System.out.println("Delay Pot Degrees" + Hardware.delayPot.get());
 
 
     // =================================
