@@ -34,6 +34,7 @@ package org.usfirst.frc.team339.robot;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Drive.AlignReturnType;
+import org.usfirst.frc.team339.Utils.Shooter.turnToGoalReturn;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Relay.Value;
 
@@ -254,16 +255,16 @@ public static void periodic ()
             // get the auto program we want to run, get delay pot.
             if (Hardware.enableAutonomous.isOn())
                 {
-            delayTime = Hardware.delayPot.get() * (5 / 270);
+                delayTime = Hardware.delayPot.get() * (5 / 270);
                 if (Hardware.driverStation
                         .getAlliance() == Alliance.Red)
                     {
-                isRedAlliance = true;
+                    isRedAlliance = true;
                     }
                 if (Hardware.pathSelector.isOn())
                     {
-            autoPath = AutoProgram.CENTER_GEAR_PLACEMENT;
-            break;
+                    autoPath = AutoProgram.CENTER_GEAR_PLACEMENT;
+                    break;
                     }
                 if (Hardware.rightPath.isOn())
                     {
@@ -376,7 +377,7 @@ private static boolean placeCenterGearPath ()
         case DRIVE_FORWARD_TO_CENTER:
             // If we see blobs, hand over control to camera, otherwise, go
             // forward. Check to make sure we haven't gone too far.
-                Hardware.imageProcessor.processImage();
+            Hardware.imageProcessor.processImage();
             if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
                 {
                 currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
@@ -674,6 +675,10 @@ private static boolean rightSidePath ()
             break;
         case DRIVE_INTO_RANGE_WITH_CAMERA:
             Hardware.imageProcessor.processImage();
+            if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
+                {
+
+                }
             break;
         case TURN_TO_HOPPER:
             // TODO random magic numbers I selected
@@ -691,21 +696,48 @@ private static boolean rightSidePath ()
                 currentState = MainState.DONE;
                 }
         case ALIGN_TO_FIRE:
-            if (false)
+            if (Hardware.shooter
+                    .turnToGoal() == turnToGoalReturn.SUCCESS)
                 {
                 // align By camera, probably in a firemech
                 currentState = MainState.FIRE;
                 }
-            currentState = MainState.DONE;
+            else if (Hardware.shooter
+                    .turnToGoal() == turnToGoalReturn.NO_BLOBS)
+                {
+                currentState = MainState.DONE;
+                }
+            else if (Hardware.shooter
+                    .turnToGoal() == turnToGoalReturn.OUT_OF_GIMBALING_RANGE)
+                {
+                // TODO magic numbers
+                if (Hardware.autoDrive.alignToGear(0, .4,
+                        .1) == Drive.AlignReturnType.ALIGNED)
+                    {
+                    // Will probably never reach this part.
+                    currentState = MainState.FIRE;
+                    }
+                }
             break;
         case FIRE:
-            currentState = MainState.DONE;
+            if (Hardware.shooter.fire())
+                {
+                fireCount++;
+                }
+            if (fireCount >= 10)
+                {
+                currentState = MainState.DONE;
+                }
             break;
         default:
             currentState = MainState.DONE;
+        case DONE:
+            return true;
         }
     return false;
 }
+
+private static int fireCount = 0;
 
 private static boolean isDrivingByCamera = false;
 

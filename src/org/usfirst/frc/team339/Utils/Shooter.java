@@ -323,41 +323,35 @@ public static enum turnReturn
 public turnToGoalReturn turnToGoal ()
 {
     // if we have at least one blob
+    this.visionTargeter.processImage();
     if (this.visionTargeter.getNthSizeBlob(0) != null)
         {
-        // if we have at least 2 blobs
-        if (this.visionTargeter.getNthSizeBlob(1) != null)
+        // If we haven't yet calculated our setpoint yet.
+        if (gimbalTarget == Double.MIN_VALUE)
             {
-            // If we haven't yet calculated our setpoint yet.
-            if (gimbalTarget == Double.MIN_VALUE)
-                {
-                // calculate our setpoint
-                gimbalTarget = this.visionTargeter.getYawAngleToTarget(
-                        this.visionTargeter.getNthSizeBlob(0));
-                }
-            else
-                {
-                // turn to our new bearing
-                if (turnToBearing(gimbalTarget
-                        + this.getBearing()) == turnReturn.SUCCESS)
-                    {
-                    // we're done!
-                    gimbalTarget = Double.MIN_VALUE;
-                    return turnToGoalReturn.SUCCESS;
-                    }
-                else if (turnToBearing(gimbalTarget
-                        + this.getBearing()) == turnReturn.TOO_FAR)
-                    {
-                    gimbalTarget = Double.MIN_VALUE;
-                    return turnToGoalReturn.OUT_OF_GIMBALING_RANGE;
-                    }
-                }
-            // still working...l
-            return turnToGoalReturn.WORKING;
+            // calculate our setpoint
+            gimbalTarget = this.visionTargeter.getYawAngleToTarget(
+                    this.visionTargeter.getNthSizeBlob(0));
             }
-        // Don't see enough
-        // TODO remove?
-        return turnToGoalReturn.NOT_ENOUGH_BLOBS;
+        else
+            {
+            // turn to our new bearing
+            if (turnToBearing(gimbalTarget
+                    + this.getBearing()) == turnReturn.SUCCESS)
+                {
+                // we're done!
+                gimbalTarget = Double.MIN_VALUE;
+                return turnToGoalReturn.SUCCESS;
+                }
+            else if (turnToBearing(gimbalTarget
+                    + this.getBearing()) == turnReturn.TOO_FAR)
+                {
+                gimbalTarget = Double.MIN_VALUE;
+                return turnToGoalReturn.OUT_OF_GIMBALING_RANGE;
+                }
+            }
+        // still working...l
+        return turnToGoalReturn.WORKING;
         }
     // We don't see anything.
     return turnToGoalReturn.NO_BLOBS;
@@ -424,8 +418,7 @@ public double calculateRPMToMakeGoal (double distance)
     double distanceMeters = distance * 3.28084;// Convert the distance parameter
                                                // meters, for easier
                                                // computations.
-
-    return (60.0 / (2 * Math.PI) * (Math.sqrt(((4.9
+    double perfectRPM = (60.0 / (2 * Math.PI) * (Math.sqrt(((4.9
             * (Math.pow(distanceMeters, 2)))
             / ((this.FLYWHEEL_RADIUS_METERS
                     * this.FLYWHEEL_RADIUS_METERS)
@@ -434,8 +427,9 @@ public double calculateRPMToMakeGoal (double distance)
                             2))
                     * (distanceMeters
                             * Math.tan(Math.toRadians(this.MOUNT_ANGLE))
-                            - this.RELATIVE_GOAL_HEIGHT_METERS))))))
-            + this.FLYWHEEL_SPEED_CORRECTION_CONSTANT;
+                            - this.RELATIVE_GOAL_HEIGHT_METERS))))));
+    return perfectRPM
+            + this.FLYWHEEL_SPEED_CORRECTION_CONSTANT * perfectRPM;
 }
 
 /**
@@ -463,11 +457,11 @@ private final double MAX_GIMBALING_ANGLE = 135;
 
 private final double MIN_GIMBALING_ANGLE = -135;
 
-private final double MOUNT_ANGLE = 80;// TODO figure out the actual number.
+private final double MOUNT_ANGLE = 64;// TODO figure out the actual number.
 
 private final double RELATIVE_GOAL_HEIGHT_METERS = 1.93;
 
 private final double FLYWHEEL_RADIUS_METERS = 0.0508;
 
-private final double FLYWHEEL_SPEED_CORRECTION_CONSTANT = 200;// TODO tune
+private final double FLYWHEEL_SPEED_CORRECTION_CONSTANT = .3;// TODO tune
 }
