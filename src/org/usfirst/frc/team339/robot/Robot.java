@@ -273,6 +273,9 @@ public void robotInit ()
     Hardware.rightFrontEncoder.reset();
     Hardware.rightRearEncoder.reset();
     Hardware.rightFrontEncoder.setReverseDirection(true);
+    Hardware.rightRearEncoder.setReverseDirection(false);
+    Hardware.leftFrontEncoder.setReverseDirection(true);
+    Hardware.leftRearEncoder.setReverseDirection(false);
     Hardware.tankDrive.setGearPercentage(1, FIRST_GEAR);
     Hardware.tankDrive.setGearPercentage(2, SECOND_GEAR);
     Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
