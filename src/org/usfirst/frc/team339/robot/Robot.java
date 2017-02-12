@@ -346,6 +346,8 @@ public void robotInit ()
     // Hardware.cam1.setFPS(Hardware.USB_FPS);
     // Hardware.cam0.setFPS(Hardware.USB_FPS);
     // Hardware.cam1.setFPS(Hardware.USB_FPS);
+    
+    Hardware.imageProcessor.setVerticalCameraMountAngle(Math.toRadians(65));
 
     CameraServer.getInstance().addAxisCamera("10.3.39.11");
     Hardware.camForward.setResolution(640, 480);

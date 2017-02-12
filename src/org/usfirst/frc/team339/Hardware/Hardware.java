@@ -83,6 +83,8 @@ public static boolean isRunningOnKilroyXVIII = true; // 18
 // Hardware Tunables
 // ---------------------------------------
 
+public static final double CAMERA_MOUNT_ANGLE = Math.toRadians(65);
+
 // **********************************************************
 // DIGITAL I/O CLASSES
 // **********************************************************
