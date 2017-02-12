@@ -283,8 +283,8 @@ public class Teleop {
 		// }
 		// hasPressedFive = Hardware.leftOperator.getRawButton(5);
 
-		Hardware.axisCamera
-				.takeSinglePicture(Hardware.leftOperator.getRawButton(8) || Hardware.rightOperator.getRawButton(8));
+		Hardware.axisCamera.takeSinglePicture(Hardware.leftOperator.getRawButton(8)
+				|| Hardware.rightOperator.getRawButton(8) || Hardware.leftOperator.getRawButton(11));
 	} // end
 		// Periodic
 
