@@ -569,6 +569,36 @@ public void drive (double speed, double correction)
 }
 
 /**
+ * Linearly and continuously accelerate to <em> targetSpeed</em> over
+ * <em>timeInWhichToAccelerate</em> seconds.
+ * 
+ * @param targetSpeed
+ *            The final speed of the acceleration.
+ * @param timeInWhichToAccelerate
+ *            The number of seconds to spend accelerating.
+ * @return
+ *         True if we're done accelerating, false otherwise.
+ */
+public boolean accelerate (double targetSpeed,
+        double timeInWhichToAccelerate)
+{
+    if (firstTimeAccelerateRun)
+        {
+        this.timer.stop();
+        this.timer.reset();
+        this.timer.start();
+        }
+    this.drive(targetSpeed * (timer.get() / timeInWhichToAccelerate),
+            0);// Continuously accelerate to targetSpeed in
+               // timInWhichToAccelerate
+    if (this.timer.get() > timeInWhichToAccelerate)
+        return true;
+    return false;
+}
+
+private boolean firstTimeAccelerateRun = true;
+
+/**
  * @return the distance the front left encoder has driven based on the
  *         distance per pulse set earlier.
  */
