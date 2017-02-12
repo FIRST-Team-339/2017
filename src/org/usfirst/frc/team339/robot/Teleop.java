@@ -163,6 +163,7 @@ public static void periodic ()
         if (Hardware.autoDrive.accelerate(.5, 1))
             {
             isAccing = false;
+            Hardware.autoDrive.drive(0.0, 0.0);
             }
         }
 

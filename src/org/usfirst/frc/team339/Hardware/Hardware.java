@@ -225,7 +225,7 @@ public static IRSensor ballLoaderSensor = new IRSensor(6);
 // ------------------------------------
 // Gyro class
 // ------------------------------------
-public static KilroyGyro driveGyro = new KilroyGyro(true);
+public static KilroyGyro driveGyro = new KilroyGyro(false);
 
 // -------------------------------------
 // Potentiometers
