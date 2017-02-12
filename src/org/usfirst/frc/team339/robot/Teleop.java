@@ -203,6 +203,10 @@ public static void periodic ()
         else
             Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
                     Hardware.leftDriver.getY());
+    if (Hardware.rightDriver.getRawButton(9) == true)
+        {
+        Hardware.autoDrive.brake(-.1, -.1);
+        }
 
 
 
