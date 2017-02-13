@@ -222,6 +222,8 @@ public static void periodic ()
     // =================================================================
     // CAMERA CODE
     // =================================================================
+    Hardware.axisCamera
+            .takeSinglePicture(Hardware.rightOperator.getRawButton(9));
 
     // "Cancel basically everything" button
     // if (Hardware.leftOperator.getRawButton(7)
@@ -408,12 +410,20 @@ public static void printStatements ()
     // Encoders
     // prints the distance from the encoders
     // ---------------------------------
-    // System.out.println("Right Front Encoder: "
-    // + Hardware.autoDrive.getRightFrontEncoderDistance());
+    System.out.println("Right Front Encoder: "
+            + Hardware.rightFrontEncoder.get());
+    System.out.println("Right Rear Encoder: "
+            + Hardware.rightRearEncoder.get());
     // System.out.println("Left Front Encoder: "
     // + Hardware.autoDrive.getLeftFrontEncoderDistance());
     // System.out.println("Left Rear Encoder: "
-    // + Hardware.autoDrive.getLeftRearEncoderDistance());
+    // + Hardware.autoDrive.getLeftFrontEncoderDistance());
+    System.out.println("Left Front Encoder: "
+            + Hardware.leftFrontEncoder.get());
+    System.out.println("Left Rear Encoder: "
+            + Hardware.leftRearEncoder.get());
+    // System.out.println("Right Front Encoder: "
+    // + Hardware.autoDrive.getRightRearEncoderDistance());
     // System.out.println("Right Rear Encoder: "
     // + Hardware.autoDrive.getRightRearEncoderDistance());
 
