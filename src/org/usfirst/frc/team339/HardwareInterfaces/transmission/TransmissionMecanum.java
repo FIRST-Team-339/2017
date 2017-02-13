@@ -45,6 +45,17 @@ public TransmissionMecanum (SpeedController rightFrontSpeedController,
 
 }
 
+public void driveNoDeadband (double magnitude, double direction,
+        double rotation)
+{
+    this.tempSavedDeadband = this.getDeadbandPercentageZone();
+    this.setDeadbandPercentageZone(0.0);
+    this.drive(magnitude, direction, rotation);
+    this.setDeadbandPercentageZone(tempSavedDeadband);
+}
+
+private double tempSavedDeadband = 0.0;
+
 /**
  * Drives the transmission in mecanum drive with 0 rotation. NOTE: this
  * should not be used; it is preferable to use the 3-argument one for
