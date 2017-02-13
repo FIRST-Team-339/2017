@@ -73,15 +73,9 @@ private double tempSavedDeadband = 0.0;
 @Deprecated
 public void drive (double magnitude, double direction)
 {
-    this.drive(magnitude, direction, 0.0, 0.0, 0.0);
+    this.drive(magnitude, direction, 0.0);
 }
 
-public void drive (double magnitude, double direction, double rotation)
-{
-    this.drive(magnitude, direction, rotation,
-            super.getDeadbandPercentageZone(),
-            super.getDeadbandPercentageZone());
-}
 
 /**
  * Drives the transmission in a four wheel drive . rightJoystickVal controls
@@ -112,15 +106,13 @@ public void drive (double magnitude, double direction, double rotation)
  * @written 23 July 2015
  *          Edited By Becky Button
  */
-public void drive (double magnitude, double direction, double rotation,
-        double yValue, double xValue)
+public void drive (double magnitude, double direction, double rotation)
 {
 
     double tempRotation = rotation, tempMagnitude = magnitude,
             tempDirection = direction;
 
-    if ((Math.abs(yValue) >= super.getDeadbandPercentageZone()
-            || Math.abs(xValue) >= super.getDeadbandPercentageZone())
+    if ((Math.abs(magnitude) >= super.getDeadbandPercentageZone())
             || Math.abs(
                     tempRotation) >= super.getDeadbandPercentageZone())
         {

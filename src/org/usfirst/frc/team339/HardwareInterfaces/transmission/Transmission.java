@@ -368,7 +368,7 @@ public double getCurrentGearPercentage ()
  *
  * @return
  */
-protected double getDeadbandPercentageZone ()
+public double getDeadbandPercentageZone ()// TODO protected.
 {
     return this.deadbandPercentageZone;
 }
