@@ -244,6 +244,10 @@ public void disabledPeriodic ()
     Hardware.leftRearMotor.set(0);
     Hardware.rightRearMotor.set(0);
 
+    Hardware.leftFrontMotorSafety.feed();
+    Hardware.leftRearMotorSafety.feed();
+    Hardware.rightFrontMotorSafety.feed();
+    Hardware.rightFrontMotorSafety.feed();
     // =========================================================
     // User code goes above here
     // =========================================================

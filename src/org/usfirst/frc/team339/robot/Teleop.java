@@ -118,11 +118,6 @@ public static void init ()
  * @author Nathanial Lydick
  * @written Jan 13, 2015
  */
-
-static boolean prevAccButton = false;
-
-static boolean isAccing = false;
-
 public static void periodic ()
 {
     Command chooseTrueorFalse;
@@ -153,20 +148,6 @@ public static void periodic ()
     if (firing)
         Hardware.shooter.fire();
 
-    if (Hardware.leftOperator.getTrigger() && !prevAccButton)
-        {
-        isAccing = true;
-        }
-    prevAccButton = Hardware.leftOperator.getTrigger();
-    if (isAccing)
-        {
-        if (Hardware.autoDrive.accelerate(.5, 5.0))
-            {
-            isAccing = false;
-            Hardware.autoDrive.drive(0.0, 0.0);
-            }
-        }
-    System.out.println(isAccing);
 
     // previousFireButton = Hardware.leftDriver.getTrigger();
     //
@@ -222,8 +203,8 @@ public static void periodic ()
     else
         rotationValue = 0.0;
 
-    if (!isAligning && !isStrafingToTarget && !isAccing)// TODO remove isAccing
-                                                        // stuff
+    if (!isAligning && !isStrafingToTarget)// TODO remove isAccing
+                                           // stuff
         {
         if (Hardware.isUsingMecanum == true)
             Hardware.mecanumDrive.drive(
