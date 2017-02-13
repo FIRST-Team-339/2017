@@ -368,7 +368,7 @@ public double getCurrentGearPercentage ()
  *
  * @return
  */
-public double getDeadbandPercentageZone ()// TODO protected.
+protected double getDeadbandPercentageZone ()
 {
     return this.deadbandPercentageZone;
 }
@@ -570,7 +570,7 @@ public void setDebugState (DebugState newState)
  * @author Ryan McGee
  * @written 2/11/17
  */
-protected void setDeadbandPercentageZone (double percentage)
+public void setDeadbandPercentageZone (double percentage)
 {
     this.deadbandPercentageZone = percentage;
 }
