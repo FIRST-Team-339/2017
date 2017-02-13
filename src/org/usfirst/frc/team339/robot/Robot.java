@@ -535,7 +535,7 @@ public void testPeriodic ()
 /**
  * The percentage we want the motors to run at while we are in first gear
  */
-public static final double FIRST_GEAR = .6;
+public static final double FIRST_GEAR = .7;
 
 /**
  * The percentage we want the motors to run at while we are in second gear
