@@ -589,7 +589,7 @@ public boolean accelerate (double targetSpeed,
         this.timer.start();
         firstTimeAccelerateRun = false;
         this.savedDeadband = this.transmissionMecanum
-                .getDeadbandPercentageZone();
+                .getDeadbandPercentageZone();// TODO protected
         this.transmissionMecanum.setDeadbandPercentageZone(0.0);
         }
     this.drive(
