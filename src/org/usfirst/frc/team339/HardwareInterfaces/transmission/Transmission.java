@@ -570,7 +570,7 @@ public void setDebugState (DebugState newState)
  * @author Ryan McGee
  * @written 2/11/17
  */
-public void setDeadbandPercentageZone (double percentage)
+protected void setDeadbandPercentageZone (double percentage)
 {
     this.deadbandPercentageZone = percentage;
 }

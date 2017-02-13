@@ -45,12 +45,26 @@ public TransmissionMecanum (SpeedController rightFrontSpeedController,
 
 }
 
+/**
+ * Drives without taking into account the current deadband set into this class.
+ * 
+ * @param magnitude
+ *            The magnitude of the drive vector we're using
+ * @param direction
+ *            The direction of the drive vector we're using
+ * @param rotation
+ *            The rotation we'll drive with.
+ */
 public void driveNoDeadband (double magnitude, double direction,
         double rotation)
 {
+    // Save the current deadband
     this.tempSavedDeadband = this.getDeadbandPercentageZone();
+    // set the current deadband to zero so we can drive slowly
     this.setDeadbandPercentageZone(0.0);
+    // drive without the deadband
     this.drive(magnitude, direction, rotation);
+    // restore the deadband
     this.setDeadbandPercentageZone(tempSavedDeadband);
 }
 

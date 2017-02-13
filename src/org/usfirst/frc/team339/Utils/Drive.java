@@ -568,6 +568,40 @@ public void drive (double speed, double correction)
         }
 }
 
+// TODO comment
+public void driveNoDeadband (double speed, double correction,
+        double rotation)
+{
+    switch (this.transmissionType)
+        {
+        case MECANUM:
+            this.transmissionMecanum.driveNoDeadband(speed, correction,
+                    rotation);
+            break;
+        case TANK:
+            this.transmissionFourWheel.driveWithoutCorrection(
+                    speed + correction, speed - correction);
+        default:
+            break;
+        }
+}
+
+public void driveNoDeadband (double speed, double correction)
+{
+    switch (this.transmissionType)
+        {
+        case MECANUM:
+            this.transmissionMecanum.driveNoDeadband(speed, correction,
+                    0.0);
+            break;
+        case TANK:
+            this.transmissionFourWheel.driveWithoutCorrection(
+                    speed + correction, speed - correction);
+        default:
+            break;
+        }
+}
+
 /**
  * Linearly and continuously accelerate to <em> targetSpeed</em> over
  * <em>timeInWhichToAccelerate</em> seconds.
@@ -588,22 +622,13 @@ public boolean accelerate (double targetSpeed,
         this.timer.reset();
         this.timer.start();
         firstTimeAccelerateRun = false;
-        this.savedDeadband = this.transmissionMecanum
-                .getDeadbandPercentageZone();// TODO protected
-        this.transmissionMecanum.setDeadbandPercentageZone(0.0);
         }
-    this.drive(
+    this.driveNoDeadband(
             targetSpeed * (this.timer.get() / timeInWhichToAccelerate),
-            0);
-    // this.transmissionMecanum.drive(
-    // targetSpeed * (this.timer.get() / timeInWhichToAccelerate),
-    // 0.0, 0.0);
-    // Continuously accelerate to targetSpeed in timInWhichToAccelerate
+            0, 0);
     if (this.timer.get() > timeInWhichToAccelerate)
         {
         firstTimeAccelerateRun = true;
-        this.transmissionMecanum
-                .setDeadbandPercentageZone(savedDeadband);
         return true;
         }
     return false;
