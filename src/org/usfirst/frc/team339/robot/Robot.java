@@ -172,10 +172,6 @@ public void autonomousPeriodic ()
     // =========================================================
 
     // feed all motor safeties
-    Hardware.leftRearMotorSafety.feed();
-    Hardware.rightRearMotorSafety.feed();
-    Hardware.leftFrontMotorSafety.feed();
-    Hardware.rightFrontMotorSafety.feed();
 }
 
 // end autonomousPeriodic
@@ -272,22 +268,58 @@ public void robotInit ()
     Hardware.leftRearEncoder.reset();
     Hardware.rightFrontEncoder.reset();
     Hardware.rightRearEncoder.reset();
-    Hardware.rightFrontEncoder.setReverseDirection(true);
-    Hardware.rightRearEncoder.setReverseDirection(false);
-    Hardware.leftFrontEncoder.setReverseDirection(true);
-    Hardware.leftRearEncoder.setReverseDirection(false);
-    Hardware.tankDrive.setGearPercentage(1, FIRST_GEAR);
-    Hardware.tankDrive.setGearPercentage(2, SECOND_GEAR);
-    Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
-    // Hardware.rightFrontMotor.setInverted(true);
-    // Hardware.rightRearMotor.setInverted(true);
-    // Hardware.leftFrontMotor.setInverted(true);
-    Hardware.leftRearMotor.setInverted(true);
-    Hardware.intakeMotor.setInverted(true);
-    // Hardware.mecanumDrive.setDirectionalDeadzone(0.05);
-    Hardware.mecanumDrive
-            .setDeadbandPercentageZone(Hardware.joystickDeadzone);
-    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+    if (Hardware.isRunningOnKilroyXVIII == true)
+        {
+        Hardware.rightFrontEncoder.setReverseDirection(true);
+        Hardware.rightRearEncoder.setReverseDirection(false);
+        Hardware.leftFrontEncoder.setReverseDirection(true);
+        Hardware.leftRearEncoder.setReverseDirection(false);
+        Hardware.rightRearEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
+        Hardware.leftRearEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
+        Hardware.rightFrontEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
+        Hardware.leftFrontEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
+        Hardware.tankDrive.setGearPercentage(1, FIRST_GEAR);
+        Hardware.tankDrive.setGearPercentage(2, SECOND_GEAR);
+        Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
+        Hardware.rightFrontMotor.setInverted(false);
+        Hardware.rightRearMotor.setInverted(false);
+        Hardware.leftFrontMotor.setInverted(false);
+        Hardware.leftRearMotor.setInverted(true);
+        Hardware.intakeMotor.setInverted(true);
+        Hardware.mecanumDrive
+                .setDeadbandPercentageZone(Hardware.joystickDeadzone);
+        Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+        }
+    else
+        {
+        // Hardware.rightFrontEncoder.setReverseDirection(true);
+        // Hardware.rightRearEncoder.setReverseDirection(false);
+        // Hardware.leftFrontEncoder.setReverseDirection(true);
+        // Hardware.leftRearEncoder.setReverseDirection(false);
+        Hardware.rightRearEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
+        Hardware.leftRearEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
+        Hardware.leftFrontEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
+        Hardware.rightFrontEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
+        // Hardware.tankDrive.setGearPercentage(1, FIRST_GEAR);
+        // Hardware.tankDrive.setGearPercentage(2, SECOND_GEAR);
+        // Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
+        Hardware.rightFrontMotor.setInverted(true);
+        Hardware.rightRearMotor.setInverted(false);
+        Hardware.leftFrontMotor.setInverted(false);
+        Hardware.leftRearMotor.setInverted(false);
+        // Hardware.intakeMotor.setInverted(true);
+        // Hardware.mecanumDrive
+        // .setDeadbandPercentageZone(Hardware.joystickDeadzone);
+        // Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+        }
     // -------------------------------------
     // motor initialization
     // -------------------------------------
@@ -295,11 +327,6 @@ public void robotInit ()
     Hardware.rightRearMotorSafety.setSafetyEnabled(true);
     Hardware.leftFrontMotorSafety.setSafetyEnabled(true);
     Hardware.rightFrontMotorSafety.setSafetyEnabled(true);
-
-    Hardware.leftRearMotorSafety.setExpiration(.25);
-    Hardware.rightRearMotorSafety.setExpiration(.25);
-    Hardware.leftFrontMotorSafety.setExpiration(.25);
-    Hardware.rightFrontMotorSafety.setExpiration(.25);
 
     // Hardware.tankDrive.setRightJoystickReversed(true);
 
@@ -322,58 +349,24 @@ public void robotInit ()
         {
         }
 
-    if (Hardware.isRunningOnKilroyXVIII == true)
-        {
-        Hardware.rightFrontMotor.setInverted(false);
-        Hardware.rightRearMotor.setInverted(false);
-        Hardware.leftFrontMotor.setInverted(false);
-        Hardware.leftRearMotor.setInverted(true);
-        }
-    else
-        {
-        Hardware.rightFrontMotor.setInverted(true);
-        Hardware.rightRearMotor.setInverted(false);
-        Hardware.leftFrontMotor.setInverted(false);
-        Hardware.leftRearMotor.setInverted(false);
-        }
     // -------------------------------------
-    // Camera initialization
+    // AXIS Camera initialization
+    // NOTE: The AXIS Camera getInstance() MUST
+    // Preceed the USB camera setResolution() code
     // -------------------------------------
-
-    // Sends video from both USB Cameras to the Smart Dashboard
-    // -last edited on 28 Jan 2017 by Cole Ramos
-
-    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
-    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
-    // Sets the [max?] FPS's for the USB Cameras. The FPS will generally
-    // vary between -1 and +1 this amount.
-    // -last edited on 28 Jan 2017 by Cole Ramos
-    // Hardware.cam0.setFPS(Hardware.USB_FPS);
-    // Hardware.cam1.setFPS(Hardware.USB_FPS);
-    // Hardware.cam0.setFPS(Hardware.USB_FPS);
-    // Hardware.cam1.setFPS(Hardware.USB_FPS);
-
     CameraServer.getInstance().addAxisCamera("10.3.39.11");
-    Hardware.camForward.setResolution(640, 480);
-    Hardware.camBackward.setResolution(640, 480);
-
-
     Hardware.axisCamera.writeExposureControl(ExposureControl.kHold);
     Hardware.axisCamera.writeBrightness(1);
     Hardware.axisCamera.writeColorLevel(79);
     Hardware.axisCamera.writeResolution(Resolution.k320x240);
     Hardware.axisCamera
-            .writeWhiteBalance(WhiteBalance.kFixedFluorescent1);
+            .writeWhiteBalance(WhiteBalance.kFixedOutdoor1);
 
-
-
-    // Sets the max FPS of the Axis Camera; also changes the FPS in the
-    // firmware/ web browser
-    // of the Axis Camera. If the FPS is not set in the code, the firmware
-    // will default to unlimited.
-    // TODO Fix this. It isn't actually changing the FPS on the Driver's Station
-    // but it is changing the website/ firmware
-    // Hardware.axisCamera.writeMaxFPS(Hardware.AXIS_FPS);
+    // -------------------------------------
+    // USB Camera initialization
+    // -------------------------------------
+    Hardware.camForward.setResolution(320, 240);
+    Hardware.camBackward.setResolution(320, 240);
 
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
@@ -383,28 +376,6 @@ public void robotInit ()
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
 
-    if (Hardware.isRunningOnKilroyXVIII)
-        {
-        Hardware.rightRearEncoder.setDistancePerPulse(
-                ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-        Hardware.leftRearEncoder.setDistancePerPulse(
-                ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-        Hardware.rightFrontEncoder.setDistancePerPulse(
-                ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-        Hardware.leftFrontEncoder.setDistancePerPulse(
-                ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-        }
-    else
-        {
-        Hardware.rightRearEncoder.setDistancePerPulse(
-                ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-        Hardware.leftRearEncoder.setDistancePerPulse(
-                ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-        Hardware.leftFrontEncoder.setDistancePerPulse(
-                ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-        Hardware.rightFrontEncoder.setDistancePerPulse(
-                ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-        }
     // =========================================================
     // User code goes above here
     // =========================================================
@@ -416,7 +387,8 @@ public void robotInit ()
             "Kilroy XVIII is started.  All hardware items created.");
     System.out.println();
     System.out.println();
-} // end robotInit
+} // end
+  // robotInit
 
 // -------------------------------------------------------
 /**
@@ -476,11 +448,6 @@ public void teleopPeriodic ()
     // which contains the user code.
     // -------------------------------------
     Teleop.periodic();
-    // feed all motor safeties
-    Hardware.leftRearMotorSafety.feed();
-    Hardware.rightRearMotorSafety.feed();
-    Hardware.leftFrontMotorSafety.feed();
-    Hardware.rightFrontMotorSafety.feed();
 } // end teleopPeriodic
 
 // -------------------------------------------------------
@@ -535,14 +502,14 @@ public void testPeriodic ()
 /**
  * The percentage we want the motors to run at while we are in first gear
  */
-public static final double FIRST_GEAR = .6;
+public static final double FIRST_GEAR = .7;
 
 /**
  * The percentage we want the motors to run at while we are in second gear
  */
 public static final double SECOND_GEAR = 1;
 
-public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = .5;
+public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.066;
 
 public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVII = .0197;
 
