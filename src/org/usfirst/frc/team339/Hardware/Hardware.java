@@ -258,8 +258,8 @@ public static UltraSonic rightUS = new UltraSonic(2);
 public static UsbCamera camForward = CameraServer.getInstance()
         .startAutomaticCapture(0);
 
-public static UsbCamera camBackward = CameraServer.getInstance()
-        .startAutomaticCapture(1);
+// public static UsbCamera camBackward = CameraServer.getInstance()
+// .startAutomaticCapture(1);
 
 // Used by the USB Cameras in robot init to set their FPS's
 public final static int USB_FPS = 15;
