@@ -393,10 +393,8 @@ public static void printStatements ()
     // System.out.println("Gear Limit Switch: "
     // + Hardware.gearLimitSwitch.isOn());
 
-    // System.out
-    // .println("Backup or fire: " + Hardware.backupOrFire.isOn());
-    // System.out.println(
-    // "Enable Auto: " + Hardware.enableAutonomous.isOn());
+    // System.out.println("Backup or fire: " + Hardware.backupOrFire.isOn());
+    // System.out.println("Enable Auto: " + Hardware.enableAutonomous.isOn());
 
     // System.out.println(
     // "Path Selector: " + Hardware.pathSelector.getPosition());
@@ -408,20 +406,20 @@ public static void printStatements ()
     // ---------------------------------
     System.out.println("Right Front Encoder: "
             + Hardware.rightFrontEncoder.get());
-    System.out.println("Right Rear Encoder: "
-            + Hardware.rightRearEncoder.get());
-    // System.out.println("Left Front Encoder: "
-    // + Hardware.autoDrive.getLeftFrontEncoderDistance());
-    // System.out.println("Left Rear Encoder: "
-    // + Hardware.autoDrive.getLeftFrontEncoderDistance());
-    System.out.println("Left Front Encoder: "
-            + Hardware.leftFrontEncoder.get());
-    System.out.println("Left Rear Encoder: "
-            + Hardware.leftRearEncoder.get());
     // System.out.println("Right Front Encoder: "
     // + Hardware.autoDrive.getRightRearEncoderDistance());
+    System.out.println("Right Rear Encoder: "
+            + Hardware.rightRearEncoder.get());
     // System.out.println("Right Rear Encoder: "
     // + Hardware.autoDrive.getRightRearEncoderDistance());
+    System.out.println("Left Front Encoder: "
+            + Hardware.leftFrontEncoder.get());
+    // System.out.println("Left Front Encoder: "
+    // + Hardware.autoDrive.getLeftFrontEncoderDistance());
+    System.out.println("Left Rear Encoder: "
+            + Hardware.leftRearEncoder.get());
+    // System.out.println("Left Rear Encoder: "
+    // + Hardware.autoDrive.getLeftFrontEncoderDistance());
 
     // ---------------------------------
     // Red Light/IR Sensors
@@ -509,13 +507,9 @@ public static void printStatements ()
     // System.out.println("Twist: " + Hardware.leftDriver.getTwist());
 
     // System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
-    //
-    // System.out
-    // .println("Right Joystick: " + Hardware.rightDriver.getY());
-    // System.out
-    // .println("Left Operator: " + Hardware.leftOperator.getY());
-    // System.out.println(
-    // "Right Operator: " + Hardware.rightOperator.getY());
+    // System.out.println("Right Joystick: " + Hardware.rightDriver.getY());
+    // System.out.println("Left Operator: " + Hardware.leftOperator.getY());
+    // System.out.println("Right Operator: " + Hardware.rightOperator.getY());
 
     // =================================
     // Kilroy ancillary items
