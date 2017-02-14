@@ -240,10 +240,10 @@ public void disabledPeriodic ()
     Hardware.leftRearMotor.set(0);
     Hardware.rightRearMotor.set(0);
 
-    Hardware.leftFrontMotorSafety.feed();
-    Hardware.leftRearMotorSafety.feed();
-    Hardware.rightFrontMotorSafety.feed();
-    Hardware.rightFrontMotorSafety.feed();
+    // Hardware.leftFrontMotorSafety.feed();
+    // Hardware.leftRearMotorSafety.feed();
+    // Hardware.rightFrontMotorSafety.feed();
+    // Hardware.rightFrontMotorSafety.feed();
     // =========================================================
     // User code goes above here
     // =========================================================
@@ -297,6 +297,10 @@ public void robotInit ()
         Hardware.mecanumDrive
                 .setDeadbandPercentageZone(Hardware.joystickDeadzone);
         Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+        // Hardware.rightFrontMotorSafety.setExpiration(.5);
+        // Hardware.rightRearMotorSafety.setExpiration(.5);
+        // Hardware.leftFrontMotorSafety.setExpiration(.5);
+        // Hardware.leftRearMotorSafety.setExpiration(1.0);
         }
     else
         {
@@ -327,10 +331,10 @@ public void robotInit ()
     // -------------------------------------
     // motor initialization
     // -------------------------------------
-    Hardware.leftRearMotorSafety.setSafetyEnabled(true);
-    Hardware.rightRearMotorSafety.setSafetyEnabled(true);
-    Hardware.leftFrontMotorSafety.setSafetyEnabled(true);
-    Hardware.rightFrontMotorSafety.setSafetyEnabled(true);
+    // Hardware.leftRearMotorSafety.setSafetyEnabled(true);
+    // Hardware.rightRearMotorSafety.setSafetyEnabled(true);
+    // Hardware.leftFrontMotorSafety.setSafetyEnabled(true);
+    // Hardware.rightFrontMotorSafety.setSafetyEnabled(true);
 
     // Hardware.tankDrive.setRightJoystickReversed(true);
 
@@ -513,7 +517,7 @@ public static final double FIRST_GEAR = .7;
  */
 public static final double SECOND_GEAR = 1;
 
-public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.066;
+public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.068;
 
 public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVII = .0197;
 
