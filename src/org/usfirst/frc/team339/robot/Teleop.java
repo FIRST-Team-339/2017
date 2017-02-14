@@ -218,9 +218,6 @@ public static void periodic ()
     // =================================================================
     // CAMERA CODE
     // =================================================================
-    Hardware.axisCamera
-            .takeSinglePicture(Hardware.rightOperator.getRawButton(9));
-
     // "Cancel basically everything" button
     // if (Hardware.leftOperator.getRawButton(7)
     // || Hardware.leftOperator.getRawButton(6))
