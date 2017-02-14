@@ -46,6 +46,31 @@ public TransmissionMecanum (SpeedController rightFrontSpeedController,
 }
 
 /**
+ * Drives without taking into account the current deadband set into this class.
+ * 
+ * @param magnitude
+ *            The magnitude of the drive vector we're using
+ * @param direction
+ *            The direction of the drive vector we're using
+ * @param rotation
+ *            The rotation we'll drive with.
+ */
+public void driveNoDeadband (double magnitude, double direction,
+        double rotation)
+{
+    // Save the current deadband
+    this.tempSavedDeadband = this.getDeadbandPercentageZone();
+    // set the current deadband to zero so we can drive slowly
+    this.setDeadbandPercentageZone(0.0);
+    // drive without the deadband
+    this.drive(magnitude, direction, rotation);
+    // restore the deadband
+    this.setDeadbandPercentageZone(tempSavedDeadband);
+}
+
+private double tempSavedDeadband = 0.0;
+
+/**
  * Drives the transmission in mecanum drive with 0 rotation. NOTE: this
  * should not be used; it is preferable to use the 3-argument one for
  * consistency.
@@ -62,15 +87,9 @@ public TransmissionMecanum (SpeedController rightFrontSpeedController,
 @Deprecated
 public void drive (double magnitude, double direction)
 {
-    this.drive(magnitude, direction, 0.0, 0.0, 0.0);
+    this.drive(magnitude, direction, 0.0);
 }
 
-public void drive (double magnitude, double direction, double rotation)
-{
-    this.drive(magnitude, direction, rotation,
-            super.getDeadbandPercentageZone(),
-            super.getDeadbandPercentageZone());
-}
 
 /**
  * Drives the transmission in a four wheel drive . rightJoystickVal controls
@@ -101,15 +120,13 @@ public void drive (double magnitude, double direction, double rotation)
  * @written 23 July 2015
  *          Edited By Becky Button
  */
-public void drive (double magnitude, double direction, double rotation,
-        double yValue, double xValue)
+public void drive (double magnitude, double direction, double rotation)
 {
 
     double tempRotation = rotation, tempMagnitude = magnitude,
             tempDirection = direction;
 
-    if ((Math.abs(yValue) >= super.getDeadbandPercentageZone()
-            || Math.abs(xValue) >= super.getDeadbandPercentageZone())
+    if ((Math.abs(magnitude) >= super.getDeadbandPercentageZone())
             || Math.abs(
                     tempRotation) >= super.getDeadbandPercentageZone())
         {

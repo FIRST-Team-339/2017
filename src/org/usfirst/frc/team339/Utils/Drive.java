@@ -555,7 +555,7 @@ public void drive (double speed, double correction, double rotation)
  */
 public void drive (double speed, double correction)
 {
-    switch (transmissionType)
+    switch (this.transmissionType)
         {
         case MECANUM:
             this.transmissionMecanum.drive(speed, correction, 0.0);
@@ -567,6 +567,76 @@ public void drive (double speed, double correction)
             break;
         }
 }
+
+// TODO comment
+public void driveNoDeadband (double speed, double correction,
+        double rotation)
+{
+    switch (this.transmissionType)
+        {
+        case MECANUM:
+            this.transmissionMecanum.driveNoDeadband(speed, correction,
+                    rotation);
+            break;
+        case TANK:
+            this.transmissionFourWheel.driveWithoutCorrection(
+                    speed + correction, speed - correction);
+        default:
+            break;
+        }
+}
+
+public void driveNoDeadband (double speed, double correction)
+{
+    switch (this.transmissionType)
+        {
+        case MECANUM:
+            this.transmissionMecanum.driveNoDeadband(speed, correction,
+                    0.0);
+            break;
+        case TANK:
+            this.transmissionFourWheel.driveWithoutCorrection(
+                    speed + correction, speed - correction);
+        default:
+            break;
+        }
+}
+
+/**
+ * Linearly and continuously accelerate to <em> targetSpeed</em> over
+ * <em>timeInWhichToAccelerate</em> seconds.
+ * 
+ * @param targetSpeed
+ *            The final speed of the acceleration.
+ * @param timeInWhichToAccelerate
+ *            The number of seconds to spend accelerating.
+ * @return
+ *         True if we're done accelerating, false otherwise.
+ */
+public boolean accelerate (double targetSpeed,
+        double timeInWhichToAccelerate)
+{
+    if (firstTimeAccelerateRun)
+        {
+        this.timer.stop();
+        this.timer.reset();
+        this.timer.start();
+        firstTimeAccelerateRun = false;
+        }
+    this.driveNoDeadband(
+            targetSpeed * (this.timer.get() / timeInWhichToAccelerate),
+            0, 0);
+    if (this.timer.get() > timeInWhichToAccelerate)
+        {
+        firstTimeAccelerateRun = true;
+        return true;
+        }
+    return false;
+}
+
+private boolean firstTimeAccelerateRun = true;
+
+private double savedDeadband = 0.0;
 
 /**
  * @return the distance the front left encoder has driven based on the
@@ -680,14 +750,14 @@ public boolean turnDegrees (double degrees, double speed)
         if (transmissionType == TransmissionType.TANK)
             transmissionFourWheel.drive(speed, -speed);
         else
-            transmissionMecanum.drive(0.0, 0.0, -speed, 0, 0);
+            transmissionMecanum.drive(0.0, 0.0, -speed);
         }
     else if (adjustedDegrees > 0)
         {
         if (transmissionType == TransmissionType.TANK)
             transmissionFourWheel.drive(-speed, speed);
         else
-            transmissionMecanum.drive(0.0, 0.0, speed, 0, 0);
+            transmissionMecanum.drive(0.0, 0.0, speed);
         }
     return false;
 }
