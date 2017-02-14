@@ -354,8 +354,9 @@ private static boolean placeCenterGearPath ()
         case DRIVE_FORWARD_TO_CENTER_SLOW:
             // drive at our slow speed. wait a certain time. Could also check
             // distance for safety
-            Hardware.mecanumDrive.drive(getRealSpeed(.2), 0, 0);// TODO magic
-                                                                // number
+            Hardware.mecanumDrive.drive(accelerationSpeeds[0], 0, 0);// TODO
+                                                                     // magic
+            // number
             if (Hardware.autoStateTimer.get() >= .3)
                 {
                 currentState = MainState.DRIVE_FORWARD_TO_CENTER_MED;
@@ -365,7 +366,7 @@ private static boolean placeCenterGearPath ()
             break;
         case DRIVE_FORWARD_TO_CENTER_MED:
             // drive at our medium speed. wait a certain time to move on.
-            Hardware.mecanumDrive.drive(getRealSpeed(.4), 0, 0);
+            Hardware.mecanumDrive.drive(accelerationSpeeds[1], 0, 0);
             if (Hardware.autoStateTimer.get() >= .3)
                 {
                 currentState = MainState.DRIVE_FORWARD_TO_CENTER;
@@ -418,7 +419,7 @@ private static boolean placeCenterGearPath ()
             if (Hardware.rightUS
                     .getDistanceFromNearestBumper() >= ALIGN_DISTANCE_FROM_GOAL)
                 {
-                Hardware.autoDrive.drive(getRealSpeed(.5), 0);
+                Hardware.autoDrive.drive(accelerationSpeeds[3], 0);
                 }
             else
                 {
@@ -1015,6 +1016,15 @@ private static boolean leftSidePath ()
         }
     return false;
 }
+
+private static final double[] accelerationSpeeds =
+    {
+            getRealSpeed(.2),
+
+            getRealSpeed(.4),
+
+            getRealSpeed(.5)
+    };
 
 /**
  * reset all the sensors and timers, in preparation for an autonomous program.
