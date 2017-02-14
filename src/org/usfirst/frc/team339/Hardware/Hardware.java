@@ -39,7 +39,6 @@ import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.MotorSafetyHelper;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.Spark;
@@ -398,22 +397,26 @@ public static final Timer autoStateTimer = new Timer();
  * 
  * @TODO We REALLY need to fix the motor safety...
  */
-public static final MotorSafetyHelper leftRearMotorSafety = new MotorSafetyHelper(
-        leftRearMotor);
+// public static final MotorSafetyHelper leftRearMotorSafety = new
+// MotorSafetyHelper(
+// leftRearMotor);
 
 
 /**
  * Default motor safety
  */
-public static final MotorSafetyHelper rightRearMotorSafety = new MotorSafetyHelper(
-        rightRearMotor);
+// public static final MotorSafetyHelper rightRearMotorSafety = new
+// MotorSafetyHelper(
+// rightRearMotor);
 
 
-public static final MotorSafetyHelper rightFrontMotorSafety = new MotorSafetyHelper(
-        rightFrontMotor);
+// public static final MotorSafetyHelper rightFrontMotorSafety = new
+// MotorSafetyHelper(
+// rightFrontMotor);
 
-public static final MotorSafetyHelper leftFrontMotorSafety = new MotorSafetyHelper(
-        leftFrontMotor);
+// public static final MotorSafetyHelper leftFrontMotorSafety = new
+// MotorSafetyHelper(
+// leftFrontMotor);
 
 public static final int MINIMUM_AXIS_CAMERA_BRIGHTNESS = 6;
 
