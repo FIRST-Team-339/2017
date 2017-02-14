@@ -102,13 +102,10 @@ public static void init ()
 
     Hardware.tankDrive.setGear(1);
 
-
     isAligning = false;
     isStrafingToTarget = false;
     Hardware.autoDrive.setDriveCorrection(.3);
     Hardware.autoDrive.setEncoderSlack(1); // TODO
-
-
 } // end Init
 
 /**
