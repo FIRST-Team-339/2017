@@ -639,37 +639,46 @@ public boolean brake (final double lBreakSpeed,
         final double rBreakSpeed)
 {
     if (((Math.abs(
-            leftFrontEncoder.getDistance()) >= this.prevBrakeDistanceLF
+            leftFrontEncoder.getDistance()) >= (this.prevBrakeDistanceLF
+                    * this.encoderFactorUpper)
                     - this.ENCODER_THRESHOLD
             && Math.abs(leftFrontEncoder
-                    .getDistance()) <= this.prevBrakeDistanceLF
+                    .getDistance()) <= (this.prevBrakeDistanceLF
+                            * this.encoderFactorLower)
                             + ENCODER_THRESHOLD)))
         {
         withinLeftFrontRange = true;
         }
     if (((Math.abs(
-            leftRearEncoder.getDistance()) >= this.prevBrakeDistanceLR
+            leftRearEncoder.getDistance()) >= (this.prevBrakeDistanceLR
+                    * this.encoderFactorUpper)
                     - this.ENCODER_THRESHOLD
             && Math.abs(leftRearEncoder
-                    .getDistance()) <= this.prevBrakeDistanceLR
+                    .getDistance()) <= (this.prevBrakeDistanceLR
+                            * this.encoderFactorLower)
                             + ENCODER_THRESHOLD)))
         {
         withinLeftRearRange = true;
         }
     if (((Math.abs(
-            rightFrontEncoder.getDistance()) >= this.prevBrakeDistanceRF
-                    - this.ENCODER_THRESHOLD
+            rightFrontEncoder
+                    .getDistance()) >= (this.prevBrakeDistanceRF
+                            * this.encoderFactorUpper)
+                            - this.ENCODER_THRESHOLD
             && Math.abs(rightFrontEncoder
-                    .getDistance()) <= this.prevBrakeDistanceRF
+                    .getDistance()) <= (this.prevBrakeDistanceRF
+                            * this.encoderFactorLower)
                             + ENCODER_THRESHOLD)))
         {
         withinRightFrontRange = true;
         }
     if (((Math.abs(
-            rightRearEncoder.getDistance()) >= this.prevBrakeDistanceRR
+            rightRearEncoder.getDistance()) >= (this.prevBrakeDistanceRR
+                    * this.encoderFactorUpper)
                     - this.ENCODER_THRESHOLD
             && Math.abs(rightRearEncoder
-                    .getDistance()) <= this.prevBrakeDistanceRR
+                    .getDistance()) <= (this.prevBrakeDistanceRR
+                            * this.encoderFactorLower)
                             + ENCODER_THRESHOLD)))
         {
         withinRightRearRange = true;
@@ -690,12 +699,14 @@ public boolean brake (final double lBreakSpeed,
     this.prevBrakeDistanceLR = leftRearEncoder.getDistance();
     this.prevBrakeDistanceRF = rightFrontEncoder.getDistance();
     this.prevBrakeDistanceRR = rightRearEncoder.getDistance();
+
     if (withinRightRearRange && withinRightFrontRange
             && withinLeftFrontRange && withinLeftRearRange)
         {
         this.transmissionFourWheel.drive(0, 0);
         return true;
         }
+
     return false;
 
 }
@@ -714,6 +725,9 @@ private boolean withinRightFrontRange = false;
 private boolean withinRightRearRange = false;
 private boolean withinLeftFrontRange = false;
 private boolean withinLeftRearRange = false;
+
+final private double encoderFactorUpper = .5;
+final private double encoderFactorLower = .3;
 
 private double ENCODER_THRESHOLD = .25;
 
