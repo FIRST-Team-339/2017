@@ -81,27 +81,13 @@ private static enum MainState
      */
     DELAY_BEFORE_START,
     /**
-     * Beginning state of our acceleration in our drive up to the airship.
+     * Accelerates so we don't jerk our enscoders.
      */
-    DRIVE_FORWARD_TO_CENTER_SLOW,
+    ACCELRATE,
     /**
-     * Medium state of our acceleration in our drive up to the airship.
-     */
-    DRIVE_FORWARD_TO_CENTER_MED,
-    /**
-     * We're done accelerating, just drive!
+     * Drives up the the gear.
      */
     DRIVE_FORWARD_TO_CENTER,
-    /**
-     * Drive to the side of the airship slowly. See
-     * DRIVE_FORWARD_TO_CENTER_SLOW.
-     */
-    DRIVE_FORWARD_TO_SIDES_SLOW,
-    /**
-     * Drive to the side of the airship at medium speed.See
-     * DRIVE_FORWARD_TO_CENTER_MED.
-     */
-    DRIVE_FORWARD_TO_SIDES_MED,
     /**
      * Drive to the side of the airship at normal speed. See
      * DRIVE_FORWARD_TO_CENTER.
@@ -311,6 +297,8 @@ public static void periodic ()
 
 private static MainState currentState = MainState.INIT;
 
+private static MainState postAccelerateState = MainState.DONE;
+
 private static AutoProgram autoPath = AutoProgram.INIT;
 
 private static double delayTime = 5;
@@ -346,34 +334,17 @@ private static boolean placeCenterGearPath ()
             if (Hardware.autoStateTimer.get() >= delayTime)
                 {
                 Hardware.axisCamera.saveImagesSafely();
-                currentState = MainState.DRIVE_FORWARD_TO_CENTER_SLOW;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                }
-            break;
-        case DRIVE_FORWARD_TO_CENTER_SLOW:
-            // drive at our slow speed. wait a certain time. Could also check
-            // distance for safety
-            Hardware.mecanumDrive.drive(accelerationSpeeds[0], 0, 0);// TODO
-                                                                     // magic
-            // number
-            if (Hardware.autoStateTimer.get() >= .3)
-                {
-                currentState = MainState.DRIVE_FORWARD_TO_CENTER_MED;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                }
-            break;
-        case DRIVE_FORWARD_TO_CENTER_MED:
-            // drive at our medium speed. wait a certain time to move on.
-            Hardware.mecanumDrive.drive(accelerationSpeeds[1], 0, 0);
-            if (Hardware.autoStateTimer.get() >= .3)
-                {
-                currentState = MainState.DRIVE_FORWARD_TO_CENTER;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                }
+                currentState = MainState.ACCELRATE;
+                postAccelerateState = MainState.DRIVE_FORWARD_TO_CENTER;
 
+                Hardware.autoStateTimer.reset();
+                Hardware.autoStateTimer.start();
+                }
+            break;
+        case ACCELRATE:
+            // TODO magic numbers
+            if (Hardware.autoDrive.accelerate(getRealSpeed(.35), .5))
+                currentState = postAccelerateState;
             break;
         case DRIVE_FORWARD_TO_CENTER:
             // If we see blobs, hand over control to camera, otherwise, go
@@ -419,7 +390,7 @@ private static boolean placeCenterGearPath ()
             if (Hardware.rightUS
                     .getDistanceFromNearestBumper() >= ALIGN_DISTANCE_FROM_GOAL)
                 {
-                Hardware.autoDrive.drive(accelerationSpeeds[3], 0);
+                Hardware.autoDrive.drive(getRealSpeed(.5), 0);
                 }
             else
                 {
