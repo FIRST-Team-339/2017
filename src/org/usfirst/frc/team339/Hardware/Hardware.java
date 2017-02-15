@@ -19,6 +19,7 @@ import org.usfirst.frc.team339.HardwareInterfaces.DoubleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyGyro;
+import org.usfirst.frc.team339.HardwareInterfaces.KilroyServo;
 import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
 import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
@@ -86,7 +87,10 @@ public static boolean isRunningOnKilroyXVIII = true; // 18
 // ====================================
 // PWM classes
 // ====================================
-// public static KilroyServo gearServo = new KilroyServo(2, 270);
+public static KilroyServo gearServo = new KilroyServo(2, 270);
+public static KilroyServo cameraServo = new KilroyServo(2, 270);
+// TODO find actual values
+
 // ------------------------------------
 // Jaguar classes
 // ------------------------------------

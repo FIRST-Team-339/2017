@@ -73,6 +73,11 @@ public static void init ()
     Hardware.rightFrontMotor.set(0.0);
     Hardware.leftFrontMotor.set(0.0);
 
+    // ---------------------------------------
+    // Servo init
+    // ---------------------------------------
+    Hardware.cameraServo.setAngle(LOWER_CAMERASERVO_POSITION);
+
 
     // Hardware.rightFrontMotor.setInverted(true); // TODO takeout
     // Hardware.rightRearMotor.setInverted(true);
@@ -297,6 +302,25 @@ public static void periodic ()
     Hardware.axisCamera
             .takeSinglePicture(Hardware.leftOperator.getRawButton(8)
                     || Hardware.rightOperator.getRawButton(8));
+
+    // Written by Ashley Espeland, has not been tested
+    // cameraServo code setting to either the higher or the lower angle position
+    if (Hardware.rightDriver.getRawButton(4)
+            && fourHasBeenPressed == false)
+        {
+        if (Hardware.cameraServo
+                .getAngle() == LOWER_CAMERASERVO_POSITION)
+            {
+            Hardware.cameraServo.setAngle(HIGHER_CAMERASERVO_POSITION);
+            }
+        else if (Hardware.cameraServo
+                .getAngle() == HIGHER_CAMERASERVO_POSITION)
+            {
+            Hardware.cameraServo.setAngle(LOWER_CAMERASERVO_POSITION);
+            }
+        fourHasBeenPressed = true;
+        }
+
 } // end
   // Periodic
 
@@ -534,5 +558,12 @@ private final static double CAMERA_ALIGN_CENTER = .478;  // Relative coordinates
 // ==========================================
 // TUNEABLES
 // ==========================================
+private final static double LOWER_CAMERASERVO_POSITION = 65;// TODO find actual
+                                                            // value
+
+private final static double HIGHER_CAMERASERVO_POSITION = 90;// TODO find actual
+                                                             // value
+
+public static boolean fourHasBeenPressed = true;
 
 } // end class
