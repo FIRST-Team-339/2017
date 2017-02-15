@@ -83,7 +83,7 @@ private static enum MainState
     /**
      * Accelerates so we don't jerk our enscoders.
      */
-    ACCELRATE,
+    ACCELERATE,
     /**
      * Drives up the the gear.
      */
@@ -334,14 +334,14 @@ private static boolean placeCenterGearPath ()
             if (Hardware.autoStateTimer.get() >= delayTime)
                 {
                 Hardware.axisCamera.saveImagesSafely();
-                currentState = MainState.ACCELRATE;
+                currentState = MainState.ACCELERATE;
                 postAccelerateState = MainState.DRIVE_FORWARD_TO_CENTER;
 
                 Hardware.autoStateTimer.reset();
                 Hardware.autoStateTimer.start();
                 }
             break;
-        case ACCELRATE:
+        case ACCELERATE:
             // TODO magic numbers
             if (Hardware.autoDrive.accelerate(getRealSpeed(.35), .5))
                 currentState = postAccelerateState;
@@ -460,51 +460,16 @@ private static boolean rightSidePath ()
             if (Hardware.autoStateTimer.get() >= delayTime)
                 {
                 Hardware.axisCamera.saveImagesSafely();
-                currentState = MainState.DRIVE_FORWARD_TO_CENTER_SLOW;
+                currentState = MainState.ACCELERATE;
+                postAccelerateState = MainState.DRIVE_FORWARD_TO_SIDES;
                 Hardware.autoStateTimer.reset();
                 Hardware.autoStateTimer.start();
                 }
             break;
-        case DRIVE_FORWARD_TO_SIDES_SLOW:
-            if (Hardware.autoStateTimer.get() >= .3)
+        case ACCELERATE:
+            if (Hardware.autoDrive.accelerate(.5, .5))// TODO magic num!
                 {
-                // TODO use the same number as driveStraight
-                Hardware.autoDrive.drive(getRealSpeed(.25), 0, 0);
-                }
-            // TODO put in array or something
-            else if (Hardware.autoDrive
-                    .getAveragedEncoderValues() >= 95.5)
-                {
-                currentState = MainState.TURN_TO_GEAR_PEG;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                }
-            else
-                {
-                currentState = MainState.DRIVE_FORWARD_TO_SIDES_MED;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                }
-            break;
-        case DRIVE_FORWARD_TO_SIDES_MED:
-            if (Hardware.autoStateTimer.get() >= .3)
-                {
-                // TODO use the same number as driveStraight
-                Hardware.autoDrive.drive(getRealSpeed(.4), 0, 0);
-                }
-            // TODO put in array or something
-            else if (Hardware.autoDrive
-                    .getAveragedEncoderValues() >= 95.5)
-                {
-                currentState = MainState.TURN_TO_GEAR_PEG;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                }
-            else
-                {
-                currentState = MainState.DRIVE_FORWARD_TO_SIDES;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
+                currentState = postAccelerateState;
                 }
             break;
         case DRIVE_FORWARD_TO_SIDES:
@@ -739,51 +704,16 @@ private static boolean leftSidePath ()
             if (Hardware.autoStateTimer.get() >= delayTime)
                 {
                 Hardware.axisCamera.saveImagesSafely();
-                currentState = MainState.DRIVE_FORWARD_TO_CENTER_SLOW;
+                currentState = MainState.ACCELERATE;
+                postAccelerateState = MainState.DRIVE_FORWARD_TO_SIDES;
                 Hardware.autoStateTimer.reset();
                 Hardware.autoStateTimer.start();
                 }
             break;
-        case DRIVE_FORWARD_TO_SIDES_SLOW:
-            if (Hardware.autoStateTimer.get() >= .3)
+        case ACCELERATE:
+            if (Hardware.autoDrive.accelerate(.5, .5))// TODO magic num!
                 {
-                // TODO use the same number as driveStraight
-                Hardware.autoDrive.drive(getRealSpeed(.25), 0, 0);
-                }
-            // TODO put in array or something
-            else if (Hardware.autoDrive
-                    .getAveragedEncoderValues() >= 95.5)
-                {
-                currentState = MainState.TURN_TO_GEAR_PEG;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                }
-            else
-                {
-                currentState = MainState.DRIVE_FORWARD_TO_SIDES_MED;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                }
-            break;
-        case DRIVE_FORWARD_TO_SIDES_MED:
-            if (Hardware.autoStateTimer.get() >= .3)
-                {
-                // TODO use the same number as driveStraight
-                Hardware.autoDrive.drive(getRealSpeed(.4), 0, 0);
-                }
-            // TODO put in array or something
-            else if (Hardware.autoDrive
-                    .getAveragedEncoderValues() >= 95.5)
-                {
-                currentState = MainState.TURN_TO_GEAR_PEG;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                }
-            else
-                {
-                currentState = MainState.DRIVE_FORWARD_TO_SIDES;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
+                currentState = postAccelerateState;
                 }
             break;
         case DRIVE_FORWARD_TO_SIDES:
