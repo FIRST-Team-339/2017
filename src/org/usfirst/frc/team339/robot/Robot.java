@@ -353,19 +353,20 @@ public void robotInit ()
     // Hardware.cam0.setFPS(Hardware.USB_FPS);
     // Hardware.cam1.setFPS(Hardware.USB_FPS);
     
-    Hardware.imageProcessor.setVerticalCameraMountAngle(Math.toRadians(65));
+    Hardware.imageProcessor.setVerticalCameraMountAngle(Math.toRadians(25));
+    Hardware.imageProcessor.setVisionGoalHeight(FUEL_GOAL_HEIGHT);
 
     CameraServer.getInstance().addAxisCamera("10.3.39.11");
     Hardware.camForward.setResolution(640, 480);
     Hardware.camBackward.setResolution(640, 480);
 
 
-//    Hardware.axisCamera.writeExposureControl(ExposureControl.kHold);
+    Hardware.axisCamera.writeExposureControl(ExposureControl.kHold);
     Hardware.axisCamera.writeBrightness(1);
     Hardware.axisCamera.writeColorLevel(79);
     Hardware.axisCamera.writeResolution(Resolution.k320x240);
     Hardware.axisCamera
-            .writeWhiteBalance(WhiteBalance.kFixedFluorescent1);
+            .writeWhiteBalance(WhiteBalance.kFixedOutdoor1);
 
 
 
@@ -532,6 +533,18 @@ public void testPeriodic ()
 // ==========================================
 // TUNEABLES
 // ==========================================
+
+
+/**
+ * Height to offset the height of the camera to the height of the goal, in inches.
+ */
+private static final double CAMERA_HEIGHT_FROM_GROUND = 20.0;//31.0;//
+
+/**
+ * Height of the goal in relation to the robot's height, in inches.
+ */
+private static final double FUEL_GOAL_HEIGHT = 86.0 - CAMERA_HEIGHT_FROM_GROUND;
+
 
 
 /**

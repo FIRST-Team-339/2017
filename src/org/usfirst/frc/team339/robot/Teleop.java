@@ -202,9 +202,12 @@ public class Teleop {
 
 		if (Hardware.leftOperator.getRawButton(8)) {
 			Hardware.imageProcessor.processImage();
-			if (Hardware.imageProcessor.getNthSizeBlob(1) != null) {
-				System.out.println("Distance to Target: " + Hardware.imageProcessor.getZDistanceToFuelTarget(
-						Hardware.imageProcessor.getNthSizeBlob(0), Hardware.imageProcessor.getNthSizeBlob(1)));
+			if (Hardware.imageProcessor.getLargestBlob() != null)
+			{
+				System.out.println("Distance to Target: "
+						+ Hardware.imageProcessor.getZDistanceToFuelTarget(Hardware.imageProcessor.getLargestBlob()));
+				System.out.println("Camera angle: "
+						+ Hardware.imageProcessor.getPitchAngleToTarget(Hardware.imageProcessor.getLargestBlob()));
 			}
 		}
 
@@ -457,6 +460,8 @@ public class Teleop {
 		// Cameras
 		// prints any camera information required
 		// ---------------------------------
+		
+//		System.out.println("Resolution: " + Hardware.axisCamera.getResolution());
 
 		// System.out.println("Expected center: " + CAMERA_ALIGN_CENTER);
 		//
