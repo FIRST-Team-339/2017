@@ -360,6 +360,13 @@ public static void printStatements ()
     // .println("Flywheel Motor: " + Hardware.shooterMotor.get());
     //
     // System.out.println("Intake Motor: " + Hardware.intakeMotor.get());
+    if (Hardware.rightOperator.getRawButton(11))
+        {
+        Hardware.elevatorMotor.setSpeed(1);
+        System.out.println(
+                "Elevator Motor: " + Hardware.elevatorMotor.get());
+        }
+    // System.out.println("Turret Spark: " + Hardware.gimbalMotor.get());
 
     // =================================
     // CAN items
@@ -373,11 +380,11 @@ public static void printStatements ()
     // =================================
     // if (Hardware.ringlightSwitch.isOnCheckNow())
     // {
-    // System.out.println("Ring light relay is on");
+    // System.out.println("Ring light relay is On");
     // }
     // else if (!Hardware.ringlightSwitch.isOnCheckNow())
     // {
-    // System.out.println("Ring light relay is off");
+    // System.out.println("Ring light relay is Off");
     // }
 
     // =================================
