@@ -512,7 +512,7 @@ public class Teleop {
 		// Hardware.rightOperator.getY());
 
 		// =================================
-		// Kilroy ancillary items
+		// Kilroy ancillary items 
 		// =================================
 		// ---------------------------------
 		// timers

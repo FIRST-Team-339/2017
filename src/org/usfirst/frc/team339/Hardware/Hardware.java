@@ -19,6 +19,7 @@ import org.usfirst.frc.team339.HardwareInterfaces.DoubleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyGyro;
+import org.usfirst.frc.team339.HardwareInterfaces.KilroyServo;
 import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
 import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
@@ -34,6 +35,7 @@ import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
+import edu.wpi.cscore.AxisCamera;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -71,7 +73,7 @@ public static double joystickDeadzone = .2;
  */
 public static boolean runningInLab = false;
 
-public static boolean isRunningOnKilroyXVIII = false; // 18
+public static boolean isRunningOnKilroyXVIII = true; // 18
 // -------------------------------------
 // Private Constants
 // -------------------------------------
@@ -80,6 +82,8 @@ public static boolean isRunningOnKilroyXVIII = false; // 18
 // Hardware Tunables
 // ---------------------------------------
 
+public static final double CAMERA_MOUNT_ANGLE = Math.toRadians(65);
+
 // **********************************************************
 // DIGITAL I/O CLASSES
 // **********************************************************
@@ -87,6 +91,7 @@ public static boolean isRunningOnKilroyXVIII = false; // 18
 // PWM classes
 // ====================================
 // public static KilroyServo gearServo = new KilroyServo(2, 270);
+public static KilroyServo cameraServo = new KilroyServo(7, 190);
 // ------------------------------------
 // Jaguar classes
 // ------------------------------------
@@ -257,9 +262,6 @@ public static UltraSonic rightUS = new UltraSonic(2);
 public static UsbCamera camForward = CameraServer.getInstance()
        .startAutomaticCapture(0);
 
-public static UsbCamera camBackward = CameraServer.getInstance()
- .startAutomaticCapture(1);
-
 // Used by the USB Cameras in robot init to set their FPS's
 public final static int USB_FPS = 15;
 
@@ -418,6 +420,5 @@ public static final Timer autoStateTimer = new Timer();
 // leftFrontMotor);
 
 public static final int MINIMUM_AXIS_CAMERA_BRIGHTNESS = 6;
-
 
 } // end class
