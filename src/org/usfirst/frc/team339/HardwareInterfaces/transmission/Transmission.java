@@ -420,7 +420,7 @@ public double getGearPercentage (int gear)
         return 0.0;
         }
 
-    return this.gearPercentages[gear - 1];
+    return this.gearPercentages[gear];
 }
 
 /**
