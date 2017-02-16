@@ -34,9 +34,6 @@ package org.usfirst.frc.team339.robot;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class contains all of the user code for the Autonomous part of the
@@ -101,7 +98,7 @@ public static void init ()
     // SmartDashboard.putData("teleoptest", testsendable);
 
     Hardware.tankDrive.setGear(1);
-
+    Hardware.mecanumDrive.setFirstGearPercentage(Robot.FIRST_GEAR);
     isAligning = false;
     isStrafingToTarget = false;
     Hardware.autoDrive.setDriveCorrection(.3);
@@ -117,27 +114,6 @@ public static void init ()
  */
 public static void periodic ()
 {
-    Command chooseTrueorFalse;
-    SendableChooser testbool;
-    testbool = new SendableChooser();
-    testbool.addDefault("true", Hardware.changeBool.equals(true));
-    testbool.addObject(" false", Hardware.changeBool.equals(false));
-    int control = 1;
-
-    SmartDashboard.putData("testbool", testbool);
-    switch (control)
-        {
-        case 1:
-
-            // System.out.println(Hardware.changeBool.getClass());
-            control = 1;
-            break;
-        case 2:
-
-            break;
-
-        }
-
     if (Hardware.leftDriver.getTrigger() && !previousFireButton)
         {
         firing = !firing;
