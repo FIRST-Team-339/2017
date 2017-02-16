@@ -199,6 +199,17 @@ public static void periodic ()
                     Hardware.leftDriver.getY());
 
     // =================================================================
+    // OPERATOR CONTROLS
+    // =================================================================
+
+    if (Hardware.rightOperator.getRawButton(2))
+        {
+        if (Math.abs(Hardware.rightOperator.getTwist()) > .2)
+            Hardware.shooter.turnGimbalSlow(
+                    (Hardware.rightOperator.getTwist() > 0) ? 1 : -1);
+        }
+
+    // =================================================================
     // CAMERA CODE
     // =================================================================
 
