@@ -292,7 +292,7 @@ public void robotInit ()
         Hardware.rightFrontMotor.setInverted(false);
         Hardware.rightRearMotor.setInverted(false);
         Hardware.leftFrontMotor.setInverted(false);
-        Hardware.leftRearMotor.setInverted(true);
+        Hardware.leftRearMotor.setInverted(false);
         Hardware.intakeMotor.setInverted(true);
         Hardware.mecanumDrive
                 .setDeadbandPercentageZone(Hardware.joystickDeadzone);
@@ -373,8 +373,8 @@ public void robotInit ()
     // -------------------------------------
     // USB Camera initialization
     // -------------------------------------
-    Hardware.camForward.setResolution(320, 240);
-    // Hardware.camBackward.setResolution(320, 240);
+   Hardware.camForward.setResolution(320, 240);
+   Hardware.camBackward.setResolution(320, 240);
 
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
@@ -421,13 +421,7 @@ public void teleopInit ()
     // User code goes below here
     // =========================================================
     Teleop.init();
-    // Hardware.rightFrontMotor.setInverted(true);
-    // Hardware.rightRearMotor.setInverted(true);
-    // Hardware.leftFrontMotor.setInverted(true);
-    Hardware.leftRearMotor.setInverted(true);
-    Hardware.intakeMotor.setInverted(true);
-    // Hardware.mecanumDrive.setDirectionalDeadzone(0.2);
-    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+   
     // =========================================================
     // User code goes above here
     // =========================================================
