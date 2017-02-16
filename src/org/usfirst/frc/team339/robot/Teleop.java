@@ -77,15 +77,10 @@ public static void init ()
     // Hardware.leftRearMotor.setInverted(true);
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     // Hardware.tankDrive.setGear(1);
-    // Hardware.leftUS.setScalingFactor(.13);
-    // Hardware.leftUS.setOffsetDistanceFromNearestBummper(0);
     // Sets the scaling factor and general ultrasonic stuff
     Hardware.rightUS.setScalingFactor(.13);
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
-    // Hardware.leftUS.setNumberOfItemsToCheckBackwardForValidity(1);
-    // Hardware.LeftUS.setConfidenceCalculationsOn(false);
-    // Hardware.RightUS.setConfidenceCalculationsOn(false);
 
     // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
     // boolean testchoosers = true;
@@ -354,16 +349,16 @@ public static void printStatements ()
     // Switches
     // prints state of switches
     // ---------------------------------
-    System.out.println("Gear Limit Switch: "
-            + Hardware.gearLimitSwitch.isOn());
+    // System.out.println("Gear Limit Switch: "
+    // + Hardware.gearLimitSwitch.isOn());
 
-    System.out.println(
-            "Backup or fire: " + Hardware.backupOrFireOrHopper.isOn());
-    System.out.println(
-            "Enable Auto: " + Hardware.enableAutonomous.isOn());
+    // System.out.println(
+    // "Backup or fire: " + Hardware.backupOrFireOrHopper.isOn());
+    // System.out.println(
+    // "Enable Auto: " + Hardware.enableAutonomous.isOn());
 
-    System.out.println(
-            "Path Selector: " + Hardware.pathSelector.getPosition());
+    // System.out.println(
+    // "Path Selector: " + Hardware.pathSelector.getPosition());
 
     // System.out.println("Right UltraSonic distance from bumper: "
     // + Hardware.rightUS.getDistanceFromNearestBumper());
@@ -425,8 +420,6 @@ public static void printStatements ()
     // We don't want the print statements to flood everything and go ahhhhhhhh
     //
     // if (Hardware.rightOperator.getRawButton(11))
-    // System.out.println("LeftUS = "
-    // + Hardware.leftUS.getDistanceFromNearestBumper());
     // System.out.println("RightUS = "
     // + Hardware.rightUS.getDistanceFromNearestBumper());
     // System.out.println("Delay Pot: " + Hardware.delayPot.get());
@@ -436,7 +429,7 @@ public static void printStatements ()
     // pots
     // where the pot is turned to
     // ---------------------------------
-    System.out.println("Delay Pot Degrees" + Hardware.delayPot.get());
+    // System.out.println("Delay Pot Degrees" + Hardware.delayPot.get());
 
 
     // =================================
