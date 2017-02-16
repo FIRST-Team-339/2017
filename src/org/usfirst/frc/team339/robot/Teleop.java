@@ -114,25 +114,6 @@ public class Teleop {
 	 * @written Jan 13, 2015
 	 */
 	public static void periodic() {
-		Command chooseTrueorFalse;
-		SendableChooser testbool;
-		testbool = new SendableChooser();
-		testbool.addDefault("true", Hardware.changeBool.equals(true));
-		testbool.addObject(" false", Hardware.changeBool.equals(false));
-		int control = 1;
-
-		SmartDashboard.putData("testbool", testbool);
-		switch (control) {
-		case 1:
-
-			// System.out.println(Hardware.changeBool.getClass());
-			control = 1;
-			break;
-		case 2:
-			break;
-
-		}
-
 		if (Hardware.leftDriver.getTrigger() && !previousFireButton) {
 			firing = !firing;
 		}

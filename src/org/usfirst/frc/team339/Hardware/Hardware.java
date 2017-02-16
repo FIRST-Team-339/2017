@@ -19,6 +19,7 @@ import org.usfirst.frc.team339.HardwareInterfaces.DoubleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyGyro;
+import org.usfirst.frc.team339.HardwareInterfaces.KilroyServo;
 import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
 import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
@@ -26,7 +27,6 @@ import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import org.usfirst.frc.team339.Utils.BallIntake;
-import org.usfirst.frc.team339.Utils.ChangeBoolValue;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Shooter;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
@@ -63,7 +63,7 @@ public class Hardware
 // ------------------------------------
 // Public Constants
 // ------------------------------------
-public static boolean testbool = true;
+
 
 public static double joystickDeadzone = .2;
 
@@ -91,6 +91,7 @@ public static final double CAMERA_MOUNT_ANGLE = Math.toRadians(65);
 // PWM classes
 // ====================================
 // public static KilroyServo gearServo = new KilroyServo(2, 270);
+public static KilroyServo cameraServo = new KilroyServo(7, 190);
 // ------------------------------------
 // Jaguar classes
 // ------------------------------------
@@ -244,7 +245,6 @@ public static Potentiometer delayPot = new Potentiometer(1, 270);// TODO max //
 // -------------------------------------
 public static UltraSonic rightUS = new UltraSonic(2);
 
-// public static UltraSonic leftUS = new UltraSonic(2);
 // **********************************************************
 // roboRIO CONNECTIONS CLASSES
 // **********************************************************
@@ -424,7 +424,6 @@ public static final Timer autoStateTimer = new Timer();
 
 public static final int MINIMUM_AXIS_CAMERA_BRIGHTNESS = 6;
 
-public static final ChangeBoolValue changeBool = new ChangeBoolValue(
-        testbool);
+
 
 } // end class

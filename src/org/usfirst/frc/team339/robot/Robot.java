@@ -85,7 +85,7 @@ import edu.wpi.first.wpilibj.vision.AxisCamera.WhiteBalance;
  * @written Jan 2, 2011 -------------------------------------------------------
  */
 public class Robot extends IterativeRobot {
-	boolean testdasboard = true;
+
 	// =================================================
 	// private data for the class
 	// =================================================
@@ -500,6 +500,8 @@ public class Robot extends IterativeRobot {
 	 * inches.
 	 */
 	private static final double CAMERA_HEIGHT_FROM_GROUND = 20.0;// 31.0;//
+	
+	public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.068;
 
 	/**
 	 * Height of the goal in relation to the robot's height, in inches.
@@ -515,8 +517,6 @@ public class Robot extends IterativeRobot {
 	 * The percentage we want the motors to run at while we are in second gear
 	 */
 	public static final double SECOND_GEAR = 1;
-
-	public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.069;
 
 	public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVII = .0197;
 
