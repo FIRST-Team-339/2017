@@ -27,7 +27,6 @@ import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import org.usfirst.frc.team339.Utils.BallIntake;
-import org.usfirst.frc.team339.Utils.ChangeBoolValue;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Shooter;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
@@ -62,7 +61,7 @@ public class Hardware
 // ------------------------------------
 // Public Constants
 // ------------------------------------
-public static boolean testbool = true;
+
 
 public static double joystickDeadzone = .2;
 
@@ -80,6 +79,8 @@ public static boolean isRunningOnKilroyXVIII = true; // 18
 // ---------------------------------------
 // Hardware Tunables
 // ---------------------------------------
+
+public static final double CAMERA_MOUNT_ANGLE = Math.toRadians(65);
 
 // **********************************************************
 // DIGITAL I/O CLASSES
@@ -244,7 +245,6 @@ public static Potentiometer delayPot = new Potentiometer(1, 270);// TODO max //
 // -------------------------------------
 public static UltraSonic rightUS = new UltraSonic(2);
 
-// public static UltraSonic leftUS = new UltraSonic(2);
 // **********************************************************
 // roboRIO CONNECTIONS CLASSES
 // **********************************************************
@@ -261,9 +261,6 @@ public static UltraSonic rightUS = new UltraSonic(2);
 
 public static UsbCamera camForward = CameraServer.getInstance()
         .startAutomaticCapture(0);
-
-// public static UsbCamera camBackward = CameraServer.getInstance()
-// .startAutomaticCapture(1);
 
 // Used by the USB Cameras in robot init to set their FPS's
 public final static int USB_FPS = 15;
@@ -423,8 +420,5 @@ public static final Timer autoStateTimer = new Timer();
 // leftFrontMotor);
 
 public static final int MINIMUM_AXIS_CAMERA_BRIGHTNESS = 6;
-
-public static final ChangeBoolValue changeBool = new ChangeBoolValue(
-        testbool);
 
 } // end class
