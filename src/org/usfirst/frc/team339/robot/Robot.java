@@ -86,7 +86,7 @@ import edu.wpi.first.wpilibj.vision.AxisCamera.WhiteBalance;
  */
 public class Robot extends IterativeRobot
 {
-boolean testdasboard = true;
+
 // =================================================
 // private data for the class
 // =================================================
@@ -517,7 +517,7 @@ public static final double FIRST_GEAR = .7;
  */
 public static final double SECOND_GEAR = 1;
 
-public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.069;
+public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.068;
 
 public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVII = .0197;
 

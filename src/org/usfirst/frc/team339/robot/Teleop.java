@@ -34,9 +34,6 @@ package org.usfirst.frc.team339.robot;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class contains all of the user code for the Autonomous part of the
@@ -117,44 +114,7 @@ public static void init ()
  */
 public static void periodic ()
 {
-    Command chooseTrueorFalse;
-    SendableChooser testbool;
-    testbool = new SendableChooser();
-    testbool.addDefault("true", Hardware.changeBool.equals(true));
-    testbool.addObject(" false", Hardware.changeBool.equals(false));
-    int control = 1;
 
-    SmartDashboard.putData("testbool", testbool);
-    switch (control)
-        {
-        case 1:
-
-            // System.out.println(Hardware.changeBool.getClass());
-            control = 1;
-            break;
-        case 2:
-
-            break;
-
-        }
-
-    if (Hardware.leftDriver.getTrigger() && !previousFireButton)
-        {
-        firing = !firing;
-        }
-    if (firing)
-        Hardware.shooter.fire();
-
-
-    // previousFireButton = Hardware.leftDriver.getTrigger();
-    //
-    // if (fireCount > 0)
-    // {
-    // if (Hardware.shooter.fire())
-    // {
-    // fireCount--;
-    // }
-    // }
     if (preparingToFire == false)
         Hardware.shooter.stopFlywheelMotor();
     /*
@@ -394,14 +354,16 @@ public static void printStatements ()
     // Switches
     // prints state of switches
     // ---------------------------------
-    // System.out.println("Gear Limit Switch: "
-    // + Hardware.gearLimitSwitch.isOn());
+    System.out.println("Gear Limit Switch: "
+            + Hardware.gearLimitSwitch.isOn());
 
-    // System.out.println("Backup or fire: " + Hardware.backupOrFire.isOn());
-    // System.out.println("Enable Auto: " + Hardware.enableAutonomous.isOn());
+    System.out.println(
+            "Backup or fire: " + Hardware.backupOrFireOrHopper.isOn());
+    System.out.println(
+            "Enable Auto: " + Hardware.enableAutonomous.isOn());
 
-    // System.out.println(
-    // "Path Selector: " + Hardware.pathSelector.getPosition());
+    System.out.println(
+            "Path Selector: " + Hardware.pathSelector.getPosition());
 
     // System.out.println("Right UltraSonic distance from bumper: "
     // + Hardware.rightUS.getDistanceFromNearestBumper());
@@ -409,24 +371,24 @@ public static void printStatements ()
     // Encoders
     // prints the distance from the encoders
     // ---------------------------------
-    /*
-     * System.out.println("Right Front Encoder: "
-     * + Hardware.rightFrontEncoder.get());
-     * System.out.println("Right Front Encoder Distance: "
-     * + Hardware.autoDrive.getRightRearEncoderDistance());
-     * System.out.println("Right Rear Encoder: "
-     * + Hardware.rightRearEncoder.get());
-     * System.out.println("Right Rear Encoder Distance: "
-     * + Hardware.autoDrive.getRightRearEncoderDistance());
-     * System.out.println("Left Front Encoder: "
-     * + Hardware.leftFrontEncoder.get());
-     * System.out.println("Left Front Encoder Distance: "
-     * + Hardware.autoDrive.getLeftFrontEncoderDistance());
-     * System.out.println("Left Rear Encoder: "
-     * + Hardware.leftRearEncoder.get());
-     * System.out.println("Left Rear Encoder Distance: "
-     * + Hardware.autoDrive.getLeftFrontEncoderDistance());
-     */
+
+    System.out.println("Right Front Encoder: "
+            + Hardware.rightFrontEncoder.get());
+    System.out.println("Right Front Encoder Distance: "
+            + Hardware.autoDrive.getRightRearEncoderDistance());
+    System.out.println("Right Rear Encoder: "
+            + Hardware.rightRearEncoder.get());
+    System.out.println("Right Rear Encoder Distance: "
+            + Hardware.autoDrive.getRightRearEncoderDistance());
+    System.out.println("Left Front Encoder: "
+            + Hardware.leftFrontEncoder.get());
+    System.out.println("Left Front Encoder Distance: "
+            + Hardware.autoDrive.getLeftFrontEncoderDistance());
+    System.out.println("Left Rear Encoder: "
+            + Hardware.leftRearEncoder.get());
+    System.out.println("Left Rear Encoder Distance: "
+            + Hardware.autoDrive.getLeftFrontEncoderDistance());
+
 
     // ---------------------------------
     // Red Light/IR Sensors
@@ -474,7 +436,7 @@ public static void printStatements ()
     // pots
     // where the pot is turned to
     // ---------------------------------
-    // System.out.println("Delay Pot Degrees" + Hardware.delayPot.get());
+    System.out.println("Delay Pot Degrees" + Hardware.delayPot.get());
 
 
     // =================================

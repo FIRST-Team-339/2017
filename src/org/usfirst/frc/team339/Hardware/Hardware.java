@@ -26,7 +26,6 @@ import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import org.usfirst.frc.team339.Utils.BallIntake;
-import org.usfirst.frc.team339.Utils.ChangeBoolValue;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Shooter;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
@@ -61,7 +60,7 @@ public class Hardware
 // ------------------------------------
 // Public Constants
 // ------------------------------------
-public static boolean testbool = true;
+
 
 public static double joystickDeadzone = .2;
 
@@ -420,7 +419,6 @@ public static final Timer autoStateTimer = new Timer();
 
 public static final int MINIMUM_AXIS_CAMERA_BRIGHTNESS = 6;
 
-public static final ChangeBoolValue changeBool = new ChangeBoolValue(
-        testbool);
+
 
 } // end class
