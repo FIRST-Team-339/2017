@@ -430,13 +430,13 @@ public AlignReturnType strafeToGear (double driveSpeed,
     // If we have no blobs, return so.
     if (this.imageProcessor.getNthSizeBlob(1) == null)
         {
-        this.drive(0.0, 0.0);
+        this.driveNoDeadband(0.0, 0.0);
         return AlignReturnType.NO_BLOBS;
         }
     // If we don't have any ultrasonics in the constructor, stop aligning.
     if (this.isUsingUltrasonics == false)
         {
-        this.drive(0.0, 0.0);
+        this.driveNoDeadband(0.0, 0.0);
         return AlignReturnType.ALIGNED;
         }
     double distanceToCenter = this.imageProcessor
@@ -444,9 +444,12 @@ public AlignReturnType strafeToGear (double driveSpeed,
                     this.imageProcessor.getNthSizeBlob(0),
                     this.imageProcessor.getNthSizeBlob(1),
                     relativeCenter);
+    System.out.println("DistanceToCenter: " + distanceToCenter);
+    System.out.println("Distance from wall: "
+            + this.rightUlt.getDistanceFromNearestBumper());
     if (distanceToCenter == Double.MAX_VALUE)
         {
-        this.drive(0.0, 0.0);
+        this.driveNoDeadband(0.0, 0.0);
         return AlignReturnType.NO_BLOBS;
         }
 
@@ -455,27 +458,25 @@ public AlignReturnType strafeToGear (double driveSpeed,
         {
         this.purgingUltrasonic = true;
         this.firstStrafe = true;
-        this.drive(0.0, 0.0);
+        this.driveNoDeadband(0.0, 0.0);
         return AlignReturnType.CLOSE_ENOUGH;
         }
 
 
     if (Math.abs(distanceToCenter) < deadband)
         {
-        this.drive(driveSpeed, 0);
+        this.driveNoDeadband(driveSpeed, 0);
         return AlignReturnType.ALIGNED;
         }
 
     if (distanceToCenter > 0)
         {
-        this.drive(driveSpeed, alignVar);
+        this.driveNoDeadband(driveSpeed, alignVar);
         }
     else if (distanceToCenter < 0)
         {
-        this.drive(driveSpeed, -alignVar);
+        this.driveNoDeadband(driveSpeed, -alignVar);
         }
-
-
     return AlignReturnType.MISALIGNED;
 }
 
