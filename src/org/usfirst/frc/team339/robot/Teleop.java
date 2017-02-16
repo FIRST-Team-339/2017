@@ -384,6 +384,13 @@ public static void printStatements ()
     // .println("Flywheel Motor: " + Hardware.shooterMotor.get());
     //
     // System.out.println("Intake Motor: " + Hardware.intakeMotor.get());
+    if (Hardware.rightOperator.getRawButton(11))
+        {
+        Hardware.elevatorMotor.setSpeed(1);
+        System.out.println(
+                "Elevator Motor: " + Hardware.elevatorMotor.get());
+        }
+    // System.out.println("Turret Spark: " + Hardware.gimbalMotor.get());
 
     // =================================
     // CAN items
@@ -397,11 +404,11 @@ public static void printStatements ()
     // =================================
     // if (Hardware.ringlightSwitch.isOnCheckNow())
     // {
-    // System.out.println("Ring light relay is on");
+    // System.out.println("Ring light relay is On");
     // }
     // else if (!Hardware.ringlightSwitch.isOnCheckNow())
     // {
-    // System.out.println("Ring light relay is off");
+    // System.out.println("Ring light relay is Off");
     // }
 
     // =================================
@@ -420,27 +427,30 @@ public static void printStatements ()
     // System.out.println(
     // "Path Selector: " + Hardware.pathSelector.getPosition());
 
-
+    // System.out.println("Right UltraSonic distance from bumper: "
+    // + Hardware.rightUS.getDistanceFromNearestBumper());
     // ---------------------------------
     // Encoders
     // prints the distance from the encoders
     // ---------------------------------
-    System.out.println("Right Front Encoder: "
-            + Hardware.rightFrontEncoder.get());
-    System.out.println("Right Front Encoder Distance: "
-            + Hardware.autoDrive.getRightRearEncoderDistance());
-    System.out.println("Right Rear Encoder: "
-            + Hardware.rightRearEncoder.get());
-    System.out.println("Right Rear Encoder Distance: "
-            + Hardware.autoDrive.getRightRearEncoderDistance());
-    System.out.println("Left Front Encoder: "
-            + Hardware.leftFrontEncoder.get());
-    System.out.println("Left Front Encoder Distance: "
-            + Hardware.autoDrive.getLeftFrontEncoderDistance());
-    System.out.println("Left Rear Encoder: "
-            + Hardware.leftRearEncoder.get());
-    System.out.println("Left Rear Encoder Distance: "
-            + Hardware.autoDrive.getLeftFrontEncoderDistance());
+    /*
+     * System.out.println("Right Front Encoder: "
+     * + Hardware.rightFrontEncoder.get());
+     * System.out.println("Right Front Encoder Distance: "
+     * + Hardware.autoDrive.getRightRearEncoderDistance());
+     * System.out.println("Right Rear Encoder: "
+     * + Hardware.rightRearEncoder.get());
+     * System.out.println("Right Rear Encoder Distance: "
+     * + Hardware.autoDrive.getRightRearEncoderDistance());
+     * System.out.println("Left Front Encoder: "
+     * + Hardware.leftFrontEncoder.get());
+     * System.out.println("Left Front Encoder Distance: "
+     * + Hardware.autoDrive.getLeftFrontEncoderDistance());
+     * System.out.println("Left Rear Encoder: "
+     * + Hardware.leftRearEncoder.get());
+     * System.out.println("Left Rear Encoder Distance: "
+     * + Hardware.autoDrive.getLeftFrontEncoderDistance());
+     */
 
     // ---------------------------------
     // Red Light/IR Sensors
