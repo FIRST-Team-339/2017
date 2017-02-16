@@ -104,7 +104,6 @@ public class Teleop {
 		isStrafingToTarget = false;
 		Hardware.autoDrive.setDriveCorrection(.3);
 		Hardware.autoDrive.setEncoderSlack(1); // TODO
-
 	} // end Init
 
 	/**
@@ -130,7 +129,6 @@ public class Teleop {
 			control = 1;
 			break;
 		case 2:
-
 			break;
 
 		}
@@ -171,7 +169,6 @@ public class Teleop {
 		printStatements();
 
 		// TESTING CODE:
-
 		if (Hardware.rightOperator.getRawButton(2))
 			Hardware.intake.startIntake();
 		else if (Hardware.rightOperator.getRawButton(3))
@@ -182,6 +179,24 @@ public class Teleop {
 		// Driving code
 		// =================================================================
 
+		// previousFireButton = Hardware.leftDriver.getTrigger();
+		//
+		// if (fireCount > 0)
+		// {
+		// if (Hardware.shooter.fire())
+		// {
+		// fireCount--;
+		// }
+		// }
+		if (preparingToFire == false)
+			Hardware.shooter.stopFlywheelMotor();
+		/*
+		 * System.out.println("Firecount: " + fireCount);
+		 * 
+		 * System.out.println( "Flywheel speed: " +
+		 * Hardware.shooterMotor.getSpeed());
+		 */
+
 		if (Hardware.leftDriver.getTrigger()) {
 			rotationValue = Hardware.leftDriver.getTwist();
 			System.out.println("Twist: " + Hardware.leftDriver.getTwist());
@@ -191,8 +206,7 @@ public class Teleop {
 		if (!isAligning && !isStrafingToTarget)
 			if (Hardware.isUsingMecanum == true)
 				Hardware.mecanumDrive.drive(Hardware.leftDriver.getMagnitude(),
-						Hardware.leftDriver.getDirectionDegrees(), rotationValue, Hardware.leftDriver.getY(),
-						Hardware.leftDriver.getX());
+						Hardware.leftDriver.getDirectionDegrees(), rotationValue);
 			else
 				Hardware.tankDrive.drive(Hardware.rightDriver.getY(), Hardware.leftDriver.getY());
 
@@ -202,8 +216,7 @@ public class Teleop {
 
 		if (Hardware.leftOperator.getRawButton(8)) {
 			Hardware.imageProcessor.processImage();
-			if (Hardware.imageProcessor.getLargestBlob() != null)
-			{
+			if (Hardware.imageProcessor.getLargestBlob() != null) {
 				System.out.println("Distance to Target: "
 						+ Hardware.imageProcessor.getZDistanceToFuelTarget(Hardware.imageProcessor.getLargestBlob()));
 				System.out.println("Camera angle: "
@@ -269,22 +282,15 @@ public class Teleop {
 		// }
 		// }
 
-		// Testing good speed values
-		// if (Hardware.leftOperator.getRawButton(4) && !hasPressedFive)
-		// {
-		// // adds .05 to movement speed then prints movementSpeed
-		// movementSpeed += .05;
-		// System.out.println(movementSpeed);
-		// }
-		// hasPressedFour = Hardware.leftOperator.getRawButton(4);
-
-		// if (Hardware.leftOperator.getRawButton(5) && !hasPressedFour)
-		// {
-		// // subtracts .05 from movement speed then prints movementSpeed
-		// movementSpeed -= .05;
-		// System.out.println(movementSpeed);
-		// }
-		// hasPressedFive = Hardware.leftOperator.getRawButton(5);
+		if (!isAligning && !isStrafingToTarget)// TODO remove isAccing
+												// stuff
+		{
+			if (Hardware.isUsingMecanum == true)
+				Hardware.mecanumDrive.drive(Hardware.leftDriver.getMagnitude(),
+						Hardware.leftDriver.getDirectionDegrees(), rotationValue);
+			else
+				Hardware.tankDrive.drive(Hardware.rightDriver.getY(), Hardware.leftDriver.getY());
+		}
 
 		Hardware.axisCamera.takeSinglePicture(Hardware.leftOperator.getRawButton(8)
 				|| Hardware.rightOperator.getRawButton(8) || Hardware.leftOperator.getRawButton(11));
@@ -346,6 +352,21 @@ public class Teleop {
 		// .println("Flywheel Motor: " + Hardware.shooterMotor.get());
 		//
 		// System.out.println("Intake Motor: " + Hardware.intakeMotor.get());
+		if (Hardware.rightOperator.getRawButton(11)) {
+			Hardware.elevatorMotor.setSpeed(1);
+			System.out.println("Elevator Motor: " + Hardware.elevatorMotor.get());
+		}
+		// System.out.println("Turret Spark: " + Hardware.gimbalMotor.get());
+
+		// System.out.println("Backup or fire: " +
+		// Hardware.backupOrFire.isOn());
+		// System.out.println("Enable Auto: " +
+		// Hardware.enableAutonomous.isOn());
+
+		// System.out
+		// .println("Flywheel Motor: " + Hardware.shooterMotor.get());
+		//
+		// System.out.println("Intake Motor: " + Hardware.intakeMotor.get());
 
 		// =================================
 		// CAN items
@@ -365,6 +386,30 @@ public class Teleop {
 		// {
 		// System.out.println("The ring light relay is off");
 		// }
+		// System.out.println("Right UltraSonic distance from bumper: "
+		// + Hardware.rightUS.getDistanceFromNearestBumper());
+		// ---------------------------------
+		// Encoders
+		// prints the distance from the encoders
+		// ---------------------------------
+		/*
+		 * System.out.println("Right Front Encoder: " +
+		 * Hardware.rightFrontEncoder.get());
+		 * System.out.println("Right Front Encoder Distance: " +
+		 * Hardware.autoDrive.getRightRearEncoderDistance());
+		 * System.out.println("Right Rear Encoder: " +
+		 * Hardware.rightRearEncoder.get());
+		 * System.out.println("Right Rear Encoder Distance: " +
+		 * Hardware.autoDrive.getRightRearEncoderDistance());
+		 * System.out.println("Left Front Encoder: " +
+		 * Hardware.leftFrontEncoder.get());
+		 * System.out.println("Left Front Encoder Distance: " +
+		 * Hardware.autoDrive.getLeftFrontEncoderDistance());
+		 * System.out.println("Left Rear Encoder: " +
+		 * Hardware.leftRearEncoder.get());
+		 * System.out.println("Left Rear Encoder Distance: " +
+		 * Hardware.autoDrive.getLeftFrontEncoderDistance());
+		 */
 
 		// =================================
 		// Digital Inputs
@@ -460,8 +505,9 @@ public class Teleop {
 		// Cameras
 		// prints any camera information required
 		// ---------------------------------
-		
-//		System.out.println("Resolution: " + Hardware.axisCamera.getResolution());
+
+		// System.out.println("Resolution: " +
+		// Hardware.axisCamera.getResolution());
 
 		// System.out.println("Expected center: " + CAMERA_ALIGN_CENTER);
 		//
@@ -479,7 +525,6 @@ public class Teleop {
 		// .getHorizontalResolution());
 		//
 		// System.out.println("Deadband: " + CAMERA_ALIGN_DEADBAND);
-
 		// =================================
 		// Driver station
 		// =================================
@@ -490,6 +535,12 @@ public class Teleop {
 		// System.out.println("Left Joystick: " +
 		// Hardware.leftDriver.getDirectionDegrees());
 		// System.out.println("Twist: " + Hardware.leftDriver.getTwist());
+
+		// System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
+		// System.out.println("Right Joystick: " + Hardware.rightDriver.getY());
+		// System.out.println("Left Operator: " + Hardware.leftOperator.getY());
+		// System.out.println("Right Operator: " +
+		// Hardware.rightOperator.getY());
 
 		// System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
 		//
