@@ -623,12 +623,19 @@ public double getPitchAngleToTarget (ParticleReport target)
 {
     if (target != null)
         {
-        double adjustedYVal = (this.cameraYRes / 2.0) -target.center_mass_y;
+    	System.out.println("Center of mass: " + target.center_mass_y);
+        double adjustedYVal = (this.camera.getVerticalResolution() / 2.0) -target.center_mass_y;
+        System.out.println("Adjusted Y value: " + adjustedYVal);
         // System.out.println("Vert Res: " + Hardware.drive.cameraYResolution);
         // System.out.println(
         // "Y coord " + target.center_mass_y);
         // System.out.println(
         // "X coord " + target.center_mass_x);
+        System.out.println("Pitch Angle before offset: " + Math.atan((adjustedYVal + .5)
+                / this.cameraFocalLengthPixels));
+        System.out.println("Focal Length (pixels): " + this.cameraFocalLengthPixels);
+        System.out.println("Vertical Res: " + this.camera.getVerticalResolution());
+        System.out.println("Camera Mount Angle: " + this.getVerticalCameraMountAngle());
         return Math.atan((adjustedYVal + .5)
                 / this.cameraFocalLengthPixels)
                 + this.cameraMountAngleAboveHorizontalRadians;
@@ -654,6 +661,7 @@ public double getZDistanceToFuelTarget (ParticleReport target)
 {
 	if(target == null)
 		return -1.0;
+	System.out.println("Pitch Angle: " + this.getPitchAngleToTarget(target));
 	return this.getVisionGoalHeight() / Math.tan(this.getPitchAngleToTarget(target));
 }
 
