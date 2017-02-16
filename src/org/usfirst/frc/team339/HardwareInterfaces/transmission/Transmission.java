@@ -143,7 +143,7 @@ private DoubleSolenoid transmissionSolenoids = null;
  *           -------------------------------------------------------
  */
 private final double[] gearPercentages =
-    {0.0, 0.70, 0.80, 0.90, 1.00};
+    {0.40, 0.70, 0.8, 0.90, 1.00};
 
 private final int MAX_GEAR = this.gearPercentages.length;
 
@@ -420,7 +420,7 @@ public double getGearPercentage (int gear)
         return 0.0;
         }
 
-    return this.gearPercentages[gear];
+    return this.gearPercentages[gear - 1];
 }
 
 /**

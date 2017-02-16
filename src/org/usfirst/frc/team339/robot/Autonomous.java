@@ -214,7 +214,7 @@ public static void init ()
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
     Hardware.mecanumDrive.setFirstGearPercentage(1.0);
-    // Hardware.mecanumDrive.setGear(1);
+    Hardware.mecanumDrive.setGear(1);
     if (Hardware.isRunningOnKilroyXVIII)
         {
         robotSpeedScalar = KILROY_XVIII_DEFAULT_SPEED;
@@ -318,6 +318,8 @@ private static boolean placeCenterGearPath ()
     System.out.println("Right US: "
             + Hardware.rightUS.getDistanceFromNearestBumper());
     System.out.println(Hardware.autoDrive.getAveragedEncoderValues());
+    System.out.println(
+            "Gear " + Hardware.mecanumDrive.getCurrentGearPercentage());
     switch (currentState)
         {
         case INIT:
