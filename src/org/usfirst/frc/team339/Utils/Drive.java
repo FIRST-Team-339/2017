@@ -287,7 +287,7 @@ public boolean driveStraightInches (double inches, double speed)
         this.transmissionFourWheel.drive(
                 -speed - getDriveCorrection(),
                 -speed); // negate this because how drive takes into account of
-                         // negative joystick
+                         // negative joysfd
     if (averageLeft < averageRight + getEncoderSlack())//
         this.transmissionFourWheel.drive(-speed,
                 -speed - getDriveCorrection());

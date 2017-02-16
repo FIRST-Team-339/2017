@@ -171,11 +171,7 @@ private boolean readyToFire = false;
 public boolean prepareToFire ()
 {
     double dist = this.visionTargeter.getZDistanceToFuelTarget(
-            this.visionTargeter.getLargestBlob(), this.visionTargeter
-                    .getNthSizeBlob(1)); /*
-                                          * I hope to god these blobs appear to
-                                          * the correct order
-                                          */
+            this.visionTargeter.getLargestBlob());
     if (dist > 0)
         {
         this.flywheelController
