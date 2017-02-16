@@ -20,8 +20,6 @@ private double directionalXOrthogonalZone = 0.0;
 
 private double directionalYOrthogonalZone = 0.0;
 
-private double firstGearPercentage = 0.0;
-
 /** Sets whether or not the mecanum control joystick is reversed */
 private boolean mecanumJoystickReversed = false;
 
@@ -382,7 +380,7 @@ public void setMecanumJoystickReversed (boolean isReversed)
  */
 public void setFirstGearPercentage (double firstGearPercentage)
 {
-    this.firstGearPercentage = firstGearPercentage;
+    this.setGearPercentage(1, firstGearPercentage);
 }
 
 /**
@@ -393,7 +391,7 @@ public void setFirstGearPercentage (double firstGearPercentage)
  */
 public double getFirstGearPercentage ()
 {
-    return this.firstGearPercentage;
+    return this.getGearPercentage(1);
 }
 
 }
