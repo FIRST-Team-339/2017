@@ -34,9 +34,6 @@ package org.usfirst.frc.team339.robot;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class contains all of the user code for the Autonomous part of the
@@ -53,7 +50,6 @@ public class Teleop {
 	 * @author Nathanial Lydick
 	 * @written Jan 13, 2015
 	 */
-	int control = 1;
 
 	public static void init() {
 		// --------------------------------------
@@ -210,7 +206,6 @@ public class Teleop {
 
 		if (Hardware.leftDriver.getTrigger()) {
 			rotationValue = Hardware.leftDriver.getTwist();
-			System.out.println("Twist: " + Hardware.leftDriver.getTwist());
 		} else
 			rotationValue = 0.0;
 
@@ -302,10 +297,12 @@ public class Teleop {
 		// }
 		// hasPressedFive = Hardware.leftOperator.getRawButton(5);
 
-		Hardware.axisCamera
-				.takeSinglePicture(Hardware.leftOperator.getRawButton(8) || Hardware.rightOperator.getRawButton(8));
-	} // end
-		// Periodic
+    Hardware.axisCamera
+            .takeSinglePicture(Hardware.leftOperator.getRawButton(8)
+                    || Hardware.rightOperator.getRawButton(8)
+                    || Hardware.leftOperator.getRawButton(11));
+} // end
+  // Periodic
 
 	// private static boolean isSpeedTesting = false;
 
