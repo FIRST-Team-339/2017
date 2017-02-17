@@ -369,7 +369,11 @@ public static void periodic ()
             }
         cameraPositionHasChanged = true;
 
-
+        }
+    if (changeGearServoPosition == true
+            && Hardware.leftOperator.getRawButton(4) == false)
+        {
+        cameraPositionHasChanged = false;
         }
 
 
@@ -378,21 +382,30 @@ public static void periodic ()
     // ------------------------------------------
     // gearServo switches between the two preset positions
     if (Hardware.leftOperator.getRawButton(9) == true
-            && cameraPositionHasChanged == false)
+            && gearPositionHasChanged == false)
         {
+        changeGearServoPosition = true;
+        }
+    if (changeGearServoPosition == true)
         if (Hardware.gearServo.getAngle() == HIGHER_GEARSERVO_POSITION)
             {
             Hardware.gearServo.setAngle(LOWER_GEARSERVO_POSITION);
-            cameraPositionHasChanged = true;
+            gearPositionHasChanged = true;
             }
         else if (Hardware.gearServo
                 .getAngle() == LOWER_GEARSERVO_POSITION)
             {
             Hardware.gearServo.setAngle(LOWER_GEARSERVO_POSITION);
-            cameraPositionHasChanged = true;
+            gearPositionHasChanged = true;
             }
 
+    if (gearPositionHasChanged == true
+            && Hardware.leftOperator.getRawButton(9))
+
+        {
+        gearPositionHasChanged = false;
         }
+
 
 } // end
   // Periodic
@@ -404,7 +417,6 @@ private static double rotationValue = 0.0;
 private static Drive.AlignReturnType alignValue = Drive.AlignReturnType.MISALIGNED;
     {
     }
-
 
 private static boolean isAligning = false;
 
@@ -684,10 +696,13 @@ private final static double LOWER_GEARSERVO_POSITION = 45; // TODO find actual
                                                            // value
 
 private final static double HIGHER_GEARSERVO_POSITION = 90;// TODO find
-                                                           // actual
                                                            // value
+public static boolean gearPositionHasChanged = false;                                                           // actual
+
 
 public static boolean changeCameraServoPosition = false;
+
+public static boolean changeGearServoPosition = false;
 
 public static boolean cameraPositionHasChanged = false;
 
