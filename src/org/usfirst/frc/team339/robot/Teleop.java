@@ -76,79 +76,79 @@ public static void init ()
 
 
 
-	    if (Hardware.isRunningOnKilroyXVIII == true)
-	    {
-	    Hardware.rightFrontEncoder.setReverseDirection(true);
-	    Hardware.rightRearEncoder.setReverseDirection(false);
-	    Hardware.leftFrontEncoder.setReverseDirection(true);
-	    Hardware.leftRearEncoder.setReverseDirection(false);
-	    Hardware.rightRearEncoder.setDistancePerPulse(
-	            Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-	    Hardware.leftRearEncoder.setDistancePerPulse(
-	            Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-	    Hardware.rightFrontEncoder.setDistancePerPulse(
-	            Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-	    Hardware.leftFrontEncoder.setDistancePerPulse(
-	            Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-	    Hardware.tankDrive.setGearPercentage(1, Robot.FIRST_GEAR);
-	    Hardware.tankDrive.setGearPercentage(2, Robot.SECOND_GEAR);
-	    Hardware.mecanumDrive.setFirstGearPercentage(Robot.FIRST_GEAR);
-	    Hardware.rightFrontMotor.setInverted(false);
-	    Hardware.rightRearMotor.setInverted(false);
-	    Hardware.leftFrontMotor.setInverted(false);
-	    Hardware.leftRearMotor.setInverted(true);
-	    Hardware.intakeMotor.setInverted(true);
-	    Hardware.mecanumDrive
-	            .setDeadbandPercentageZone(Hardware.joystickDeadzone);
-    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-	    // Hardware.rightFrontMotorSafety.setExpiration(.5);
-	    // Hardware.rightRearMotorSafety.setExpiration(.5);
-	    // Hardware.leftFrontMotorSafety.setExpiration(.5);
-	    // Hardware.leftRearMotorSafety.setExpiration(1.0);
-    Hardware.rightUS.setScalingFactor(.13);
-    Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
-    Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
-		Hardware.tankDrive.setGear(1);
-		Hardware.autoDrive.setDriveCorrection(.3);
-		Hardware.autoDrive.setEncoderSlack(1);
-	    // Hardware.mecanumDrive.setDirectionalDeadzone(0.2);
-		// Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
-	    }
-	else
-	    {
-	    // Hardware.rightFrontEncoder.setReverseDirection(true);
-	    // Hardware.rightRearEncoder.setReverseDirection(false);
-	    // Hardware.leftFrontEncoder.setReverseDirection(true);
-	    // Hardware.leftRearEncoder.setReverseDirection(false);
-	    Hardware.rightRearEncoder.setDistancePerPulse(
-	            Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-	    Hardware.leftRearEncoder.setDistancePerPulse(
-	            Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-	    Hardware.leftFrontEncoder.setDistancePerPulse(
-	            Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-	    Hardware.rightFrontEncoder.setDistancePerPulse(
-	            Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-	    // Hardware.tankDrive.setGearPercentage(1, FIRST_GEAR);
-	    // Hardware.tankDrive.setGearPercentage(2, SECOND_GEAR);
-	    // Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
-    // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
-	    Hardware.rightFrontMotor.setInverted(true);
-	    Hardware.rightRearMotor.setInverted(false);
-	    Hardware.leftFrontMotor.setInverted(false);
-	    Hardware.leftRearMotor.setInverted(false);
-	    Hardware.intakeMotor.setInverted(true);
-	    // Hardware.mecanumDrive
-	    // .setDeadbandPercentageZone(Hardware.joystickDeadzone);
-	    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-		Hardware.rightUS.setScalingFactor(.13);
-		Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
-		Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
-		Hardware.tankDrive.setGear(1);
-		Hardware.autoDrive.setDriveCorrection(.3);
-		Hardware.autoDrive.setEncoderSlack(1);
-	    // Hardware.mecanumDrive.setDirectionalDeadzone(0.2);
+    if (Hardware.isRunningOnKilroyXVIII == true)
+        {
+        Hardware.rightFrontEncoder.setReverseDirection(true);
+        Hardware.rightRearEncoder.setReverseDirection(false);
+        Hardware.leftFrontEncoder.setReverseDirection(true);
+        Hardware.leftRearEncoder.setReverseDirection(false);
+        Hardware.rightRearEncoder.setDistancePerPulse(
+                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
+        Hardware.leftRearEncoder.setDistancePerPulse(
+                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
+        Hardware.rightFrontEncoder.setDistancePerPulse(
+                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
+        Hardware.leftFrontEncoder.setDistancePerPulse(
+                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
+        Hardware.tankDrive.setGearPercentage(1, Robot.FIRST_GEAR);
+        Hardware.tankDrive.setGearPercentage(2, Robot.SECOND_GEAR);
+        Hardware.mecanumDrive.setFirstGearPercentage(Robot.FIRST_GEAR);
+        Hardware.rightFrontMotor.setInverted(false);
+        Hardware.rightRearMotor.setInverted(false);
+        Hardware.leftFrontMotor.setInverted(false);
+        Hardware.leftRearMotor.setInverted(true);
+        Hardware.intakeMotor.setInverted(true);
+        Hardware.mecanumDrive
+                .setDeadbandPercentageZone(Hardware.joystickDeadzone);
+        Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+        // Hardware.rightFrontMotorSafety.setExpiration(.5);
+        // Hardware.rightRearMotorSafety.setExpiration(.5);
+        // Hardware.leftFrontMotorSafety.setExpiration(.5);
+        // Hardware.leftRearMotorSafety.setExpiration(1.0);
+        Hardware.rightUS.setScalingFactor(.13);
+        Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
+        Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
+        Hardware.tankDrive.setGear(1);
+        Hardware.autoDrive.setDriveCorrection(.3);
+        Hardware.autoDrive.setEncoderSlack(1);
+        // Hardware.mecanumDrive.setDirectionalDeadzone(0.2);
+        // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
+        }
+    else
+        {
+        // Hardware.rightFrontEncoder.setReverseDirection(true);
+        // Hardware.rightRearEncoder.setReverseDirection(false);
+        // Hardware.leftFrontEncoder.setReverseDirection(true);
+        // Hardware.leftRearEncoder.setReverseDirection(false);
+        Hardware.rightRearEncoder.setDistancePerPulse(
+                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
+        Hardware.leftRearEncoder.setDistancePerPulse(
+                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
+        Hardware.leftFrontEncoder.setDistancePerPulse(
+                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
+        Hardware.rightFrontEncoder.setDistancePerPulse(
+                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
+        // Hardware.tankDrive.setGearPercentage(1, FIRST_GEAR);
+        // Hardware.tankDrive.setGearPercentage(2, SECOND_GEAR);
+        // Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
+        // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
+        Hardware.rightFrontMotor.setInverted(true);
+        Hardware.rightRearMotor.setInverted(false);
+        Hardware.leftFrontMotor.setInverted(false);
+        Hardware.leftRearMotor.setInverted(false);
+        Hardware.intakeMotor.setInverted(true);
+        // Hardware.mecanumDrive
+        // .setDeadbandPercentageZone(Hardware.joystickDeadzone);
+        Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+        Hardware.rightUS.setScalingFactor(.13);
+        Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
+        Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
+        Hardware.tankDrive.setGear(1);
+        Hardware.autoDrive.setDriveCorrection(.3);
+        Hardware.autoDrive.setEncoderSlack(1);
+        // Hardware.mecanumDrive.setDirectionalDeadzone(0.2);
 
-	    }
+        }
 
     isAligning = false;
     isStrafingToTarget = false;
@@ -161,9 +161,11 @@ public static void init ()
  * @author Nathanial Lydick
  * @written Jan 13, 2015
  */
-	public static void periodic() {
+public static void periodic ()
+{
 
-		if (Hardware.leftDriver.getTrigger() && !previousFireButton) {
+    if (Hardware.leftDriver.getTrigger() && !previousFireButton)
+        {
         firing = !firing;
         }
     if (firing)
@@ -216,19 +218,24 @@ public static void init ()
     // Driving code
     // =================================================================
 
-		if (Hardware.leftDriver.getTrigger()) {
+    if (Hardware.leftDriver.getTrigger())
+        {
         rotationValue = Hardware.leftDriver.getTwist();
-		} else
+        }
+    else
         rotationValue = 0.0;
 
     if (!isAligning && !isStrafingToTarget)// TODO remove isAccing
                                            // stuff
         {
         if (Hardware.isUsingMecanum == true)
-				Hardware.mecanumDrive.drive(Hardware.leftDriver.getMagnitude(),
-						Hardware.leftDriver.getDirectionDegrees(), rotationValue);
+            Hardware.mecanumDrive.drive(
+                    Hardware.leftDriver.getMagnitude(),
+                    Hardware.leftDriver.getDirectionDegrees(),
+                    rotationValue);
         else
-				Hardware.tankDrive.drive(Hardware.rightDriver.getY(), Hardware.leftDriver.getY());
+            Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
+                    Hardware.leftDriver.getY());
         }
 
 
@@ -334,6 +341,13 @@ public static void init ()
             }
         fourHasBeenPressed = true;
         }
+    // ------------------------------------------
+    // Gear servo
+    // ------------------------------------------
+    if (Hardware.leftOperator.getRawButton(8) == true)
+        {
+
+        }
 
 } // end
   // Periodic
@@ -435,10 +449,10 @@ public static void printStatements ()
     // System.out.println("Gear Limit Switch: "
     // + Hardware.gearLimitSwitch.isOn());
 
-		// System.out.println("Backup or fire: " +
-		// Hardware.backupOrFire.isOn());
-		// System.out.println("Enable Auto: " +
-		// Hardware.enableAutonomous.isOn());
+    // System.out.println("Backup or fire: " +
+    // Hardware.backupOrFire.isOn());
+    // System.out.println("Enable Auto: " +
+    // Hardware.enableAutonomous.isOn());
 
     // System.out.println(
     // "Path Selector: " + Hardware.pathSelector.getPosition());
@@ -450,14 +464,22 @@ public static void printStatements ()
     // prints the distance from the encoders
     // ---------------------------------
 
-//		System.out.println("Right Front Encoder: " + Hardware.rightFrontEncoder.get());
-//		System.out.println("Right Front Encoder Distance: " + Hardware.autoDrive.getRightRearEncoderDistance());
-//		System.out.println("Right Rear Encoder: " + Hardware.rightRearEncoder.get());
-//		System.out.println("Right Rear Encoder Distance: " + Hardware.autoDrive.getRightRearEncoderDistance());
-//		System.out.println("Left Front Encoder: " + Hardware.leftFrontEncoder.get());
-//		System.out.println("Left Front Encoder Distance: " + Hardware.autoDrive.getLeftFrontEncoderDistance());
-//		System.out.println("Left Rear Encoder: " + Hardware.leftRearEncoder.get());
-//		System.out.println("Left Rear Encoder Distance: " + Hardware.autoDrive.getLeftFrontEncoderDistance());
+    // System.out.println("Right Front Encoder: " +
+    // Hardware.rightFrontEncoder.get());
+    // System.out.println("Right Front Encoder Distance: " +
+    // Hardware.autoDrive.getRightRearEncoderDistance());
+    // System.out.println("Right Rear Encoder: " +
+    // Hardware.rightRearEncoder.get());
+    // System.out.println("Right Rear Encoder Distance: " +
+    // Hardware.autoDrive.getRightRearEncoderDistance());
+    // System.out.println("Left Front Encoder: " +
+    // Hardware.leftFrontEncoder.get());
+    // System.out.println("Left Front Encoder Distance: " +
+    // Hardware.autoDrive.getLeftFrontEncoderDistance());
+    // System.out.println("Left Rear Encoder: " +
+    // Hardware.leftRearEncoder.get());
+    // System.out.println("Left Rear Encoder Distance: " +
+    // Hardware.autoDrive.getLeftFrontEncoderDistance());
 
     // ---------------------------------
     // Red Light/IR Sensors
@@ -491,8 +513,8 @@ public static void printStatements ()
     // Analogs
     // =================================
     //
-		// We don't want the print statements to flood everything and go
-		// ahhhhhhhh
+    // We don't want the print statements to flood everything and go
+    // ahhhhhhhh
     //
     // if (Hardware.rightOperator.getRawButton(11))
     // System.out.println("LeftUS = "
@@ -548,8 +570,8 @@ public static void printStatements ()
     // System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
     // System.out.println("Right Joystick: " + Hardware.rightDriver.getY());
     // System.out.println("Left Operator: " + Hardware.leftOperator.getY());
-		// System.out.println("Right Operator: " +
-		// Hardware.rightOperator.getY());
+    // System.out.println("Right Operator: " +
+    // Hardware.rightOperator.getY());
 
     // =================================
     // Kilroy ancillary items
@@ -571,8 +593,8 @@ private final static double CAMERA_ALIGN_SPEED = .5;
 private final static double CAMERA_ALIGN_DEADBAND = 10.0 // +/- Pixels
         / Hardware.axisCamera.getHorizontalResolution();
 
-	private final static double CAMERA_ALIGN_CENTER = .478; // Relative
-															// coordinates
+private final static double CAMERA_ALIGN_CENTER = .478; // Relative
+                                                        // coordinates
 
 // ==========================================
 // TUNEABLES
@@ -582,6 +604,10 @@ private final static double LOWER_CAMERASERVO_POSITION = 65;// TODO find actual
 
 private final static double HIGHER_CAMERASERVO_POSITION = 90;// TODO find actual
                                                              // value
+private final static double CARRYING_GEAR_POSITION = 90;// TODO find actual
+                                                        // value
+
+private final static double LOWER_GEAR_POSITION = 45; // TODO find actual value
 
 public static boolean fourHasBeenPressed = true;
 
