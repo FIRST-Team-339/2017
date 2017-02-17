@@ -33,6 +33,9 @@ package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
+
+import com.ctre.CANTalon.FeedbackDevice;
+
 import edu.wpi.first.wpilibj.Relay;
 
 /**
@@ -133,6 +136,8 @@ public class Teleop {
 			// Hardware.mecanumDrive.setDirectionalDeadzone(0.2);
 
 		}
+		
+		Hardware.gimbalMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
 
 		isAligning = false;
 		isStrafingToTarget = false;
@@ -155,15 +160,15 @@ public class Teleop {
 
 		// previousFireButton = Hardware.leftDriver.getTrigger();
 		//
-		// if (fireCount > 0)
-		// {
-		// if (Hardware.shooter.fire())
-		// {
-		// fireCount--;
+//		 if (fireCount > 0)
+//		 {
+//		 if (Hardware.shooter.fire())
+//		 {
+//		 fireCount--;
+//		 }
 		// }
-		// }
-		if (preparingToFire == false)
-			Hardware.shooter.stopFlywheelMotor();
+//		if (preparingToFire == false)
+//			Hardware.shooter.stopFlywheelMotor();
 		/*
 		 * System.out.println("Firecount: " + fireCount);
 		 * 
@@ -183,13 +188,7 @@ public class Teleop {
 		printStatements();
 
 		// TESTING CODE:
-
-		if (Hardware.rightOperator.getRawButton(2))
-			Hardware.intake.startIntake();
-		else if (Hardware.rightOperator.getRawButton(3))
-			Hardware.intake.reverseIntake();
-		else
-			Hardware.intake.stopIntake();
+		
 
 		// =================================================================
 		// Driving code
@@ -209,6 +208,21 @@ public class Teleop {
 			else
 				Hardware.tankDrive.drive(Hardware.rightDriver.getY(), Hardware.leftDriver.getY());
 		}
+		
+		// =================================================================
+		// OPERATOR CONTROLS
+		// =================================================================
+		
+		if(Hardware.leftOperator.getRawButton(2) && Math.abs(Hardware.leftOperator.getX()) > .2)
+			Hardware.shooter.turnGimbalSlow(Hardware.leftOperator.getX() > 0 ? 1 : -1);
+		
+		
+		if (Hardware.rightOperator.getRawButton(2))
+			Hardware.intake.startIntake();
+		else if (Hardware.rightOperator.getRawButton(3))
+			Hardware.intake.reverseIntake();
+		else
+			Hardware.intake.stopIntake();
 
 		// =================================================================
 		// CAMERA CODE
@@ -304,6 +318,8 @@ public class Teleop {
 		// prints value of the CAN controllers
 		// =================================
 		// Hardware.CAN.printAllPDPChannels();
+		
+		System.out.println("Gimbal Encoder: " + Hardware.gimbalMotor.getAnalogInPosition());
 
 		// =================================
 		// Relay
