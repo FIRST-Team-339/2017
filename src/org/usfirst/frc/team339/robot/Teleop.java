@@ -346,7 +346,10 @@ public static void periodic ()
     // ------------------------------------------
     if (Hardware.leftOperator.getRawButton(8) == true)
         {
-
+        if (Hardware.gearServo.getAngle() == CARRYING_GEAR_POSITION)
+            {
+            Hardware.gearServo.setAngle(LOWER_GEARSERVO_POSITION);
+            }
         }
 
 } // end
@@ -607,7 +610,8 @@ private final static double HIGHER_CAMERASERVO_POSITION = 90;// TODO find actual
 private final static double CARRYING_GEAR_POSITION = 90;// TODO find actual
                                                         // value
 
-private final static double LOWER_GEAR_POSITION = 45; // TODO find actual value
+private final static double LOWER_GEARSERVO_POSITION = 45; // TODO find actual
+                                                           // value
 
 public static boolean fourHasBeenPressed = true;
 
