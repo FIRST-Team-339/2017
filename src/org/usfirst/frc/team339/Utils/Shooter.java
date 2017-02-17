@@ -221,7 +221,17 @@ public turnReturn turnToBearing (double newBearing)
 }
 
 /**
+ * Sets the gimbal motor to 0. Call after any turnGimbal function (except turnToBearing)
+ */
+public void stopGimbal ()
+{
+	this.turnGimbal(0.0);
+}
+
+/**
  * Turns the gimbal at our slow speed.
+ * 
+ * run stopGimbal afterwards
  * 
  * @param direction
  *            Negative 1 or positive 1, positive for right, negative for left
@@ -236,6 +246,8 @@ public turnReturn turnGimbalSlow (int direction)
 /**
  * Turns the gimbal at our medium speed.
  * 
+ * run stopGimbal afterwards
+ * 
  * @param direction
  *            Negative 1 or positive 1, positive for right, negative for left
  * @return
@@ -248,6 +260,8 @@ public turnReturn turnGimbalMedium (int direction)
 
 /**
  * Turns the turrets as quickly as we can.
+ * 
+ * run stopGimbal afterwards
  * 
  * @param direction
  *            Negative 1 or positive 1, positive for right, negative for left
