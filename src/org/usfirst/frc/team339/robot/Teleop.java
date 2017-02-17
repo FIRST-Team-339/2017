@@ -76,14 +76,12 @@ public static void init ()
     // Hardware.leftRearMotor.setInverted(true);
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     // Hardware.tankDrive.setGear(1);
-    // Hardware.leftUS.setScalingFactor(.13);
-    // Hardware.leftUS.setOffsetDistanceFromNearestBummper(0);
+
     // Sets the scaling factor and general ultrasonic stuff
     Hardware.rightUS.setScalingFactor(.13);
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
-    // Hardware.leftUS.setNumberOfItemsToCheckBackwardForValidity(1);
-    // Hardware.LeftUS.setConfidenceCalculationsOn(false);
+
     // Hardware.RightUS.setConfidenceCalculationsOn(false);
 
     // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
@@ -482,8 +480,8 @@ public static void printStatements ()
     // if (Hardware.rightOperator.getRawButton(11))
     // System.out.println("LeftUS = "
     // + Hardware.leftUS.getDistanceFromNearestBumper());
-    // System.out.println("RightUS = "
-    // + Hardware.rightUS.getDistanceFromNearestBumper());
+    System.out.println("RightUS = "
+            + Hardware.rightUS.getDistanceFromNearestBumper());
     // System.out.println("Delay Pot: " + Hardware.delayPot.get());
     // ---------------------------------
     // pots
