@@ -341,8 +341,13 @@ public static void periodic ()
 
     // Written by Ashley Espeland, has not been tested
     // cameraServo code setting to either the higher or the lower angle position
-    if (Hardware.rightDriver.getRawButton(4)
-            && fourHasBeenPressed == false)
+    if (Hardware.rightDriver.getRawButton(4) == true
+            && cameraPositionHasChanged == false)
+        {
+        changeCameraServoPosition = true;
+        }
+
+    if (changeCameraServoPosition == true)
         {
         if (Hardware.cameraServo
                 .getAngle() == LOWER_CAMERASERVO_POSITION)
@@ -354,7 +359,32 @@ public static void periodic ()
             {
             Hardware.cameraServo.setAngle(LOWER_CAMERASERVO_POSITION);
             }
-        fourHasBeenPressed = true;
+        cameraPositionHasChanged = true;
+
+
+        }
+
+
+
+    // ------------------------------------------
+    // Gear servo
+    // ------------------------------------------
+    // gearServo switches between the two preset positions
+    if (Hardware.leftOperator.getRawButton(9) == true
+            && cameraPositionHasChanged == false)
+        {
+        if (Hardware.gearServo.getAngle() == HIGHER_GEARSERVO_POSITION)
+            {
+            Hardware.gearServo.setAngle(LOWER_GEARSERVO_POSITION);
+            cameraPositionHasChanged = true;
+            }
+        else if (Hardware.gearServo
+                .getAngle() == LOWER_GEARSERVO_POSITION)
+            {
+            Hardware.gearServo.setAngle(LOWER_GEARSERVO_POSITION);
+            cameraPositionHasChanged = true;
+            }
+
         }
 
 } // end
@@ -366,19 +396,6 @@ private static double rotationValue = 0.0;
 
 private static Drive.AlignReturnType alignValue = Drive.AlignReturnType.MISALIGNED;
     {
-
-
-
-    // ------------------------------------------
-    // Gear servo
-    // ------------------------------------------
-    if (Hardware.leftOperator.getRawButton(8) == true)
-        {
-        if (Hardware.gearServo.getAngle() == CARRYING_GEAR_POSITION)
-            {
-            Hardware.gearServo.setAngle(LOWER_GEARSERVO_POSITION);
-            }
-        }
     }
 
 
@@ -655,8 +672,6 @@ private final static double LOWER_CAMERASERVO_POSITION = 65;// TODO find
 
 private final static double HIGHER_CAMERASERVO_POSITION = 90;// TODO find actual
                                                              // value
-private final static double CARRYING_GEAR_POSITION = 90;// TODO find actual
-                                                        // value
 
 private final static double LOWER_GEARSERVO_POSITION = 45; // TODO find actual
                                                            // value
@@ -665,7 +680,8 @@ private final static double HIGHER_GEARSERVO_POSITION = 90;// TODO find
                                                            // actual
                                                            // value
 
+public static boolean changeCameraServoPosition = false;
 
-public static boolean fourHasBeenPressed = true;
+public static boolean cameraPositionHasChanged = false;
 
 } // end class

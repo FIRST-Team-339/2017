@@ -89,7 +89,7 @@ public static final double CAMERA_MOUNT_ANGLE = Math.toRadians(65);
 // PWM classes
 // ====================================
 public static KilroyServo gearServo = new KilroyServo(2, 270);
-public static KilroyServo cameraServo = new KilroyServo(2, 270);
+public static KilroyServo cameraServo = new KilroyServo(7, 190);
 // TODO find actual values
 
 // ------------------------------------
