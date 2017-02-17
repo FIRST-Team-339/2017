@@ -456,6 +456,9 @@ public AlignReturnType strafeToGear (double driveSpeed,
     if (this.rightUlt
             .getDistanceFromNearestBumper() <= distanceToTarget)
         {
+        System.out.println("distance from nearsest bumper: "
+                + this.rightUlt.getDistanceFromNearestBumper());
+        System.out.println("distance to target: " + distanceToTarget);
         this.purgingUltrasonic = true;
         this.firstStrafe = true;
         this.driveNoDeadband(0.0, 0.0);
@@ -625,7 +628,9 @@ public boolean accelerate (double targetSpeed,
         firstTimeAccelerateRun = false;
         }
     this.driveNoDeadband(
-            targetSpeed * (this.timer.get() / timeInWhichToAccelerate),
+            Math.max(targetSpeed
+                    * (this.timer.get() / timeInWhichToAccelerate),
+                    Max),
             0, 0);
     if (this.timer.get() > timeInWhichToAccelerate)
         {
@@ -801,6 +806,7 @@ public void setRotateSpeed (double speed)
 
 private double turningCircleRadius = 11;
 
+
 /**
  * Gets the radius of the circle that the robot rotates around
  * 
@@ -873,6 +879,8 @@ private TransmissionType transmissionType = null;
  * distance.
  */
 private static final double DEFAULT_DISTANCE_PER_PULSE = 1.0 / 12.9375;
+
+private static final double Max = 0.3;
 
 
 }

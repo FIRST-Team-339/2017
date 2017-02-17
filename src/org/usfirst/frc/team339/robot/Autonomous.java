@@ -475,7 +475,7 @@ private static boolean rightSidePath ()
                 }
             break;
         case ACCELERATE:
-            if (Hardware.autoDrive.accelerate(.5, .5))// TODO magic num!
+            if (Hardware.autoDrive.accelerate(.5, .3))// TODO magic num!
                 {
                 currentState = postAccelerateState;
                 }
@@ -777,7 +777,7 @@ private static boolean leftSidePath ()
                 currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
                 // TODO magic numbers and need to be tuned.
                 if (Hardware.autoDrive.strafeToGear(.4, 5, .1, 0.0,
-                        14) == AlignReturnType.CLOSE_ENOUGH)
+                        distanceFromTarget) == AlignReturnType.CLOSE_ENOUGH)
                     {
                     Hardware.autoDrive.drive(0.0, 0.0, 0.0);
                     currentState = MainState.WAIT_FOR_GEAR_EXODUS;
@@ -966,5 +966,8 @@ private static double robotSpeedScalar = 1.0;
 private static final double KILROY_XVIII_DEFAULT_SPEED = 1.0;
 
 private static final double KILROY_XVII_DEFAULT_SPEED = .7;
+
+private final static int distanceFromTarget = Hardware.rightUS
+        .getDistanceFromNearestBumper() - 10;
 
 } // end class

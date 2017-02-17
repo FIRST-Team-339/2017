@@ -51,7 +51,7 @@ public class Teleop
  * @author Nathanial Lydick
  * @written Jan 13, 2015
  */
-int control = 1;
+
 
 public static void init ()
 {
