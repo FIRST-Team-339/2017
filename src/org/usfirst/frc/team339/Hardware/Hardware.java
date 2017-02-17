@@ -170,7 +170,6 @@ public static Encoder leftFrontEncoder = new Encoder(14, 15);
 
 public static Encoder rightFrontEncoder = new Encoder(16, 17);
 
-public static Encoder gimbalEnc = new Encoder(18, 19);
 
 
 // -----------------------

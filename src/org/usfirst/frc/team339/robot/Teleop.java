@@ -73,6 +73,14 @@ public static void init ()
     // Servo init
     // ---------------------------------------
     Hardware.cameraServo.setAngle(LOWER_CAMERASERVO_POSITION);
+    Hardware.gearServo.setAngle(HIGHER_GEARSERVO_POSITION);
+
+    // ----------------------------------------
+    // Agitator init
+    // ----------------------------------------
+    Hardware.agitatorRelay.startLiveWindowMode();
+
+
 
     if (Hardware.isRunningOnKilroyXVIII == true)
         {
@@ -363,7 +371,6 @@ public static void periodic ()
 
 
         }
-
 
 
     // ------------------------------------------
