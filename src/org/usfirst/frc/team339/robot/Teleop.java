@@ -336,8 +336,8 @@ public class Teleop {
 		// System.out.println(
 		// "Path Selector: " + Hardware.pathSelector.getPosition());
 
-		// System.out.println("Right UltraSonic distance from bumper: "
-		// + Hardware.rightUS.getDistanceFromNearestBumper());
+		System.out.println("Right UltraSonic distance from bumper: "
+		 + Hardware.rightUS.getDistanceFromNearestBumper());
 		// ---------------------------------
 		// Encoders
 		// prints the distance from the encoders
