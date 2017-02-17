@@ -34,9 +34,6 @@ package org.usfirst.frc.team339.robot;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.command.Command;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class contains all of the user code for the Autonomous part of the
@@ -120,26 +117,26 @@ public static void init ()
  */
 public static void periodic ()
 {
-    Command chooseTrueorFalse;
-    SendableChooser testbool;
-    testbool = new SendableChooser();
-    testbool.addDefault("true", Hardware.changeBool.equals(true));
-    testbool.addObject(" false", Hardware.changeBool.equals(false));
-    int control = 1;
-
-    SmartDashboard.putData("testbool", testbool);
-    switch (control)
-        {
-        case 1:
-
-            // System.out.println(Hardware.changeBool.getClass());
-            control = 1;
-            break;
-        case 2:
-
-            break;
-
-        }
+    // Command chooseTrueorFalse;
+    // SendableChooser testbool;
+    // testbool = new SendableChooser();
+    // testbool.addDefault("true", Hardware.changeBool.equals(true));
+    // testbool.addObject(" false", Hardware.changeBool.equals(false));
+    // int control = 1;
+    //
+    // SmartDashboard.putData("testbool", testbool);
+    // switch (control)
+    // {
+    // case 1:
+    //
+    // // System.out.println(Hardware.changeBool.getClass());
+    // control = 1;
+    // break;
+    // case 2:
+    //
+    // break;
+    //
+    // }
 
     if (Hardware.leftDriver.getTrigger() && !previousFireButton)
         {
@@ -211,7 +208,7 @@ public static void periodic ()
         else
             Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
                     Hardware.leftDriver.getY());
-    if (Hardware.rightDriver.getRawButton(9) == true)
+    if (Hardware.leftDriver.getRawButton(9) == true)
         {
         Hardware.autoDrive.brake(-.1, -.1);
         }
