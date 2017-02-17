@@ -160,15 +160,15 @@ public class Teleop {
 
 		// previousFireButton = Hardware.leftDriver.getTrigger();
 		//
-		// if (fireCount > 0)
-		// {
-		// if (Hardware.shooter.fire())
-		// {
-		// fireCount--;
+//		 if (fireCount > 0)
+//		 {
+//		 if (Hardware.shooter.fire())
+//		 {
+//		 fireCount--;
+//		 }
 		// }
-		// }
-		if (preparingToFire == false)
-			Hardware.shooter.stopFlywheelMotor();
+//		if (preparingToFire == false)
+//			Hardware.shooter.stopFlywheelMotor();
 		/*
 		 * System.out.println("Firecount: " + fireCount);
 		 * 
@@ -213,8 +213,9 @@ public class Teleop {
 		// OPERATOR CONTROLS
 		// =================================================================
 		
-		if(Hardware.leftOperator.getRawButton(2))
+		if(Hardware.leftOperator.getRawButton(2) && Math.abs(Hardware.leftOperator.getX()) > .2)
 			Hardware.shooter.turnGimbalSlow(Hardware.leftOperator.getX() > 0 ? 1 : -1);
+		
 		
 		if (Hardware.rightOperator.getRawButton(2))
 			Hardware.intake.startIntake();

@@ -88,7 +88,6 @@ public static final double CAMERA_MOUNT_ANGLE = Math.toRadians(65);
 // ====================================
 // PWM classes
 // ====================================
-public static KilroyServo gearServo = new KilroyServo(2, 270);
 public static KilroyServo cameraServo = new KilroyServo(7, 190);
 // TODO find actual values
 
@@ -370,7 +369,7 @@ public static boolean twoJoystickControl = false;
 // -------------------
 public static Shooter shooter = new Shooter(shooterMotor,
         ballLoaderSensor, elevatorMotor, 25, imageProcessor,
-        3, gimbalMotor);// TODO switch out pot to encoder.
+        3, gimbalMotor);
 
 public static BallIntake intake = new BallIntake(intakeMotor,
         agitatorRelay);
