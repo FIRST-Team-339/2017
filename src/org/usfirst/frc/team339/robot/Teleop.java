@@ -78,7 +78,8 @@ public static void init ()
     // ----------------------------------------
     // Agitator init
     // ----------------------------------------
-    Hardware.agitatorRelay.startLiveWindowMode();
+    // Hardware.agitatorRelay.startLiveWindowMode();
+    // Hardware.agitatorRelay.set(Relay.Value.kOn);
 
 
 
@@ -244,6 +245,21 @@ public static void init ()
  */
 public static void periodic ()
 {
+    // agitator code to set to run for entire match
+    // TODO write cancel button
+    // if (Hardware.leftOperator.getRawButton(9) && hasCanceledAgitator ==
+    // false)
+    // {
+    // cancelAgitator = true;
+    // }
+    // if (cancelAgitator == true)
+    // {
+    // Hardware.agitatorRelay.set(Relay.Value.kOff);
+    // hasCanceledAgitator = true;
+    // }
+    //
+    // Hardware.agitatorRelay.set(Relay.Value.kOn);
+
 
     if (Hardware.leftDriver.getTrigger() && !previousFireButton)
         {
@@ -352,7 +368,7 @@ public static void periodic ()
 
     // if button 9 equals true and this method had not been called
     // since the last time the button read false (cameraPositionHasChanged)
-    if (Hardware.rightDriver.getRawButton(4) == true
+    if (Hardware.rightOperator.getRawButton(5) == true
             && cameraPositionHasChanged == false)
         {
         // set changeCameraServoPosition to true
@@ -729,5 +745,9 @@ public static boolean changeCameraServoPosition = false;
 // public static boolean changeGearServoPosition = false;
 
 public static boolean cameraPositionHasChanged = false;
+
+public static boolean cancelAgitator = false;
+
+public static boolean hasCanceledAgitator = false;
 
 } // end class
