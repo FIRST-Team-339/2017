@@ -104,16 +104,16 @@ public static void init ()
         Hardware.intakeMotor.setInverted(true);
         Hardware.mecanumDrive
                 .setDeadbandPercentageZone(Hardware.joystickDeadzone);
-    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+        Hardware.mecanumDrive.setMecanumJoystickReversed(false);
 
-    // Sets the scaling factor and general ultrasonic stuff
+        // Sets the scaling factor and general ultrasonic stuff
         // Hardware.rightFrontMotorSafety.setExpiration(.5);
         // Hardware.rightRearMotorSafety.setExpiration(.5);
         // Hardware.leftFrontMotorSafety.setExpiration(.5);
         // Hardware.leftRearMotorSafety.setExpiration(1.0);
-    Hardware.rightUS.setScalingFactor(.13);
-    Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
-    Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
+        Hardware.rightUS.setScalingFactor(.13);
+        Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
+        Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
         Hardware.tankDrive.setGear(1);
         Hardware.autoDrive.setDriveCorrection(.3);
         Hardware.autoDrive.setEncoderSlack(1);
@@ -137,7 +137,7 @@ public static void init ()
         // Hardware.tankDrive.setGearPercentage(1, FIRST_GEAR);
         // Hardware.tankDrive.setGearPercentage(2, SECOND_GEAR);
         // Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
-    // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
+        // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
         Hardware.rightFrontMotor.setInverted(true);
         Hardware.rightRearMotor.setInverted(false);
         Hardware.leftFrontMotor.setInverted(false);
@@ -149,10 +149,11 @@ public static void init ()
         Hardware.rightUS.setScalingFactor(.13);
         Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
         Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
-    Hardware.tankDrive.setGear(1);
-    Hardware.mecanumDrive.setFirstGearPercentage(Robot.FIRST_GEAR);
-    Hardware.autoDrive.setDriveCorrection(.3);
-    Hardware.autoDrive.setEncoderSlack(1); // TODO
+        Hardware.tankDrive.setGear(1);
+        Hardware.mecanumDrive.setFirstGearPercentage(Robot.FIRST_GEAR);
+        Hardware.autoDrive.setDriveCorrection(.3);
+        Hardware.autoDrive.setEncoderSlack(1);
+        }// TODO
 } // end Init
 
 /**
@@ -180,7 +181,7 @@ public static void periodic ()
     // }
     // }
     // else if (preparingToFire == false)
-    //    Hardware.shooter.stopFlywheelMotor();
+    // Hardware.shooter.stopFlywheelMotor();
     /*
      * System.out.println("Firecount: " + fireCount);
      * 
@@ -471,6 +472,14 @@ public static void printStatements ()
     // Hardware.leftRearEncoder.get());
     // System.out.println("Left Rear Encoder Distance: " +
     // Hardware.autoDrive.getLeftFrontEncoderDistance());
+    System.out.println("right front speed: "
+            + Hardware.rightFrontMotor.getSpeed());
+    System.out.println(
+            "right rear speed: " + Hardware.rightRearMotor.getSpeed());
+    System.out.println(
+            "left front speed: " + Hardware.leftFrontMotor.getSpeed());
+    System.out.println(
+            "left rear speed: " + Hardware.leftRearMotor.getSpeed());
     // ---------------------------------
     // Red Light/IR Sensors
     // prints the state of the sensor

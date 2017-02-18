@@ -404,6 +404,7 @@ public AlignReturnType strafeToGear (double driveSpeed,
         double alignVar, double deadband, double relativeCenter,
         int distanceToTarget)
 {
+
     if (this.firstStrafe)
         {
         this.timer.reset();
@@ -459,7 +460,8 @@ public AlignReturnType strafeToGear (double driveSpeed,
     if (this.rightUlt
             .getDistanceFromNearestBumper() <= distanceToTarget)
         {
-        System.out.println("just checked US ");
+
+
         System.out.println("distance from nearsest bumper: "
                 + this.rightUlt.getDistanceFromNearestBumper());
         System.out.println("distance to target: " + distanceToTarget);
@@ -475,14 +477,18 @@ public AlignReturnType strafeToGear (double driveSpeed,
         this.driveNoDeadband(driveSpeed, 0);
         return AlignReturnType.ALIGNED;
         }
-
-    if (distanceToCenter > 0)
+    System.out.println("distanceToCenter: " + distanceToCenter);
+    System.out.println("relative center: " + relativeCenter);
+    if (distanceToCenter < 0)
         {
-        this.driveNoDeadband(driveSpeed, alignVar);
-        }
-    else if (distanceToCenter < 0)
-        {
+        System.out.println("trying to adjust left");
         this.driveNoDeadband(driveSpeed, -alignVar);
+
+        }
+    else if (distanceToCenter > 0)
+        {
+        System.out.println("trying to adjust right");
+        this.driveNoDeadband(driveSpeed, alignVar);
         }
     return AlignReturnType.MISALIGNED;
 }
@@ -599,10 +605,13 @@ public void driveNoDeadband (double speed, double correction)
     switch (this.transmissionType)
         {
         case MECANUM:
+            System.out.println("using macanum");
             this.transmissionMecanum.driveNoDeadband(speed, correction,
                     0.0);
+
             break;
         case TANK:
+            System.out.println("using 4 wheel");
             this.transmissionFourWheel.driveWithoutCorrection(
                     speed + correction, speed - correction);
         default:

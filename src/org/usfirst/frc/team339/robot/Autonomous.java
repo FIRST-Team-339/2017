@@ -31,7 +31,6 @@
 // ====================================================================
 package org.usfirst.frc.team339.robot;
 
-import com.ctre.CANTalon.FeedbackDevice;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Drive.AlignReturnType;
@@ -188,16 +187,16 @@ private static Drive.AlignReturnType cameraState = Drive.AlignReturnType.NO_BLOB
 // TUNEABLES
 // ==========================================
 
-private static final double ALIGN_CORRECT_VAR = 30;
+private static final double ALIGN_CORRECT_VAR = 45;
 
-private static final double ALIGN_DRIVE_SPEED = .1;
+private static final double ALIGN_DRIVE_SPEED = .4;
 
 private static final double ALIGN_DEADBAND = 10 // +/- pixels
         / Hardware.axisCamera.getHorizontalResolution();
 
-private static final double ALIGN_ACCEPTED_CENTER = 0; // Relative coordinates
+private static final double ALIGN_ACCEPTED_CENTER = .5; // Relative coordinates
 
-private static final int ALIGN_DISTANCE_FROM_GOAL = 15;
+private static final int ALIGN_DISTANCE_FROM_GOAL = 10;
 
 /**
  * User-Initialization code for autonomous mode should go here. Will be
@@ -215,6 +214,7 @@ public static void init ()
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
     Hardware.mecanumDrive.setFirstGearPercentage(1.0);
+
     Hardware.mecanumDrive.setGear(1);
     if (Hardware.isRunningOnKilroyXVIII)
         {
@@ -347,18 +347,10 @@ private static boolean placeCenterGearPath ()
                 }
             break;
         case ACCELERATE:
-            // TODO magic numbers
-
-            Hardware.rightUS.getDistanceFromNearestBumper();
-            {
-            Hardware.leftRearMotor.set(0);
-            Hardware.leftFrontMotor.set(0);
-            Hardware.rightRearMotor.set(0);
-            Hardware.rightFrontMotor.set(0);
+            // TODO magic number
             cameraState = AlignReturnType.WAITING;
-            }
-            if (Hardware.autoDrive.accelerate(getRealSpeed(.3),
-                    .3))
+            if (Hardware.autoDrive.accelerate(getRealSpeed(.2),
+                    .1))
                 {
                 currentState = postAccelerateState;
                 }
@@ -382,53 +374,35 @@ private static boolean placeCenterGearPath ()
             // transmission,
             // we will strafe. If it uses a four wheel transmission, it will
             // wiggle wiggle on it's way to the peg
-
-
+            System.out.println("right front motor: "
+                    + Hardware.rightFrontMotor.getSpeed());
+            System.out.println("left front motor: "
+                    + Hardware.leftFrontMotor.getSpeed());
 
             cameraState = Hardware.autoDrive.strafeToGear(
                     getRealSpeed(ALIGN_DRIVE_SPEED),
                     getRealSpeed(ALIGN_CORRECT_VAR),// TODO decide whether to
-                                                    // keep the getRealSpeed
-                                                    // here.
+                    // keep the getRealSpeed
+                    // here.
                     ALIGN_DEADBAND, ALIGN_ACCEPTED_CENTER,
                     ALIGN_DISTANCE_FROM_GOAL);
+
             System.out.println("strafeToGear state: " + cameraState);
-            System.out.println("rightFront motor speed drive camera: "
-                    + Hardware.rightFrontMotor.getSpeed());
-            System.out.println("left front motor speed drive camera: "
-                    + Hardware.leftFrontMotor.getSpeed());
+
+
             if (cameraState == AlignReturnType.NO_BLOBS)
                 {
                 // If we don't see anything, just drive forwards till we are
                 // close enough
                 currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
                 }
-            Hardware.rightUS.getDistanceFromNearestBumper();
             if (cameraState == AlignReturnType.CLOSE_ENOUGH)
                 {
                 // If we are close enough to the wall, stop.
                 currentState = MainState.WAIT_FOR_GEAR_EXODUS;
                 }
-            if (cameraState != AlignReturnType.NO_BLOBS)
-                {
-                currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
-                }
-            else
-                {
-                currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
-                }
-            break;
-        case DRIVE_CAREFULLY_TO_PEG:
-            if (Hardware.rightUS
-                    .getDistanceFromNearestBumper() >= ALIGN_DISTANCE_FROM_GOAL)
-                {
-                Hardware.autoDrive.drive(getRealSpeed(.5), 0);
-                }
-            else
-                {
-                // desired distance from wall when we start
-                currentState = MainState.WAIT_FOR_GEAR_EXODUS;
-                }
+
+
             break;
         case WAIT_FOR_GEAR_EXODUS:
             Hardware.ringlightRelay.set(Value.kOff);
@@ -503,7 +477,7 @@ private static boolean rightSidePath ()
                     + Hardware.rightFrontMotor.getSpeed());
             System.out.println("left front motor accelerate: "
                     + Hardware.leftFrontMotor.getSpeed());
-            if (Hardware.autoDrive.accelerate(.1, .3))// TODO magic num!
+            if (Hardware.autoDrive.accelerate(.4, .3))// TODO magic num!
                 {
                 currentState = postAccelerateState;
                 }
@@ -957,6 +931,7 @@ private static boolean leftSidePath ()
 private static final double[] accelerationSpeeds =
     {
             getRealSpeed(.2),
+
 
             getRealSpeed(.4),
 

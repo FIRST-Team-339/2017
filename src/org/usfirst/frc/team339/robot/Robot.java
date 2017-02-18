@@ -506,30 +506,6 @@ public static final double SECOND_GEAR = 1;
 
 public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.068;
 
-/**
- * Height to offset the height of the camera to the height of the goal, in
- * inches.
- */
-private static final double CAMERA_HEIGHT_FROM_GROUND = 20.0;// 31.0;//
-
-/**
- * Height of the goal in relation to the robot's height, in inches.
- */
-private static final double FUEL_GOAL_HEIGHT = 86.0
-        - CAMERA_HEIGHT_FROM_GROUND;
-
-/**
- * The percentage we want the motors to run at while we are in first gear
- */
-public static final double FIRST_GEAR = .7;
-
-/**
- * The percentage we want the motors to run at while we are in second gear
- */
-public static final double SECOND_GEAR = 1;
-
-public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.068;
-
 public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVII = .0197;
 
 public static double shooterP = .07;
