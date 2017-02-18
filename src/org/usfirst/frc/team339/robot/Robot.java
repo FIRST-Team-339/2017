@@ -357,6 +357,9 @@ public class Robot extends IterativeRobot {
 		Hardware.rightUS.setScalingFactor(.13);
 		Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
 		Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
+		
+		Hardware.gimbalMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		Hardware.gimbalMotor.setEncPosition(0);
 
 		// =========================================================
 		// User code goes above here

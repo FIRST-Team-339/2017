@@ -33,6 +33,8 @@ package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
+import org.usfirst.frc.team339.Utils.Shooter;
+import org.usfirst.frc.team339.Utils.Shooter.turnReturn;
 
 import com.ctre.CANTalon.FeedbackDevice;
 
@@ -134,10 +136,13 @@ public class Teleop {
 			Hardware.autoDrive.setDriveCorrection(.3);
 			Hardware.autoDrive.setEncoderSlack(1);
 			// Hardware.mecanumDrive.setDirectionalDeadzone(0.2);
+			
+			Hardware.gimbalMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+			Hardware.gimbalMotor.setEncPosition(0);
 
 		}
 		
-		Hardware.gimbalMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
+		
 
 		isAligning = false;
 		isStrafingToTarget = false;
@@ -214,7 +219,7 @@ public class Teleop {
 		// =================================================================
 		
 		if(Hardware.leftOperator.getRawButton(2) && Math.abs(Hardware.leftOperator.getX()) > .2)
-			Hardware.shooter.turnGimbalSlow(Hardware.leftOperator.getX() > 0 ? 1 : -1);
+			Hardware.shooter.turnGimbalSlow(Hardware.leftOperator.getX() > 0 ? -1 : 1);
 		else
 			Hardware.shooter.stopGimbal();
 		
@@ -225,6 +230,31 @@ public class Teleop {
 			Hardware.intake.reverseIntake();
 		else
 			Hardware.intake.stopIntake();
+		
+		if(Hardware.rightOperator.getRawButton(11))
+		{
+			if(Hardware.rightOperator.getRawButton(10))
+				isTurningGimbal = true;
+			
+			if(isTurningGimbal)
+			{
+				turnValue = Hardware.shooter.turnToBearing(0);
+				if(turnValue == turnReturn.SUCCESS)
+				{
+					System.out.println("We are at 0!");
+					isTurningGimbal = false;
+				}else if(turnValue == turnReturn.TOO_FAR)
+				{
+					System.out.println("We are too far!");
+					isTurningGimbal = true;
+				}else if(turnValue == turnReturn.WORKING)
+				{
+					System.out.println("We are turning!");
+					isTurningGimbal = true;
+				}
+				
+			}
+		}
 
 		// =================================================================
 		// CAMERA CODE
@@ -259,6 +289,8 @@ public class Teleop {
 	private static double rotationValue = 0.0;
 
 	private static Drive.AlignReturnType alignValue = Drive.AlignReturnType.MISALIGNED;
+	
+	private static Shooter.turnReturn turnValue = Shooter.turnReturn.SUCCESS;
 
 	private static boolean isAligning = false;
 
@@ -275,6 +307,8 @@ public class Teleop {
 	private static boolean preparingToFire = false;
 
 	private static boolean firing = false;
+	
+	private static boolean isTurningGimbal = false;
 
 	/**
 	 * stores print statements for future use in the print "bank", statements
@@ -309,10 +343,10 @@ public class Teleop {
 		// .println("Flywheel Motor: " + Hardware.shooterMotor.get());
 		//
 		// System.out.println("Intake Motor: " + Hardware.intakeMotor.get());
-		if (Hardware.rightOperator.getRawButton(11)) {
-			Hardware.elevatorMotor.setSpeed(1);
-			System.out.println("Elevator Motor: " + Hardware.elevatorMotor.get());
-		}
+//		if (Hardware.rightOperator.getRawButton(11)) {
+//			Hardware.elevatorMotor.setSpeed(1);
+//			System.out.println("Elevator Motor: " + Hardware.elevatorMotor.get());
+//		}
 		// System.out.println("Turret Spark: " + Hardware.gimbalMotor.get());
 
 		// =================================
@@ -321,7 +355,7 @@ public class Teleop {
 		// =================================
 		// Hardware.CAN.printAllPDPChannels();
 		
-		System.out.println("Gimbal Encoder: " + Hardware.gimbalMotor.getAnalogInPosition());
+		System.out.println("Gimbal Encoder: " + Hardware.shooter.getBearing());
 
 		// =================================
 		// Relay
@@ -354,8 +388,8 @@ public class Teleop {
 		// System.out.println(
 		// "Path Selector: " + Hardware.pathSelector.getPosition());
 
-		System.out.println("Right UltraSonic distance from bumper: "
-		 + Hardware.rightUS.getDistanceFromNearestBumper());
+//		System.out.println("Right UltraSonic distance from bumper: "
+//		 + Hardware.rightUS.getDistanceFromNearestBumper());
 		// ---------------------------------
 		// Encoders
 		// prints the distance from the encoders
