@@ -356,7 +356,7 @@ private static boolean placeCenterGearPath ()
             Hardware.rightFrontMotor.set(0);
             cameraState = AlignReturnType.WAITING;
             }
-            if (Hardware.autoDrive.accelerate(getRealSpeed(.1),
+            if (Hardware.autoDrive.accelerate(getRealSpeed(.3),
                     .3))
                 {
                 currentState = postAccelerateState;
