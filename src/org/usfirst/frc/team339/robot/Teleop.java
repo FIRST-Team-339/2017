@@ -34,6 +34,7 @@ package org.usfirst.frc.team339.robot;
 import com.ctre.CANTalon.FeedbackDevice;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
+import org.usfirst.frc.team339.Utils.Shooter;
 import edu.wpi.first.wpilibj.Relay;
 
 /**
@@ -152,7 +153,11 @@ public static void init ()
     Hardware.autoDrive.setDriveCorrection(.3);
     Hardware.autoDrive.setEncoderSlack(1); // TODO
 
+    Hardware.gimbalMotor
+            .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
 
+    isAligning = false;
+    isStrafingToTarget = false;
 } // end Init
 
 /**
@@ -225,8 +230,6 @@ public static void periodic ()
     // Print out any data we want from the hardware elements.
     printStatements();
 
-    // TESTING CODE:
-
     if (Hardware.rightOperator.getRawButton(2))
         Hardware.intake.startIntake();
     else if (Hardware.rightOperator.getRawButton(3))
@@ -238,6 +241,7 @@ public static void periodic ()
     // Driving code
     // =================================================================
 
+    // rotate only when we are pulling the trigger
     if (Hardware.leftDriver.getTrigger())
         {
         rotationValue = Hardware.leftDriver.getTwist();
@@ -255,94 +259,207 @@ public static void periodic ()
         else
             Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
                     Hardware.leftDriver.getY());
+
+
     if (Hardware.leftDriver.getRawButton(9) == true)
         {
         // Hardware.autoDrive.brake(.1, .1);
         Hardware.brakeTest.brake(-1);
         }
+    // =================================================================
+
+    // OPERATOR CONTROLS
+    // =================================================================
+
+    if (Hardware.rightOperator.getRawButton(2))
+        Hardware.intake.startIntake();
+    else if (Hardware.rightOperator.getRawButton(3))
+        Hardware.intake.reverseIntake();
+    else
+        Hardware.intake.stopIntake();
+
+    if (Hardware.rightOperator.getRawButton(11))
+
+
+
+
+
+        if (Hardware.leftOperator.getRawButton(2)
+                && Math.abs(Hardware.leftOperator.getX()) > .2)
+            Hardware.shooter.turnGimbalSlow(
+                    Hardware.leftOperator.getX() > 0 ? -1 : 1);
+        else
+            Hardware.shooter.stopGimbal();
+
+    if (Hardware.rightOperator.getRawButton(11))
+
+        {
+        if (Hardware.rightOperator.getRawButton(10))
+            isTurningGimbal = true;
+
+        if (isTurningGimbal)
+            {
+            turnValue = Hardware.shooter.turnToBearing(0);
+            if (turnValue == Shooter.turnReturn.SUCCESS)
+                {
+                System.out.println("We are at 0!");
+                isTurningGimbal = false;
+                }
+            else if (turnValue == Shooter.turnReturn.TOO_FAR)
+                {
+                System.out.println("We are too far!");
+                isTurningGimbal = true;
+                }
+            else if (turnValue == Shooter.turnReturn.WORKING)
+                {
+                System.out.println("We are turning!");
+                isTurningGimbal = true;
+                }
+            }
+        }
+    // =================================================================
+    // CAMERA CODE
+    // =================================================================
+    // "Cancel basically everything" button
+    // if (Hardware.leftOperator.getRawButton(7)
+    // || Hardware.leftOperator.getRawButton(6))
+    // {
+    // System.out.println("Cancelling everything");
+    // isAligning = false;
+    // isStrafingToTarget = false;
+    // }
+    //
+    // // Testing aligning to target
+    // if (Hardware.rightOperator.getRawButton(4))
+    // isAligning = true;
+    //
+    // if (isAligning)
+    // {
+    // alignValue = Hardware.autoDrive.alignToGear(CAMERA_ALIGN_CENTER,
+    // movementSpeed, CAMERA_ALIGN_DEADBAND);
+    // if (alignValue == Drive.AlignReturnType.ALIGNED)
+    // {
+    // System.out.println("We are aligned!");
+    // isAligning = false;
+    // }
+    // else if (alignValue == Drive.AlignReturnType.MISALIGNED)
+    // {
+    // System.out.println("We are not aligned!");
+    // }
+    // else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
+    // {
+    // System.out.println("We don't see anything!");
+    // }
+    // }
+    // // Testing Strafe to target
+    // if (Hardware.rightOperator.getRawButton(8))
+    // isStrafingToTarget = true;
+    //
+    // if (isStrafingToTarget)
+    // {
+    // alignValue = Hardware.autoDrive.strafeToGear(movementSpeed, .2,
+    // CAMERA_ALIGN_DEADBAND, CAMERA_ALIGN_CENTER, 20);
+    // if (alignValue == Drive.AlignReturnType.ALIGNED)
+    // {
+    // System.out.println("We are aligned!");
+    // }
+    // else if (alignValue == Drive.AlignReturnType.MISALIGNED)
+    // {
+    // System.out.println("WE are NOT aligned!");
+    // }
+    // else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
+    // {
+    // System.out.println("We have no blobs!");
+    // }
+    // else if (alignValue == Drive.AlignReturnType.CLOSE_ENOUGH)
+    // {
+    // System.out.println("We are good to go!");
+    // isStrafingToTarget = false;
+    // }
+    // }
+
+    // Testing good speed values
+    // if (Hardware.leftOperator.getRawButton(4) && !hasPressedFive)
+    // {
+    // // adds .05 to movement speed then prints movementSpeed
+    // movementSpeed += .05;
+    // System.out.println(movementSpeed);
+    // }
+    // hasPressedFour = Hardware.leftOperator.getRawButton(4);
+
+    // if (Hardware.leftOperator.getRawButton(5) && !hasPressedFour)
+    // {
+    // // subtracts .05 from movement speed then prints movementSpeed
+    // movementSpeed -= .05;
+    // System.out.println(movementSpeed);
+    // }
+    // hasPressedFive = Hardware.leftOperator.getRawButton(5);
+
+    if (Hardware.leftOperator.getRawButton(8))
+        {
+        isAligning = true;
+        }
+
+
+
+    Hardware.axisCamera
+            .takeSinglePicture(Hardware.leftOperator.getRawButton(8)
+                    || Hardware.rightOperator.getRawButton(8)
+                    || Hardware.leftOperator.getRawButton(11));
+
+    // Written by Ashley Espeland, has not been tested
+    // cameraServo code setting to either the higher or the lower angle position
+
+    // if button 9 equals true and this method had not been called
+    // since the last time the button read false (cameraPositionHasChanged)
+    if (Hardware.rightOperator.getRawButton(5) == true
+            && cameraPositionHasChanged == false)
+        {
+        // set changeCameraServoPosition to true
+        changeCameraServoPosition = true;
+        }
+    // if changeCamerServoPosition equals true
+    if (changeCameraServoPosition == true)
+        {
+        // if the servo is in the lower position
+        if (Hardware.cameraServo
+                .getAngle() == LOWER_CAMERASERVO_POSITION)
+            {
+            // then set the servo to the higher position and change
+            // cameraPositionHasChanged to true
+            Hardware.cameraServo
+                    .setAngle(HIGHER_CAMERASERVO_POSITION);
+            cameraPositionHasChanged = true;
+            }
+        // if the cameraServo is in the higher position
+        else if (Hardware.cameraServo
+                .getAngle() == HIGHER_CAMERASERVO_POSITION)
+            {
+            // set the servo to the lower position and change
+            // cameraPositionHasChanged to true
+            Hardware.cameraServo
+                    .setAngle(LOWER_CAMERASERVO_POSITION);
+            cameraPositionHasChanged = true;
+            }
+
+        }
+    // if camera servo position has been changed and the button equals false
+    if (changeCameraServoPosition == true
+            && Hardware.leftOperator.getRawButton(4) == false)
+        {
+        // set the cameraPositionHasChanged to false to be able to change
+        // the position again when the button is pushed again
+        cameraPositionHasChanged = false;
+        }
+
+
+    Hardware.axisCamera
+            .takeSinglePicture(Hardware.leftOperator.getRawButton(8)
+                    ||
+                    Hardware.rightOperator.getRawButton(8)
+                    || Hardware.leftOperator.getRawButton(11));
+
 }
-
-
-
-// =================================================================
-// CAMERA CODE
-// =================================================================
-// "Cancel basically everything" button
-// if (Hardware.leftOperator.getRawButton(7)
-// || Hardware.leftOperator.getRawButton(6))
-// {
-// System.out.println("Cancelling everything");
-// isAligning = false;
-// isStrafingToTarget = false;
-// }
-//
-// // Testing aligning to target
-// if (Hardware.rightOperator.getRawButton(4))
-// isAligning = true;
-//
-// if (isAligning)
-// {
-// alignValue = Hardware.autoDrive.alignToGear(CAMERA_ALIGN_CENTER,
-// movementSpeed, CAMERA_ALIGN_DEADBAND);
-// if (alignValue == Drive.AlignReturnType.ALIGNED)
-// {
-// System.out.println("We are aligned!");
-// isAligning = false;
-// }
-// else if (alignValue == Drive.AlignReturnType.MISALIGNED)
-// {
-// System.out.println("We are not aligned!");
-// }
-// else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
-// {
-// System.out.println("We don't see anything!");
-// }
-// }
-// // Testing Strafe to target
-// if (Hardware.rightOperator.getRawButton(8))
-// isStrafingToTarget = true;
-//
-// if (isStrafingToTarget)
-// {
-// alignValue = Hardware.autoDrive.strafeToGear(movementSpeed, .2,
-// CAMERA_ALIGN_DEADBAND, CAMERA_ALIGN_CENTER, 20);
-// if (alignValue == Drive.AlignReturnType.ALIGNED)
-// {
-// System.out.println("We are aligned!");
-// }
-// else if (alignValue == Drive.AlignReturnType.MISALIGNED)
-// {
-// System.out.println("WE are NOT aligned!");
-// }
-// else if (alignValue == Drive.AlignReturnType.NO_BLOBS)
-// {
-// System.out.println("We have no blobs!");
-// }
-// else if (alignValue == Drive.AlignReturnType.CLOSE_ENOUGH)
-// {
-// System.out.println("We are good to go!");
-// isStrafingToTarget = false;
-// }
-// }
-
-// Testing good speed values
-// if (Hardware.leftOperator.getRawButton(4) && !hasPressedFive)
-// {
-// // adds .05 to movement speed then prints movementSpeed
-// movementSpeed += .05;
-// System.out.println(movementSpeed);
-// }
-// hasPressedFour = Hardware.leftOperator.getRawButton(4);
-
-// if (Hardware.leftOperator.getRawButton(5) && !hasPressedFour)
-// {
-// // subtracts .05 from movement speed then prints movementSpeed
-// movementSpeed -= .05;
-// System.out.println(movementSpeed);
-// }
-// hasPressedFive = Hardware.leftOperator.getRawButton(5);
-
-
 // Hardware.axisCamera.takeSinglePicture(Hardware.leftOperator.getRawButton(8));
 // // end
 // Hardware.axisCamera.takeSinglePicture(Hardware.rightOperator.getRawButton(8));
@@ -355,11 +472,11 @@ private static double rotationValue = 0.0;
 
 private static Drive.AlignReturnType alignValue = Drive.AlignReturnType.MISALIGNED;
 
+private static Shooter.turnReturn turnValue = Shooter.turnReturn.SUCCESS;
+
 private static boolean isAligning = false;
 
-private static boolean isStrafingToTarget = false;
-
-private static double movementSpeed = 0.3;
+private static boolean isTurningGimbal = false;
 
 private static boolean hasPressedFour = false;
 
@@ -367,11 +484,13 @@ private static boolean hasPressedFive = false;
 
 private static boolean previousFireButton = false;
 
+private static boolean isStrafingToTarget = false;
+
 private static boolean preparingToFire = false;
 
+private static double movementSpeed = 0.3;
+
 private static boolean firing = false;
-
-
 
 /**
  * stores print statements for future use in the print "bank", statements
@@ -572,6 +691,17 @@ public static void printStatements ()
     // Hardware.rightOperator.getDirectionDegrees());
     // System.out.println("Twist: " + Hardware.leftDriver.getTwist());
 
+
+    // =================================
+    // Driver station
+    // =================================
+    // ---------------------------------
+    // Joysticks
+    // information about the joysticks
+    // ---------------------------------
+    // System.out.println("Left Joystick: " +
+    // Hardware.leftDriver.getDirectionDegrees());
+    // System.out.println("Twist: " + Hardware.leftDriver.getTwist());
     // System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
     // System.out.println("Right Joystick: " + Hardware.rightDriver.getY());
     // System.out.println("Left Operator: " + Hardware.leftOperator.getY());
@@ -594,7 +724,8 @@ public static void printStatements ()
 private final static double CAMERA_ALIGN_SPEED = .5;
 
 //// The dead zone for the aligning TODO
-private final static double CAMERA_ALIGN_DEADBAND = 10.0 // +/- Pixels
+private final static double CAMERA_ALIGN_DEADBAND = 10.0                                                                                                                                   // +/-
+                                                                                                                                                                                           // Pixels
         / Hardware.axisCamera.getHorizontalResolution();
 
 private final static double CAMERA_ALIGN_CENTER = .478;  // Relative coordinates
@@ -604,6 +735,22 @@ private final static double CAMERA_ALIGN_CENTER = .478;  // Relative coordinates
 // TUNEABLES
 // ==========================================
 private final static double LOWER_CAMERASERVO_POSITION = 65;// TODO find
+
 // actual
+
+private final static double HIGHER_CAMERASERVO_POSITION = 90;// TODO find
+// actual
+// actual value
+// public static boolean gearPositionHasChanged = false;
+
+public static boolean changeCameraServoPosition = false;
+
+// public static boolean changeGearServoPosition = false;
+
+public static boolean cameraPositionHasChanged = false;
+
+public static boolean cancelAgitator = false;
+
+public static boolean hasCanceledAgitator = false;
 
 } // end class

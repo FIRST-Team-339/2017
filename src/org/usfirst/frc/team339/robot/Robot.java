@@ -60,14 +60,10 @@
 package org.usfirst.frc.team339.robot;
 
 import com.ctre.CANTalon.FeedbackDevice;
-import com.ctre.CANTalon.TalonControlMode;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.vision.AxisCamera.ExposureControl;
-import edu.wpi.first.wpilibj.vision.AxisCamera.Resolution;
-import edu.wpi.first.wpilibj.vision.AxisCamera.WhiteBalance;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -278,10 +274,14 @@ public void robotInit ()
         Hardware.rightRearEncoder.setReverseDirection(false);
         Hardware.leftFrontEncoder.setReverseDirection(true);
         Hardware.leftRearEncoder.setReverseDirection(false);
-			Hardware.rightRearEncoder.setDistancePerPulse(ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-			Hardware.leftRearEncoder.setDistancePerPulse(ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-			Hardware.rightFrontEncoder.setDistancePerPulse(ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-			Hardware.leftFrontEncoder.setDistancePerPulse(ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
+        Hardware.rightRearEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
+        Hardware.leftRearEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
+        Hardware.rightFrontEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
+        Hardware.leftFrontEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
         Hardware.tankDrive.setGearPercentage(1, FIRST_GEAR);
         Hardware.tankDrive.setGearPercentage(2, SECOND_GEAR);
         Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
@@ -290,7 +290,8 @@ public void robotInit ()
         Hardware.leftFrontMotor.setInverted(false);
         Hardware.leftRearMotor.setInverted(true);
         Hardware.intakeMotor.setInverted(true);
-			Hardware.mecanumDrive.setDeadbandPercentageZone(Hardware.joystickDeadzone);
+        Hardware.mecanumDrive
+                .setDeadbandPercentageZone(Hardware.joystickDeadzone);
         Hardware.mecanumDrive.setMecanumJoystickReversed(false);
         // Hardware.rightFrontMotorSafety.setExpiration(.5);
         // Hardware.rightRearMotorSafety.setExpiration(.5);
@@ -303,10 +304,14 @@ public void robotInit ()
         // Hardware.rightRearEncoder.setReverseDirection(false);
         // Hardware.leftFrontEncoder.setReverseDirection(true);
         // Hardware.leftRearEncoder.setReverseDirection(false);
-			Hardware.rightRearEncoder.setDistancePerPulse(ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-			Hardware.leftRearEncoder.setDistancePerPulse(ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-			Hardware.leftFrontEncoder.setDistancePerPulse(ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-			Hardware.rightFrontEncoder.setDistancePerPulse(ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
+        Hardware.rightRearEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
+        Hardware.leftRearEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
+        Hardware.leftFrontEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
+        Hardware.rightFrontEncoder.setDistancePerPulse(
+                ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
         // Hardware.tankDrive.setGearPercentage(1, FIRST_GEAR);
         // Hardware.tankDrive.setGearPercentage(2, SECOND_GEAR);
         // Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
@@ -322,6 +327,7 @@ public void robotInit ()
     // -------------------------------------
     // motor initialization
     // -------------------------------------
+    Hardware.mecanumDrive.setDirectionalDeadzone(5.0);
     // Hardware.leftRearMotorSafety.setSafetyEnabled(true);
     // Hardware.rightRearMotorSafety.setSafetyEnabled(true);
     // Hardware.leftFrontMotorSafety.setSafetyEnabled(true);
@@ -370,7 +376,8 @@ public void robotInit ()
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
 
-		Hardware.gimbalMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+    Hardware.gimbalMotor
+            .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
 		Hardware.gimbalMotor.setEncPosition(0);
 
     // =========================================================
@@ -380,7 +387,8 @@ public void robotInit ()
     // done setup - tell the user we are complete
     // setup
     // ---------------------------------------
-		System.out.println("Kilroy XVIII is started.  All hardware items created.");
+    System.out.println(
+            "Kilroy XVIII is started.  All hardware items created.");
     System.out.println();
     System.out.println();
 } // end
@@ -492,7 +500,7 @@ public void testPeriodic ()
 /**
  * The percentage we want the motors to run at while we are in first gear
  */
-public static final double FIRST_GEAR = .7;
+public static final double FIRST_GEAR = .6;
 
 /**
  * The percentage we want the motors to run at while we are in second gear
