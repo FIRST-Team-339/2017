@@ -93,12 +93,12 @@ public Drive (TransmissionMecanum transmissionMecanum,
         UltraSonic rightUlt)
 {
     this(transmissionMecanum, imageProcessor);
-
     this.initEncoders(leftFrontEncoder, rightFrontEncoder,
             leftRearEncoder, rightRearEncoder);
 
     this.rightUlt = rightUlt;
     isUsingUltrasonics = true;
+
 
 }
 
@@ -272,38 +272,48 @@ public boolean driveStraightInches (double inches, double speed)
             + this.getLeftRearEncoderDistance()) / 2;
     double averageRight = (this.getRightFrontEncoderDistance()
             + this.getRightRearEncoderDistance()) / 2;
-
+    // System.out.println("Average Left: " + averageLeft);
+    // System.out.println("Average Right: " + averageRight);
+    System.out.println("LF Distance Per Pulse: "
+            + getEncoderDistancePulse(leftFrontEncoder));
+    System.out.println("RF Distance Per Pulse: "
+            + getEncoderDistancePulse(rightFrontEncoder));
+    System.out.println("LR Distance Per Pulse: "
+            + getEncoderDistancePulse(leftRearEncoder));
+    System.out.println("RR Distance Per Pulse: "
+            + getEncoderDistancePulse(rightRearEncoder));
     if (firstTimeDriveInches)
         {
         this.resetEncoders();
         firstTimeDriveInches = false;
         }
 
-    // if (this.transmissionType == TransmissionType.MECANUM)
-    // this.drive(speed, 0.0);
+    this.driveNoDeadband(speed, 0.0);
+    System.out.println("Speed: " + speed);
     if (averageRight >= averageLeft + getEncoderSlack())
         bottomValue = true;
     if (averageRight <= averageLeft - getEncoderSlack())//
         topValue = true;
     if (bottomValue == true && topValue == true)
-        this.drive(-speed, -speed);
-    if (averageLeft > averageRight - getEncoderSlack())//
-        this.transmissionFourWheel.drive(
-                -speed - getDriveCorrection(),
-                -speed); // negate this because how drive takes into account of
-                         // negative joysfd
+        // this.drive(speed, 0);
+        if (averageLeft > averageRight - getEncoderSlack())//
+        this.driveNoDeadband(speed + getDriveCorrection(), speed);
+
     if (averageLeft < averageRight + getEncoderSlack())//
-        this.transmissionFourWheel.drive(-speed,
-                -speed - getDriveCorrection());
-    if (Math.abs(this.getAveragedEncoderValues()) >= Math.abs(inches))
+        this.driveNoDeadband(speed,
+                speed + getDriveCorrection());
+    if (Math.abs(this.getAveragedEncoderValues()) >= Math
+            .abs(inches))
         {
-        this.drive(0.0, 0.0);
+        this.stopMovement();
+        this.driveNoDeadband(0.0, 0.0);
+        // this.stopMovement();
         firstTimeDriveInches = true;
         return true;
         }
-
+    bottomValue = false;
+    topValue = false;
     return false;
-
 
 }
 
@@ -690,6 +700,17 @@ public void setEncoderDistancePerPulse (double value)
     this.rightFrontEncoder.setDistancePerPulse(value);
     this.leftRearEncoder.setDistancePerPulse(value);
     this.rightRearEncoder.setDistancePerPulse(value);
+}
+
+/**
+ * method reads distance per pulse
+ * 
+ * @param encoder
+ * @return Distance per pulse
+ */
+public double getEncoderDistancePulse (Encoder encoder)
+{
+    return encoder.getRate();
 }
 
 /**
@@ -1287,7 +1308,7 @@ public double getTurningCircleRadius ()
 }
 
 /**
- * Sets the radius of the circlie that the robot rotates around
+ * Sets the radius of the circle that the robot rotates around
  * 
  * @param radius
  *            Radius in inches
@@ -1306,7 +1327,7 @@ public void setEncoderSlack (double slack)
 
 public double getEncoderSlack ()
 {
-    return encoderSlack;
+    return this.encoderSlack;
 }
 
 public void setDriveCorrection (double correction)
@@ -1316,7 +1337,7 @@ public void setDriveCorrection (double correction)
 
 public double getDriveCorrection ()
 {
-    return correction;
+    return this.correction;
 }
 
 
