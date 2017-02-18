@@ -80,7 +80,7 @@ import edu.wpi.first.wpilibj.Relay;
  * @author Bob Brown
  * @written Jan 2, 2011 -------------------------------------------------------
  */
-public class Robot extends IterativeRobot
+public class Robot extends IterativeRobot 
 {
 boolean testdasboard = true;
 // =================================================
@@ -338,19 +338,19 @@ public void robotInit ()
 
     // Hardware.tankDrive.setRightJoystickReversed(true);
 
-    // initialize PID values and set the motor to 0.0 because it isn't safe
-    // if
+		// initialize PID values and set the motor to 0.0 because it isn't safe
+		// if
     // we don't.
-    // Hardware.shooterMotor.changeControlMode(TalonControlMode.Speed);TODO
-    // put back in once finished testing!!!
-    // Hardware.shooterMotor.configPeakOutputVoltage(12f, -12f);
-    // Hardware.shooterMotor.configNominalOutputVoltage(0f, 0f);
-    // Hardware.shooterMotor
-    // .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-    // Hardware.shooterMotor.configEncoderCodesPerRev(1024);
-    // Hardware.shooterMotor.setPID(shooterP, shooterI, shooterD);
-    // Hardware.shooterMotor.setSetpoint(0.0);
-    // Hardware.shooterMotor.reverseSensor(true);
+		// Hardware.shooterMotor.changeControlMode(TalonControlMode.Speed);TODO
+		// put back in once finished testing!!!
+		// Hardware.shooterMotor.configPeakOutputVoltage(12f, -12f);
+		// Hardware.shooterMotor.configNominalOutputVoltage(0f, 0f);
+		// Hardware.shooterMotor
+		// .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+		// Hardware.shooterMotor.configEncoderCodesPerRev(1024);
+		// Hardware.shooterMotor.setPID(shooterP, shooterI, shooterD);
+		// Hardware.shooterMotor.setSetpoint(0.0);
+		// Hardware.shooterMotor.reverseSensor(true);
 
     if (Hardware.runningInLab == true)
         {
@@ -381,7 +381,7 @@ public void robotInit ()
 
     Hardware.gimbalMotor
             .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-    Hardware.gimbalMotor.setEncPosition(0);
+		Hardware.gimbalMotor.setEncPosition(0);
 
     // =========================================================
     // User code goes above here
@@ -498,6 +498,7 @@ public void testPeriodic ()
 // ==========================================
 // TUNEABLES
 // ==========================================
+
 
 /**
  * The percentage we want the motors to run at while we are in first gear

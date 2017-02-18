@@ -26,6 +26,7 @@ import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
+import org.usfirst.frc.team339.HardwareInterfaces.transmission.Transmission_old;
 import org.usfirst.frc.team339.Utils.BallIntake;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Shooter;
@@ -41,7 +42,6 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
@@ -71,7 +71,7 @@ public static double joystickDeadzone = .2;
  */
 public static boolean runningInLab = false;
 
-public static boolean isRunningOnKilroyXVIII = false; // 18
+public static boolean isRunningOnKilroyXVIII = true; // 18
 // -------------------------------------
 // Private Constants
 // -------------------------------------
@@ -342,6 +342,10 @@ public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
 
 public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
+        rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
+
+// TODO Take out before merged
+public static Transmission_old brakeTest = new Transmission_old(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
 
 
