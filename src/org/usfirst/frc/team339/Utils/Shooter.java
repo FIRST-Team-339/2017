@@ -30,11 +30,10 @@ private double acceptableError = 0;
 
 private ImageProcessor visionTargeter = null;
 
-private Encoder gimbalEncoder = null;
 
 private double acceptableGimbalError = 0;
 
-private PWMSpeedController gimbalMotor = null;
+private CANTalon gimbalMotor = null;
 
 private Timer shooterTimer = new Timer();
 
@@ -62,17 +61,15 @@ private Timer shooterTimer = new Timer();
 public Shooter (CANTalon controller, IRSensor ballLoaderSensor,
         Victor elevator,
         double acceptableFlywheelSpeedError,
-        ImageProcessor visionTargeting, Encoder gimbalEnc,
-        double acceptableGimbalError, PWMSpeedController gimbalMotor)
+        ImageProcessor visionTargeting,
+        double acceptableGimbalError, CANTalon gimbalMotor)
 {
     this.flywheelController = controller;
     this.elevatorSensor = ballLoaderSensor;
     this.elevatorController = elevator;
     this.acceptableError = acceptableFlywheelSpeedError;
     this.visionTargeter = visionTargeting;
-    this.gimbalEncoder = gimbalEnc;
     this.gimbalMotor = gimbalMotor;
-    this.gimbalEncoder.setDistancePerPulse((360.0 / 256.0));
 }
 
 /**
@@ -224,7 +221,17 @@ public turnReturn turnToBearing (double newBearing)
 }
 
 /**
+ * Sets the gimbal motor to 0. Call after any turnGimbal function (except turnToBearing)
+ */
+public void stopGimbal ()
+{
+	this.turnGimbal(0.0);
+}
+
+/**
  * Turns the gimbal at our slow speed.
+ * 
+ * run stopGimbal afterwards
  * 
  * @param direction
  *            Negative 1 or positive 1, positive for right, negative for left
@@ -239,6 +246,8 @@ public turnReturn turnGimbalSlow (int direction)
 /**
  * Turns the gimbal at our medium speed.
  * 
+ * run stopGimbal afterwards
+ * 
  * @param direction
  *            Negative 1 or positive 1, positive for right, negative for left
  * @return
@@ -251,6 +260,8 @@ public turnReturn turnGimbalMedium (int direction)
 
 /**
  * Turns the turrets as quickly as we can.
+ * 
+ * run stopGimbal afterwards
  * 
  * @param direction
  *            Negative 1 or positive 1, positive for right, negative for left
@@ -437,9 +448,7 @@ public double calculateRPMToMakeGoal (double distance)
  */
 public double getBearing ()// TODO should work.
 {
-    // normalizes the bearing from -gimbalPot.getMaxDegrees()/2 to
-    // gimbalPot.getMaxDegrees()/2
-    return this.gimbalEncoder.get();
+    return 0.0;
 }
 
 private final double MAX_TURN_SPEED = .8;

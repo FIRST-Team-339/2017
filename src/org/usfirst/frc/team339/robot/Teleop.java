@@ -33,6 +33,9 @@ package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
+
+import com.ctre.CANTalon.FeedbackDevice;
+
 import edu.wpi.first.wpilibj.Relay;
 
 /**
@@ -147,6 +150,8 @@ public static void init ()
 
         }
 
+		Hardware.gimbalMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
+
     isAligning = false;
     isStrafingToTarget = false;
 } // end Init
@@ -176,8 +181,8 @@ public static void init ()
     // fireCount--;
     // }
     // }
-    if (preparingToFire == false)
-        Hardware.shooter.stopFlywheelMotor();
+//		if (preparingToFire == false)
+//			Hardware.shooter.stopFlywheelMotor();
     /*
      * System.out.println("Firecount: " + fireCount);
      * 
@@ -336,6 +341,8 @@ public static void printStatements ()
     // =================================
     // Hardware.CAN.printAllPDPChannels();
 
+		System.out.println("Gimbal Encoder: " + Hardware.gimbalMotor.getAnalogInPosition());
+
     // =================================
     // Relay
     // prints value of the relay states
@@ -367,8 +374,8 @@ public static void printStatements ()
     // System.out.println(
     // "Path Selector: " + Hardware.pathSelector.getPosition());
 
-    // System.out.println("Right UltraSonic distance from bumper: "
-    // + Hardware.rightUS.getDistanceFromNearestBumper());
+		System.out.println("Right UltraSonic distance from bumper: "
+		 + Hardware.rightUS.getDistanceFromNearestBumper());
     // ---------------------------------
     // Encoders
     // prints the distance from the encoders
