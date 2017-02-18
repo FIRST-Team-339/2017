@@ -136,7 +136,7 @@ public class Teleop {
 			// Hardware.mecanumDrive.setDirectionalDeadzone(0.2);
 
 		}
-		
+
 		Hardware.gimbalMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
 
 		isAligning = false;
@@ -160,15 +160,15 @@ public class Teleop {
 
 		// previousFireButton = Hardware.leftDriver.getTrigger();
 		//
-//		 if (fireCount > 0)
-//		 {
-//		 if (Hardware.shooter.fire())
-//		 {
-//		 fireCount--;
-//		 }
+		// if (fireCount > 0)
+		// {
+		// if (Hardware.shooter.fire())
+		// {
+		// fireCount--;
 		// }
-//		if (preparingToFire == false)
-//			Hardware.shooter.stopFlywheelMotor();
+		// }
+		// if (preparingToFire == false)
+		// Hardware.shooter.stopFlywheelMotor();
 		/*
 		 * System.out.println("Firecount: " + fireCount);
 		 * 
@@ -188,7 +188,6 @@ public class Teleop {
 		printStatements();
 
 		// TESTING CODE:
-		
 
 		// =================================================================
 		// Driving code
@@ -208,17 +207,16 @@ public class Teleop {
 			else
 				Hardware.tankDrive.drive(Hardware.rightDriver.getY(), Hardware.leftDriver.getY());
 		}
-		
+
 		// =================================================================
 		// OPERATOR CONTROLS
 		// =================================================================
-		
-		if(Hardware.leftOperator.getRawButton(2) && Math.abs(Hardware.leftOperator.getX()) > .2)
+
+		if (Hardware.leftOperator.getRawButton(2) && Math.abs(Hardware.leftOperator.getX()) > .2)
 			Hardware.shooter.turnGimbalSlow(Hardware.leftOperator.getX() > 0 ? 1 : -1);
 		else
 			Hardware.shooter.stopGimbal();
-		
-		
+
 		if (Hardware.rightOperator.getRawButton(2))
 			Hardware.intake.startIntake();
 		else if (Hardware.rightOperator.getRawButton(3))
@@ -229,12 +227,9 @@ public class Teleop {
 		// =================================================================
 		// CAMERA CODE
 		// =================================================================
-		if(Hardware.leftOperator.getRawButton(8))
-		{
+		if (Hardware.leftOperator.getRawButton(8)) {
 			isAligning = true;
 		}
-		
-		
 
 		Hardware.axisCamera.takeSinglePicture(Hardware.leftOperator.getRawButton(8)
 				|| Hardware.rightOperator.getRawButton(8) || Hardware.leftOperator.getRawButton(11));
@@ -320,7 +315,7 @@ public class Teleop {
 		// prints value of the CAN controllers
 		// =================================
 		// Hardware.CAN.printAllPDPChannels();
-		
+
 		System.out.println("Gimbal Encoder: " + Hardware.gimbalMotor.getAnalogInPosition());
 
 		// =================================
@@ -354,8 +349,7 @@ public class Teleop {
 		// System.out.println(
 		// "Path Selector: " + Hardware.pathSelector.getPosition());
 
-		System.out.println("Right UltraSonic distance from bumper: "
-		 + Hardware.rightUS.getDistanceFromNearestBumper());
+		System.out.println("Right UltraSonic distance from bumper: " + Hardware.rightUS.getDistanceFromNearestBumper());
 		// ---------------------------------
 		// Encoders
 		// prints the distance from the encoders
@@ -461,8 +455,10 @@ public class Teleop {
 		// System.out.println("Left Joystick: " +
 		// Hardware.leftDriver.getDirectionDegrees());
 		// System.out.println("Twist: " + Hardware.leftDriver.getTwist());
-
+		//
 		// System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
+		// System.out.println(" Left Joystick Magnitude: " +
+		// Hardware.leftDriver.getMagnitude());
 		// System.out.println("Right Joystick: " + Hardware.rightDriver.getY());
 		// System.out.println("Left Operator: " + Hardware.leftOperator.getY());
 		// System.out.println("Right Operator: " +
