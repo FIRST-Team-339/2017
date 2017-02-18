@@ -73,7 +73,7 @@ public static void init ()
     // Servo init
     // ---------------------------------------
     Hardware.cameraServo.setAngle(LOWER_CAMERASERVO_POSITION);
-    Hardware.gearServo.setAngle(HIGHER_GEARSERVO_POSITION);
+    // Hardware.gearServo.setAngle(HIGHER_GEARSERVO_POSITION);
 
     // ----------------------------------------
     // Agitator init
@@ -349,62 +349,89 @@ public static void periodic ()
 
     // Written by Ashley Espeland, has not been tested
     // cameraServo code setting to either the higher or the lower angle position
+
+    // if button 9 equals true and this method had not been called
+    // since the last time the button read false (cameraPositionHasChanged)
     if (Hardware.rightDriver.getRawButton(4) == true
             && cameraPositionHasChanged == false)
         {
+        // set changeCameraServoPosition to true
         changeCameraServoPosition = true;
         }
-
+    // if changeCamerServoPosition equals true
     if (changeCameraServoPosition == true)
         {
+        // if the servo is in the lower position
         if (Hardware.cameraServo
                 .getAngle() == LOWER_CAMERASERVO_POSITION)
             {
+            // then set the servo to the higher position and change
+            // cameraPositionHasChanged to true
             Hardware.cameraServo.setAngle(HIGHER_CAMERASERVO_POSITION);
+            cameraPositionHasChanged = true;
             }
+        // if the cameraServo is in the higher position
         else if (Hardware.cameraServo
                 .getAngle() == HIGHER_CAMERASERVO_POSITION)
             {
+            // set the servo to the lower position and change
+            // cameraPositionHasChanged to true
             Hardware.cameraServo.setAngle(LOWER_CAMERASERVO_POSITION);
+            cameraPositionHasChanged = true;
             }
-        cameraPositionHasChanged = true;
 
         }
-    if (changeGearServoPosition == true
+    // if camera servo position has been changed and the button equals false
+    if (changeCameraServoPosition == true
             && Hardware.leftOperator.getRawButton(4) == false)
         {
+        // set the cameraPositionHasChanged to false to be able to change
+        // the position again when the button is pushed again
         cameraPositionHasChanged = false;
         }
 
 
-    // ------------------------------------------
-    // Gear servo
-    // ------------------------------------------
-    // gearServo switches between the two preset positions
-    if (Hardware.leftOperator.getRawButton(9) == true
-            && gearPositionHasChanged == false)
-        {
-        changeGearServoPosition = true;
-        }
-    if (changeGearServoPosition == true)
-        if (Hardware.gearServo.getAngle() == HIGHER_GEARSERVO_POSITION)
-            {
-            Hardware.gearServo.setAngle(LOWER_GEARSERVO_POSITION);
-            gearPositionHasChanged = true;
-            }
-        else if (Hardware.gearServo
-                .getAngle() == LOWER_GEARSERVO_POSITION)
-            {
-            Hardware.gearServo.setAngle(LOWER_GEARSERVO_POSITION);
-            gearPositionHasChanged = true;
-            }
-
-    if (gearPositionHasChanged == true
-            && Hardware.leftOperator.getRawButton(9))
-
-        {
-        gearPositionHasChanged = false;
-        }
+    // // ------------------------------------------
+    // // Gear servo-commented out because we dont need it anymore GRRRRRRRRR
+    // // ------------------------------------------
+    // // gearServo switches between the two preset positions
+    //
+    // //if button 9 equals true and this method had not been called
+    // //since the last time the button read false (gearPositionHasChanged)
+    // if (Hardware.leftOperator.getRawButton(9) == true
+    // && gearPositionHasChanged == false)
+    // {
+    // //set chageGearServoPosition to true
+    // changeGearServoPosition = true;
+    // }
+    // //if changeGearServoPosition equals true
+    // if (changeGearServoPosition == true)
+    // //if the gearServo is in the higher position
+    // if (Hardware.gearServo.getAngle() == HIGHER_GEARSERVO_POSITION)
+    // {
+    // //set the servo to the lower position and change
+    // //gearPositionHasChanged to true
+    // Hardware.gearServo.setAngle(LOWER_GEARSERVO_POSITION);
+    // gearPositionHasChanged = true;
+    // }
+    // //else if the servo is in the lower position
+    // else if (Hardware.gearServo
+    // .getAngle() == LOWER_GEARSERVO_POSITION)
+    // {
+    // //then set the servo to the higher position and change
+    // //gearPositionHasChanged to true
+    // Hardware.gearServo.setAngle(HIGHER_GEARSERVO_POSITION);
+    // gearPositionHasChanged = true;
+    // }
+    //// if gear servo position has been changed and the button equals false
+    // if (gearPositionHasChanged == true
+    // && Hardware.leftOperator.getRawButton(9) == false)
+    //
+    // {
+    // //set the gearPositionHasChanged to false to be able to change
+    // //the position again when the button is pushed again
+    // gearPositionHasChanged = false;
+    // }
 
 
 } // end
@@ -685,24 +712,21 @@ private final static double CAMERA_ALIGN_CENTER = .478; // Relative
 // TUNEABLES
 // ==========================================
 private final static double LOWER_CAMERASERVO_POSITION = 65;// TODO find
-                                                            // actual
-                                                            // value
-
+                                                            // actual value
 
 private final static double HIGHER_CAMERASERVO_POSITION = 90;// TODO find actual
                                                              // value
 
-private final static double LOWER_GEARSERVO_POSITION = 45; // TODO find actual
-                                                           // value
+// private final static double LOWER_GEARSERVO_POSITION = 45;// TODO find actual
+// value
 
-private final static double HIGHER_GEARSERVO_POSITION = 90;// TODO find
-                                                           // value
-public static boolean gearPositionHasChanged = false;                                                           // actual
-
+// private final static double HIGHER_GEARSERVO_POSITION = 90;// TODO find
+// actual value
+// public static boolean gearPositionHasChanged = false;
 
 public static boolean changeCameraServoPosition = false;
 
-public static boolean changeGearServoPosition = false;
+// public static boolean changeGearServoPosition = false;
 
 public static boolean cameraPositionHasChanged = false;
 
