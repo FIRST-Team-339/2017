@@ -253,11 +253,15 @@ private boolean firstTimeDriveInches = true;
 
 
 /**
+ * Method takes deltas of each side, and if they aren't equal, compensate by
+ * making the other side go faster
+ * 
  * @param inches
  *            How far we want to go
  * @param speed
  *            How fast we want to go
  * @return Whether or not we have finished driving yet
+ * @author Becky Button
  * 
  */
 public boolean driveStraightInches (double inches, double speed)
