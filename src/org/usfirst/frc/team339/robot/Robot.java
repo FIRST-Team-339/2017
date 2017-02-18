@@ -83,7 +83,7 @@ import edu.wpi.first.wpilibj.Relay;
  */
 public class Robot extends IterativeRobot
 {
-boolean testdasboard = true;
+
 // =================================================
 // private data for the class
 // =================================================
@@ -203,7 +203,6 @@ public void disabledInit ()
     // =========================================================
     // User code goes above here
     // =========================================================
-
     // ---------------------------------------
     // done setup - tell the user we are complete
     // setup
@@ -231,11 +230,6 @@ public void disabledPeriodic ()
     // =========================================================
     // User code goes below here
     // =========================================================
-
-    Hardware.leftFrontMotor.set(0);
-    Hardware.rightFrontMotor.set(0);
-    Hardware.leftRearMotor.set(0);
-    Hardware.rightRearMotor.set(0);
 
     // Hardware.leftFrontMotorSafety.feed();
     // Hardware.leftRearMotorSafety.feed();
@@ -269,6 +263,7 @@ public void robotInit ()
     Hardware.leftRearEncoder.reset();
     Hardware.rightFrontEncoder.reset();
     Hardware.rightRearEncoder.reset();
+
     if (Hardware.isRunningOnKilroyXVIII == true)
         {
         Hardware.rightFrontEncoder.setReverseDirection(true);
@@ -367,7 +362,6 @@ public void robotInit ()
     // -------------------------------------
     // USB Camera initialization
     // -------------------------------------
-    Hardware.camForward.setResolution(320, 240);
 
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
@@ -418,7 +412,6 @@ public void teleopInit ()
     // User code goes below here
     // =========================================================
     Teleop.init();
-
     // =========================================================
     // User code goes above here
     // =========================================================
@@ -497,6 +490,7 @@ public void testPeriodic ()
 // TUNEABLES
 // ==========================================
 
+
 /**
  * The percentage we want the motors to run at while we are in first gear
  */
@@ -507,7 +501,7 @@ public static final double FIRST_GEAR = .6;
  */
 public static final double SECOND_GEAR = 1;
 
-public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.069;
+public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.068;
 
 public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVII = .0197;
 

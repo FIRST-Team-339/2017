@@ -847,6 +847,7 @@ public boolean brake (final double lMotorBrakeVoltage,
     // previous measurement, indicating we go backwards...
     //
     // then we're done and we stop the motors.
+
     if (((Math.abs(
             this.leftMotorEncoder
                     .getDistance()) >= (this.brakePreviousDistanceL

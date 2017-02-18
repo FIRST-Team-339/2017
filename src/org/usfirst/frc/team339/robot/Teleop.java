@@ -53,6 +53,7 @@ public class Teleop
  * @author Nathanial Lydick
  * @written Jan 13, 2015
  */
+
 public static void init ()
 {
     // --------------------------------------
@@ -103,6 +104,8 @@ public static void init ()
         Hardware.mecanumDrive
                 .setDeadbandPercentageZone(Hardware.joystickDeadzone);
         Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+
+        // Sets the scaling factor and general ultrasonic stuff
         // Hardware.rightFrontMotorSafety.setExpiration(.5);
         // Hardware.rightRearMotorSafety.setExpiration(.5);
         // Hardware.leftFrontMotorSafety.setExpiration(.5);
@@ -142,17 +145,9 @@ public static void init ()
         // Hardware.mecanumDrive
         // .setDeadbandPercentageZone(Hardware.joystickDeadzone);
         Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-        Hardware.rightUS.setScalingFactor(.13);
-        Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
-        Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
-        Hardware.tankDrive.setGear(1);
         Hardware.autoDrive.setDriveCorrection(.3);
         Hardware.autoDrive.setEncoderSlack(1);
-        // Hardware.mecanumDrive.setDirectionalDeadzone(0.2);
-        }
-
-    Hardware.gimbalMotor
-            .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Absolute);
+        }// TODO
 } // end Init
 
 /**
@@ -170,7 +165,6 @@ public static void periodic ()
         }
     if (firing)
         Hardware.shooter.fire();
-
     // previousFireButton = Hardware.leftDriver.getTrigger();
     //
     // if (fireCount > 0)
@@ -180,7 +174,7 @@ public static void periodic ()
     // fireCount--;
     // }
     // }
-    // if (preparingToFire == false)
+    // else if (preparingToFire == false)
     // Hardware.shooter.stopFlywheelMotor();
     /*
      * System.out.println("Firecount: " + fireCount);
@@ -188,7 +182,7 @@ public static void periodic ()
      * System.out.println( "Flywheel speed: " +
      * Hardware.shooterMotor.getSpeed());
      */
-    // TODO Figure out why the ring light is flickering
+
     if (Hardware.ringlightSwitch.isOnCheckNow())
         {
         Hardware.ringlightRelay.set(Relay.Value.kOn);
@@ -202,6 +196,13 @@ public static void periodic ()
     // Print out any data we want from the hardware elements.
     printStatements();
 
+    if (Hardware.rightOperator.getRawButton(2))
+        Hardware.intake.startIntake();
+    else if (Hardware.rightOperator.getRawButton(3))
+        Hardware.intake.reverseIntake();
+    else
+        Hardware.intake.stopIntake();
+
     // =================================================================
     // Driving code
     // =================================================================
@@ -214,7 +215,7 @@ public static void periodic ()
     else
         rotationValue = 0.0;
 
-    if (!isAligning && !isStrafingToTarget)// Main driving function
+    if (!isAligning && !isStrafingToTarget)  // Main driving function
         {
         if (Hardware.isUsingMecanum == true)
             Hardware.mecanumDrive.drive(
@@ -224,6 +225,13 @@ public static void periodic ()
         else
             Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
                     Hardware.leftDriver.getY());
+        }
+
+    if (Hardware.leftDriver.getRawButton(9))
+        {
+
+        Hardware.autoDrive.driveStraightInches(12, .5);
+
         }
 
     // =================================================================
@@ -264,6 +272,7 @@ public static void periodic ()
         Hardware.shooter.loadBalls();
         Hardware.shooterMotor.set(1000);
         }
+
     else if (Hardware.rightOperator.getRawButton(9))
         Hardware.shooterMotor.set(1000);
     else
@@ -296,6 +305,8 @@ public static void periodic ()
         if (Hardware.cameraServo
                 .getAngle() == LOWER_CAMERASERVO_POSITION)
             {
+            // then set the servo to the higher position and change
+            // cameraPositionHasChanged to true
             Hardware.cameraServo
                     .setAngle(HIGHER_CAMERASERVO_POSITION);
             cameraPositionHasChanged = true;
@@ -323,10 +334,9 @@ public static void periodic ()
             .takeSinglePicture(Hardware.leftOperator.getRawButton(8)
                     || Hardware.rightOperator.getRawButton(8)
                     || Hardware.leftOperator.getRawButton(11));
+
 } // end
   // Periodic
-
-// private static boolean isSpeedTesting = false;
 
 private static Drive.AlignReturnType alignValue = Drive.AlignReturnType.MISALIGNED;
 
@@ -395,8 +405,7 @@ public static void printStatements ()
     // prints value of the CAN controllers
     // =================================
     // Hardware.CAN.printAllPDPChannels();
-    System.out.println(
-            "Gimbal Encoder: " + Hardware.shooter.getBearing());
+
     // =================================
     // Relay
     // prints value of the relay states
@@ -483,18 +492,20 @@ public static void printStatements ()
     // Compressor
     // prints information on the compressor
     // ---------------------------------
-    // There isn't one
+    // There isn't one at the moment
+
     // ---------------------------------
     // Solenoids
     // prints the state of solenoids
     // ---------------------------------
-    // There are none
+    // There are none at the moment
+    // That seems familiar...
+
     // =================================
     // Analogs
     // =================================
     //
-    // We don't want the print statements to flood everything and go
-    // ahhhhhhhh
+    // We don't want the print statements to flood everything and go ahhhhhhhh
     //
     // if (Hardware.rightOperator.getRawButton(11))
     // System.out.println("LeftUS = "
@@ -537,8 +548,12 @@ public static void printStatements ()
     // Joysticks
     // information about the joysticks
     // ---------------------------------
-    // System.out.println("Left Joystick: " +
-    // Hardware.leftDriver.getDirectionDegrees());
+    // System.out.println("Right Joystick: " +
+    // Hardware.rightDriver.getDirectionDegrees());
+    // System.out.println("Left Operator: " +
+    // Hardware.leftOperator.getDirectionDegrees());
+    // System.out.println("Right Operator: " +
+    // Hardware.rightOperator.getDirectionDegrees());
     // System.out.println("Twist: " + Hardware.leftDriver.getTwist());
     // =================================
     // Driver station
@@ -563,19 +578,19 @@ public static void printStatements ()
     // what time does the timer have now
     // ---------------------------------
 } // end printStatements
+
 /*
  * =============================================== Constants
  * ===============================================
  */
-
 private final static double CAMERA_ALIGN_SPEED = .5;
 
 //// The dead zone for the aligning TODO
-private final static double CAMERA_ALIGN_DEADBAND = 10.0                                                                                                                                   // +/-
-                                                                                                                                                                                           // Pixels
+private final static double CAMERA_ALIGN_DEADBAND = 10.0 // +/- Pixels
         / Hardware.axisCamera.getHorizontalResolution();
 
-private final static double CAMERA_ALIGN_CENTER = .478;                                                                                                                         // Relative
+private final static double CAMERA_ALIGN_CENTER = .478; // Relative
+                                                        // coordinates
 
 // ==========================================
 // TUNEABLES
@@ -601,4 +616,5 @@ public static boolean cameraPositionHasChanged = false;
 public static boolean cancelAgitator = false;
 
 public static boolean hasCanceledAgitator = false;
+
 } // end class

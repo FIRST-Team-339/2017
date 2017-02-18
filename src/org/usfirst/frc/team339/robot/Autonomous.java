@@ -31,7 +31,6 @@
 // ====================================================================
 package org.usfirst.frc.team339.robot;
 
-import com.ctre.CANTalon.FeedbackDevice;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Drive.AlignReturnType;
@@ -82,27 +81,13 @@ private static enum MainState
      */
     DELAY_BEFORE_START,
     /**
-     * Beginning state of our acceleration in our drive up to the airship.
+     * Accelerates so we don't jerk our encoders.
      */
-    DRIVE_FORWARD_TO_CENTER_SLOW,
+    ACCELERATE,
     /**
-     * Medium state of our acceleration in our drive up to the airship.
-     */
-    DRIVE_FORWARD_TO_CENTER_MED,
-    /**
-     * We're done accelerating, just drive!
+     * Drives up the the gear.
      */
     DRIVE_FORWARD_TO_CENTER,
-    /**
-     * Drive to the side of the airship slowly. See
-     * DRIVE_FORWARD_TO_CENTER_SLOW.
-     */
-    DRIVE_FORWARD_TO_SIDES_SLOW,
-    /**
-     * Drive to the side of the airship at medium speed.See
-     * DRIVE_FORWARD_TO_CENTER_MED.
-     */
-    DRIVE_FORWARD_TO_SIDES_MED,
     /**
      * Drive to the side of the airship at normal speed. See
      * DRIVE_FORWARD_TO_CENTER.
@@ -202,16 +187,16 @@ private static Drive.AlignReturnType cameraState = Drive.AlignReturnType.NO_BLOB
 // TUNEABLES
 // ==========================================
 
-private static final double ALIGN_CORRECT_SPEED = .2;
+private static final double ALIGN_CORRECT_VAR = 45;
 
-private static final double ALIGN_DRIVE_SPEED = .3;
+private static final double ALIGN_DRIVE_SPEED = .4;
 
 private static final double ALIGN_DEADBAND = 10 // +/- pixels
         / Hardware.axisCamera.getHorizontalResolution();
 
 private static final double ALIGN_ACCEPTED_CENTER = .5; // Relative coordinates
 
-private static final int ALIGN_DISTANCE_FROM_GOAL = 20;
+private static final int ALIGN_DISTANCE_FROM_GOAL = 10;
 
 /**
  * User-Initialization code for autonomous mode should go here. Will be
@@ -228,11 +213,9 @@ public static void init ()
     Hardware.rightUS.setScalingFactor(.13);
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
+    Hardware.mecanumDrive.setFirstGearPercentage(1.0);
 
-    Hardware.gimbalMotor
-            .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-    Hardware.gimbalMotor.setEncPosition(0);
-
+    Hardware.mecanumDrive.setGear(1);
     if (Hardware.isRunningOnKilroyXVIII)
         {
         robotSpeedScalar = KILROY_XVIII_DEFAULT_SPEED;
@@ -316,6 +299,8 @@ public static void periodic ()
 
 private static MainState currentState = MainState.INIT;
 
+private static MainState postAccelerateState = MainState.DONE;
+
 private static AutoProgram autoPath = AutoProgram.INIT;
 
 private static double delayTime = 5;
@@ -333,6 +318,9 @@ private static boolean placeCenterGearPath ()
     System.out.println("CurrentState = " + currentState);
     System.out.println("Right US: "
             + Hardware.rightUS.getDistanceFromNearestBumper());
+    System.out.println(Hardware.autoDrive.getAveragedEncoderValues());
+    System.out.println(
+            "Gear " + Hardware.mecanumDrive.getCurrentGearPercentage());
     switch (currentState)
         {
         case INIT:
@@ -351,34 +339,22 @@ private static boolean placeCenterGearPath ()
             if (Hardware.autoStateTimer.get() >= delayTime)
                 {
                 Hardware.axisCamera.saveImagesSafely();
-                currentState = MainState.DRIVE_FORWARD_TO_CENTER_SLOW;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                }
-            break;
-        case DRIVE_FORWARD_TO_CENTER_SLOW:
-            // drive at our slow speed. wait a certain time. Could also check
-            // distance for safety
-            Hardware.mecanumDrive.drive(accelerationSpeeds[0], 0, 0);// TODO
-                                                                     // magic
-            // number
-            if (Hardware.autoStateTimer.get() >= .3)
-                {
-                currentState = MainState.DRIVE_FORWARD_TO_CENTER_MED;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                }
-            break;
-        case DRIVE_FORWARD_TO_CENTER_MED:
-            // drive at our medium speed. wait a certain time to move on.
-            Hardware.mecanumDrive.drive(accelerationSpeeds[1], 0, 0);
-            if (Hardware.autoStateTimer.get() >= .3)
-                {
-                currentState = MainState.DRIVE_FORWARD_TO_CENTER;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                }
+                currentState = MainState.ACCELERATE;
+                postAccelerateState = MainState.DRIVE_FORWARD_TO_CENTER;
 
+                Hardware.autoStateTimer.reset();
+                Hardware.autoStateTimer.start();
+                }
+            break;
+        case ACCELERATE:
+            // TODO magic number
+            cameraState = AlignReturnType.WAITING;
+            if (Hardware.autoDrive.accelerate(getRealSpeed(.2),
+                    .1))
+                {
+                currentState = postAccelerateState;
+                }
+            Hardware.rightUS.getDistanceFromNearestBumper();
             break;
         case DRIVE_FORWARD_TO_CENTER:
             // If we see blobs, hand over control to camera, otherwise, go
@@ -398,39 +374,35 @@ private static boolean placeCenterGearPath ()
             // transmission,
             // we will strafe. If it uses a four wheel transmission, it will
             // wiggle wiggle on it's way to the peg
+            System.out.println("right front motor: "
+                    + Hardware.rightFrontMotor.getSpeed());
+            System.out.println("left front motor: "
+                    + Hardware.leftFrontMotor.getSpeed());
+
             cameraState = Hardware.autoDrive.strafeToGear(
                     getRealSpeed(ALIGN_DRIVE_SPEED),
-                    getRealSpeed(ALIGN_CORRECT_SPEED),// TODO decide whether to
-                                                      // keep the getRealSpeed
-                                                      // here.
+                    getRealSpeed(ALIGN_CORRECT_VAR),// TODO decide whether to
+                    // keep the getRealSpeed
+                    // here.
                     ALIGN_DEADBAND, ALIGN_ACCEPTED_CENTER,
                     ALIGN_DISTANCE_FROM_GOAL);
-            System.out.println(
-                    Hardware.rightUS.getDistanceFromNearestBumper());
+
+            System.out.println("strafeToGear state: " + cameraState);
+
 
             if (cameraState == AlignReturnType.NO_BLOBS)
+                {
                 // If we don't see anything, just drive forwards till we are
                 // close enough
                 currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
-            else if (cameraState == AlignReturnType.CLOSE_ENOUGH)
+                }
+            if (cameraState == AlignReturnType.CLOSE_ENOUGH)
+                {
                 // If we are close enough to the wall, stop.
                 currentState = MainState.WAIT_FOR_GEAR_EXODUS;
-            else
-                currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
-
-            break;
-        case DRIVE_CAREFULLY_TO_PEG:
-
-            if (Hardware.rightUS
-                    .getDistanceFromNearestBumper() >= ALIGN_DISTANCE_FROM_GOAL)
-                {
-                Hardware.autoDrive.drive(accelerationSpeeds[3], 0);
                 }
-            else
-                {
-                // desired distance from wall when we start
-                currentState = MainState.WAIT_FOR_GEAR_EXODUS;
-                }
+
+
             break;
         case WAIT_FOR_GEAR_EXODUS:
             Hardware.ringlightRelay.set(Value.kOff);
@@ -494,51 +466,20 @@ private static boolean rightSidePath ()
             if (Hardware.autoStateTimer.get() >= delayTime)
                 {
                 Hardware.axisCamera.saveImagesSafely();
-                currentState = MainState.DRIVE_FORWARD_TO_CENTER_SLOW;
+                currentState = MainState.ACCELERATE;
+                postAccelerateState = MainState.DRIVE_FORWARD_TO_SIDES;
                 Hardware.autoStateTimer.reset();
                 Hardware.autoStateTimer.start();
                 }
             break;
-        case DRIVE_FORWARD_TO_SIDES_SLOW:
-            if (Hardware.autoStateTimer.get() >= .3)
+        case ACCELERATE:
+            System.out.println("right front motor accelerate: "
+                    + Hardware.rightFrontMotor.getSpeed());
+            System.out.println("left front motor accelerate: "
+                    + Hardware.leftFrontMotor.getSpeed());
+            if (Hardware.autoDrive.accelerate(.4, .3))// TODO magic num!
                 {
-                // TODO use the same number as driveStraight
-                Hardware.autoDrive.drive(getRealSpeed(.25), 0, 0);
-                }
-            // TODO put in array or something
-            else if (Hardware.autoDrive
-                    .getAveragedEncoderValues() >= 95.5)
-                {
-                currentState = MainState.TURN_TO_GEAR_PEG;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                }
-            else
-                {
-                currentState = MainState.DRIVE_FORWARD_TO_SIDES_MED;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                }
-            break;
-        case DRIVE_FORWARD_TO_SIDES_MED:
-            if (Hardware.autoStateTimer.get() >= .3)
-                {
-                // TODO use the same number as driveStraight
-                Hardware.autoDrive.drive(getRealSpeed(.4), 0, 0);
-                }
-            // TODO put in array or something
-            else if (Hardware.autoDrive
-                    .getAveragedEncoderValues() >= 95.5)
-                {
-                currentState = MainState.TURN_TO_GEAR_PEG;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                }
-            else
-                {
-                currentState = MainState.DRIVE_FORWARD_TO_SIDES;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
+                currentState = postAccelerateState;
                 }
             break;
         case DRIVE_FORWARD_TO_SIDES:
@@ -582,6 +523,7 @@ private static boolean rightSidePath ()
                 }
             break;
         case DRIVE_TO_GEAR_WITH_CAMERA:
+            System.out.println("in second drive to gear with camera");
             Hardware.imageProcessor.processImage();
             // If at any time we lose our target blob number
             if (Hardware.imageProcessor.getNthSizeBlob(1) == null)
@@ -593,7 +535,7 @@ private static boolean rightSidePath ()
                 {
                 currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
                 // TODO magic numbers and need to be tuned.
-                Hardware.autoDrive.alignToGear(0.0, .4, .1);
+                Hardware.autoDrive.alignToGear(0.0, .5, .1);
                 }
             // TODO tune so we end here
             if (Hardware.rightUS.getDistanceFromNearestBumper() < 8)
@@ -773,51 +715,16 @@ private static boolean leftSidePath ()
             if (Hardware.autoStateTimer.get() >= delayTime)
                 {
                 Hardware.axisCamera.saveImagesSafely();
-                currentState = MainState.DRIVE_FORWARD_TO_CENTER_SLOW;
+                currentState = MainState.ACCELERATE;
+                postAccelerateState = MainState.DRIVE_FORWARD_TO_SIDES;
                 Hardware.autoStateTimer.reset();
                 Hardware.autoStateTimer.start();
                 }
             break;
-        case DRIVE_FORWARD_TO_SIDES_SLOW:
-            if (Hardware.autoStateTimer.get() >= .3)
+        case ACCELERATE:
+            if (Hardware.autoDrive.accelerate(.5, .5))// TODO magic num!
                 {
-                // TODO use the same number as driveStraight
-                Hardware.autoDrive.drive(getRealSpeed(.25), 0, 0);
-                }
-            // TODO put in array or something
-            else if (Hardware.autoDrive
-                    .getAveragedEncoderValues() >= 95.5)
-                {
-                currentState = MainState.TURN_TO_GEAR_PEG;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                }
-            else
-                {
-                currentState = MainState.DRIVE_FORWARD_TO_SIDES_MED;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                }
-            break;
-        case DRIVE_FORWARD_TO_SIDES_MED:
-            if (Hardware.autoStateTimer.get() >= .3)
-                {
-                // TODO use the same number as driveStraight
-                Hardware.autoDrive.drive(getRealSpeed(.4), 0, 0);
-                }
-            // TODO put in array or something
-            else if (Hardware.autoDrive
-                    .getAveragedEncoderValues() >= 95.5)
-                {
-                currentState = MainState.TURN_TO_GEAR_PEG;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                }
-            else
-                {
-                currentState = MainState.DRIVE_FORWARD_TO_SIDES;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
+                currentState = postAccelerateState;
                 }
             break;
         case DRIVE_FORWARD_TO_SIDES:
@@ -872,13 +779,12 @@ private static boolean leftSidePath ()
                 {
                 currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
                 // TODO magic numbers and need to be tuned.
-                Hardware.autoDrive.alignToGear(0.0, .4, .1);
-                }
-            // TODO tune so we end here
-            if (Hardware.rightUS.getDistanceFromNearestBumper() < 8)
-                {
-                Hardware.autoDrive.drive(0.0, 0.0, 0.0);
-                currentState = MainState.WAIT_FOR_GEAR_EXODUS;
+                if (Hardware.autoDrive.strafeToGear(.4, 5, .1, 0.0,
+                        20) == AlignReturnType.CLOSE_ENOUGH)
+                    {
+                    Hardware.autoDrive.drive(0.0, 0.0, 0.0);
+                    currentState = MainState.WAIT_FOR_GEAR_EXODUS;
+                    }
                 }
             break;
         case DRIVE_CAREFULLY_TO_PEG:
@@ -1026,6 +932,7 @@ private static final double[] accelerationSpeeds =
     {
             getRealSpeed(.2),
 
+
             getRealSpeed(.4),
 
             getRealSpeed(.5)
@@ -1063,5 +970,7 @@ private static double robotSpeedScalar = 1.0;
 private static final double KILROY_XVIII_DEFAULT_SPEED = 1.0;
 
 private static final double KILROY_XVII_DEFAULT_SPEED = .7;
+
+
 
 } // end class
