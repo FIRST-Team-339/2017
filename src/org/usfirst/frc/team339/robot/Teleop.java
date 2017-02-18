@@ -319,8 +319,8 @@ public static void periodic ()
     else
         rotationValue = 0.0;
 
-    if (!isAligning && !isStrafingToTarget)// TODO remove isAccing
-                                           // stuff
+    if (!isAligning && !isStrafingToTarget)// TODO remove isAccing stuff
+
         {
         if (Hardware.isUsingMecanum == true)
             Hardware.mecanumDrive.drive(
