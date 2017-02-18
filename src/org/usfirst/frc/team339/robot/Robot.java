@@ -361,10 +361,6 @@ public void robotInit ()
     // -------------------------------------
     // USB Camera initialization
     // -------------------------------------
-<<<<<<< HEAD
-=======
-    // Hardware.camForward.setResolution(320, 240); TODO UNDO!!!
->>>>>>> refs/heads/master
 
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);

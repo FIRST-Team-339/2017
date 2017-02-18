@@ -261,17 +261,17 @@ public static void periodic ()
         if (isTurningGimbal)
             {
             turnValue = Hardware.shooter.turnToBearing(0);
-            if (turnValue == turnReturn.SUCCESS)
+            if (turnValue == Shooter.turnReturn.SUCCESS)
                 {
                 System.out.println("We are at 0!");
                 isTurningGimbal = false;
                 }
-            else if (turnValue == turnReturn.TOO_FAR)
+            else if (turnValue == Shooter.turnReturn.TOO_FAR)
                 {
                 System.out.println("We are too far!");
                 isTurningGimbal = true;
                 }
-            else if (turnValue == turnReturn.WORKING)
+            else if (turnValue == Shooter.turnReturn.WORKING)
                 {
                 System.out.println("We are turning!");
                 isTurningGimbal = true;
