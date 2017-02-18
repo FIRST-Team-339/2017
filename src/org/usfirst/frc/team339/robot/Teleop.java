@@ -215,8 +215,6 @@ public static void periodic ()
     // Print out any data we want from the hardware elements.
     printStatements();
 
-    // TESTING CODE:
-
     if (Hardware.rightOperator.getRawButton(2))
         Hardware.intake.startIntake();
     else if (Hardware.rightOperator.getRawButton(3))
@@ -228,6 +226,7 @@ public static void periodic ()
     // Driving code
     // =================================================================
 
+    // rotate only when we are pulling the trigger
     if (Hardware.leftDriver.getTrigger())
         {
         rotationValue = Hardware.leftDriver.getTwist();
@@ -252,13 +251,6 @@ public static void periodic ()
 
     // OPERATOR CONTROLS
     // =================================================================
-
-    if (Hardware.leftOperator.getRawButton(2)
-            && Math.abs(Hardware.leftOperator.getX()) > .2)
-        Hardware.shooter.turnGimbalSlow(
-                Hardware.leftOperator.getX() > 0 ? 1 : -1);
-    else
-        Hardware.shooter.stopGimbal();
 
     if (Hardware.rightOperator.getRawButton(2))
         Hardware.intake.startIntake();
@@ -294,6 +286,39 @@ public static void periodic ()
             }
         }
 
+    if (Hardware.leftOperator.getRawButton(2)
+            && Math.abs(Hardware.leftOperator.getX()) > .2)
+        Hardware.shooter
+                .turnGimbalSlow(
+                        Hardware.leftOperator.getX() > 0 ? -1 : 1);
+    else
+        Hardware.shooter.stopGimbal();
+
+    if (Hardware.rightOperator.getRawButton(11))
+        {
+        if (Hardware.rightOperator.getRawButton(10))
+            isTurningGimbal = true;
+
+        if (isTurningGimbal)
+            {
+            turnValue = Hardware.shooter.turnToBearing(0);
+            if (turnValue == turnReturn.SUCCESS)
+                {
+                System.out.println("We are at 0!");
+                isTurningGimbal = false;
+                }
+            else if (turnValue == turnReturn.TOO_FAR)
+                {
+                System.out.println("We are too far!");
+                isTurningGimbal = true;
+                }
+            else if (turnValue == turnReturn.WORKING)
+                {
+                System.out.println("We are turning!");
+                isTurningGimbal = true;
+                }
+            }
+        }
     // =================================================================
     // CAMERA CODE
     // =================================================================
@@ -329,7 +354,8 @@ public static void periodic ()
             {
             // then set the servo to the higher position and change
             // cameraPositionHasChanged to true
-            Hardware.cameraServo.setAngle(HIGHER_CAMERASERVO_POSITION);
+            Hardware.cameraServo
+                    .setAngle(HIGHER_CAMERASERVO_POSITION);
             cameraPositionHasChanged = true;
             }
         // if the cameraServo is in the higher position
@@ -338,7 +364,8 @@ public static void periodic ()
             {
             // set the servo to the lower position and change
             // cameraPositionHasChanged to true
-            Hardware.cameraServo.setAngle(LOWER_CAMERASERVO_POSITION);
+            Hardware.cameraServo
+                    .setAngle(LOWER_CAMERASERVO_POSITION);
             cameraPositionHasChanged = true;
             }
 
@@ -351,37 +378,43 @@ public static void periodic ()
         // the position again when the button is pushed again
         cameraPositionHasChanged = false;
         }
-
-
+    Hardware.axisCamera
+            .takeSinglePicture(Hardware.leftOperator.getRawButton(8)
+                    || Hardware.rightOperator.getRawButton(8)
+                    || Hardware.leftOperator.getRawButton(11));
 
 } // end
   // Periodic
 
 // private static boolean isSpeedTesting = false;
 
-private static double rotationValue = 0.0;
+// private static boolean isSpeedTesting = false;
 
 private static Drive.AlignReturnType alignValue = Drive.AlignReturnType.MISALIGNED;
 
+
+
 private static Shooter.turnReturn turnValue = Shooter.turnReturn.SUCCESS;
+
+private static double rotationValue = 0.0;
 
 private static boolean isTurningGimbal = false;
 
-private static boolean isAligning = false;
-
-private static boolean isStrafingToTarget = false;
-
-private static double movementSpeed = 0.3;
-
-private static boolean hasPressedFour = false;
-
 private static boolean hasPressedFive = false;
+
+private static boolean isAligning = false;
 
 private static boolean previousFireButton = false;
 
+private static boolean isStrafingToTarget = false;
+
 private static boolean preparingToFire = false;
 
+private static double movementSpeed = 0.3;
+
 private static boolean firing = false;
+
+private static boolean hasPressedFour = false;
 
 /**
  * stores print statements for future use in the print "bank", statements
@@ -422,10 +455,10 @@ public static void printStatements ()
         System.out.println(
                 "Elevator Motor: " + Hardware.elevatorMotor.get());
         }
-    // if (Hardware.rightOperator.getRawButton(11))
-    // {
+    // if (Hardware.rightOperator.getRawButton(11)) {
     // Hardware.elevatorMotor.setSpeed(1);
-    // System.out.println("Elevator Motor: " + Hardware.elevatorMotor.get());
+    // System.out.println("Elevator Motor: " +
+    // Hardware.elevatorMotor.get());
     // }
     // System.out.println("Turret Spark: " + Hardware.gimbalMotor.get());
 
@@ -468,8 +501,8 @@ public static void printStatements ()
     // System.out.println(
     // "Path Selector: " + Hardware.pathSelector.getPosition());
 
-    // System.out.println("Right UltraSonic distance from bumper: " +
-    // Hardware.rightUS.getDistanceFromNearestBumper());
+    // System.out.println("Right UltraSonic distance from bumper: "
+    // + Hardware.rightUS.getDistanceFromNearestBumper());
     // ---------------------------------
     // Encoders
     // prints the distance from the encoders
@@ -491,7 +524,22 @@ public static void printStatements ()
     // Hardware.leftRearEncoder.get());
     // System.out.println("Left Rear Encoder Distance: " +
     // Hardware.autoDrive.getLeftFrontEncoderDistance());
-
+    // System.out.println("Right Front Encoder: " +
+    // Hardware.rightFrontEncoder.get());
+    // System.out.println("Right Front Encoder Distance: " +
+    // Hardware.autoDrive.getRightRearEncoderDistance());
+    // System.out.println("Right Rear Encoder: " +
+    // Hardware.rightRearEncoder.get());
+    // System.out.println("Right Rear Encoder Distance: " +
+    // Hardware.autoDrive.getRightRearEncoderDistance());
+    // System.out.println("Left Front Encoder: " +
+    // Hardware.leftFrontEncoder.get());
+    // System.out.println("Left Front Encoder Distance: " +
+    // Hardware.autoDrive.getLeftFrontEncoderDistance());
+    // System.out.println("Left Rear Encoder: " +
+    // Hardware.leftRearEncoder.get());
+    // System.out.println("Left Rear Encoder Distance: " +
+    // Hardware.autoDrive.getLeftFrontEncoderDistance());
     // ---------------------------------
     // Red Light/IR Sensors
     // prints the state of the sensor
@@ -575,10 +623,17 @@ public static void printStatements ()
     // System.out.println("Left Joystick: " +
     // Hardware.leftDriver.getDirectionDegrees());
     // System.out.println("Twist: " + Hardware.leftDriver.getTwist());
-    //
+    // =================================
+    // Driver station
+    // =================================
+    // ---------------------------------
+    // Joysticks
+    // information about the joysticks
+    // ---------------------------------
+    // System.out.println("Left Joystick: " +
+    // Hardware.leftDriver.getDirectionDegrees());
+    // System.out.println("Twist: " + Hardware.leftDriver.getTwist());
     // System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
-    // System.out.println(" Left Joystick Magnitude: " +
-    // Hardware.leftDriver.getMagnitude());
     // System.out.println("Right Joystick: " + Hardware.rightDriver.getY());
     // System.out.println("Left Operator: " + Hardware.leftOperator.getY());
     // System.out.println("Right Operator: " +
@@ -601,11 +656,12 @@ public static void printStatements ()
 private final static double CAMERA_ALIGN_SPEED = .5;
 
 //// The dead zone for the aligning TODO
-private final static double CAMERA_ALIGN_DEADBAND = 10.0 // +/- Pixels
+private final static double CAMERA_ALIGN_DEADBAND = 10.0                                                                                                                                   // +/-
+                                                                                                                                                                                           // Pixels
         / Hardware.axisCamera.getHorizontalResolution();
 
 private final static double CAMERA_ALIGN_CENTER = .478; // Relative
-                                                        // coordinates
+
 
 // ==========================================
 // TUNEABLES
@@ -614,6 +670,8 @@ private final static double LOWER_CAMERASERVO_POSITION = 65;// TODO find
                                                             // actual
 
 private final static double HIGHER_CAMERASERVO_POSITION = 90;// TODO find
+// actual value
+// public static boolean gearPositionHasChanged = false;
 
 public static boolean changeCameraServoPosition = false;
 
