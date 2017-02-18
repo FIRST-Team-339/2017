@@ -158,6 +158,7 @@ public static void init ()
 
     isAligning = false;
     isStrafingToTarget = false;
+
 } // end Init
 
 /**
@@ -217,7 +218,7 @@ public static void periodic ()
 
 
     // TODO Figure out why the ring light is flickering
-    if (Hardware.ringlightSwitch.isOnCheckNow())
+    if (Hardware.rightOperator.getRawButton(9))
         {
         Hardware.ringlightRelay.set(Relay.Value.kOn);
         }
@@ -252,20 +253,26 @@ public static void periodic ()
 
     if (!isAligning && !isStrafingToTarget)
         if (Hardware.isUsingMecanum == true)
+            {
             Hardware.mecanumDrive.drive(
                     Hardware.leftDriver.getMagnitude(),
                     Hardware.leftDriver.getDirectionDegrees(),
                     rotationValue);
+
+            }
         else
+            {
             Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
                     Hardware.leftDriver.getY());
+            }
 
-
-    if (Hardware.leftDriver.getRawButton(9) == true)
+    if (Hardware.leftDriver.getRawButton(9))
         {
-        // Hardware.autoDrive.brake(.1, .1);
-        Hardware.autoDrive.stopMovement();
+
+        Hardware.autoDrive.driveStraightInches(12, .5);
+
         }
+
     // =================================================================
 
     // OPERATOR CONTROLS
@@ -740,5 +747,6 @@ public static boolean cameraPositionHasChanged = false;
 public static boolean cancelAgitator = false;
 
 public static boolean hasCanceledAgitator = false;
+
 
 } // end class
