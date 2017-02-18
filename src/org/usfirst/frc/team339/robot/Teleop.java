@@ -331,7 +331,7 @@ private static boolean firing = false;
  * statement, "deposit" the statement in the correct "bank"
  * do not "withdraw" statements, unless directed to.
  * 
- * NOTE: Keep the groupings below, which coorespond in number and
+ * NOTE: Keep the groupings below, which correspond in number and
  * order as the hardware declarations in the HARDWARE class
  * 
  * @author Ashley Espeland
@@ -347,6 +347,7 @@ public static void printStatements ()
     // Motor controllers
     // prints value of the motors
     // =================================
+
     // System.out.println("Right Front Motor Controller: "
     // + Hardware.rightFrontMotor.get());
     // System.out.println("Left Front Motor Controller: " +
@@ -356,8 +357,7 @@ public static void printStatements ()
     // System.out.println("Left Rear Motor Controller: " +
     // Hardware.leftRearMotor.get());
 
-    // System.out
-    // .println("Flywheel Motor: " + Hardware.shooterMotor.get());
+    // System.out.println("Flywheel Motor: " + Hardware.shooterMotor.get());
     //
     // System.out.println("Intake Motor: " + Hardware.intakeMotor.get());
     if (Hardware.rightOperator.getRawButton(11))
@@ -400,8 +400,8 @@ public static void printStatements ()
     // System.out.println("Backup or fire: " + Hardware.backupOrFire.isOn());
     // System.out.println("Enable Auto: " + Hardware.enableAutonomous.isOn());
 
-    // System.out.println(
-    // "Path Selector: " + Hardware.pathSelector.getPosition());
+    // System.out.println("Path Selector: " +
+    // Hardware.pathSelector.getPosition());
 
     // System.out.println("Right UltraSonic distance from bumper: "
     // + Hardware.rightUS.getDistanceFromNearestBumper());
@@ -409,21 +409,25 @@ public static void printStatements ()
     // Encoders
     // prints the distance from the encoders
     // ---------------------------------
+
     /*
      * System.out.println("Right Front Encoder: "
      * + Hardware.rightFrontEncoder.get());
-     * System.out.println("Right Front Encoder Distance: "
-     * + Hardware.autoDrive.getRightRearEncoderDistance());
      * System.out.println("Right Rear Encoder: "
      * + Hardware.rightRearEncoder.get());
-     * System.out.println("Right Rear Encoder Distance: "
-     * + Hardware.autoDrive.getRightRearEncoderDistance());
      * System.out.println("Left Front Encoder: "
      * + Hardware.leftFrontEncoder.get());
-     * System.out.println("Left Front Encoder Distance: "
-     * + Hardware.autoDrive.getLeftFrontEncoderDistance());
      * System.out.println("Left Rear Encoder: "
      * + Hardware.leftRearEncoder.get());
+     */
+
+    /*
+     * System.out.println("Right Front Encoder Distance: "
+     * + Hardware.autoDrive.getRightRearEncoderDistance());
+     * System.out.println("Right Rear Encoder Distance: "
+     * + Hardware.autoDrive.getRightRearEncoderDistance());
+     * System.out.println("Left Front Encoder Distance: "
+     * + Hardware.autoDrive.getLeftFrontEncoderDistance());
      * System.out.println("Left Rear Encoder Distance: "
      * + Hardware.autoDrive.getLeftFrontEncoderDistance());
      */
@@ -448,13 +452,14 @@ public static void printStatements ()
     // Compressor
     // prints information on the compressor
     // ---------------------------------
-    // There isn't one
+    // There isn't one at the moment
 
     // ---------------------------------
     // Solenoids
     // prints the state of solenoids
     // ---------------------------------
-    // There are none
+    // There are none at the moment
+    // That seems familiar...
 
     // =================================
     // Analogs
@@ -511,6 +516,12 @@ public static void printStatements ()
     // ---------------------------------
     // System.out.println("Left Joystick: " +
     // Hardware.leftDriver.getDirectionDegrees());
+    // System.out.println("Right Joystick: " +
+    // Hardware.rightDriver.getDirectionDegrees());
+    // System.out.println("Left Operator: " +
+    // Hardware.leftOperator.getDirectionDegrees());
+    // System.out.println("Right Operator: " +
+    // Hardware.rightOperator.getDirectionDegrees());
     // System.out.println("Twist: " + Hardware.leftDriver.getTwist());
 
     // System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
