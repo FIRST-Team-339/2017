@@ -31,13 +31,11 @@
 // ====================================================================
 package org.usfirst.frc.team339.robot;
 
+import com.ctre.CANTalon.FeedbackDevice;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Drive.AlignReturnType;
 import org.usfirst.frc.team339.Utils.Shooter.turnToGoalReturn;
-
-import com.ctre.CANTalon.FeedbackDevice;
-
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Relay.Value;
 
@@ -230,9 +228,10 @@ public static void init ()
     Hardware.rightUS.setScalingFactor(.13);
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
-    
-    Hardware.gimbalMotor.setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-	Hardware.gimbalMotor.setEncPosition(0);
+
+    Hardware.gimbalMotor
+            .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+    Hardware.gimbalMotor.setEncPosition(0);
 
     if (Hardware.isRunningOnKilroyXVIII)
         {
