@@ -288,7 +288,7 @@ public void robotInit ()
         Hardware.rightFrontMotor.setInverted(false);
         Hardware.rightRearMotor.setInverted(false);
         Hardware.leftFrontMotor.setInverted(false);
-        Hardware.leftRearMotor.setInverted(false);
+        Hardware.leftRearMotor.setInverted(true);
         Hardware.intakeMotor.setInverted(true);
         Hardware.mecanumDrive
                 .setDeadbandPercentageZone(Hardware.joystickDeadzone);
