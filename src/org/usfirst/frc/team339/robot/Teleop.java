@@ -34,8 +34,6 @@ package org.usfirst.frc.team339.robot;
 import com.ctre.CANTalon.FeedbackDevice;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
-import org.usfirst.frc.team339.Utils.Shooter;
-import org.usfirst.frc.team339.Utils.Shooter.turnReturn;
 import edu.wpi.first.wpilibj.Relay;
 
 /**
@@ -104,14 +102,14 @@ public static void init ()
         Hardware.intakeMotor.setInverted(true);
         Hardware.mecanumDrive
                 .setDeadbandPercentageZone(Hardware.joystickDeadzone);
-    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+        Hardware.mecanumDrive.setMecanumJoystickReversed(false);
         // Hardware.rightFrontMotorSafety.setExpiration(.5);
         // Hardware.rightRearMotorSafety.setExpiration(.5);
         // Hardware.leftFrontMotorSafety.setExpiration(.5);
         // Hardware.leftRearMotorSafety.setExpiration(1.0);
-    Hardware.rightUS.setScalingFactor(.13);
-    Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
-    Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
+        Hardware.rightUS.setScalingFactor(.13);
+        Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
+        Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
         Hardware.tankDrive.setGear(1);
         Hardware.autoDrive.setDriveCorrection(.3);
         Hardware.autoDrive.setEncoderSlack(1);
@@ -132,9 +130,10 @@ public static void init ()
                 Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
         Hardware.rightFrontEncoder.setDistancePerPulse(
                 Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-        // Hardware.tankDrive.setGearPercentage(1, FIRST_GEAR);
-        // Hardware.tankDrive.setGearPercentage(2, SECOND_GEAR);
-        // Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
+        }
+    // Hardware.tankDrive.setGearPercentage(1, FIRST_GEAR);
+    // Hardware.tankDrive.setGearPercentage(2, SECOND_GEAR);
+    // Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
     // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
     // boolean testchoosers = true;
 
@@ -604,5 +603,7 @@ private final static double CAMERA_ALIGN_CENTER = .478;  // Relative coordinates
 // ==========================================
 // TUNEABLES
 // ==========================================
+private final static double LOWER_CAMERASERVO_POSITION = 65;// TODO find
+// actual
 
 } // end class
