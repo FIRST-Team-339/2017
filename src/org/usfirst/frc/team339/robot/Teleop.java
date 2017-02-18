@@ -31,8 +31,11 @@
 // ====================================================================
 package org.usfirst.frc.team339.robot;
 
+import com.ctre.CANTalon.FeedbackDevice;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
+import org.usfirst.frc.team339.Utils.Shooter;
+import org.usfirst.frc.team339.Utils.Shooter.turnReturn;
 import edu.wpi.first.wpilibj.Relay;
 
 /**
@@ -51,7 +54,6 @@ public class Teleop
  * @author Nathanial Lydick
  * @written Jan 13, 2015
  */
-int control = 1;
 
 public static void init ()
 {
@@ -70,23 +72,69 @@ public static void init ()
     Hardware.rightFrontMotor.set(0.0);
     Hardware.leftFrontMotor.set(0.0);
 
+    // ---------------------------------------
+    // Servo init
+    // ---------------------------------------
+    Hardware.cameraServo.setAngle(LOWER_CAMERASERVO_POSITION);
 
-    // Hardware.rightFrontMotor.setInverted(true); // TODO takeout
-    // Hardware.rightRearMotor.setInverted(true);
-    // Hardware.leftFrontMotor.setInverted(true);
-    // Hardware.leftRearMotor.setInverted(true);
+    Hardware.gimbalMotor
+            .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+    Hardware.gimbalMotor.setEncPosition(0);
+    if (Hardware.isRunningOnKilroyXVIII == true)
+        {
+        Hardware.rightFrontEncoder.setReverseDirection(true);
+        Hardware.rightRearEncoder.setReverseDirection(false);
+        Hardware.leftFrontEncoder.setReverseDirection(true);
+        Hardware.leftRearEncoder.setReverseDirection(false);
+        Hardware.rightRearEncoder.setDistancePerPulse(
+                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
+        Hardware.leftRearEncoder.setDistancePerPulse(
+                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
+        Hardware.rightFrontEncoder.setDistancePerPulse(
+                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
+        Hardware.leftFrontEncoder.setDistancePerPulse(
+                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
+        Hardware.tankDrive.setGearPercentage(1, Robot.FIRST_GEAR);
+        Hardware.tankDrive.setGearPercentage(2, Robot.SECOND_GEAR);
+        Hardware.mecanumDrive.setFirstGearPercentage(Robot.FIRST_GEAR);
+        Hardware.rightFrontMotor.setInverted(false);
+        Hardware.rightRearMotor.setInverted(false);
+        Hardware.leftFrontMotor.setInverted(false);
+        Hardware.leftRearMotor.setInverted(true);
+        Hardware.intakeMotor.setInverted(true);
+        Hardware.mecanumDrive
+                .setDeadbandPercentageZone(Hardware.joystickDeadzone);
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-    // Hardware.tankDrive.setGear(1);
-    // Hardware.leftUS.setScalingFactor(.13);
-    // Hardware.leftUS.setOffsetDistanceFromNearestBummper(0);
-    // Sets the scaling factor and general ultrasonic stuff
+        // Hardware.rightFrontMotorSafety.setExpiration(.5);
+        // Hardware.rightRearMotorSafety.setExpiration(.5);
+        // Hardware.leftFrontMotorSafety.setExpiration(.5);
+        // Hardware.leftRearMotorSafety.setExpiration(1.0);
     Hardware.rightUS.setScalingFactor(.13);
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
-    // Hardware.leftUS.setNumberOfItemsToCheckBackwardForValidity(1);
-    // Hardware.LeftUS.setConfidenceCalculationsOn(false);
-    // Hardware.RightUS.setConfidenceCalculationsOn(false);
-
+        Hardware.tankDrive.setGear(1);
+        Hardware.autoDrive.setDriveCorrection(.3);
+        Hardware.autoDrive.setEncoderSlack(1);
+        // Hardware.mecanumDrive.setDirectionalDeadzone(0.2);
+        // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
+        }
+    else
+        {
+        // Hardware.rightFrontEncoder.setReverseDirection(true);
+        // Hardware.rightRearEncoder.setReverseDirection(false);
+        // Hardware.leftFrontEncoder.setReverseDirection(true);
+        // Hardware.leftRearEncoder.setReverseDirection(false);
+        Hardware.rightRearEncoder.setDistancePerPulse(
+                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
+        Hardware.leftRearEncoder.setDistancePerPulse(
+                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
+        Hardware.leftFrontEncoder.setDistancePerPulse(
+                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
+        Hardware.rightFrontEncoder.setDistancePerPulse(
+                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
+        // Hardware.tankDrive.setGearPercentage(1, FIRST_GEAR);
+        // Hardware.tankDrive.setGearPercentage(2, SECOND_GEAR);
+        // Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
     // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
     // boolean testchoosers = true;
 
