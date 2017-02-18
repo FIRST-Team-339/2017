@@ -264,7 +264,7 @@ public static void periodic ()
     if (Hardware.leftDriver.getRawButton(9) == true)
         {
         // Hardware.autoDrive.brake(.1, .1);
-        Hardware.brakeTest.brake(-1);
+        Hardware.autoDrive.stopMovement();
         }
     // =================================================================
 
