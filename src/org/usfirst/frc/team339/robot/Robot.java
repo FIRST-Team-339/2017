@@ -313,6 +313,7 @@ public class Robot extends IterativeRobot {
 		// -------------------------------------
 		// motor initialization
 		// -------------------------------------
+		Hardware.mecanumDrive.setDirectionalDeadzone(5.0);
 		// Hardware.leftRearMotorSafety.setSafetyEnabled(true);
 		// Hardware.rightRearMotorSafety.setSafetyEnabled(true);
 		// Hardware.leftFrontMotorSafety.setSafetyEnabled(true);
