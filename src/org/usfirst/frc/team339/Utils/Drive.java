@@ -399,6 +399,7 @@ private boolean isTurning = false;
  * @return Whether or not we are aligned, close enough, misaligned, or see no
  *         blobs.
  */
+// Alex should comment his code
 public AlignReturnType strafeToGear (double driveSpeed,
         double alignVar, double deadband, double relativeCenter,
         int distanceToTarget)
@@ -410,20 +411,22 @@ public AlignReturnType strafeToGear (double driveSpeed,
         this.firstStrafe = false;
         }
 
-    if (this.purgingUltrasonic)
-        {
-        this.rightUlt.getDistanceFromNearestBumper();
-        if (this.timer.get() >= .25)
-            {
-            this.timer.stop();
-            this.purgingUltrasonic = false;
-            }
-        else
-            {
-            this.drive(0.0, 0.0);
-            return AlignReturnType.WAITING;
-            }
-        }
+    /*
+     * if (this.purgingUltrasonic)
+     * {
+     * this.rightUlt.getDistanceFromNearestBumper();
+     * if (this.timer.get() >= .25)
+     * {
+     * this.timer.stop();
+     * this.purgingUltrasonic = false;
+     * }
+     * else
+     * {
+     * this.drive(0.0, 0.0);
+     * return AlignReturnType.WAITING;
+     * }
+     * }
+     */
 
     this.imageProcessor.processImage();
 
@@ -456,6 +459,7 @@ public AlignReturnType strafeToGear (double driveSpeed,
     if (this.rightUlt
             .getDistanceFromNearestBumper() <= distanceToTarget)
         {
+        System.out.println("just checked US ");
         System.out.println("distance from nearsest bumper: "
                 + this.rightUlt.getDistanceFromNearestBumper());
         System.out.println("distance to target: " + distanceToTarget);

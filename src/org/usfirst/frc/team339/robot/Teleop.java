@@ -85,14 +85,7 @@ public static void init ()
     // Hardware.RightUS.setConfidenceCalculationsOn(false);
 
     // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
-    // boolean testchoosers = true;
 
-    // SendableChooser sendablechoosetest;
-    // sendablechoosetest = new SendableChooser();
-    // sendablechoosetest.addDefault("default", testchoosers);
-
-    // Sendable testsendable = ;
-    // SmartDashboard.putData("teleoptest", testsendable);
 
     Hardware.tankDrive.setGear(1);
     Hardware.mecanumDrive.setFirstGearPercentage(Robot.FIRST_GEAR);
