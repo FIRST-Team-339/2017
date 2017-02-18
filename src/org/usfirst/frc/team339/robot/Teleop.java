@@ -231,14 +231,6 @@ public static void periodic ()
     // OPERATOR CONTROLS
     // =================================================================
 
-    if (Hardware.leftOperator.getRawButton(2)
-            && Math.abs(Hardware.leftOperator.getX()) > .2)
-        Hardware.shooter
-                .turnGimbalSlow(
-                        Hardware.leftOperator.getX() > 0 ? -1 : 1);
-    else
-        Hardware.shooter.stopGimbal();
-
     if (Hardware.rightOperator.getRawButton(2))
         Hardware.intake.startIntake();
     else if (Hardware.rightOperator.getRawButton(3))
@@ -250,7 +242,7 @@ public static void periodic ()
             && Math.abs(Hardware.leftOperator.getX()) > .2)
         Hardware.shooter
                 .turnGimbalSlow(
-                        Hardware.leftOperator.getX() > 0 ? 1 : -1);
+                        Hardware.leftOperator.getX() > 0 ? -1 : 1);
     else
         Hardware.shooter.stopGimbal();
 
