@@ -312,9 +312,12 @@ public void robotInit ()
                 ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
         Hardware.rightFrontEncoder.setDistancePerPulse(
                 ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-        // Hardware.tankDrive.setGearPercentage(1, FIRST_GEAR);
-        // Hardware.tankDrive.setGearPercentage(2, SECOND_GEAR);
-        // Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
+        Hardware.tankDrive.setGearPercentage(1,
+                Robot.KILROY_XVII_FIRST_GEAR);
+        Hardware.tankDrive.setGearPercentage(2,
+                Robot.KILROY_XVII_SECOND_GEAR);
+        Hardware.mecanumDrive
+                .setFirstGearPercentage(Robot.KILROY_XVII_SECOND_GEAR);
         Hardware.rightFrontMotor.setInverted(true);
         Hardware.rightRearMotor.setInverted(false);
         Hardware.leftFrontMotor.setInverted(false);
@@ -498,13 +501,28 @@ public void testPeriodic ()
 
 /**
  * The percentage we want the motors to run at while we are in first gear
+ * for Kilroy XVIII
  */
 public static final double FIRST_GEAR = .6;
 
+
+/**
+ * The percentage we want the motors to run at while we are in first gear
+ * for Kilroy XVII/ Ballbot
+ */
+public static final double KILROY_XVII_FIRST_GEAR = .6;
+
 /**
  * The percentage we want the motors to run at while we are in second gear
+ * for Kilroy XVIII
  */
-public static final double SECOND_GEAR = 1;
+public static final double SECOND_GEAR = 1.0;
+
+/**
+ * The percentage we want the motors to run at while we are in second gear
+ * for Kilroy XVII/ Ballbot
+ */
+public static final double KILROY_XVII_SECOND_GEAR = 1.0;
 
 public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.069;
 

@@ -131,9 +131,12 @@ public static void init ()
                 Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
         Hardware.rightFrontEncoder.setDistancePerPulse(
                 Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-        // Hardware.tankDrive.setGearPercentage(1, FIRST_GEAR);
-        // Hardware.tankDrive.setGearPercentage(2, SECOND_GEAR);
-        // Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
+        Hardware.tankDrive.setGearPercentage(1,
+                Robot.KILROY_XVII_FIRST_GEAR);
+        Hardware.tankDrive.setGearPercentage(2,
+                Robot.KILROY_XVII_SECOND_GEAR);
+        Hardware.mecanumDrive
+                .setFirstGearPercentage(Robot.KILROY_XVII_SECOND_GEAR);
         // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
         Hardware.rightFrontMotor.setInverted(true);
         Hardware.rightRearMotor.setInverted(false);
@@ -206,6 +209,21 @@ public static void periodic ()
     // =================================================================
     // Driving code
     // =================================================================
+
+
+    if (Hardware.leftDriver.getRawButton(6))
+        {
+        Hardware.mecanumDrive.drive(
+                Hardware.leftDriver.getMagnitude(),
+                0, rotationValue);
+        isAligning = true;
+        }
+
+    if (!Hardware.leftDriver.getRawButton(6))
+        {
+
+        isAligning = false;
+        }
 
     // rotate only when we are pulling the trigger
     if (Hardware.leftDriver.getTrigger())
@@ -389,14 +407,14 @@ public static void printStatements ()
     // Motor controllers
     // prints value of the motors
     // =================================
-    // System.out.println("Right Front Motor Controller: "
-    // + Hardware.rightFrontMotor.get());
-    // System.out.println("Left Front Motor Controller: " +
-    // Hardware.leftFrontMotor.get());
-    // System.out.println("Right Rear Motor Controller: " +
-    // Hardware.rightRearMotor.get());
-    // System.out.println("Left Rear Motor Controller: " +
-    // Hardware.leftRearMotor.get());
+    System.out.println("Right Front Motor Controller: "
+            + Hardware.rightFrontMotor.get());
+    System.out.println("Left Front Motor Controller: " +
+            Hardware.leftFrontMotor.get());
+    System.out.println("Right Rear Motor Controller: " +
+            Hardware.rightRearMotor.get());
+    System.out.println("Left Rear Motor Controller: " +
+            Hardware.leftRearMotor.get());
 
     // System.out
     // .println("Flywheel Motor: " + Hardware.shooterMotor.get());
