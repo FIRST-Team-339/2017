@@ -31,6 +31,7 @@
 // ====================================================================
 package org.usfirst.frc.team339.robot;
 
+import com.ctre.CANTalon.FeedbackDevice;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Drive.AlignReturnType;

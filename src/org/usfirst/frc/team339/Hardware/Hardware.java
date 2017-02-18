@@ -71,7 +71,7 @@ public static double joystickDeadzone = .2;
  */
 public static boolean runningInLab = false;
 
-public static boolean isRunningOnKilroyXVIII = true; // 18
+public static boolean isRunningOnKilroyXVIII = false; // 18
 // -------------------------------------
 // Private Constants
 // -------------------------------------
@@ -88,8 +88,9 @@ public static final double CAMERA_MOUNT_ANGLE = Math.toRadians(65);
 // ====================================
 // PWM classes
 // ====================================
-// public static KilroyServo gearServo = new KilroyServo(2, 270);
 public static KilroyServo cameraServo = new KilroyServo(7, 190);
+// TODO find actual values
+
 // ------------------------------------
 // Jaguar classes
 // ------------------------------------
@@ -107,7 +108,7 @@ public static TalonSRX leftRearMotor = new TalonSRX(3);
 
 public static TalonSRX leftFrontMotor = new TalonSRX(4);
 
-public static CANTalon shooterMotor = new CANTalon(1);
+public static CANTalon shooterMotor = new CANTalon(10);
 
 // ------------------------------------
 // Victor classes
@@ -116,7 +117,7 @@ public static Victor elevatorMotor = new Victor(0);// PWM 0
 
 public static Victor intakeMotor = new Victor(5);
 
-public static Spark gimbalMotor = new Spark(6);
+public static CANTalon gimbalMotor = new CANTalon(11);
 
 // ====================================
 // CAN classes
@@ -168,7 +169,6 @@ public static Encoder leftFrontEncoder = new Encoder(14, 15);
 
 public static Encoder rightFrontEncoder = new Encoder(16, 17);
 
-public static Encoder gimbalEnc = new Encoder(18, 19);
 
 
 // -----------------------
@@ -236,8 +236,6 @@ public static KilroyGyro driveGyro = new KilroyGyro(false);
 public static Potentiometer delayPot = new Potentiometer(1, 270);// TODO max //
                                                                  // degree value
 
-// public static Encoder gimbalEncoder = new Encoder(3, 270);
-
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------
@@ -260,16 +258,9 @@ public static UltraSonic rightUS = new UltraSonic(2);
 public static UsbCamera camForward = CameraServer.getInstance()
         .startAutomaticCapture(0);
 
-// public static UsbCamera camBackward = CameraServer.getInstance()
-// .startAutomaticCapture(1);
-
-// Used by the USB Cameras in robot init to set their FPS's
-public final static int USB_FPS = 15;
 
 public static KilroyCamera axisCamera = new KilroyCamera(true);
 
-// Used by the Axis Camera in robot init to limit its FPS
-public final static int AXIS_FPS = 15;
 
 public static VisionScript visionScript = new VisionScript(
         new HSLColorThresholdOperator(76, 200, 71, 255, 50, 255),
@@ -378,8 +369,8 @@ public static boolean twoJoystickControl = false;
 // Assembly classes (e.g. forklift)
 // -------------------
 public static Shooter shooter = new Shooter(shooterMotor,
-        ballLoaderSensor, elevatorMotor, 25, imageProcessor, gimbalEnc,
-        3, gimbalMotor);// TODO switch out pot to encoder.
+        ballLoaderSensor, elevatorMotor, 25, imageProcessor,
+        3, gimbalMotor);
 
 public static BallIntake intake = new BallIntake(intakeMotor,
         agitatorRelay);
@@ -421,7 +412,5 @@ public static final Timer autoStateTimer = new Timer();
 // leftFrontMotor);
 
 public static final int MINIMUM_AXIS_CAMERA_BRIGHTNESS = 6;
-
-
 
 } // end class

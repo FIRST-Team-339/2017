@@ -60,7 +60,6 @@
 package org.usfirst.frc.team339.robot;
 
 import com.ctre.CANTalon.FeedbackDevice;
-import com.ctre.CANTalon.TalonControlMode;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -328,6 +327,7 @@ public void robotInit ()
     // -------------------------------------
     // motor initialization
     // -------------------------------------
+    Hardware.mecanumDrive.setDirectionalDeadzone(5.0);
     // Hardware.leftRearMotorSafety.setSafetyEnabled(true);
     // Hardware.rightRearMotorSafety.setSafetyEnabled(true);
     // Hardware.leftFrontMotorSafety.setSafetyEnabled(true);
@@ -338,15 +338,16 @@ public void robotInit ()
     // initialize PID values and set the motor to 0.0 because it isn't safe
     // if
     // we don't.
-    Hardware.shooterMotor.changeControlMode(TalonControlMode.Speed);
-    Hardware.shooterMotor.configPeakOutputVoltage(12f, -12f);
-    Hardware.shooterMotor.configNominalOutputVoltage(0f, 0f);
-    Hardware.shooterMotor
-            .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-    Hardware.shooterMotor.configEncoderCodesPerRev(1024);
-    Hardware.shooterMotor.setPID(shooterP, shooterI, shooterD);
-    Hardware.shooterMotor.setSetpoint(0.0);
-    Hardware.shooterMotor.reverseSensor(true);
+    // Hardware.shooterMotor.changeControlMode(TalonControlMode.Speed);TODO
+    // put back in once finished testing!!!
+    // Hardware.shooterMotor.configPeakOutputVoltage(12f, -12f);
+    // Hardware.shooterMotor.configNominalOutputVoltage(0f, 0f);
+    // Hardware.shooterMotor
+    // .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+    // Hardware.shooterMotor.configEncoderCodesPerRev(1024);
+    // Hardware.shooterMotor.setPID(shooterP, shooterI, shooterD);
+    // Hardware.shooterMotor.setSetpoint(0.0);
+    // Hardware.shooterMotor.reverseSensor(true);
 
     if (Hardware.runningInLab == true)
         {
@@ -360,31 +361,11 @@ public void robotInit ()
     // NOTE: The AXIS Camera getInstance() MUST
     // Preceed the USB camera setResolution() code
     // -------------------------------------
-    // Sends video from both USB Cameras to the Smart Dashboard
-    // -last edited on 28 Jan 2017 by Cole Ramos
-
-    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam0);
-    // CameraServer.getInstance().startAutomaticCapture(Hardware.cam1);
-    // Sets the [max?] FPS's for the USB Cameras. The FPS will generally
-    // vary between -1 and +1 this amount.
-    // -last edited on 28 Jan 2017 by Cole Ramos
-    // Hardware.cam0.setFPS(Hardware.USB_FPS);
-    // Hardware.cam1.setFPS(Hardware.USB_FPS);
-    // Hardware.cam0.setFPS(Hardware.USB_FPS);
-    // Hardware.cam1.setFPS(Hardware.USB_FPS);
-
-    Hardware.imageProcessor
-            .setVerticalCameraMountAngle(Math.toRadians(30));
-    Hardware.imageProcessor.setVisionGoalHeight(FUEL_GOAL_HEIGHT);
-
     CameraServer.getInstance().addAxisCamera("10.3.39.11");
-
 
     // -------------------------------------
     // USB Camera initialization
     // -------------------------------------
-    Hardware.camForward.setResolution(320, 240);
-    // Hardware.camBackward.setResolution(320, 240);
 
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
@@ -393,6 +374,10 @@ public void robotInit ()
     Hardware.rightUS.setScalingFactor(.13);
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
+
+    Hardware.gimbalMotor
+            .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+    Hardware.gimbalMotor.setEncPosition(0);
 
     // =========================================================
     // User code goes above here
@@ -431,13 +416,6 @@ public void teleopInit ()
     // User code goes below here
     // =========================================================
     Teleop.init();
-    // Hardware.rightFrontMotor.setInverted(true);
-    // Hardware.rightRearMotor.setInverted(true);
-    // Hardware.leftFrontMotor.setInverted(true);
-    Hardware.leftRearMotor.setInverted(true);
-    Hardware.intakeMotor.setInverted(true);
-    // Hardware.mecanumDrive.setDirectionalDeadzone(0.2);
-    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     // =========================================================
     // User code goes above here
     // =========================================================
@@ -517,12 +495,22 @@ public void testPeriodic ()
 // ==========================================
 
 /**
+ * The percentage we want the motors to run at while we are in first gear
+ */
+public static final double FIRST_GEAR = .6;
+
+/**
+ * The percentage we want the motors to run at while we are in second gear
+ */
+public static final double SECOND_GEAR = 1;
+
+public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.068;
+
+/**
  * Height to offset the height of the camera to the height of the goal, in
  * inches.
  */
 private static final double CAMERA_HEIGHT_FROM_GROUND = 20.0;// 31.0;//
-
-public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.068;
 
 /**
  * Height of the goal in relation to the robot's height, in inches.
@@ -539,6 +527,8 @@ public static final double FIRST_GEAR = .7;
  * The percentage we want the motors to run at while we are in second gear
  */
 public static final double SECOND_GEAR = 1;
+
+public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.068;
 
 public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVII = .0197;
 
