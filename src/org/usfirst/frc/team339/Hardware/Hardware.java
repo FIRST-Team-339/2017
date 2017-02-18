@@ -26,7 +26,6 @@ import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
-import org.usfirst.frc.team339.HardwareInterfaces.transmission.Transmission_old;
 import org.usfirst.frc.team339.Utils.BallIntake;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Shooter;
@@ -259,7 +258,7 @@ public static UsbCamera camForward = CameraServer.getInstance()
         .startAutomaticCapture(0);
 
 
-public static KilroyCamera axisCamera = new KilroyCamera(true);
+public static KilroyCamera axisCamera = new KilroyCamera(true);// TODO change
 
 
 public static VisionScript visionScript = new VisionScript(
@@ -342,10 +341,6 @@ public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
 
 public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
-        rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
-
-// TODO Take out before merged
-public static Transmission_old brakeTest = new Transmission_old(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
 
 
