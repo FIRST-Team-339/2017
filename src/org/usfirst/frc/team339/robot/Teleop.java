@@ -35,7 +35,6 @@ import com.ctre.CANTalon.FeedbackDevice;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Shooter;
-import org.usfirst.frc.team339.Utils.Shooter.turnReturn;
 import edu.wpi.first.wpilibj.Relay;
 
 /**
@@ -231,54 +230,49 @@ public static void periodic ()
     // OPERATOR CONTROLS
     // =================================================================
 
-    if (Hardware.rightOperator.getRawButton(2))
+    // INTAKE CONTROLS
+    if (Hardware.leftOperator.getRawButton(2))
         Hardware.intake.startIntake();
-    else if (Hardware.rightOperator.getRawButton(3))
+    else if (Hardware.leftOperator.getRawButton(3))
         Hardware.intake.reverseIntake();
     else
         Hardware.intake.stopIntake();
+    // END INTAKE CONTROLS
 
-    if (Hardware.leftOperator.getRawButton(2)
-            && Math.abs(Hardware.leftOperator.getX()) > .2)
+    // TURRET OVERRIDE
+    if (Hardware.rightOperator.getRawButton(2)
+            && Math.abs(Hardware.rightOperator.getX()) > .2)
         Hardware.shooter
                 .turnGimbalSlow(
-                        Hardware.leftOperator.getX() > 0 ? -1 : 1);
+                        Hardware.rightOperator.getX() > 0 ? -1 : 1);
     else
         Hardware.shooter.stopGimbal();
+    // END TURRET OVERRIDE
 
-    if (Hardware.rightOperator.getRawButton(11))
+    // ELEVATOR OVERRIDE
+    if (Hardware.rightOperator.getRawButton(3))
+        Hardware.shooter.loadBalls();
+    else if (Hardware.rightOperator.getRawButton(4))
+        Hardware.shooter.reverseLoader();
+    else
+        Hardware.shooter.stopLoader();
+    // END ELEVATOR OVERRIDE
+
+    // TESTING SHOOTER
+    if (Hardware.rightOperator.getTrigger())
         {
-        if (Hardware.rightOperator.getRawButton(10))
-            isTurningGimbal = true;
-
-        if (isTurningGimbal)
-            {
-            turnValue = Hardware.shooter.turnToBearing(0);
-            if (turnValue == turnReturn.SUCCESS)
-                {
-                System.out.println("We are at 0!");
-                isTurningGimbal = false;
-                }
-            else if (turnValue == turnReturn.TOO_FAR)
-                {
-                System.out.println("We are too far!");
-                isTurningGimbal = true;
-                }
-            else if (turnValue == turnReturn.WORKING)
-                {
-                System.out.println("We are turning!");
-                isTurningGimbal = true;
-                }
-            }
+        Hardware.shooter.loadBalls();
+        Hardware.shooterMotor.set(1000);
         }
+    else if (Hardware.rightOperator.getRawButton(9))
+        Hardware.shooterMotor.set(1000);
+    else
+        Hardware.shooterMotor.set(0.0);
+
+    // END SHOOTER TESTING
     // =================================================================
     // CAMERA CODE
     // =================================================================
-    if (Hardware.leftOperator.getRawButton(8))
-        {
-        isAligning = true;
-        }
-
     Hardware.axisCamera
             .takeSinglePicture(Hardware.leftOperator.getRawButton(8)
                     || Hardware.rightOperator.getRawButton(8)
@@ -334,8 +328,6 @@ public static void periodic ()
 
 // private static boolean isSpeedTesting = false;
 
-// private static boolean isSpeedTesting = false;
-
 private static Drive.AlignReturnType alignValue = Drive.AlignReturnType.MISALIGNED;
 
 private static Shooter.turnReturn turnValue = Shooter.turnReturn.SUCCESS;
@@ -343,8 +335,6 @@ private static Shooter.turnReturn turnValue = Shooter.turnReturn.SUCCESS;
 private static double rotationValue = 0.0;
 
 private static boolean isTurningGimbal = false;
-
-private static boolean hasPressedFive = false;
 
 private static boolean isAligning = false;
 
@@ -399,7 +389,7 @@ public static void printStatements ()
     // System.out.println("Elevator Motor: " +
     // Hardware.elevatorMotor.get());
     // }
-    // System.out.println("Turret Spark: " + Hardware.gimbalMotor.get());
+    System.out.println("Turret : " + Hardware.gimbalMotor.get());
     // =================================
     // CAN items
     // prints value of the CAN controllers

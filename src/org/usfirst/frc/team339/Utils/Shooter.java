@@ -3,6 +3,7 @@ package org.usfirst.frc.team339.Utils;
 import com.ctre.CANTalon;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
 
@@ -31,6 +32,8 @@ private double acceptableGimbalError = 3;// in degrees
 
 private CANTalon gimbalMotor = null;
 
+private Spark agitatorMotor = null;
+
 private Timer shooterTimer = new Timer();
 
 /**
@@ -53,12 +56,14 @@ private Timer shooterTimer = new Timer();
  *            The acceptable angular angle, in degrees, the gimbal turret is
  *            allowed to be off.
  * @param gimbalMotor
- *            TODO
+ *            The motor controller the turret is run on
+ * @param agitatorMotor
+ *            The motor controller the agitator motor is connected to
  */
 public Shooter (CANTalon controller, IRSensor ballLoaderSensor,
         Victor elevator, double acceptableFlywheelSpeedError,
         ImageProcessor visionTargeting, double acceptableGimbalError,
-        CANTalon gimbalMotor)
+        CANTalon gimbalMotor, Spark agitatorMotor)
 {
     this.flywheelController = controller;
     this.elevatorSensor = ballLoaderSensor;
@@ -66,6 +71,7 @@ public Shooter (CANTalon controller, IRSensor ballLoaderSensor,
     this.acceptableError = acceptableFlywheelSpeedError;
     this.visionTargeter = visionTargeting;
     this.gimbalMotor = gimbalMotor;
+    this.agitatorMotor = agitatorMotor;
 
 
 }
@@ -115,16 +121,19 @@ public void stopFlywheelMotor ()
 public void loadBalls ()
 {
     this.elevatorController.set(ELEVATOR_SPEED);
+    this.agitatorMotor.set(AGITATOR_SPEED);
 }
 
 public void stopLoader ()
 {
     this.elevatorController.set(0.0);
+    this.agitatorMotor.set(0.0);
 }
 
 public void reverseLoader ()
 {
     this.elevatorController.set(-ELEVATOR_SPEED);
+    this.agitatorMotor.set(AGITATOR_SPEED);
 }
 
 /**
@@ -276,10 +285,10 @@ public turnReturn turnGimbalFast (int direction)
  */
 private turnReturn turnGimbal (double speed)
 {
-    if (this.getBearing() >= MAX_GIMBALING_ANGLE
-            || this.getBearing() <= MIN_GIMBALING_ANGLE)
+    if ((this.getBearing() >= MAX_GIMBALING_ANGLE && speed > 0)
+            || (this.getBearing() <= MIN_GIMBALING_ANGLE && speed < 0))
         {
-        this.stopGimbal();
+        this.gimbalMotor.set(0.0);
         return turnReturn.TOO_FAR;
         }
     // TODO direction
@@ -291,9 +300,11 @@ private turnReturn turnGimbal (double speed)
      * ALSO motor is reversed so... that's why it's like that.
      */
     if (speed < 0)
-        this.gimbalMotor.set(Math.min(speed, MAX_TURN_SPEED));
+        this.gimbalMotor.set(
+                Math.max(speed, -MAX_TURN_SPEED));
     else if (speed > 0)
-        this.gimbalMotor.set(Math.max(speed, -MAX_TURN_SPEED));
+        this.gimbalMotor.set(
+                Math.min(speed, MAX_TURN_SPEED));
     else
         this.gimbalMotor.set(0.0);
 
@@ -457,13 +468,18 @@ private final double MAX_TURN_SPEED = .5;
 
 private final double MEDIUM_TURN_SPEED = .35;
 
-private final double SLOW_TURN_SPEED = .2;
+private final double SLOW_TURN_SPEED = .25;
 
-private final double ELEVATOR_SPEED = 1;// TODO tune
+private final double ELEVATOR_SPEED = -.8;// TODO tune
 
-private final double MAX_GIMBALING_ANGLE = 18;// in degrees
+private final double AGITATOR_SPEED = 1;
 
-private final double MIN_GIMBALING_ANGLE = -18;// in degrees
+private final double GIMBAL_LEFT_OFFSET = .1;// Going left is slower than going
+                                             // right for some reason
+
+private final double MAX_GIMBALING_ANGLE = 16;// in degrees
+
+private final double MIN_GIMBALING_ANGLE = -16;// in degrees
 
 private final double MOUNT_ANGLE = 64;// TODO figure out the actual number.
 
