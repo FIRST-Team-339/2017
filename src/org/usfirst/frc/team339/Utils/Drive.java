@@ -701,12 +701,12 @@ public void resetEncoders ()
 
 /**
  * 
- * @param lBreakSpeed
- * @param rBreakSpeed
+ * @param lBrakeSpeed
+ * @param rBrakeSpeed
  * @return have we finished true = yes
  */
-public boolean brake (final double lBreakSpeed,
-        final double rBreakSpeed)
+public boolean brake (final double lBrakeSpeed,
+        final double rBrakeSpeed)
 {
     if (((Math.abs(
             leftFrontEncoder.getDistance()) >= (this.prevBrakeDistanceLF
@@ -757,11 +757,11 @@ public boolean brake (final double lBreakSpeed,
 
     if (transmissionType == TransmissionType.MECANUM)
         {
-        this.transmissionMecanum.drive(lBreakSpeed, 0, 0);
+        this.transmissionMecanum.drive(lBrakeSpeed, 0, 0);
         }
     if (transmissionType == TransmissionType.TANK)
         {
-        this.transmissionFourWheel.drive(rBreakSpeed, lBreakSpeed);
+        this.transmissionFourWheel.drive(rBrakeSpeed, lBrakeSpeed);
         }
 
 

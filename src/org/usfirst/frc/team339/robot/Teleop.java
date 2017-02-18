@@ -360,12 +360,12 @@ public static void printStatements ()
     // System.out.println("Flywheel Motor: " + Hardware.shooterMotor.get());
     //
     // System.out.println("Intake Motor: " + Hardware.intakeMotor.get());
-    if (Hardware.rightOperator.getRawButton(11))
-        {
-        Hardware.elevatorMotor.setSpeed(1);
-        System.out.println(
-                "Elevator Motor: " + Hardware.elevatorMotor.get());
-        }
+    // if (Hardware.rightOperator.getRawButton(11))
+    // {
+    // Hardware.elevatorMotor.setSpeed(1);
+    // System.out.println(
+    // "Elevator Motor: " + Hardware.elevatorMotor.get());
+    // }
     // System.out.println("Turret Spark: " + Hardware.gimbalMotor.get());
 
     // =================================
