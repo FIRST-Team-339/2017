@@ -278,18 +278,13 @@ public static void periodic ()
     else
         Hardware.intake.stopIntake();
 
-    if (Hardware.rightOperator.getRawButton(11))
 
-
-
-
-
-        if (Hardware.leftOperator.getRawButton(2)
-                && Math.abs(Hardware.leftOperator.getX()) > .2)
-            Hardware.shooter.turnGimbalSlow(
-                    Hardware.leftOperator.getX() > 0 ? -1 : 1);
-        else
-            Hardware.shooter.stopGimbal();
+    if (Hardware.leftOperator.getRawButton(2)
+            && Math.abs(Hardware.leftOperator.getX()) > .2)
+        Hardware.shooter.turnGimbalSlow(
+                Hardware.leftOperator.getX() > 0 ? -1 : 1);
+    else
+        Hardware.shooter.stopGimbal();
 
     if (Hardware.rightOperator.getRawButton(11))
 
@@ -399,13 +394,6 @@ public static void periodic ()
         {
         isAligning = true;
         }
-
-
-
-    Hardware.axisCamera
-            .takeSinglePicture(Hardware.leftOperator.getRawButton(8)
-                    || Hardware.rightOperator.getRawButton(8)
-                    || Hardware.leftOperator.getRawButton(11));
 
     // Written by Ashley Espeland, has not been tested
     // cameraServo code setting to either the higher or the lower angle position
