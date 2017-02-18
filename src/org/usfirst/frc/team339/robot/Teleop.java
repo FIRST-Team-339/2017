@@ -35,7 +35,6 @@ import com.ctre.CANTalon.FeedbackDevice;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Shooter;
-import org.usfirst.frc.team339.Utils.Shooter.turnReturn;
 import edu.wpi.first.wpilibj.Relay;
 
 /**
@@ -146,11 +145,6 @@ public static void init ()
         // Hardware.mecanumDrive
         // .setDeadbandPercentageZone(Hardware.joystickDeadzone);
         Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-        Hardware.rightUS.setScalingFactor(.13);
-        Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
-        Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
-        Hardware.tankDrive.setGear(1);
-        Hardware.mecanumDrive.setFirstGearPercentage(Robot.FIRST_GEAR);
         Hardware.autoDrive.setDriveCorrection(.3);
         Hardware.autoDrive.setEncoderSlack(1);
         }// TODO
@@ -189,7 +183,6 @@ public static void periodic ()
      * Hardware.shooterMotor.getSpeed());
      */
 
-    // TODO Figure out why the ring light is flickering
     if (Hardware.ringlightSwitch.isOnCheckNow())
         {
         Hardware.ringlightRelay.set(Relay.Value.kOn);
@@ -202,6 +195,13 @@ public static void periodic ()
     // Hardware.gearServo.getAngle();
     // Print out any data we want from the hardware elements.
     printStatements();
+
+    if (Hardware.rightOperator.getRawButton(2))
+        Hardware.intake.startIntake();
+    else if (Hardware.rightOperator.getRawButton(3))
+        Hardware.intake.reverseIntake();
+    else
+        Hardware.intake.stopIntake();
 
     // =================================================================
     // Driving code
@@ -225,6 +225,13 @@ public static void periodic ()
         else
             Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
                     Hardware.leftDriver.getY());
+        }
+
+    if (Hardware.leftDriver.getRawButton(9))
+        {
+
+        Hardware.autoDrive.driveStraightInches(12, .5);
+
         }
 
     // =================================================================
@@ -303,6 +310,8 @@ public static void periodic ()
         if (Hardware.cameraServo
                 .getAngle() == LOWER_CAMERASERVO_POSITION)
             {
+            // then set the servo to the higher position and change
+            // cameraPositionHasChanged to true
             Hardware.cameraServo
                     .setAngle(HIGHER_CAMERASERVO_POSITION);
             cameraPositionHasChanged = true;
@@ -403,8 +412,7 @@ public static void printStatements ()
     // prints value of the CAN controllers
     // =================================
     // Hardware.CAN.printAllPDPChannels();
-    System.out.println(
-            "Gimbal Encoder: " + Hardware.shooter.getBearing());
+
     // =================================
     // Relay
     // prints value of the relay states
@@ -472,14 +480,6 @@ public static void printStatements ()
     // Hardware.leftRearEncoder.get());
     // System.out.println("Left Rear Encoder Distance: " +
     // Hardware.autoDrive.getLeftFrontEncoderDistance());
-    System.out.println("right front speed: "
-            + Hardware.rightFrontMotor.getSpeed());
-    System.out.println(
-            "right rear speed: " + Hardware.rightRearMotor.getSpeed());
-    System.out.println(
-            "left front speed: " + Hardware.leftFrontMotor.getSpeed());
-    System.out.println(
-            "left rear speed: " + Hardware.leftRearMotor.getSpeed());
     // ---------------------------------
     // Red Light/IR Sensors
     // prints the state of the sensor
@@ -499,18 +499,20 @@ public static void printStatements ()
     // Compressor
     // prints information on the compressor
     // ---------------------------------
-    // There isn't one
+    // There isn't one at the moment
+
     // ---------------------------------
     // Solenoids
     // prints the state of solenoids
     // ---------------------------------
-    // There are none
+    // There are none at the moment
+    // That seems familiar...
+
     // =================================
     // Analogs
     // =================================
     //
-    // We don't want the print statements to flood everything and go
-    // ahhhhhhhh
+    // We don't want the print statements to flood everything and go ahhhhhhhh
     //
     // if (Hardware.rightOperator.getRawButton(11))
     // System.out.println("LeftUS = "
@@ -553,8 +555,12 @@ public static void printStatements ()
     // Joysticks
     // information about the joysticks
     // ---------------------------------
-    // System.out.println("Left Joystick: " +
-    // Hardware.leftDriver.getDirectionDegrees());
+    // System.out.println("Right Joystick: " +
+    // Hardware.rightDriver.getDirectionDegrees());
+    // System.out.println("Left Operator: " +
+    // Hardware.leftOperator.getDirectionDegrees());
+    // System.out.println("Right Operator: " +
+    // Hardware.rightOperator.getDirectionDegrees());
     // System.out.println("Twist: " + Hardware.leftDriver.getTwist());
     // =================================
     // Driver station
