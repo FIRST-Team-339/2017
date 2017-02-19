@@ -93,9 +93,12 @@ public static void init ()
                 Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
         Hardware.leftFrontEncoder.setDistancePerPulse(
                 Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-        Hardware.tankDrive.setGearPercentage(1, Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
-        Hardware.tankDrive.setGearPercentage(2, Robot.KILROY_XVIII_SECOND_GEAR_PERCENTAGE);
-        Hardware.mecanumDrive.setFirstGearPercentage(Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
+        Hardware.tankDrive.setGearPercentage(1,
+                Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
+        Hardware.tankDrive.setGearPercentage(2,
+                Robot.KILROY_XVIII_SECOND_GEAR_PERCENTAGE);
+        Hardware.mecanumDrive.setFirstGearPercentage(
+                Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
         Hardware.rightFrontMotor.setInverted(false);
         Hardware.rightRearMotor.setInverted(false);
         Hardware.leftFrontMotor.setInverted(false);
@@ -138,7 +141,8 @@ public static void init ()
         Hardware.tankDrive.setGearPercentage(2,
                 Robot.KILROY_XVII_SECOND_GEAR_PERCENTAGE);
         Hardware.mecanumDrive
-                .setFirstGearPercentage(Robot.KILROY_XVII_FIRST_GEAR_PERCENTAGE);
+                .setFirstGearPercentage(
+                        Robot.KILROY_XVII_FIRST_GEAR_PERCENTAGE);
         // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
         Hardware.rightFrontMotor.setInverted(true);
         Hardware.rightRearMotor.setInverted(false);
@@ -226,7 +230,9 @@ public static void periodic ()
     else
         rotationValue = 0.0;
 
-    if (!isAligning && !isStrafingToTarget)  // Main driving function
+    if (!isTestingDriveCode && !isAligning && !isStrafingToTarget)  // Main
+                                                                    // driving
+                                                                    // function
         {
         if (Hardware.isUsingMecanum == true)
             Hardware.mecanumDrive.drive(
@@ -238,14 +244,12 @@ public static void periodic ()
                     Hardware.leftDriver.getY());
         }
     // Test code for break
-    if (Hardware.leftDriver.getRawButton(9))
-        {
-        prevState = Hardware.leftDriver.getRawButton(9);
-        }
 
-    if (Hardware.leftDriver.getRawButton(9) && !prevState)
+
+
+    if (Hardware.leftDriver.getRawButton(9) == true)
         {
-        Hardware.autoDrive.driveStraightInches(20, .5);
+        Hardware.autoDrive.driveStraightInches(12, .5);
         }
     // =================================================================
     // OPERATOR CONTROLS
@@ -473,20 +477,20 @@ public static void printStatements ()
     // Hardware.autoDrive.getLeftFrontEncoderDistance());
     // System.out.println("Right Front Encoder: " +
     // Hardware.rightFrontEncoder.get());
-    // System.out.println("Right Front Encoder Distance: " +
-    // Hardware.autoDrive.getRightRearEncoderDistance());
+    System.out.println("Right Front Encoder Distance: " +
+            Hardware.autoDrive.getRightRearEncoderDistance());
     // System.out.println("Right Rear Encoder: " +
     // Hardware.rightRearEncoder.get());
-    // System.out.println("Right Rear Encoder Distance: " +
-    // Hardware.autoDrive.getRightRearEncoderDistance());
+    System.out.println("Right Rear Encoder Distance: " +
+            Hardware.autoDrive.getRightRearEncoderDistance());
     // System.out.println("Left Front Encoder: " +
     // Hardware.leftFrontEncoder.get());
-    // System.out.println("Left Front Encoder Distance: " +
-    // Hardware.autoDrive.getLeftFrontEncoderDistance());
+    System.out.println("Left Front Encoder Distance: " +
+            Hardware.autoDrive.getLeftFrontEncoderDistance());
     // System.out.println("Left Rear Encoder: " +
     // Hardware.leftRearEncoder.get());
-    // System.out.println("Left Rear Encoder Distance: " +
-    // Hardware.autoDrive.getLeftFrontEncoderDistance());
+    System.out.println("Left Rear Encoder Distance: " +
+            Hardware.autoDrive.getLeftFrontEncoderDistance());
     // ---------------------------------
     // Red Light/IR Sensors
     // prints the state of the sensor
@@ -628,5 +632,7 @@ public static boolean cancelAgitator = false;
 public static boolean hasCanceledAgitator = false;
 
 private static boolean prevState = false; // TODO Testing take out
+
+private static boolean isTestingDriveCode = true;
 
 } // end class
