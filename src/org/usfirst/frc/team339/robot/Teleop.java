@@ -229,9 +229,7 @@ public static void periodic ()
     // Test code for break
     if (Hardware.leftDriver.getRawButton(9))
         {
-
         Hardware.autoDrive.driveStraightInches(12, .5);
-
         }
 
     // =================================================================
@@ -272,7 +270,6 @@ public static void periodic ()
         Hardware.shooter.loadBalls();
         Hardware.shooterMotor.set(1000);
         }
-
     else if (Hardware.rightOperator.getRawButton(9))
         Hardware.shooterMotor.set(1000);
     else
@@ -282,10 +279,6 @@ public static void periodic ()
     // =================================================================
     // CAMERA CODE
     // =================================================================
-    Hardware.axisCamera
-            .takeSinglePicture(Hardware.leftOperator.getRawButton(8)
-                    || Hardware.rightOperator.getRawButton(8)
-                    || Hardware.leftOperator.getRawButton(11));
 
     // Written by Ashley Espeland, has not been tested
     // cameraServo code setting to either the higher or the lower angle
