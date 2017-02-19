@@ -1,7 +1,6 @@
 package org.usfirst.frc.team339.Utils;
 
-import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.Relay.Value;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Victor;
 
 /**
@@ -15,7 +14,7 @@ public class BallIntake
 {
 private Victor intakeMotor = null;
 
-private Relay agitatorMotor = null;
+private Spark agitatorMotor = null;
 
 /**
  * Creates a new ball intake motor.
@@ -25,7 +24,7 @@ private Relay agitatorMotor = null;
  * @param agitator
  *            TODO
  */
-public BallIntake (Victor motor, Relay agitator)
+public BallIntake (Victor motor, Spark agitator)
 {
     this.intakeMotor = motor;
     this.agitatorMotor = agitator;
@@ -37,7 +36,7 @@ public BallIntake (Victor motor, Relay agitator)
 public void startIntake ()
 {
     this.intakeMotor.set(this.INTAKE_SPEED);
-    this.agitatorMotor.set(Value.kForward);
+    // this.agitatorMotor.set(AGITATOR_SPEED);TODO turn back on once fixed
 }
 
 /**
@@ -46,7 +45,7 @@ public void startIntake ()
 public void reverseIntake ()
 {
     this.intakeMotor.set(-this.INTAKE_SPEED);
-    this.agitatorMotor.set(Value.kOff);
+    // this.agitatorMotor.set(AGITATOR_SPEED);
 }
 
 /**
@@ -55,8 +54,10 @@ public void reverseIntake ()
 public void stopIntake ()
 {
     this.intakeMotor.set(0.0);
-    this.agitatorMotor.set(Value.kOff);
+    // this.agitatorMotor.set(0.0);
 }
 
 private final double INTAKE_SPEED = .4;
+
+private final double AGITATOR_SPEED = 1.0;
 }

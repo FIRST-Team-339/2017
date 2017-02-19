@@ -2,7 +2,7 @@ package org.usfirst.frc.team339.HardwareInterfaces;
 
 import edu.wpi.first.wpilibj.Servo;
 
-public class KilroyServo // extends Servo
+public class KilroyServo extends Servo
 {
 
 /**
@@ -16,8 +16,7 @@ public class KilroyServo // extends Servo
  */
 public KilroyServo (int portNumber, double maxDegrees)
 {
-    // super(portNumber);
-    this.servo = new Servo(portNumber);
+    super(portNumber);
     this.maxDegrees = maxDegrees;
 }
 
@@ -32,7 +31,7 @@ private double maxDegrees = 0; // max degrees servo can go
 public void setAngle (double degree)
 {
     double setVal = degree / this.maxDegrees; // scaled value for servo
-    this.servo.set(setVal);
+    super.set(setVal);
 }
 
 /**
@@ -42,13 +41,9 @@ public void setAngle (double degree)
  */
 public double getAngle ()
 {
-    double angleValue = this.servo.get() * this.maxDegrees; // scaled value for
-                                                            // servo
+    double angleValue = super.get() * this.maxDegrees; // scaled value for
+                                                       // servo
     return angleValue;
 
 }
-
-private Servo servo;
-
-
 }

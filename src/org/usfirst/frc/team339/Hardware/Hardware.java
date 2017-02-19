@@ -26,7 +26,6 @@ import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
-import org.usfirst.frc.team339.HardwareInterfaces.transmission.Transmission_old;
 import org.usfirst.frc.team339.Utils.BallIntake;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Shooter;
@@ -42,6 +41,7 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
@@ -108,7 +108,7 @@ public static TalonSRX leftRearMotor = new TalonSRX(3);
 
 public static TalonSRX leftFrontMotor = new TalonSRX(4);
 
-public static CANTalon shooterMotor = new CANTalon(10);
+
 
 // ------------------------------------
 // Victor classes
@@ -117,20 +117,23 @@ public static Victor elevatorMotor = new Victor(0);// PWM 0
 
 public static Victor intakeMotor = new Victor(5);
 
-public static CANTalon gimbalMotor = new CANTalon(11);
+public static Spark agitatorMotor = new Spark(6);
 
 // ====================================
 // CAN classes
 // ====================================
 public static PowerDistributionPanel pdp = new PowerDistributionPanel(
         0);
+
+public static CANTalon gimbalMotor = new CANTalon(11);
+
+public static CANTalon shooterMotor = new CANTalon(10);
+
 // ====================================
 // Relay classes
 // ====================================
 
 public static Relay ringlightRelay = new Relay(0);
-
-public static Relay agitatorRelay = new Relay(1);
 
 // ====================================
 // Digital Inputs
@@ -263,7 +266,7 @@ public static UsbCamera camForward = CameraServer.getInstance()
         .startAutomaticCapture(0);
 
 
-public static KilroyCamera axisCamera = new KilroyCamera(true);
+public static KilroyCamera axisCamera = new KilroyCamera(true);// TODO change
 
 
 public static VisionScript visionScript = new VisionScript(
@@ -310,15 +313,13 @@ public static Joystick rightDriver = new Joystick(1);
  */
 public static Joystick leftOperator = new Joystick(2);
 
-public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
-        leftOperator, 3, false);
-
-
 /**
  * The right joystick controlling misc operations on the robot.
  */
 public static Joystick rightOperator = new Joystick(3);
 
+public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
+        rightOperator, 5, false);
 // **********************************************************
 // Kilroy's Ancillary classes
 // **********************************************************
@@ -348,10 +349,6 @@ public static TransmissionMecanum mecanumDrive = new TransmissionMecanum(
 public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
         rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
 
-// TODO Take out before merged
-public static Transmission_old brakeTest = new Transmission_old(
-        rightFrontMotor, rightRearMotor, leftFrontMotor, leftRearMotor);
-
 
 // =====================================================================
 // Drive classes
@@ -378,10 +375,10 @@ public static boolean twoJoystickControl = false;
 // -------------------
 public static Shooter shooter = new Shooter(shooterMotor,
         ballLoaderSensor, elevatorMotor, 25, imageProcessor,
-        3, gimbalMotor);
+        3, gimbalMotor, agitatorMotor);
 
 public static BallIntake intake = new BallIntake(intakeMotor,
-        agitatorRelay);
+        agitatorMotor);
 
 // ------------------------------------
 // Utility classes

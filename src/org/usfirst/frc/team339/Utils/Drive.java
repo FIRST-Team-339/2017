@@ -93,12 +93,12 @@ public Drive (TransmissionMecanum transmissionMecanum,
         UltraSonic rightUlt)
 {
     this(transmissionMecanum, imageProcessor);
-
     this.initEncoders(leftFrontEncoder, rightFrontEncoder,
             leftRearEncoder, rightRearEncoder);
 
     this.rightUlt = rightUlt;
     isUsingUltrasonics = true;
+
 
 }
 
@@ -272,38 +272,48 @@ public boolean driveStraightInches (double inches, double speed)
             + this.getLeftRearEncoderDistance()) / 2;
     double averageRight = (this.getRightFrontEncoderDistance()
             + this.getRightRearEncoderDistance()) / 2;
-
+    // System.out.println("Average Left: " + averageLeft);
+    // System.out.println("Average Right: " + averageRight);
+    System.out.println("LF Distance Per Pulse: "
+            + getEncoderDistancePulse(leftFrontEncoder));
+    System.out.println("RF Distance Per Pulse: "
+            + getEncoderDistancePulse(rightFrontEncoder));
+    System.out.println("LR Distance Per Pulse: "
+            + getEncoderDistancePulse(leftRearEncoder));
+    System.out.println("RR Distance Per Pulse: "
+            + getEncoderDistancePulse(rightRearEncoder));
     if (firstTimeDriveInches)
         {
         this.resetEncoders();
         firstTimeDriveInches = false;
         }
 
-    // if (this.transmissionType == TransmissionType.MECANUM)
-    // this.drive(speed, 0.0);
+    this.driveNoDeadband(speed, 0.0);
+    System.out.println("Speed: " + speed);
     if (averageRight >= averageLeft + getEncoderSlack())
         bottomValue = true;
     if (averageRight <= averageLeft - getEncoderSlack())//
         topValue = true;
     if (bottomValue == true && topValue == true)
-        this.drive(-speed, -speed);
-    if (averageLeft > averageRight - getEncoderSlack())//
-        this.transmissionFourWheel.drive(
-                -speed - getDriveCorrection(),
-                -speed); // negate this because how drive takes into account of
-                         // negative joysfd
+        // this.drive(speed, 0);
+        if (averageLeft > averageRight - getEncoderSlack())//
+        this.driveNoDeadband(speed + getDriveCorrection(), speed);
+
     if (averageLeft < averageRight + getEncoderSlack())//
-        this.transmissionFourWheel.drive(-speed,
-                -speed - getDriveCorrection());
-    if (Math.abs(this.getAveragedEncoderValues()) >= Math.abs(inches))
+        this.driveNoDeadband(speed,
+                speed + getDriveCorrection());
+    if (Math.abs(this.getAveragedEncoderValues()) >= Math
+            .abs(inches))
         {
-        this.drive(0.0, 0.0);
+        this.stopMovement();
+        this.driveNoDeadband(0.0, 0.0);
+        // this.stopMovement();
         firstTimeDriveInches = true;
         return true;
         }
-
+    bottomValue = false;
+    topValue = false;
     return false;
-
 
 }
 
@@ -403,10 +413,12 @@ private boolean isTurning = false;
  * @return Whether or not we are aligned, close enough, misaligned, or see no
  *         blobs.
  */
+// Alex should comment his code
 public AlignReturnType strafeToGear (double driveSpeed,
         double alignVar, double deadband, double relativeCenter,
         int distanceToTarget)
 {
+
     if (this.firstStrafe)
         {
         this.timer.reset();
@@ -414,33 +426,35 @@ public AlignReturnType strafeToGear (double driveSpeed,
         this.firstStrafe = false;
         }
 
-    if (this.purgingUltrasonic)
-        {
-        this.rightUlt.getDistanceFromNearestBumper();
-        if (this.timer.get() >= .25)
-            {
-            this.timer.stop();
-            this.purgingUltrasonic = false;
-            }
-        else
-            {
-            this.drive(0.0, 0.0);
-            return AlignReturnType.WAITING;
-            }
-        }
+    /*
+     * if (this.purgingUltrasonic)
+     * {
+     * this.rightUlt.getDistanceFromNearestBumper();
+     * if (this.timer.get() >= .25)
+     * {
+     * this.timer.stop();
+     * this.purgingUltrasonic = false;
+     * }
+     * else
+     * {
+     * this.drive(0.0, 0.0);
+     * return AlignReturnType.WAITING;
+     * }
+     * }
+     */
 
     this.imageProcessor.processImage();
 
     // If we have no blobs, return so.
     if (this.imageProcessor.getNthSizeBlob(1) == null)
         {
-        this.drive(0.0, 0.0);
+        this.driveNoDeadband(0.0, 0.0);
         return AlignReturnType.NO_BLOBS;
         }
     // If we don't have any ultrasonics in the constructor, stop aligning.
     if (this.isUsingUltrasonics == false)
         {
-        this.drive(0.0, 0.0);
+        this.driveNoDeadband(0.0, 0.0);
         return AlignReturnType.ALIGNED;
         }
     double distanceToCenter = this.imageProcessor
@@ -448,38 +462,48 @@ public AlignReturnType strafeToGear (double driveSpeed,
                     this.imageProcessor.getNthSizeBlob(0),
                     this.imageProcessor.getNthSizeBlob(1),
                     relativeCenter);
+    System.out.println("DistanceToCenter: " + distanceToCenter);
+    System.out.println("Distance from wall: "
+            + this.rightUlt.getDistanceFromNearestBumper());
     if (distanceToCenter == Double.MAX_VALUE)
         {
-        this.drive(0.0, 0.0);
+        this.driveNoDeadband(0.0, 0.0);
         return AlignReturnType.NO_BLOBS;
         }
 
     if (this.rightUlt
             .getDistanceFromNearestBumper() <= distanceToTarget)
         {
+
+
+        System.out.println("distance from nearsest bumper: "
+                + this.rightUlt.getDistanceFromNearestBumper());
+        System.out.println("distance to target: " + distanceToTarget);
         this.purgingUltrasonic = true;
         this.firstStrafe = true;
-        this.drive(0.0, 0.0);
+        this.driveNoDeadband(0.0, 0.0);
         return AlignReturnType.CLOSE_ENOUGH;
         }
 
 
     if (Math.abs(distanceToCenter) < deadband)
         {
-        this.drive(driveSpeed, 0);
+        this.driveNoDeadband(driveSpeed, 0);
         return AlignReturnType.ALIGNED;
         }
-
-    if (distanceToCenter > 0)
+    System.out.println("distanceToCenter: " + distanceToCenter);
+    System.out.println("relative center: " + relativeCenter);
+    if (distanceToCenter < 0)
         {
-        this.drive(driveSpeed, alignVar);
+        System.out.println("trying to adjust left");
+        this.driveNoDeadband(driveSpeed, -alignVar);
+
         }
-    else if (distanceToCenter < 0)
+    else if (distanceToCenter > 0)
         {
-        this.drive(driveSpeed, -alignVar);
+        System.out.println("trying to adjust right");
+        this.driveNoDeadband(driveSpeed, alignVar);
         }
-
-
     return AlignReturnType.MISALIGNED;
 }
 
@@ -595,10 +619,13 @@ public void driveNoDeadband (double speed, double correction)
     switch (this.transmissionType)
         {
         case MECANUM:
+            System.out.println("using macanum");
             this.transmissionMecanum.driveNoDeadband(speed, correction,
                     0.0);
+
             break;
         case TANK:
+            System.out.println("using 4 wheel");
             this.transmissionFourWheel.driveWithoutCorrection(
                     speed + correction, speed - correction);
         default:
@@ -628,7 +655,9 @@ public boolean accelerate (double targetSpeed,
         firstTimeAccelerateRun = false;
         }
     this.driveNoDeadband(
-            targetSpeed * (this.timer.get() / timeInWhichToAccelerate),
+            Math.max(targetSpeed
+                    * (this.timer.get() / timeInWhichToAccelerate),
+                    Max),
             0, 0);
     if (this.timer.get() > timeInWhichToAccelerate)
         {
@@ -690,6 +719,17 @@ public void setEncoderDistancePerPulse (double value)
     this.rightFrontEncoder.setDistancePerPulse(value);
     this.leftRearEncoder.setDistancePerPulse(value);
     this.rightRearEncoder.setDistancePerPulse(value);
+}
+
+/**
+ * method reads distance per pulse
+ * 
+ * @param encoder
+ * @return Distance per pulse
+ */
+public double getEncoderDistancePulse (Encoder encoder)
+{
+    return encoder.getRate();
 }
 
 /**
@@ -1276,6 +1316,7 @@ public void setRotateSpeed (double speed)
 
 private double turningCircleRadius = 11;
 
+
 /**
  * Gets the radius of the circle that the robot rotates around
  * 
@@ -1287,7 +1328,7 @@ public double getTurningCircleRadius ()
 }
 
 /**
- * Sets the radius of the circlie that the robot rotates around
+ * Sets the radius of the circle that the robot rotates around
  * 
  * @param radius
  *            Radius in inches
@@ -1306,7 +1347,7 @@ public void setEncoderSlack (double slack)
 
 public double getEncoderSlack ()
 {
-    return encoderSlack;
+    return this.encoderSlack;
 }
 
 public void setDriveCorrection (double correction)
@@ -1316,7 +1357,7 @@ public void setDriveCorrection (double correction)
 
 public double getDriveCorrection ()
 {
-    return correction;
+    return this.correction;
 }
 
 
@@ -1348,6 +1389,8 @@ private TransmissionType transmissionType = null;
  * distance.
  */
 private static final double DEFAULT_DISTANCE_PER_PULSE = 1.0 / 12.9375;
+
+private static final double Max = 0.3;
 
 
 }

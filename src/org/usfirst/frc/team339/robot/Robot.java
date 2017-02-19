@@ -60,6 +60,7 @@
 package org.usfirst.frc.team339.robot;
 
 import com.ctre.CANTalon.FeedbackDevice;
+import com.ctre.CANTalon.TalonControlMode;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -82,7 +83,7 @@ import edu.wpi.first.wpilibj.Relay;
  */
 public class Robot extends IterativeRobot
 {
-boolean testdasboard = true;
+
 // =================================================
 // private data for the class
 // =================================================
@@ -105,7 +106,7 @@ public void autonomousInit ()
     // setup
     // ---------------------------------------
     System.out.println("Started AutonousInit().");
-    Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
+    Hardware.mecanumDrive.setFirstGearPercentage(KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
     // =========================================================
     // User code goes below here
     // =========================================================
@@ -282,9 +283,9 @@ public void robotInit ()
                 ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
         Hardware.leftFrontEncoder.setDistancePerPulse(
                 ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-        Hardware.tankDrive.setGearPercentage(1, FIRST_GEAR);
-        Hardware.tankDrive.setGearPercentage(2, SECOND_GEAR);
-        Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
+        Hardware.tankDrive.setGearPercentage(1, KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
+        Hardware.tankDrive.setGearPercentage(2, KILROY_XVIII_SECOND_GEAR_PERCENTAGE);
+        Hardware.mecanumDrive.setFirstGearPercentage(KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
         Hardware.rightFrontMotor.setInverted(false);
         Hardware.rightRearMotor.setInverted(false);
         Hardware.leftFrontMotor.setInverted(false);
@@ -318,11 +319,11 @@ public void robotInit ()
         Hardware.rightFrontEncoder.setDistancePerPulse(
                 ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
         Hardware.tankDrive.setGearPercentage(1,
-                Robot.KILROY_XVII_FIRST_GEAR);
+                Robot.KILROY_XVII_FIRST_GEAR_PERCENTAGE);
         Hardware.tankDrive.setGearPercentage(2,
-                Robot.KILROY_XVII_SECOND_GEAR);
+                Robot.KILROY_XVII_SECOND_GEAR_PERCENTAGE);
         Hardware.mecanumDrive
-                .setFirstGearPercentage(Robot.KILROY_XVII_SECOND_GEAR);
+                .setFirstGearPercentage(Robot.KILROY_XVII_SECOND_GEAR_PERCENTAGE);
         Hardware.rightFrontMotor.setInverted(true);
         Hardware.rightRearMotor.setInverted(false);
         Hardware.leftFrontMotor.setInverted(false);
@@ -351,16 +352,16 @@ public void robotInit ()
     // initialize PID values and set the motor to 0.0 because it isn't safe
     // if
     // we don't.
-    // Hardware.shooterMotor.changeControlMode(TalonControlMode.Speed);TODO
+    Hardware.shooterMotor.changeControlMode(TalonControlMode.Speed);
     // put back in once finished testing!!!
-    // Hardware.shooterMotor.configPeakOutputVoltage(12f, -12f);
-    // Hardware.shooterMotor.configNominalOutputVoltage(0f, 0f);
-    // Hardware.shooterMotor
-    // .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-    // Hardware.shooterMotor.configEncoderCodesPerRev(1024);
-    // Hardware.shooterMotor.setPID(shooterP, shooterI, shooterD);
-    // Hardware.shooterMotor.setSetpoint(0.0);
-    // Hardware.shooterMotor.reverseSensor(true);
+    Hardware.shooterMotor.configPeakOutputVoltage(12f, -12f);
+    Hardware.shooterMotor.configNominalOutputVoltage(0f, 0f);
+    Hardware.shooterMotor
+            .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+    Hardware.shooterMotor.configEncoderCodesPerRev(1024);
+    Hardware.shooterMotor.setPID(shooterP, shooterI, shooterD);
+    Hardware.shooterMotor.setSetpoint(0.0);
+    Hardware.shooterMotor.reverseSensor(true);
 
     if (Hardware.runningInLab == true)
         {
@@ -379,10 +380,14 @@ public void robotInit ()
     // -------------------------------------
     // USB Camera initialization
     // -------------------------------------
-    Hardware.camForward.setResolution(320, 240);
 
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
+
+    // Sets the scaling factor and general ultrasonic stuff
+    Hardware.rightUS.setScalingFactor(.13);
+    Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
+    Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
 
     Hardware.gimbalMotor
             .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
@@ -420,7 +425,7 @@ public void teleopInit ()
     // setup
     // ---------------------------------------
     System.out.println("Started teleopInit().");
-    Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
+    Hardware.mecanumDrive.setFirstGearPercentage(KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
     // =========================================================
     // User code goes below here
     // =========================================================
@@ -504,31 +509,27 @@ public void testPeriodic ()
 // TUNEABLES
 // ==========================================
 
-
 /**
  * The percentage we want the motors to run at while we are in first gear
- * for Kilroy XVIII
  */
-public static final double FIRST_GEAR = .6;
+public static final double KILROY_XVIII_FIRST_GEAR_PERCENTAGE = .6;
 
+/**
+ * The percentage we want the motors to run at while we are in second gear
+ */
+public static final double KILROY_XVIII_SECOND_GEAR_PERCENTAGE = 1;
 
 /**
  * The percentage we want the motors to run at while we are in first gear
  * for Kilroy XVII/ Ballbot
  */
-public static final double KILROY_XVII_FIRST_GEAR = 1.0;
-
-/**
- * The percentage we want the motors to run at while we are in second gear
- * for Kilroy XVIII
- */
-public static final double SECOND_GEAR = 1.0;
+public static final double KILROY_XVII_FIRST_GEAR_PERCENTAGE = 1.0;
 
 /**
  * The percentage we want the motors to run at while we are in second gear
  * for Kilroy XVII/ Ballbot
  */
-public static final double KILROY_XVII_SECOND_GEAR = 1.0;
+public static final double KILROY_XVII_SECOND_GEAR_PERCENTAGE = 1.0;
 
 public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.069;
 
