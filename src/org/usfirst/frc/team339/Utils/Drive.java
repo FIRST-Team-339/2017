@@ -267,58 +267,50 @@ private boolean firstTimeDriveInches = true;
 public boolean driveStraightInches (double inches, double speed)
 {
     // Again, we don't know why it's going backwards...
-
+    System.out.println("We are driving straight");
+    System.out.println(
+            "Average Encoder Values" + this.getAveragedEncoderValues());
     double averageLeft = (this.getLeftFrontEncoderDistance()
             + this.getLeftRearEncoderDistance()) / 2;
     double averageRight = (this.getRightFrontEncoderDistance()
             + this.getRightRearEncoderDistance()) / 2;
     // System.out.println("Average Left: " + averageLeft);
     // System.out.println("Average Right: " + averageRight);
-    System.out.println("LF Distance Per Pulse: "
-            + getEncoderDistancePulse(leftFrontEncoder));
-    System.out.println("RF Distance Per Pulse: "
-            + getEncoderDistancePulse(rightFrontEncoder));
-    System.out.println("LR Distance Per Pulse: "
-            + getEncoderDistancePulse(leftRearEncoder));
-    System.out.println("RR Distance Per Pulse: "
-            + getEncoderDistancePulse(rightRearEncoder));
-    if (firstTimeDriveInches)
+    if (firstTimeDriveInches == true)
         {
         this.resetEncoders();
         firstTimeDriveInches = false;
+        System.out.println("First time inches");
+        return (true);
         }
 
-    this.driveNoDeadband(speed, 0.0);
-    if (averageRight >= averageLeft + getEncoderSlack())
-        bottomValue = true;
-    if (averageRight <= averageLeft - getEncoderSlack())//
-        topValue = true;
-    if (bottomValue == true && topValue == true)
-        // this.drive(speed, 0);
+    if (Math.abs(this.getAveragedEncoderValues()) <= Math
+            .abs(inches))
+        {
+        if (averageRight >= averageLeft - getEncoderSlack()
+                && averageRight <= averageLeft + getEncoderSlack())
+            this.driveNoDeadband(speed, 0);
         if (averageLeft > averageRight - getEncoderSlack())//
-        this.driveNoDeadband(speed + getDriveCorrection(), speed);
-
-    if (averageLeft < averageRight + getEncoderSlack())//
-        this.driveNoDeadband(speed,
-                speed + getDriveCorrection());
+            this.driveNoDeadband(speed + getDriveCorrection(), speed);
+        if (averageLeft < averageRight + getEncoderSlack())//
+            this.driveNoDeadband(speed,
+                    speed + getDriveCorrection());
+        return true;
+        }
     if (Math.abs(this.getAveragedEncoderValues()) >= Math
             .abs(inches))
         {
         this.stopMovement();
-        this.driveNoDeadband(0.0, 0.0);
+        // this.driveNoDeadband(0.0, 0.0);
         // this.stopMovement();
+        System.out.println("We are in the brake loop");
         firstTimeDriveInches = true;
-        return true;
+        return (false);
         }
-    bottomValue = false;
-    topValue = false;
-    return false;
+    return true;
 
 }
 
-private boolean bottomValue = false;
-
-private boolean topValue = false;
 
 /**
  * Aligns to the low dual targets for the gear peg. This finds the
@@ -756,6 +748,7 @@ public brakeReturns stopMovement ()
         {
         movementTimer.start();
         }
+    System.out.println("We are trying to brake HOORAH");
     // if timer is equal to the MAX_STOPPING_TIME then basically remove
     // deadband range, stop the motors, and stop then reset the stopTimer
     // returns timeExceeded
