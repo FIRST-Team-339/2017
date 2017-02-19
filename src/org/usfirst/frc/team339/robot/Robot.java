@@ -65,6 +65,8 @@ import org.usfirst.frc.team339.Hardware.Hardware;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.vision.AxisCamera.Resolution;
+import edu.wpi.first.wpilibj.vision.AxisCamera.WhiteBalance;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -106,7 +108,8 @@ public void autonomousInit ()
     // setup
     // ---------------------------------------
     System.out.println("Started AutonousInit().");
-    Hardware.mecanumDrive.setFirstGearPercentage(KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
+    Hardware.mecanumDrive
+            .setFirstGearPercentage(KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
     // =========================================================
     // User code goes below here
     // =========================================================
@@ -283,9 +286,12 @@ public void robotInit ()
                 ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
         Hardware.leftFrontEncoder.setDistancePerPulse(
                 ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-        Hardware.tankDrive.setGearPercentage(1, KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
-        Hardware.tankDrive.setGearPercentage(2, KILROY_XVIII_SECOND_GEAR_PERCENTAGE);
-        Hardware.mecanumDrive.setFirstGearPercentage(KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
+        Hardware.tankDrive.setGearPercentage(1,
+                KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
+        Hardware.tankDrive.setGearPercentage(2,
+                KILROY_XVIII_SECOND_GEAR_PERCENTAGE);
+        Hardware.mecanumDrive.setFirstGearPercentage(
+                KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
         Hardware.rightFrontMotor.setInverted(false);
         Hardware.rightRearMotor.setInverted(false);
         Hardware.leftFrontMotor.setInverted(false);
@@ -323,7 +329,8 @@ public void robotInit ()
         Hardware.tankDrive.setGearPercentage(2,
                 Robot.KILROY_XVII_SECOND_GEAR_PERCENTAGE);
         Hardware.mecanumDrive
-                .setFirstGearPercentage(Robot.KILROY_XVII_SECOND_GEAR_PERCENTAGE);
+                .setFirstGearPercentage(
+                        Robot.KILROY_XVII_SECOND_GEAR_PERCENTAGE);
         Hardware.rightFrontMotor.setInverted(true);
         Hardware.rightRearMotor.setInverted(false);
         Hardware.leftFrontMotor.setInverted(false);
@@ -377,6 +384,11 @@ public void robotInit ()
     // -------------------------------------
     CameraServer.getInstance().addAxisCamera("10.3.39.11");
 
+    Hardware.axisCamera.writeColorLevel(79);
+    Hardware.axisCamera.writeBrightness(1);
+    Hardware.axisCamera.writeResolution(Resolution.k320x240);
+    Hardware.axisCamera.writeWhiteBalance(WhiteBalance.kFixedOutdoor1);
+
     // -------------------------------------
     // USB Camera initialization
     // -------------------------------------
@@ -425,7 +437,8 @@ public void teleopInit ()
     // setup
     // ---------------------------------------
     System.out.println("Started teleopInit().");
-    Hardware.mecanumDrive.setFirstGearPercentage(KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
+    Hardware.mecanumDrive
+            .setFirstGearPercentage(KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
     // =========================================================
     // User code goes below here
     // =========================================================

@@ -187,9 +187,9 @@ private static Drive.AlignReturnType cameraState = Drive.AlignReturnType.NO_BLOB
 // TUNEABLES
 // ==========================================
 
-private static final double ALIGN_CORRECT_VAR = 45;
+private static final double ALIGN_CORRECT_VAR = 30;
 
-private static final double ALIGN_DRIVE_SPEED = .4;
+private static final double ALIGN_DRIVE_SPEED = .25;
 
 private static final double ALIGN_DEADBAND = 10 // +/- pixels
         / Hardware.axisCamera.getHorizontalResolution();
@@ -288,9 +288,7 @@ public static void periodic ()
             Hardware.leftFrontMotor.set(0);
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
-
             Hardware.ringlightRelay.set(Value.kOff);
-
             break;
         }
 
@@ -369,7 +367,6 @@ private static boolean placeCenterGearPath ()
             break;
         case DRIVE_TO_GEAR_WITH_CAMERA:
             // Get our return type from the strafe to gear.
-
             // NOTE: if the constructor for autoDrive uses a mecanum
             // transmission,
             // we will strafe. If it uses a four wheel transmission, it will

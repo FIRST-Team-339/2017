@@ -474,8 +474,6 @@ public AlignReturnType strafeToGear (double driveSpeed,
     if (this.rightUlt
             .getDistanceFromNearestBumper() <= distanceToTarget)
         {
-
-
         System.out.println("distance from nearsest bumper: "
                 + this.rightUlt.getDistanceFromNearestBumper());
         System.out.println("distance to target: " + distanceToTarget);
@@ -497,7 +495,6 @@ public AlignReturnType strafeToGear (double driveSpeed,
         {
         System.out.println("trying to adjust left");
         this.driveNoDeadband(driveSpeed, -alignVar);
-
         }
     else if (distanceToCenter > 0)
         {

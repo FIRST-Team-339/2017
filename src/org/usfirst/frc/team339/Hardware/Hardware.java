@@ -274,6 +274,7 @@ public static VisionScript visionScript = new VisionScript(
         new RemoveSmallObjectsOperator(1, true),
         new ConvexHullOperator(false));
 
+
 public static ImageProcessor imageProcessor = new ImageProcessor(
         axisCamera, visionScript);
 // -------------------------------------

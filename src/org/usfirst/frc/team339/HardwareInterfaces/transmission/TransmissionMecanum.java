@@ -57,17 +57,22 @@ public TransmissionMecanum (SpeedController rightFrontSpeedController,
 public void driveNoDeadband (double magnitude, double direction,
         double rotation)
 {
-    // Save the current deadband
+    // Save the current deadbands
     this.tempSavedDeadband = this.getDeadbandPercentageZone();
-    // set the current deadband to zero so we can drive slowly
+    this.tempSavedAngularDeadband = this.getDirectionalDeadzone();
+    // set the current deadbands to zero so we can drive slowly
     this.setDeadbandPercentageZone(0.0);
-    // drive without the deadband
+    this.setDirectionalDeadzone(0.0);
+    // drive without the deadbands
     this.drive(magnitude, direction, rotation);
-    // restore the deadband
+    // restore the deadbands
+    this.setDirectionalDeadzone(tempSavedAngularDeadband);
     this.setDeadbandPercentageZone(tempSavedDeadband);
 }
 
 private double tempSavedDeadband = 0.0;
+
+private double tempSavedAngularDeadband = 0.0;
 
 /**
  * Drives the transmission in mecanum drive with 0 rotation. NOTE: this
