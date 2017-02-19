@@ -266,7 +266,7 @@ public static UsbCamera camForward = CameraServer.getInstance()
         .startAutomaticCapture(0);
 
 
-public static KilroyCamera axisCamera = new KilroyCamera(true);// TODO change
+public static KilroyCamera axisCamera = new KilroyCamera(false);// TODO change
 
 
 public static VisionScript visionScript = new VisionScript(
@@ -320,6 +320,9 @@ public static Joystick rightOperator = new Joystick(3);
 
 public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
         rightOperator, 5, false);
+
+public static MomentarySwitch testSwitch = new MomentarySwitch(
+        leftDriver, 9, false);
 // **********************************************************
 // Kilroy's Ancillary classes
 // **********************************************************
