@@ -299,10 +299,6 @@ public static void periodic ()
     // =================================================================
     // CAMERA CODE
     // =================================================================
-    Hardware.axisCamera
-            .takeSinglePicture(Hardware.leftOperator.getRawButton(8)
-                    || Hardware.rightOperator.getRawButton(8)
-                    || Hardware.leftOperator.getRawButton(11));
 
     // Written by Ashley Espeland, has not been tested
     // cameraServo code setting to either the higher or the lower angle
@@ -495,14 +491,7 @@ public static void printStatements ()
     // Red Light/IR Sensors
     // prints the state of the sensor
     // ---------------------------------
-    // if (Hardware.ballLoaderSensor.isOn() == true)
-    // {
-    // System.out.println("Ball IR Sensor is On");
-    // }
-    // else if (Hardware.ballLoaderSensor.isOn() == false)
-    // {
-    // System.out.println("Ball IR Sensor is Off");
-    // }
+    // System.out.println("Ball IR: " + Hardware.ballLoaderSensor.isOn());
     // =================================
     // Pneumatics
     // =================================
@@ -522,6 +511,10 @@ public static void printStatements ()
     // =================================
     // Analogs
     // =================================
+
+    // GYRO
+    // System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
+
     //
     // We don't want the print statements to flood everything and go ahhhhhhhh
     //
@@ -630,8 +623,6 @@ public static boolean cameraPositionHasChanged = false;
 public static boolean cancelAgitator = false;
 
 public static boolean hasCanceledAgitator = false;
-
-private static boolean prevState = false; // TODO Testing take out
 
 private static boolean isTestingDriveCode = true;
 
