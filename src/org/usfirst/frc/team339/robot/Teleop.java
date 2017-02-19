@@ -93,9 +93,12 @@ public static void init ()
                 Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
         Hardware.leftFrontEncoder.setDistancePerPulse(
                 Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-        Hardware.tankDrive.setGearPercentage(1, Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
-        Hardware.tankDrive.setGearPercentage(2, Robot.KILROY_XVIII_SECOND_GEAR_PERCENTAGE);
-        Hardware.mecanumDrive.setFirstGearPercentage(Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
+        Hardware.tankDrive.setGearPercentage(1,
+                Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
+        Hardware.tankDrive.setGearPercentage(2,
+                Robot.KILROY_XVIII_SECOND_GEAR_PERCENTAGE);
+        Hardware.mecanumDrive.setFirstGearPercentage(
+                Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
         Hardware.rightFrontMotor.setInverted(false);
         Hardware.rightRearMotor.setInverted(false);
         Hardware.leftFrontMotor.setInverted(false);
@@ -138,7 +141,8 @@ public static void init ()
         Hardware.tankDrive.setGearPercentage(2,
                 Robot.KILROY_XVII_SECOND_GEAR_PERCENTAGE);
         Hardware.mecanumDrive
-                .setFirstGearPercentage(Robot.KILROY_XVII_FIRST_GEAR_PERCENTAGE);
+                .setFirstGearPercentage(
+                        Robot.KILROY_XVII_FIRST_GEAR_PERCENTAGE);
         // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
         Hardware.rightFrontMotor.setInverted(true);
         Hardware.rightRearMotor.setInverted(false);
@@ -350,7 +354,7 @@ public static void periodic ()
                     || Hardware.leftOperator.getRawButton(11));
 
 } // end
-// Periodic
+  // Periodic
 
 private static Drive.AlignReturnType alignValue = Drive.AlignReturnType.MISALIGNED;
 
@@ -453,8 +457,13 @@ public static void printStatements ()
     // "Path Selector: " + Hardware.pathSelector.getPosition());
 
 
-    // System.out.println("Right UltraSonic distance from bumper: "
-    // + Hardware.rightUS.getDistanceFromNearestBumper());
+    System.out.println("Right UltraSonic distance from bumper: "
+            + Hardware.rightUS.getDistanceFromNearestBumper());
+    System.out.println("Right UltraSonic refined distance: "
+            + Hardware.rightUS.getRefinedDistanceValue());
+    System.out.println("Right UltraSonic raw distance: "
+            + Hardware.rightUS.getValue());
+
     // ---------------------------------
     // Encoders
     // prints the distance from the encoders
