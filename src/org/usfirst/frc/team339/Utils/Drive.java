@@ -98,6 +98,10 @@ public Drive (TransmissionMecanum transmissionMecanum,
 
     this.rightUlt = rightUlt;
     isUsingUltrasonics = true;
+    // this.leftFrontEncoder = leftFrontEncoder; // TODO Take out
+    // this.rightFrontEncoder = rightFrontEncoder;
+    // this.leftRearEncoder = leftRearEncoder;
+    // this.rightRearEncoder = rightRearEncoder;
 
 
 }
@@ -237,7 +241,7 @@ public boolean driveInches (double inches, double speed)
         this.resetEncoders();
         firstTimeDriveInches = false;
         }
-    System.out.println(this.getAveragedEncoderValues());
+
     if (Math.abs(this.getAveragedEncoderValues()) >= Math.abs(inches))
         {
         this.drive(0.0, 0.0);
@@ -744,8 +748,7 @@ public brakeReturns stopMovement ()
     // returns timeExceeded
     if (movementTimer.get() == MAX_STOPPING_TIME)
         {
-        this.setJoystickDeadbandRange(0.0);
-        this.drive(0.0, 0.0); // TODO
+        this.driveNoDeadband(0.0, 0.0); // TODO
         movementTimer.stop();
         movementTimer.reset();
         return this.timeExceeded;
