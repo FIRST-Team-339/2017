@@ -321,6 +321,9 @@ public static Joystick rightOperator = new Joystick(3);
 
 public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
         rightOperator, 5, false);
+
+public static MomentarySwitch cameraServoSwitch = new MomentarySwitch(
+        rightOperator, 10, false);
 // **********************************************************
 // Kilroy's Ancillary classes
 // **********************************************************

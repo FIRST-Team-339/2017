@@ -212,13 +212,6 @@ public static void periodic ()
     // Print out any data we want from the hardware elements.
     printStatements();
 
-    if (Hardware.rightOperator.getRawButton(2))
-        Hardware.intake.startIntake();
-    else if (Hardware.rightOperator.getRawButton(3))
-        Hardware.intake.reverseIntake();
-    else
-        Hardware.intake.stopIntake();
-
     // =================================================================
     // Driving code
     // =================================================================
@@ -283,61 +276,29 @@ public static void periodic ()
     if (Hardware.rightOperator.getTrigger())
         {
         Hardware.shooter.loadBalls();
-        Hardware.shooterMotor.set(1000);
+        Hardware.shooterMotor
+                .set(Hardware.shooter.calculateRPMToMakeGoal(7.417));
         }
     else if (Hardware.rightOperator.getRawButton(9))
-        Hardware.shooterMotor.set(1000);
+        Hardware.shooterMotor
+                .set(Hardware.shooter.calculateRPMToMakeGoal(7.417));
     else
-        Hardware.shooterMotor.set(0.0);
+        Hardware.shooterMotor
+                .set(0.0);
 
     // END SHOOTER TESTING
     // =================================================================
     // CAMERA CODE
     // =================================================================
 
-    // Written by Ashley Espeland, has not been tested
-    // cameraServo code setting to either the higher or the lower angle
-    // position
-    // if button 9 equals true and this method had not been called
-    // since the last time the button read false (cameraPositionHasChanged)
-    if (Hardware.rightOperator.getRawButton(5) == true
-            && cameraPositionHasChanged == false)
+    // Sorry ash, this is all you needed.
+    if (Hardware.cameraServoSwitch.isOnCheckNow())
         {
-        // set changeCameraServoPosition to true
-        changeCameraServoPosition = true;
+        Hardware.cameraServo.setAngle(190);
         }
-    // if changeCamerServoPosition equals true
-    if (changeCameraServoPosition == true)
+    else
         {
-        // if the servo is in the lower position
-        if (Hardware.cameraServo
-                .getAngle() == LOWER_CAMERASERVO_POSITION)
-            {
-            // then set the servo to the higher position and change
-            // cameraPositionHasChanged to true
-            Hardware.cameraServo
-                    .setAngle(HIGHER_CAMERASERVO_POSITION);
-            cameraPositionHasChanged = true;
-            }
-        // if the cameraServo is in the higher position
-        else if (Hardware.cameraServo
-                .getAngle() == HIGHER_CAMERASERVO_POSITION)
-            {
-            // set the servo to the lower position and change
-            // cameraPositionHasChanged to true
-            Hardware.cameraServo
-                    .setAngle(LOWER_CAMERASERVO_POSITION);
-            cameraPositionHasChanged = true;
-            }
-
-        }
-    // if camera servo position has been changed and the button equals false
-    if (changeCameraServoPosition == true
-            && Hardware.leftOperator.getRawButton(4) == false)
-        {
-        // set the cameraPositionHasChanged to false to be able to change
-        // the position again when the button is pushed again
-        cameraPositionHasChanged = false;
+        Hardware.cameraServo.setAngle(0);
         }
 
 
@@ -403,8 +364,8 @@ public static void printStatements ()
     // Hardware.leftRearMotor.get());
 
 
-    // System.out
-    // .println("Flywheel Motor: " + Hardware.shooterMotor.get());
+    System.out
+            .println("Flywheel Motor: " + Hardware.shooterMotor.get());
     //
     // System.out.println("Intake Motor: " + Hardware.intakeMotor.get());
     // if (Hardware.rightOperator.getRawButton(11)) {
@@ -526,7 +487,7 @@ public static void printStatements ()
     // + Hardware.leftUS.getDistanceFromNearestBumper());
     // System.out.println("RightUS = "
     // + Hardware.rightUS.getDistanceFromNearestBumper());
-    // System.out.println("Delay Pot: " + Hardware.delayPot.get());
+    System.out.println("Delay Pot: " + Hardware.delayPot.get());
 
     // ---------------------------------
     // pots

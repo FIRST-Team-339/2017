@@ -487,7 +487,7 @@ private final double RELATIVE_GOAL_HEIGHT_METERS = 1.93;
 
 private final double FLYWHEEL_RADIUS_METERS = 0.0508;
 
-private final double FLYWHEEL_SPEED_CORRECTION_CONSTANT = .3;// TODO tune
+private final double FLYWHEEL_SPEED_CORRECTION_CONSTANT = 0;// TODO tune
 
 /**
  * factor the gimbal encoder must be set to (distance per pulse)
