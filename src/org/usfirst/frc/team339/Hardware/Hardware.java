@@ -71,7 +71,7 @@ public static double joystickDeadzone = .2;
  */
 public static boolean runningInLab = false;
 
-public static boolean isRunningOnKilroyXVIII = true; // 18
+public static boolean isRunningOnKilroyXVIII = false; // 18
 // -------------------------------------
 // Private Constants
 // -------------------------------------
@@ -240,6 +240,10 @@ public static Potentiometer delayPot = new Potentiometer(1, 270);// TODO max //
 // Sonar/Ultrasonic
 // -------------------------------------
 public static UltraSonic rightUS = new UltraSonic(2);
+
+public static final double KILROY_XVIII_US_SCALING_FACTOR = .13;
+
+public static final double KILROY_XVII_US_SCALING_FACTOR = .13;
 
 // **********************************************************
 // roboRIO CONNECTIONS CLASSES

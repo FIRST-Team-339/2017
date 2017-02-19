@@ -80,7 +80,7 @@ import edu.wpi.first.wpilibj.Relay;
  * @author Bob Brown
  * @written Jan 2, 2011 -------------------------------------------------------
  */
-public class Robot extends IterativeRobot 
+public class Robot extends IterativeRobot
 {
 boolean testdasboard = true;
 // =================================================
@@ -297,6 +297,11 @@ public void robotInit ()
         // Hardware.rightRearMotorSafety.setExpiration(.5);
         // Hardware.leftFrontMotorSafety.setExpiration(.5);
         // Hardware.leftRearMotorSafety.setExpiration(1.0);
+        // Sets the scaling factor and general ultrasonic stuff
+        Hardware.rightUS.setScalingFactor(
+                Hardware.KILROY_XVIII_US_SCALING_FACTOR);
+        Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
+        Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
         }
     else
         {
@@ -326,6 +331,11 @@ public void robotInit ()
         // Hardware.mecanumDrive
         // .setDeadbandPercentageZone(Hardware.joystickDeadzone);
         // Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+        // Sets the scaling factor and general ultrasonic stuff
+        Hardware.rightUS.setScalingFactor(
+                Hardware.KILROY_XVII_US_SCALING_FACTOR);
+        Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
+        Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
         }
     // -------------------------------------
     // motor initialization
@@ -338,19 +348,19 @@ public void robotInit ()
 
     // Hardware.tankDrive.setRightJoystickReversed(true);
 
-		// initialize PID values and set the motor to 0.0 because it isn't safe
-		// if
+    // initialize PID values and set the motor to 0.0 because it isn't safe
+    // if
     // we don't.
-		// Hardware.shooterMotor.changeControlMode(TalonControlMode.Speed);TODO
-		// put back in once finished testing!!!
-		// Hardware.shooterMotor.configPeakOutputVoltage(12f, -12f);
-		// Hardware.shooterMotor.configNominalOutputVoltage(0f, 0f);
-		// Hardware.shooterMotor
-		// .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-		// Hardware.shooterMotor.configEncoderCodesPerRev(1024);
-		// Hardware.shooterMotor.setPID(shooterP, shooterI, shooterD);
-		// Hardware.shooterMotor.setSetpoint(0.0);
-		// Hardware.shooterMotor.reverseSensor(true);
+    // Hardware.shooterMotor.changeControlMode(TalonControlMode.Speed);TODO
+    // put back in once finished testing!!!
+    // Hardware.shooterMotor.configPeakOutputVoltage(12f, -12f);
+    // Hardware.shooterMotor.configNominalOutputVoltage(0f, 0f);
+    // Hardware.shooterMotor
+    // .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+    // Hardware.shooterMotor.configEncoderCodesPerRev(1024);
+    // Hardware.shooterMotor.setPID(shooterP, shooterI, shooterD);
+    // Hardware.shooterMotor.setSetpoint(0.0);
+    // Hardware.shooterMotor.reverseSensor(true);
 
     if (Hardware.runningInLab == true)
         {
@@ -374,14 +384,9 @@ public void robotInit ()
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
 
-    // Sets the scaling factor and general ultrasonic stuff
-    Hardware.rightUS.setScalingFactor(.13);
-    Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
-    Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
-
     Hardware.gimbalMotor
             .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-		Hardware.gimbalMotor.setEncPosition(0);
+    Hardware.gimbalMotor.setEncPosition(0);
 
     // =========================================================
     // User code goes above here
@@ -511,7 +516,7 @@ public static final double FIRST_GEAR = .6;
  * The percentage we want the motors to run at while we are in first gear
  * for Kilroy XVII/ Ballbot
  */
-public static final double KILROY_XVII_FIRST_GEAR = .6;
+public static final double KILROY_XVII_FIRST_GEAR = 1.0;
 
 /**
  * The percentage we want the motors to run at while we are in second gear

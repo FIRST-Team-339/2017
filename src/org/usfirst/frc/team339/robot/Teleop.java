@@ -108,7 +108,8 @@ public static void init ()
         // Hardware.rightRearMotorSafety.setExpiration(.5);
         // Hardware.leftFrontMotorSafety.setExpiration(.5);
         // Hardware.leftRearMotorSafety.setExpiration(1.0);
-        Hardware.rightUS.setScalingFactor(.13);
+        Hardware.rightUS.setScalingFactor(
+                Hardware.KILROY_XVIII_US_SCALING_FACTOR);
         Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
         Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
         Hardware.tankDrive.setGear(1);
@@ -137,7 +138,7 @@ public static void init ()
         Hardware.tankDrive.setGearPercentage(2,
                 Robot.KILROY_XVII_SECOND_GEAR);
         Hardware.mecanumDrive
-                .setFirstGearPercentage(Robot.KILROY_XVII_SECOND_GEAR);
+                .setFirstGearPercentage(Robot.KILROY_XVII_FIRST_GEAR);
         // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
         Hardware.rightFrontMotor.setInverted(true);
         Hardware.rightRearMotor.setInverted(false);
@@ -147,7 +148,9 @@ public static void init ()
         // Hardware.mecanumDrive
         // .setDeadbandPercentageZone(Hardware.joystickDeadzone);
         Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-        Hardware.rightUS.setScalingFactor(.13);
+        Hardware.rightUS
+                .setScalingFactor(
+                        Hardware.KILROY_XVII_US_SCALING_FACTOR);
         Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
         Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
         Hardware.tankDrive.setGear(1);
@@ -251,22 +254,6 @@ public static void periodic ()
     // =================================================================
     // Driving code
     // =================================================================
-
-
-    if (Hardware.leftDriver.getRawButton(6))
-        {
-        Hardware.mecanumDrive.drive(
-                Hardware.leftDriver.getMagnitude(),
-                0, rotationValue);
-        isAligning = true;
-        }
-
-    if (!Hardware.leftDriver.getRawButton(6))
-        {
-
-        isAligning = false;
-        }
-
     // rotate only when we are pulling the trigger
     if (Hardware.leftDriver.getTrigger())
         {
@@ -539,14 +526,14 @@ public static void printStatements ()
     // prints value of the motors
     // =================================
 
-    System.out.println("Right Front Motor Controller: "
-            + Hardware.rightFrontMotor.get());
-    System.out.println("Left Front Motor Controller: " +
-            Hardware.leftFrontMotor.get());
-    System.out.println("Right Rear Motor Controller: " +
-            Hardware.rightRearMotor.get());
-    System.out.println("Left Rear Motor Controller: " +
-            Hardware.leftRearMotor.get());
+    // System.out.println("Right Front Motor Controller: "
+    // + Hardware.rightFrontMotor.get());
+    // System.out.println("Left Front Motor Controller: " +
+    // Hardware.leftFrontMotor.get());
+    // System.out.println("Right Rear Motor Controller: " +
+    // Hardware.rightRearMotor.get());
+    // System.out.println("Left Rear Motor Controller: " +
+    // Hardware.leftRearMotor.get());
 
 
     // System.out.println("Flywheel Motor: " + Hardware.shooterMotor.get());
@@ -588,15 +575,15 @@ public static void printStatements ()
     // ---------------------------------
     // System.out.println("Gear Limit Switch: "
     // + Hardware.gearLimitSwitch.isOn());
-
-    // System.out.println("Backup or fire: " + Hardware.backupOrFire.isOn());
-    // System.out.println("Enable Auto: " + Hardware.enableAutonomous.isOn());
-
+    // System.out.println(
+    // "Backup or fire: " + Hardware.backupOrFireOrHopper.isOn());
+    // System.out.println(
+    // "Enable Auto: " + Hardware.enableAutonomous.isOn());
     // System.out.println("Path Selector: " +
     // Hardware.pathSelector.getPosition());
 
-    // System.out.println("Right UltraSonic distance from bumper: "
-    // + Hardware.rightUS.getDistanceFromNearestBumper());
+    System.out.println("Right UltraSonic distance from bumper: "
+            + Hardware.rightUS.getDistanceFromNearestBumper());
     // ---------------------------------
     // Encoders
     // prints the distance from the encoders
