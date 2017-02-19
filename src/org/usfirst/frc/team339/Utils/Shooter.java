@@ -294,9 +294,6 @@ private turnReturn turnGimbal (double speed)
     // TODO direction
     /*
      * Make sure we never turn faster than the maximum speed.
-     *
-     * ALEX! your TERNARY OPERATOR was CRAP! -McGee
-     * 
      * ALSO motor is reversed so... that's why it's like that.
      */
     if (speed < 0)
@@ -382,7 +379,7 @@ public turnToGoalReturn turnToGoal ()
                 return turnToGoalReturn.OUT_OF_GIMBALING_RANGE;
                 }
             }
-        // still working...l
+        // still working...
         return turnToGoalReturn.WORKING;
         }
     // We don't see anything.

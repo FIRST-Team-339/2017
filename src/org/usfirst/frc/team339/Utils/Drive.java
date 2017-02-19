@@ -98,6 +98,10 @@ public Drive (TransmissionMecanum transmissionMecanum,
 
     this.rightUlt = rightUlt;
     isUsingUltrasonics = true;
+    // this.leftFrontEncoder = leftFrontEncoder; // TODO Take out
+    // this.rightFrontEncoder = rightFrontEncoder;
+    // this.leftRearEncoder = leftRearEncoder;
+    // this.rightRearEncoder = rightRearEncoder;
 
 
 }
@@ -237,7 +241,7 @@ public boolean driveInches (double inches, double speed)
         this.resetEncoders();
         firstTimeDriveInches = false;
         }
-    System.out.println(this.getAveragedEncoderValues());
+
     if (Math.abs(this.getAveragedEncoderValues()) >= Math.abs(inches))
         {
         this.drive(0.0, 0.0);
@@ -266,60 +270,44 @@ private boolean firstTimeDriveInches = true;
  */
 public boolean driveStraightInches (double inches, double speed)
 {
-    // Again, we don't know why it's going backwards...
-
+    System.out.println("We are driving straight");
+    System.out.println(
+            "Average Encoder Values"
+                    + this.getAveragedEncoderValues());
     double averageLeft = (this.getLeftFrontEncoderDistance()
             + this.getLeftRearEncoderDistance()) / 2;
     double averageRight = (this.getRightFrontEncoderDistance()
             + this.getRightRearEncoderDistance()) / 2;
     // System.out.println("Average Left: " + averageLeft);
     // System.out.println("Average Right: " + averageRight);
-    System.out.println("LF Distance Per Pulse: "
-            + getEncoderDistancePulse(leftFrontEncoder));
-    System.out.println("RF Distance Per Pulse: "
-            + getEncoderDistancePulse(rightFrontEncoder));
-    System.out.println("LR Distance Per Pulse: "
-            + getEncoderDistancePulse(leftRearEncoder));
-    System.out.println("RR Distance Per Pulse: "
-            + getEncoderDistancePulse(rightRearEncoder));
-    if (firstTimeDriveInches)
+    if (firstTimeDriveInches == true)
         {
         this.resetEncoders();
         firstTimeDriveInches = false;
+        System.out.println("First time inches");
         }
 
-    this.driveNoDeadband(speed, 0.0);
-    System.out.println("Speed: " + speed);
-    if (averageRight >= averageLeft + getEncoderSlack())
-        bottomValue = true;
-    if (averageRight <= averageLeft - getEncoderSlack())//
-        topValue = true;
-    if (bottomValue == true && topValue == true)
-        // this.drive(speed, 0);
-        if (averageLeft > averageRight - getEncoderSlack())//
-        this.driveNoDeadband(speed + getDriveCorrection(), speed);
-
-    if (averageLeft < averageRight + getEncoderSlack())//
-        this.driveNoDeadband(speed,
-                speed + getDriveCorrection());
-    if (Math.abs(this.getAveragedEncoderValues()) >= Math
+    if (Math.abs(this.getAveragedEncoderValues()) <= Math
             .abs(inches))
         {
-        this.stopMovement();
-        this.driveNoDeadband(0.0, 0.0);
-        // this.stopMovement();
-        firstTimeDriveInches = true;
-        return true;
+        if (averageRight >= averageLeft - getEncoderSlack()
+                && averageRight <= averageLeft + getEncoderSlack())
+            this.driveNoDeadband(speed, 0);
+        if (averageLeft > averageRight)//
+            this.driveNoDeadband(speed + getDriveCorrection(), speed);
+        if (averageLeft < averageRight)//
+            this.driveNoDeadband(speed,
+                    speed + getDriveCorrection());
+        return false;
         }
-    bottomValue = false;
-    topValue = false;
-    return false;
+
+    this.stopMovement();
+    System.out.println("We are in the brake loop");
+    firstTimeDriveInches = true;
+    return true;
 
 }
 
-private boolean bottomValue = false;
-
-private boolean topValue = false;
 
 /**
  * Aligns to the low dual targets for the gear peg. This finds the
@@ -413,7 +401,7 @@ private boolean isTurning = false;
  * @return Whether or not we are aligned, close enough, misaligned, or see no
  *         blobs.
  */
-// Alex should comment his code
+// Alex should comment his code. This isn't mine
 public AlignReturnType strafeToGear (double driveSpeed,
         double alignVar, double deadband, double relativeCenter,
         int distanceToTarget)
@@ -474,7 +462,7 @@ public AlignReturnType strafeToGear (double driveSpeed,
     if (this.rightUlt
             .getDistanceFromNearestBumper() <= distanceToTarget)
         {
-        System.out.println("distance from nearsest bumper: "
+        System.out.println("distance from nearest bumper: "
                 + this.rightUlt.getDistanceFromNearestBumper());
         System.out.println("distance to target: " + distanceToTarget);
         this.purgingUltrasonic = true;
@@ -482,8 +470,6 @@ public AlignReturnType strafeToGear (double driveSpeed,
         this.driveNoDeadband(0.0, 0.0);
         return AlignReturnType.CLOSE_ENOUGH;
         }
-
-
     if (Math.abs(distanceToCenter) < deadband)
         {
         this.driveNoDeadband(driveSpeed, 0);
@@ -494,12 +480,13 @@ public AlignReturnType strafeToGear (double driveSpeed,
     if (distanceToCenter < 0)
         {
         System.out.println("trying to adjust left");
-        this.driveNoDeadband(driveSpeed, -alignVar);
+        // TODO Magic Numbers
+        this.driveNoDeadband(driveSpeed + .1, -alignVar);
         }
     else if (distanceToCenter > 0)
         {
         System.out.println("trying to adjust right");
-        this.driveNoDeadband(driveSpeed, alignVar);
+        this.driveNoDeadband(driveSpeed + .1, alignVar);
         }
     return AlignReturnType.MISALIGNED;
 }
@@ -754,13 +741,13 @@ public brakeReturns stopMovement ()
         {
         movementTimer.start();
         }
+    System.out.println("We are trying to brake HOORAH");
     // if timer is equal to the MAX_STOPPING_TIME then basically remove
     // deadband range, stop the motors, and stop then reset the stopTimer
     // returns timeExceeded
     if (movementTimer.get() == MAX_STOPPING_TIME)
         {
-        this.setJoystickDeadbandRange(0.0);
-        this.drive(0.0, 0.0); // TODO
+        this.driveNoDeadband(0.0, 0.0); // TODO
         movementTimer.stop();
         movementTimer.reset();
         return this.timeExceeded;
