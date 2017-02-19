@@ -187,9 +187,9 @@ private static Drive.AlignReturnType cameraState = Drive.AlignReturnType.NO_BLOB
 // TUNEABLES
 // ==========================================
 
-private static final double ALIGN_CORRECT_VAR = 45;
+private static final double ALIGN_CORRECT_VAR = 30;
 
-private static final double ALIGN_DRIVE_SPEED = .4;
+private static final double ALIGN_DRIVE_SPEED = .25;
 
 private static final double ALIGN_DEADBAND = 10 // +/- pixels
         / Hardware.axisCamera.getHorizontalResolution();
