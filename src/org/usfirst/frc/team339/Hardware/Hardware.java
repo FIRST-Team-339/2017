@@ -65,6 +65,10 @@ public class Hardware
 
 public static double joystickDeadzone = .2;
 
+public static double KILROY_XVII_JOYSTICK_DEADZONE = .2;
+
+public static double KILROY_XVII_JOYSTICK_DIRECTIONAL_DEADZONE = 10.0;
+
 /**
  * denote whether we are running in the lab or not. This will allow us to test
  * in the lab once the robot is bagged
@@ -246,7 +250,7 @@ public static UltraSonic rightUS = new UltraSonic(2);
 
 public static final double KILROY_XVIII_US_SCALING_FACTOR = .13;
 
-public static final double KILROY_XVII_US_SCALING_FACTOR = .26;
+public static final double KILROY_XVII_US_SCALING_FACTOR = .219;
 
 // **********************************************************
 // roboRIO CONNECTIONS CLASSES
@@ -255,10 +259,6 @@ public static final double KILROY_XVII_US_SCALING_FACTOR = .26;
 // Axis/USB Camera class
 // -------------------------------------
 
-// If you are not getting the camera dropdowns on the driver station, make this
-// ture, send, then make
-// make it false and send again.
-
 // Note: If causing problems, replace "USB_Camera_0" w/ "cam0", and
 // "USB_Camera_1" w/ "cam1"
 
@@ -266,7 +266,7 @@ public static UsbCamera camForward = CameraServer.getInstance()
         .startAutomaticCapture(0);
 
 
-public static KilroyCamera axisCamera = new KilroyCamera(true);// TODO change
+public static KilroyCamera axisCamera = new KilroyCamera(false);// TODO change
 
 
 public static VisionScript visionScript = new VisionScript(
