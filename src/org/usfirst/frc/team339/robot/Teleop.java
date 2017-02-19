@@ -93,9 +93,9 @@ public static void init ()
                 Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
         Hardware.leftFrontEncoder.setDistancePerPulse(
                 Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-        Hardware.tankDrive.setGearPercentage(1, Robot.FIRST_GEAR);
-        Hardware.tankDrive.setGearPercentage(2, Robot.SECOND_GEAR);
-        Hardware.mecanumDrive.setFirstGearPercentage(Robot.FIRST_GEAR);
+        Hardware.tankDrive.setGearPercentage(1, Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
+        Hardware.tankDrive.setGearPercentage(2, Robot.KILROY_XVIII_SECOND_GEAR_PERCENTAGE);
+        Hardware.mecanumDrive.setFirstGearPercentage(Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
         Hardware.rightFrontMotor.setInverted(false);
         Hardware.rightRearMotor.setInverted(false);
         Hardware.leftFrontMotor.setInverted(false);
@@ -104,13 +104,12 @@ public static void init ()
         Hardware.mecanumDrive
                 .setDeadbandPercentageZone(Hardware.joystickDeadzone);
         Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-
-        // Sets the scaling factor and general ultrasonic stuff
         // Hardware.rightFrontMotorSafety.setExpiration(.5);
         // Hardware.rightRearMotorSafety.setExpiration(.5);
         // Hardware.leftFrontMotorSafety.setExpiration(.5);
         // Hardware.leftRearMotorSafety.setExpiration(1.0);
-        Hardware.rightUS.setScalingFactor(.13);
+        Hardware.rightUS.setScalingFactor(
+                Hardware.KILROY_XVIII_US_SCALING_FACTOR);
         Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
         Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
         Hardware.tankDrive.setGear(1);
@@ -133,9 +132,13 @@ public static void init ()
                 Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
         Hardware.rightFrontEncoder.setDistancePerPulse(
                 Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-        // Hardware.tankDrive.setGearPercentage(1, FIRST_GEAR);
-        // Hardware.tankDrive.setGearPercentage(2, SECOND_GEAR);
-        // Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
+
+        Hardware.tankDrive.setGearPercentage(1,
+                Robot.KILROY_XVII_FIRST_GEAR_PERCENTAGE);
+        Hardware.tankDrive.setGearPercentage(2,
+                Robot.KILROY_XVII_SECOND_GEAR_PERCENTAGE);
+        Hardware.mecanumDrive
+                .setFirstGearPercentage(Robot.KILROY_XVII_FIRST_GEAR_PERCENTAGE);
         // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
         Hardware.rightFrontMotor.setInverted(true);
         Hardware.rightRearMotor.setInverted(false);
@@ -145,9 +148,17 @@ public static void init ()
         // Hardware.mecanumDrive
         // .setDeadbandPercentageZone(Hardware.joystickDeadzone);
         Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+        Hardware.rightUS
+                .setScalingFactor(
+                        Hardware.KILROY_XVII_US_SCALING_FACTOR);
+        Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
+        Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
+        Hardware.tankDrive.setGear(1);
         Hardware.autoDrive.setDriveCorrection(.3);
         Hardware.autoDrive.setEncoderSlack(1);
-        }// TODO
+        // Hardware.mecanumDrive.setDirectionalDeadzone(0.2);
+
+        }
 } // end Init
 
 /**
@@ -401,7 +412,8 @@ public static void printStatements ()
     // System.out.println("Elevator Motor: " +
     // Hardware.elevatorMotor.get());
     // }
-    System.out.println("Turret : " + Hardware.gimbalMotor.get());
+    // System.out.println("Turret Spark: " + Hardware.gimbalMotor.get());
+
     // =================================
     // CAN items
     // prints value of the CAN controllers
@@ -591,8 +603,8 @@ private final static double CAMERA_ALIGN_SPEED = .5;
 private final static double CAMERA_ALIGN_DEADBAND = 10.0 // +/- Pixels
         / Hardware.axisCamera.getHorizontalResolution();
 
-private final static double CAMERA_ALIGN_CENTER = .478; // Relative
-                                                        // coordinates
+private final static double CAMERA_ALIGN_CENTER = .478;  // Relative coordinates
+
 
 // ==========================================
 // TUNEABLES
@@ -601,17 +613,13 @@ private final static double LOWER_CAMERASERVO_POSITION = 65;                    
                                                                                                                                                                                                         // find
 // actual value
 
-private final static double HIGHER_CAMERASERVO_POSITION = 90;                                                                                                                                            // TODO
-                                                                                                                                                                                                         // find
+private final static double HIGHER_CAMERASERVO_POSITION = 90;// TODO find
 // actual
-// value
-
-// private final static double HIGHER_GEARSERVO_POSITION = 90;// TODO find
 // actual value
-// public static boolean gearPositionHasChanged = false;
+
 public static boolean changeCameraServoPosition = false;
 
-// public static boolean changeGearServoPosition = false;
+public static boolean changeGearServoPosition = false;
 
 public static boolean cameraPositionHasChanged = false;
 

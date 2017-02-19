@@ -106,7 +106,7 @@ public void autonomousInit ()
     // setup
     // ---------------------------------------
     System.out.println("Started AutonousInit().");
-    Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
+    Hardware.mecanumDrive.setFirstGearPercentage(KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
     // =========================================================
     // User code goes below here
     // =========================================================
@@ -203,6 +203,7 @@ public void disabledInit ()
     // =========================================================
     // User code goes above here
     // =========================================================
+
     // ---------------------------------------
     // done setup - tell the user we are complete
     // setup
@@ -230,6 +231,11 @@ public void disabledPeriodic ()
     // =========================================================
     // User code goes below here
     // =========================================================
+
+    Hardware.leftFrontMotor.set(0);
+    Hardware.rightFrontMotor.set(0);
+    Hardware.leftRearMotor.set(0);
+    Hardware.rightRearMotor.set(0);
 
     // Hardware.leftFrontMotorSafety.feed();
     // Hardware.leftRearMotorSafety.feed();
@@ -263,7 +269,6 @@ public void robotInit ()
     Hardware.leftRearEncoder.reset();
     Hardware.rightFrontEncoder.reset();
     Hardware.rightRearEncoder.reset();
-
     if (Hardware.isRunningOnKilroyXVIII == true)
         {
         Hardware.rightFrontEncoder.setReverseDirection(true);
@@ -278,9 +283,9 @@ public void robotInit ()
                 ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
         Hardware.leftFrontEncoder.setDistancePerPulse(
                 ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-        Hardware.tankDrive.setGearPercentage(1, FIRST_GEAR);
-        Hardware.tankDrive.setGearPercentage(2, SECOND_GEAR);
-        Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
+        Hardware.tankDrive.setGearPercentage(1, KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
+        Hardware.tankDrive.setGearPercentage(2, KILROY_XVIII_SECOND_GEAR_PERCENTAGE);
+        Hardware.mecanumDrive.setFirstGearPercentage(KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
         Hardware.rightFrontMotor.setInverted(false);
         Hardware.rightRearMotor.setInverted(false);
         Hardware.leftFrontMotor.setInverted(false);
@@ -293,6 +298,11 @@ public void robotInit ()
         // Hardware.rightRearMotorSafety.setExpiration(.5);
         // Hardware.leftFrontMotorSafety.setExpiration(.5);
         // Hardware.leftRearMotorSafety.setExpiration(1.0);
+        // Sets the scaling factor and general ultrasonic stuff
+        Hardware.rightUS.setScalingFactor(
+                Hardware.KILROY_XVIII_US_SCALING_FACTOR);
+        Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
+        Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
         }
     else
         {
@@ -308,9 +318,12 @@ public void robotInit ()
                 ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
         Hardware.rightFrontEncoder.setDistancePerPulse(
                 ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-        // Hardware.tankDrive.setGearPercentage(1, FIRST_GEAR);
-        // Hardware.tankDrive.setGearPercentage(2, SECOND_GEAR);
-        // Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
+        Hardware.tankDrive.setGearPercentage(1,
+                Robot.KILROY_XVII_FIRST_GEAR_PERCENTAGE);
+        Hardware.tankDrive.setGearPercentage(2,
+                Robot.KILROY_XVII_SECOND_GEAR_PERCENTAGE);
+        Hardware.mecanumDrive
+                .setFirstGearPercentage(Robot.KILROY_XVII_SECOND_GEAR_PERCENTAGE);
         Hardware.rightFrontMotor.setInverted(true);
         Hardware.rightRearMotor.setInverted(false);
         Hardware.leftFrontMotor.setInverted(false);
@@ -319,6 +332,11 @@ public void robotInit ()
         // Hardware.mecanumDrive
         // .setDeadbandPercentageZone(Hardware.joystickDeadzone);
         // Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+        // Sets the scaling factor and general ultrasonic stuff
+        Hardware.rightUS.setScalingFactor(
+                Hardware.KILROY_XVII_US_SCALING_FACTOR);
+        Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
+        Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
         }
     // -------------------------------------
     // motor initialization
@@ -407,11 +425,12 @@ public void teleopInit ()
     // setup
     // ---------------------------------------
     System.out.println("Started teleopInit().");
-    Hardware.mecanumDrive.setFirstGearPercentage(FIRST_GEAR);
+    Hardware.mecanumDrive.setFirstGearPercentage(KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
     // =========================================================
     // User code goes below here
     // =========================================================
     Teleop.init();
+
     // =========================================================
     // User code goes above here
     // =========================================================
@@ -490,18 +509,29 @@ public void testPeriodic ()
 // TUNEABLES
 // ==========================================
 
-
 /**
  * The percentage we want the motors to run at while we are in first gear
  */
-public static final double FIRST_GEAR = .6;
+public static final double KILROY_XVIII_FIRST_GEAR_PERCENTAGE = .6;
 
 /**
  * The percentage we want the motors to run at while we are in second gear
  */
-public static final double SECOND_GEAR = 1;
+public static final double KILROY_XVIII_SECOND_GEAR_PERCENTAGE = 1;
 
-public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.068;
+/**
+ * The percentage we want the motors to run at while we are in first gear
+ * for Kilroy XVII/ Ballbot
+ */
+public static final double KILROY_XVII_FIRST_GEAR_PERCENTAGE = 1.0;
+
+/**
+ * The percentage we want the motors to run at while we are in second gear
+ * for Kilroy XVII/ Ballbot
+ */
+public static final double KILROY_XVII_SECOND_GEAR_PERCENTAGE = 1.0;
+
+public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.069;
 
 public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVII = .0197;
 
