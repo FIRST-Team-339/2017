@@ -93,9 +93,12 @@ public static void init ()
                 Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
         Hardware.leftFrontEncoder.setDistancePerPulse(
                 Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-        Hardware.tankDrive.setGearPercentage(1, Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
-        Hardware.tankDrive.setGearPercentage(2, Robot.KILROY_XVIII_SECOND_GEAR_PERCENTAGE);
-        Hardware.mecanumDrive.setFirstGearPercentage(Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
+        Hardware.tankDrive.setGearPercentage(1,
+                Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
+        Hardware.tankDrive.setGearPercentage(2,
+                Robot.KILROY_XVIII_SECOND_GEAR_PERCENTAGE);
+        Hardware.mecanumDrive.setFirstGearPercentage(
+                Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
         Hardware.rightFrontMotor.setInverted(false);
         Hardware.rightRearMotor.setInverted(false);
         Hardware.leftFrontMotor.setInverted(false);
@@ -138,7 +141,8 @@ public static void init ()
         Hardware.tankDrive.setGearPercentage(2,
                 Robot.KILROY_XVII_SECOND_GEAR_PERCENTAGE);
         Hardware.mecanumDrive
-                .setFirstGearPercentage(Robot.KILROY_XVII_FIRST_GEAR_PERCENTAGE);
+                .setFirstGearPercentage(
+                        Robot.KILROY_XVII_FIRST_GEAR_PERCENTAGE);
         // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
         Hardware.rightFrontMotor.setInverted(true);
         Hardware.rightRearMotor.setInverted(false);
@@ -343,7 +347,7 @@ public static void periodic ()
                     || Hardware.leftOperator.getRawButton(11));
 
 } // end
-// Periodic
+  // Periodic
 
 private static Drive.AlignReturnType alignValue = Drive.AlignReturnType.MISALIGNED;
 
@@ -489,14 +493,7 @@ public static void printStatements ()
     // Red Light/IR Sensors
     // prints the state of the sensor
     // ---------------------------------
-    // if (Hardware.ballLoaderSensor.isOn() == true)
-    // {
-    // System.out.println("Ball IR Sensor is On");
-    // }
-    // else if (Hardware.ballLoaderSensor.isOn() == false)
-    // {
-    // System.out.println("Ball IR Sensor is Off");
-    // }
+    // System.out.println("Ball IR: " + Hardware.ballLoaderSensor.isOn());
 
     // =================================
     // Pneumatics
@@ -517,6 +514,10 @@ public static void printStatements ()
     // =================================
     // Analogs
     // =================================
+
+    // GYRO
+    // System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
+
     //
     // We don't want the print statements to flood everything and go ahhhhhhhh
     //
