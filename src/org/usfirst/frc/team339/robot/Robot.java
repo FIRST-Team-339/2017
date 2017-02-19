@@ -299,6 +299,7 @@ public void robotInit ()
         Hardware.intakeMotor.setInverted(true);
         Hardware.mecanumDrive
                 .setDeadbandPercentageZone(Hardware.joystickDeadzone);
+        Hardware.mecanumDrive.setDirectionalDeadzone(5.0);
         Hardware.mecanumDrive.setMecanumJoystickReversed(false);
         // Hardware.rightFrontMotorSafety.setExpiration(.5);
         // Hardware.rightRearMotorSafety.setExpiration(.5);
@@ -336,19 +337,23 @@ public void robotInit ()
         Hardware.leftFrontMotor.setInverted(false);
         Hardware.leftRearMotor.setInverted(false);
         // Hardware.intakeMotor.setInverted(true);
-        // Hardware.mecanumDrive
-        // .setDeadbandPercentageZone(Hardware.joystickDeadzone);
-        // Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+        Hardware.mecanumDrive
+                .setDeadbandPercentageZone(
+                        Hardware.KILROY_XVII_JOYSTICK_DEADZONE);
+        Hardware.mecanumDrive.setDirectionalDeadzone(
+                Hardware.KILROY_XVII_JOYSTICK_DIRECTIONAL_DEADZONE);
+        Hardware.mecanumDrive.setMecanumJoystickReversed(false);
         // Sets the scaling factor and general ultrasonic stuff
         Hardware.rightUS.setScalingFactor(
                 Hardware.KILROY_XVII_US_SCALING_FACTOR);
         Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
         Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
+
         }
     // -------------------------------------
     // motor initialization
     // -------------------------------------
-    Hardware.mecanumDrive.setDirectionalDeadzone(5.0);
+
     // Hardware.leftRearMotorSafety.setSafetyEnabled(true);
     // Hardware.rightRearMotorSafety.setSafetyEnabled(true);
     // Hardware.leftFrontMotorSafety.setSafetyEnabled(true);

@@ -150,8 +150,9 @@ public static void init ()
         Hardware.leftFrontMotor.setInverted(false);
         Hardware.leftRearMotor.setInverted(false);
         Hardware.intakeMotor.setInverted(true);
-        // Hardware.mecanumDrive
-        // .setDeadbandPercentageZone(Hardware.joystickDeadzone);
+        Hardware.mecanumDrive
+                .setDeadbandPercentageZone(
+                        Hardware.KILROY_XVII_JOYSTICK_DEADZONE);
         Hardware.mecanumDrive.setMecanumJoystickReversed(false);
         Hardware.rightUS
                 .setScalingFactor(
@@ -161,7 +162,10 @@ public static void init ()
         Hardware.tankDrive.setGear(1);
         Hardware.autoDrive.setDriveCorrection(.3);
         Hardware.autoDrive.setEncoderSlack(1);
-        // Hardware.mecanumDrive.setDirectionalDeadzone(0.2);
+
+        Hardware.mecanumDrive.setDirectionalDeadzone(
+                Hardware.KILROY_XVII_JOYSTICK_DIRECTIONAL_DEADZONE);
+
         }
 
     SmartDashboard.putNumber("P", Robot.shooterP);
@@ -242,6 +246,7 @@ public static void periodic ()
         }
     else
         rotationValue = 0.0;
+
 
     if (!isTestingDriveCode && !isAligning && !isStrafingToTarget)  // Main
                                                                     // driving
@@ -421,6 +426,7 @@ public static void printStatements ()
     // Motor controllers
     // prints value of the motors
     // =================================
+
     // System.out.println("Right Front Motor Controller: "
     // + Hardware.rightFrontMotor.get());
     // System.out.println("Left Front Motor Controller: " +
@@ -429,6 +435,7 @@ public static void printStatements ()
     // Hardware.rightRearMotor.get());
     // System.out.println("Left Rear Motor Controller: " +
     // Hardware.leftRearMotor.get());
+
 
     // System.out
     // .println("Flywheel Motor: " + Hardware.shooterMotor.get());
@@ -477,6 +484,11 @@ public static void printStatements ()
 
     // System.out.println("Right UltraSonic distance from bumper: "
     // + Hardware.rightUS.getDistanceFromNearestBumper());
+    // System.out.println("Right UltraSonic refined distance: "
+    // + Hardware.rightUS.getRefinedDistanceValue());
+    // System.out.println("Right UltraSonic raw distance: "
+    // + Hardware.rightUS.getValue());
+
     // ---------------------------------
     // Encoders
     // prints the distance from the encoders
@@ -586,6 +598,9 @@ public static void printStatements ()
     // Joysticks
     // information about the joysticks
     // ---------------------------------
+
+
+
     // System.out.println("Right Joystick: " +
     // Hardware.rightDriver.getDirectionDegrees());
     // System.out.println("Left Operator: " +
@@ -600,10 +615,13 @@ public static void printStatements ()
     // Joysticks
     // information about the joysticks
     // ---------------------------------
-    // System.out.println("Left Joystick: " +
-    // Hardware.leftDriver.getDirectionDegrees());
-    // System.out.println("Twist: " + Hardware.leftDriver.getTwist());
-    // System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
+    System.out.println("Left Joystick Direction: " +
+            Hardware.leftDriver.getDirectionDegrees());
+    if (Hardware.leftDriver.getTrigger())
+        {
+        System.out.println("Twist: " + Hardware.leftDriver.getTwist());
+        }
+    System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
     // System.out.println("Right Joystick: " + Hardware.rightDriver.getY());
     // System.out.println("Left Operator: " + Hardware.leftOperator.getY());
     // System.out.println("Right Operator: " +
