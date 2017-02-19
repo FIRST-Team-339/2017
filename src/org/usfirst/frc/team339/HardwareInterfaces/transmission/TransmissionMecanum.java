@@ -62,6 +62,7 @@ public void driveNoDeadband (double magnitude, double direction,
     this.tempSavedAngularDeadband = this.getDirectionalDeadzone();
     // set the current deadbands to zero so we can drive slowly
     this.setDeadbandPercentageZone(0.0);
+    this.setDirectionalDeadzone(0.0);
     // drive without the deadbands
     this.drive(magnitude, direction, rotation);
     // restore the deadbands
