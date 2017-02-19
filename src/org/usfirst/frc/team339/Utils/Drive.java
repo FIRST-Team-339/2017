@@ -289,7 +289,6 @@ public boolean driveStraightInches (double inches, double speed)
         }
 
     this.driveNoDeadband(speed, 0.0);
-    System.out.println("Speed: " + speed);
     if (averageRight >= averageLeft + getEncoderSlack())
         bottomValue = true;
     if (averageRight <= averageLeft - getEncoderSlack())//

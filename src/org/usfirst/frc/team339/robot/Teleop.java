@@ -229,11 +229,13 @@ public static void periodic ()
     // Test code for break
     if (Hardware.leftDriver.getRawButton(9))
         {
-
-        Hardware.autoDrive.driveStraightInches(12, .5);
-
+        prevState = Hardware.leftDriver.getRawButton(9);
         }
 
+    if (Hardware.leftDriver.getRawButton(9) && !prevState)
+        {
+        Hardware.autoDrive.driveStraightInches(20, .5);
+        }
     // =================================================================
     // OPERATOR CONTROLS
     // =================================================================
@@ -616,5 +618,7 @@ public static boolean cameraPositionHasChanged = false;
 public static boolean cancelAgitator = false;
 
 public static boolean hasCanceledAgitator = false;
+
+private static boolean prevState = false; // TODO Testing take out
 
 } // end class
