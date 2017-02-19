@@ -181,6 +181,7 @@ static double tempSetpoint = 0.0;
  * @author Nathanial Lydick
  * @written Jan 13, 2015
  */
+
 public static void periodic ()
 {
     if (Hardware.leftDriver.getTrigger() && !previousFireButton)
@@ -189,6 +190,7 @@ public static void periodic ()
         }
     if (firing)
         Hardware.shooter.fire();
+
     Robot.shooterP = SmartDashboard.getNumber("P", Robot.shooterP);
     Robot.shooterI = SmartDashboard.getNumber("I", Robot.shooterI);
     Robot.shooterD = SmartDashboard.getNumber("D", Robot.shooterD);
@@ -232,6 +234,7 @@ public static void periodic ()
     // =================================================================
     // Driving code
     // =================================================================
+
     // rotate only when we are pulling the trigger
     if (Hardware.leftDriver.getTrigger())
         {
@@ -240,7 +243,9 @@ public static void periodic ()
     else
         rotationValue = 0.0;
 
-    if (!isAligning && !isStrafingToTarget)  // Main driving function
+    if (!isTestingDriveCode && !isAligning && !isStrafingToTarget)  // Main
+                                                                    // driving
+                                                                    // function
         {
         if (Hardware.isUsingMecanum == true)
             Hardware.mecanumDrive.drive(
@@ -252,12 +257,30 @@ public static void periodic ()
                     Hardware.leftDriver.getY());
         }
     // Test code for break
-    if (Hardware.leftDriver.getRawButton(9))
-        {
-        Hardware.autoDrive.driveStraightInches(12, .5);
-        }
-    // =================================================================
 
+
+
+    if (Hardware.leftDriver.getRawButton(9) == true)
+        {
+
+        if (Hardware.autoDrive.driveInches(12, .3))
+            {
+            System.out.println("We drove");
+            // if (Hardware.autoDrive.isStopped(Hardware.leftFrontEncoder,
+            // Hardware.rightFrontEncoder))
+            // System.out.println("We Aren't Stopped");
+            // {
+            // Hardware.leftRearMotor.set(0);
+            // Hardware.leftFrontMotor.set(0);
+            // Hardware.rightRearMotor.set(0);
+            // Hardware.rightFrontMotor.set(0);
+            // System.out.println("We stopped now");
+            // }
+            }
+
+        }
+
+    // =================================================================
     // OPERATOR CONTROLS
     // =================================================================
 
@@ -288,18 +311,17 @@ public static void periodic ()
     else
         Hardware.shooter.stopLoader();
     // END ELEVATOR OVERRIDE
+    // TESTING SHOOTER
+    if (Hardware.rightOperator.getTrigger())
+        {
+        Hardware.shooter.loadBalls();
+        Hardware.shooterMotor.set(1000);
+        }
 
-    // TESTING SHOOTER TODO uncomment
-    // if (Hardware.rightOperator.getTrigger())
-    // {
-    // Hardware.shooter.loadBalls();
-    // Hardware.shooterMotor.set(1000);
-    // }
-    // else if (Hardware.rightOperator.getRawButton(9))
-    // Hardware.shooterMotor.set(1000);
-    // else
-    // Hardware.shooterMotor.set(0.0);
-
+    else if (Hardware.rightOperator.getRawButton(9))
+        Hardware.shooterMotor.set(1000);
+    else
+        Hardware.shooterMotor.set(0.0);
     // END SHOOTER TESTING
     // =================================================================
     // CAMERA CODE
@@ -339,7 +361,6 @@ public static void periodic ()
                     .setAngle(LOWER_CAMERASERVO_POSITION);
             cameraPositionHasChanged = true;
             }
-
         }
     // if camera servo position has been changed and the button equals false
     if (changeCameraServoPosition == true
@@ -349,8 +370,6 @@ public static void periodic ()
         // the position again when the button is pushed again
         cameraPositionHasChanged = false;
         }
-
-
     Hardware.axisCamera
             .takeSinglePicture(Hardware.leftOperator.getRawButton(8)
                     || Hardware.rightOperator.getRawButton(8)
@@ -402,7 +421,6 @@ public static void printStatements ()
     // Motor controllers
     // prints value of the motors
     // =================================
-
     // System.out.println("Right Front Motor Controller: "
     // + Hardware.rightFrontMotor.get());
     // System.out.println("Left Front Motor Controller: " +
@@ -411,7 +429,6 @@ public static void printStatements ()
     // Hardware.rightRearMotor.get());
     // System.out.println("Left Rear Motor Controller: " +
     // Hardware.leftRearMotor.get());
-
 
     // System.out
     // .println("Flywheel Motor: " + Hardware.shooterMotor.get());
@@ -442,7 +459,6 @@ public static void printStatements ()
     // {
     // System.out.println("Ring light relay is Off");
     // }
-
     // =================================
     // Digital Inputs
     // =================================
@@ -458,7 +474,6 @@ public static void printStatements ()
     // Hardware.enableAutonomous.isOn());
     // System.out.println(
     // "Path Selector: " + Hardware.pathSelector.getPosition());
-
 
     // System.out.println("Right UltraSonic distance from bumper: "
     // + Hardware.rightUS.getDistanceFromNearestBumper());
@@ -504,7 +519,6 @@ public static void printStatements ()
     // prints the state of the sensor
     // ---------------------------------
     // System.out.println("Ball IR: " + Hardware.ballLoaderSensor.isOn());
-
     // =================================
     // Pneumatics
     // =================================
@@ -537,13 +551,11 @@ public static void printStatements ()
     // System.out.println("RightUS = "
     // + Hardware.rightUS.getDistanceFromNearestBumper());
     // System.out.println("Delay Pot: " + Hardware.delayPot.get());
-
     // ---------------------------------
     // pots
     // where the pot is turned to
     // ---------------------------------
     // System.out.println("Delay Pot Degrees" + Hardware.delayPot.get());
-
     // =================================
     // Connection Items
     // =================================
@@ -551,7 +563,6 @@ public static void printStatements ()
     // Cameras
     // prints any camera information required
     // ---------------------------------
-
     // System.out.println("Expected center: " + CAMERA_ALIGN_CENTER);
     //
     // Hardware.imageProcessor.processImage();
@@ -568,7 +579,6 @@ public static void printStatements ()
     // .getHorizontalResolution());
     //
     // System.out.println("Deadband: " + CAMERA_ALIGN_DEADBAND);
-
     // =================================
     // Driver station
     // =================================
@@ -583,7 +593,6 @@ public static void printStatements ()
     // System.out.println("Right Operator: " +
     // Hardware.rightOperator.getDirectionDegrees());
     // System.out.println("Twist: " + Hardware.leftDriver.getTwist());
-
     // =================================
     // Driver station
     // =================================
@@ -606,13 +615,15 @@ public static void printStatements ()
     // timers
     // what time does the timer have now
     // ---------------------------------
-
 } // end printStatements
 
 /*
  * =============================================== Constants
  * ===============================================
  */
+private static double LFVal = Hardware.autoDrive
+        .getLeftFrontEncoderDistance();
+
 private final static double CAMERA_ALIGN_SPEED = .5;
 
 //// The dead zone for the aligning TODO
@@ -635,10 +646,14 @@ private final static double HIGHER_CAMERASERVO_POSITION = 90;// TODO find
 
 public static boolean changeCameraServoPosition = false;
 
+public static boolean changeGearServoPosition = false;
+
 public static boolean cameraPositionHasChanged = false;
 
 public static boolean cancelAgitator = false;
 
 public static boolean hasCanceledAgitator = false;
+
+private static boolean isTestingDriveCode = true;
 
 } // end class
