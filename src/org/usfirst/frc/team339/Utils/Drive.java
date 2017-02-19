@@ -266,10 +266,10 @@ private boolean firstTimeDriveInches = true;
  */
 public boolean driveStraightInches (double inches, double speed)
 {
-    // Again, we don't know why it's going backwards...
     System.out.println("We are driving straight");
     System.out.println(
-            "Average Encoder Values" + this.getAveragedEncoderValues());
+            "Average Encoder Values"
+                    + this.getAveragedEncoderValues());
     double averageLeft = (this.getLeftFrontEncoderDistance()
             + this.getLeftRearEncoderDistance()) / 2;
     double averageRight = (this.getRightFrontEncoderDistance()
@@ -281,7 +281,6 @@ public boolean driveStraightInches (double inches, double speed)
         this.resetEncoders();
         firstTimeDriveInches = false;
         System.out.println("First time inches");
-        return (true);
         }
 
     if (Math.abs(this.getAveragedEncoderValues()) <= Math
@@ -290,23 +289,17 @@ public boolean driveStraightInches (double inches, double speed)
         if (averageRight >= averageLeft - getEncoderSlack()
                 && averageRight <= averageLeft + getEncoderSlack())
             this.driveNoDeadband(speed, 0);
-        if (averageLeft > averageRight - getEncoderSlack())//
+        if (averageLeft > averageRight)//
             this.driveNoDeadband(speed + getDriveCorrection(), speed);
-        if (averageLeft < averageRight + getEncoderSlack())//
+        if (averageLeft < averageRight)//
             this.driveNoDeadband(speed,
                     speed + getDriveCorrection());
-        return true;
+        return false;
         }
-    if (Math.abs(this.getAveragedEncoderValues()) >= Math
-            .abs(inches))
-        {
-        this.stopMovement();
-        // this.driveNoDeadband(0.0, 0.0);
-        // this.stopMovement();
-        System.out.println("We are in the brake loop");
-        firstTimeDriveInches = true;
-        return (false);
-        }
+
+    this.stopMovement();
+    System.out.println("We are in the brake loop");
+    firstTimeDriveInches = true;
     return true;
 
 }

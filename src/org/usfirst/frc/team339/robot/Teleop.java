@@ -172,6 +172,7 @@ public static void init ()
  * @author Nathanial Lydick
  * @written Jan 13, 2015
  */
+
 public static void periodic ()
 {
     if (Hardware.leftDriver.getTrigger() && !previousFireButton)
@@ -249,8 +250,14 @@ public static void periodic ()
 
     if (Hardware.leftDriver.getRawButton(9) == true)
         {
-        Hardware.autoDrive.driveStraightInches(12, .5);
+
+        if (Hardware.autoDrive.driveInches(.5, 12))
+            {
+            Hardware.autoDrive.stopMovement();
+            }
+
         }
+
     // =================================================================
     // OPERATOR CONTROLS
     // =================================================================
@@ -594,6 +601,9 @@ public static void printStatements ()
  * =============================================== Constants
  * ===============================================
  */
+private static double LFVal = Hardware.autoDrive
+        .getLeftFrontEncoderDistance();
+
 private final static double CAMERA_ALIGN_SPEED = .5;
 
 //// The dead zone for the aligning TODO
