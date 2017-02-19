@@ -36,6 +36,7 @@ import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Shooter;
 import edu.wpi.first.wpilibj.Relay;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * This class contains all of the user code for the Autonomous part of the
@@ -161,9 +162,17 @@ public static void init ()
         Hardware.autoDrive.setDriveCorrection(.3);
         Hardware.autoDrive.setEncoderSlack(1);
         // Hardware.mecanumDrive.setDirectionalDeadzone(0.2);
-
         }
+
+    SmartDashboard.putNumber("P", Robot.shooterP);
+    SmartDashboard.putNumber("I", Robot.shooterI);
+    SmartDashboard.putNumber("D", Robot.shooterD);
+    SmartDashboard.putNumber("Setpoint", tempSetpoint);
+    SmartDashboard.putNumber("Err",
+            Hardware.shooterMotor.getError());
 } // end Init
+
+static double tempSetpoint = 0.0;
 
 /**
  * User Periodic code for teleop mode should go here. Will be called
@@ -180,6 +189,14 @@ public static void periodic ()
         }
     if (firing)
         Hardware.shooter.fire();
+    Robot.shooterP = SmartDashboard.getNumber("P", Robot.shooterP);
+    Robot.shooterI = SmartDashboard.getNumber("I", Robot.shooterI);
+    Robot.shooterD = SmartDashboard.getNumber("D", Robot.shooterD);
+    tempSetpoint = SmartDashboard.getNumber("Setpoint", tempSetpoint);
+    SmartDashboard.putNumber("Err", Hardware.shooterMotor.getError());
+    Hardware.shooterMotor.setPID(Robot.shooterP, Robot.shooterI,
+            Robot.shooterD);
+    Hardware.shooterMotor.set(tempSetpoint);
 
     // previousFireButton = Hardware.leftDriver.getTrigger();
     //
@@ -211,13 +228,6 @@ public static void periodic ()
     // Hardware.gearServo.getAngle();
     // Print out any data we want from the hardware elements.
     printStatements();
-
-    if (Hardware.rightOperator.getRawButton(2))
-        Hardware.intake.startIntake();
-    else if (Hardware.rightOperator.getRawButton(3))
-        Hardware.intake.reverseIntake();
-    else
-        Hardware.intake.stopIntake();
 
     // =================================================================
     // Driving code
@@ -279,16 +289,16 @@ public static void periodic ()
         Hardware.shooter.stopLoader();
     // END ELEVATOR OVERRIDE
 
-    // TESTING SHOOTER
-    if (Hardware.rightOperator.getTrigger())
-        {
-        Hardware.shooter.loadBalls();
-        Hardware.shooterMotor.set(1000);
-        }
-    else if (Hardware.rightOperator.getRawButton(9))
-        Hardware.shooterMotor.set(1000);
-    else
-        Hardware.shooterMotor.set(0.0);
+    // TESTING SHOOTER TODO uncomment
+    // if (Hardware.rightOperator.getTrigger())
+    // {
+    // Hardware.shooter.loadBalls();
+    // Hardware.shooterMotor.set(1000);
+    // }
+    // else if (Hardware.rightOperator.getRawButton(9))
+    // Hardware.shooterMotor.set(1000);
+    // else
+    // Hardware.shooterMotor.set(0.0);
 
     // END SHOOTER TESTING
     // =================================================================

@@ -187,9 +187,9 @@ private static Drive.AlignReturnType cameraState = Drive.AlignReturnType.NO_BLOB
 // TUNEABLES
 // ==========================================
 
-private static final double ALIGN_CORRECT_VAR = 30;
+private static final double ALIGN_CORRECT_VAR = 45;// 30
 
-private static final double ALIGN_DRIVE_SPEED = .25;
+private static final double ALIGN_DRIVE_SPEED = .3;
 
 private static final double ALIGN_DEADBAND = 10 // +/- pixels
         / Hardware.axisCamera.getHorizontalResolution();
@@ -375,12 +375,14 @@ private static boolean placeCenterGearPath ()
                     + Hardware.rightFrontMotor.getSpeed());
             System.out.println("left front motor: "
                     + Hardware.leftFrontMotor.getSpeed());
+            System.out.println("right rear motor: "
+                    + Hardware.rightRearMotor.getSpeed());
+            System.out.println("left Rear motor: "
+                    + Hardware.leftRearMotor.getSpeed());
 
             cameraState = Hardware.autoDrive.strafeToGear(
                     getRealSpeed(ALIGN_DRIVE_SPEED),
-                    getRealSpeed(ALIGN_CORRECT_VAR),// TODO decide whether to
-                    // keep the getRealSpeed
-                    // here.
+                    ALIGN_CORRECT_VAR,
                     ALIGN_DEADBAND, ALIGN_ACCEPTED_CENTER,
                     ALIGN_DISTANCE_FROM_GOAL);
 
