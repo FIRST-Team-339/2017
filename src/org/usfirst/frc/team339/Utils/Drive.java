@@ -753,15 +753,26 @@ private int brakeIterations = 0;
 
 /**
  * brakes until we have stopped, then sets motors to zero
+ *
  * 
  * @param speed
  *            how fast we should brake, negate for forward
  * @return true if we have stopped completely
  */
-public boolean timeBrake (double speed)
+public boolean timeBrake (double speed)// TODO COMMENT THIS!
 {
+
+    System.out.println("brake timer:" + movementTimer.get());
     if (firstTime)
         {
+        this.motorSigns[0] = (this.transmissionMecanum.leftSpeedController
+                .get() < 0) ? 1 : -1;
+        this.motorSigns[1] = (this.transmissionMecanum.leftRearSpeedController
+                .get() < 0) ? 1 : -1;
+        this.motorSigns[2] = (this.transmissionMecanum.rightSpeedController
+                .get() < 0) ? 1 : -1;
+        this.motorSigns[3] = (this.transmissionMecanum.rightRearSpeedController
+                .get() < 0) ? 1 : -1;
         movementTimer.stop();
         movementTimer.reset();
         movementTimer.start();
@@ -773,17 +784,36 @@ public boolean timeBrake (double speed)
         this.driveNoDeadband(0.0, 0.0);
         System.out.println("We are at zero");
         movementTimer.stop();
+        firstTime = true;
         return true;
         }
-    this.driveNoDeadband(speed, 0.0);
-    System.out.println("We are at zero");
+
+    this.transmissionMecanum
+            .driveLeftMotor(speed * this.motorSigns[0]);
+
+    this.transmissionMecanum
+            .driveLeftRearMotor(speed * this.motorSigns[1]);
+
+    this.transmissionMecanum
+            .driveRightMotor(speed * this.motorSigns[2]);
+
+    this.transmissionMecanum
+            .driveRightRearMotor(speed * this.motorSigns[3]);
+
+    System.out.println("We are not at zero");
     return false;
 
 }
 
-private boolean firstTime;
+/**
+ * left front, left rear, right front, right rear
+ */
+private int[] motorSigns =
+    {1, 1, 1, 1};
 
-public double MAX_TIME = 2.0;
+private boolean firstTime = true;
+
+public double MAX_TIME = .1;
 
 Timer movementTimer = new Timer();
 

@@ -553,10 +553,10 @@ public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.069;
 
 public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVII = .0197;
 
-public static double shooterP = .025;
+public static double shooterP = .031;
 
-public static double shooterI = .00005;
+public static double shooterI = .00042;
 
-public static double shooterD = .8;
+public static double shooterD = .85;
 
 } // end class
