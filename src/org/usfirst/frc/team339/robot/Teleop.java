@@ -118,7 +118,7 @@ public static void init ()
         Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
         Hardware.tankDrive.setGear(1);
         Hardware.autoDrive.setDriveCorrection(.3);
-        Hardware.autoDrive.setEncoderSlack(1);
+        // Hardware.autoDrive.setEncoderSlack(1); //TODO
         // Hardware.mecanumDrive.setDirectionalDeadzone(0.2);
         // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
         }
@@ -248,9 +248,9 @@ public static void periodic ()
         rotationValue = 0.0;
 
 
-    if (!isTestingDriveCode && !isAligning && !isStrafingToTarget)  // Main
-                                                                    // driving
-                                                                    // function
+    if (!isDrivingStraight && !isAligning && !isStrafingToTarget)  // Main
+    // driving
+    // function
         {
         if (Hardware.isUsingMecanum == true)
             Hardware.mecanumDrive.drive(
@@ -261,30 +261,47 @@ public static void periodic ()
             Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
                     Hardware.leftDriver.getY());
         }
-    // Test code for break
+    // Test code for brake
+    if (Hardware.leftDriver.getRawButton(9))
+        isDrivingStraight = true;
 
-
-
-    if (Hardware.leftDriver.getRawButton(9) == true)
+    if (isDrivingStraight)
         {
-
-        if (Hardware.autoDrive.driveInches(12, .3))
+        // System.out.println("We are driving straight inches");
+        isDrivingStraight = !Hardware.autoDrive.driveStraightInches(12,
+                .75);
+        if (!isDrivingStraight)
             {
-            System.out.println("We drove");
-            // if (Hardware.autoDrive.isStopped(Hardware.leftFrontEncoder,
-            // Hardware.rightFrontEncoder))
-            // System.out.println("We Aren't Stopped");
-            // {
-            // Hardware.leftRearMotor.set(0);
-            // Hardware.leftFrontMotor.set(0);
-            // Hardware.rightRearMotor.set(0);
-            // Hardware.rightFrontMotor.set(0);
-            // System.out.println("We stopped now");
-            // }
+            // System.out.println("We are braking");
+            isBraking = true;
             }
-
         }
 
+    if (isBraking)
+        {
+        isBraking = !Hardware.autoDrive.timeBrake(-.3);
+        // System.out.println("We are braking; for real");
+        if (Hardware.autoDrive.isStopped(Hardware.leftRearEncoder,
+                Hardware.rightRearEncoder)
+                && Hardware.autoDrive.isStopped(
+                        Hardware.leftFrontEncoder,
+                        Hardware.rightFrontEncoder))
+            {
+            Hardware.autoDrive.driveNoDeadband(0.0, 0.0);
+            System.out.println("We are at zero");
+
+            }
+        }
+
+    // if (Hardware.brake.get())
+    // {
+    //
+    // }
+    // if (Hardware.setMotorsZero.get())
+    // {
+    // Hardware.autoDrive.drive(0, 0, 0);
+    // System.out.println("We zeroed now");
+    // }
     // =================================================================
     // OPERATOR CONTROLS
     // =================================================================
@@ -351,6 +368,10 @@ public static void periodic ()
 } // end
   // Periodic
 
+private static boolean isDrivingStraight = false;
+
+private static boolean isBraking = false;
+
 private static Drive.AlignReturnType alignValue = Drive.AlignReturnType.MISALIGNED;
 
 private static Shooter.turnReturn turnValue = Shooter.turnReturn.SUCCESS;
@@ -405,8 +426,8 @@ public static void printStatements ()
     // Hardware.leftRearMotor.get());
 
 
-    System.out
-            .println("Flywheel Motor: " + Hardware.shooterMotor.get());
+    // System.out
+    // .println("Flywheel Motor: " + Hardware.shooterMotor.get());
     //
     // System.out.println("Intake Motor: " + Hardware.intakeMotor.get());
     // if (Hardware.rightOperator.getRawButton(11)) {
@@ -464,8 +485,8 @@ public static void printStatements ()
 
     // System.out.println("Right Front Encoder: " +
     // Hardware.rightFrontEncoder.get());
-    // System.out.println("Right Front Encoder Distance: " +
-    // Hardware.autoDrive.getRightRearEncoderDistance());
+    // System.out.println("Right Front Distance: " +
+    // Hardware.autoDrive.getRightFrontEncoderDistance());
     // System.out.println("Right Rear Encoder: " +
     // Hardware.rightRearEncoder.get());
     // System.out.println("Right Rear Encoder Distance: " +
@@ -478,7 +499,9 @@ public static void printStatements ()
     // Hardware.leftRearEncoder.get());
     // System.out.println("Left Rear Encoder Distance: " +
     // Hardware.autoDrive.getLeftFrontEncoderDistance());
-    // System.out.println("Right Front Encoder: " +
+    // System.out.println("Right Front Encoder: " + System.out.println("Right
+    // Front Encoder Distance: " +
+
     // Hardware.rightFrontEncoder.get());
     // System.out.println("Right Front Encoder Distance: " +
     // Hardware.autoDrive.getRightRearEncoderDistance());
@@ -584,13 +607,13 @@ public static void printStatements ()
     // Joysticks
     // information about the joysticks
     // ---------------------------------
-    System.out.println("Left Joystick Direction: " +
-            Hardware.leftDriver.getDirectionDegrees());
-    if (Hardware.leftDriver.getTrigger())
-        {
-        System.out.println("Twist: " + Hardware.leftDriver.getTwist());
-        }
-    System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
+    // System.out.println("Left Joystick Direction: " +
+    // Hardware.leftDriver.getDirectionDegrees());
+    // if (Hardware.leftDriver.getTrigger())
+    // {
+    // System.out.println("Twist: " + Hardware.leftDriver.getTwist());
+    // }
+    // System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
     // System.out.println("Right Joystick: " + Hardware.rightDriver.getY());
     // System.out.println("Left Operator: " + Hardware.leftOperator.getY());
     // System.out.println("Right Operator: " +
@@ -642,5 +665,7 @@ public static boolean cancelAgitator = false;
 public static boolean hasCanceledAgitator = false;
 
 private static boolean isTestingDriveCode = true;
+
+private static boolean prevState = false;
 
 } // end class
