@@ -244,9 +244,9 @@ public static void periodic ()
 
 
 
-    if (!isAligning && !isStrafingToTarget)  // Main
-                                             // driving
-                                             // function
+    if (!isTestingDriveCode && !isAligning && !isStrafingToTarget)  // Main
+    // driving
+    // function
         {
         if (Hardware.isUsingMecanum == true)
             Hardware.mecanumDrive.drive(
@@ -275,18 +275,18 @@ public static void periodic ()
 
     if (isBraking)
         {
-        isBraking = !Hardware.autoDrive.timeBrake(-.3);
+        isBraking = !Hardware.autoDrive.timeBrake(-.1);
         // System.out.println("We are braking; for real");
-        if (Hardware.autoDrive.isStopped(Hardware.leftRearEncoder,
-                Hardware.rightRearEncoder)
-                && Hardware.autoDrive.isStopped(
-                        Hardware.leftFrontEncoder,
-                        Hardware.rightFrontEncoder))
-            {
-            Hardware.autoDrive.driveNoDeadband(0.0, 0.0);
-            System.out.println("We are at zero");
-
-            }
+        // if (Hardware.autoDrive.isStopped(Hardware.leftRearEncoder,
+        // Hardware.rightRearEncoder)
+        // && Hardware.autoDrive.isStopped(
+        // Hardware.leftFrontEncoder,
+        // Hardware.rightFrontEncoder))
+        // {
+        // Hardware.autoDrive.driveNoDeadband(0.0, 0.0);
+        // System.out.println("We are at zero");
+        //
+        // }
         }
 
     // if (Hardware.brake.get())

@@ -7,11 +7,11 @@ import edu.wpi.first.wpilibj.SpeedController;
 public class TransmissionFourWheel extends Transmission
 {
 
-private final SpeedController rightRearSpeedController;
+public final SpeedController rightRearSpeedController;
 
 private MotorDirection rightRearMotorDirection = MotorDirection.REVERSED;
 
-private final SpeedController leftRearSpeedController;
+public final SpeedController leftRearSpeedController;
 
 private MotorDirection leftRearMotorDirection = MotorDirection.FORWARD;
 
@@ -118,7 +118,7 @@ public void driveWithoutCorrection (double leftSide, double rightSide)
  */
 
 // "Anything can be solved with a big enough hammer, if not elegantly." -Michael
-protected void driveLeftRearMotor (double motorValue)
+public void driveLeftRearMotor (double motorValue)
 {
 
     if (this.leftRearSpeedController == null)
@@ -148,7 +148,7 @@ protected void driveLeftRearMotor (double motorValue)
  * @author Noah Golmant
  * @date 9 July 2015
  */
-protected void driveRightRearMotor (double motorValue)
+public void driveRightRearMotor (double motorValue)
 {
 
     if (this.rightRearSpeedController == null)
