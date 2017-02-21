@@ -758,8 +758,10 @@ private int brakeIterations = 0;
  *            how fast we should brake, negate for forward
  * @return true if we have stopped completely
  */
-public boolean timeBrake (double speed)// COMMENT THIS! | I got chu fam.
+public boolean timeBrake (double speed, double time)// COMMENT THIS! | I got chu
+                                                    // fam.
 {
+    double alteredSpeed = Math.abs(speed);
 
     System.out.println("brake timer:" + movementTimer.get());
     if (firstTime)
@@ -783,7 +785,7 @@ public boolean timeBrake (double speed)// COMMENT THIS! | I got chu fam.
         firstTime = false;
         }
     // if We're done breaking
-    if (movementTimer.get() >= MAX_TIME)
+    if (movementTimer.get() >= time)
         {
         // stop
         this.driveNoDeadband(0.0, 0.0);
@@ -803,16 +805,16 @@ public boolean timeBrake (double speed)// COMMENT THIS! | I got chu fam.
      * way that was.
      */
     this.transmissionMecanum
-            .driveLeftMotor(speed * this.motorSigns[0]);
+            .driveLeftMotor(alteredSpeed * this.motorSigns[0]);
 
     this.transmissionMecanum
-            .driveLeftRearMotor(speed * this.motorSigns[1]);
+            .driveLeftRearMotor(alteredSpeed * this.motorSigns[1]);
 
     this.transmissionMecanum
-            .driveRightMotor(speed * this.motorSigns[2]);
+            .driveRightMotor(alteredSpeed * this.motorSigns[2]);
 
     this.transmissionMecanum
-            .driveRightRearMotor(speed * this.motorSigns[3]);
+            .driveRightRearMotor(alteredSpeed * this.motorSigns[3]);
     // Tell the user we're not done
     System.out.println("We are not at zero");
     // Tell the caller we're not done
@@ -828,7 +830,7 @@ private int[] motorSigns =
 
 private boolean firstTime = true;
 
-public double MAX_TIME = .1;// TODO final?
+// public double MAX_TIME = .1;// TODO final?
 
 Timer movementTimer = new Timer();
 
