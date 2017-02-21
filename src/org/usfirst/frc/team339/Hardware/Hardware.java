@@ -324,6 +324,17 @@ public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
 
 public static MomentarySwitch cameraServoSwitch = new MomentarySwitch(
         rightOperator, 10, false);
+
+public static MomentarySwitch setMotorsZero = new MomentarySwitch(
+        leftDriver, 8, false);
+
+public static MomentarySwitch brake = new MomentarySwitch(
+        leftDriver, 11, false);
+
+public static MomentarySwitch drive = new MomentarySwitch(leftDriver, 9,
+        false);
+
+
 // **********************************************************
 // Kilroy's Ancillary classes
 // **********************************************************
@@ -360,8 +371,8 @@ public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
 
 
 public static Drive autoDrive = new Drive(mecanumDrive,
-        imageProcessor, leftRearEncoder, rightRearEncoder,
-        leftRearEncoder, rightRearEncoder, rightUS);
+        imageProcessor, rightFrontEncoder, rightRearEncoder,
+        leftFrontEncoder, leftRearEncoder, rightUS);
 
 /**
  * are we using mecanum? set false for tank drive
@@ -393,6 +404,7 @@ public static BallIntake intake = new BallIntake(intakeMotor,
 public static final Timer kilroyTimer = new Timer();
 
 public static final Timer autoStateTimer = new Timer();
+
 
 /**
  * Default motor safety
