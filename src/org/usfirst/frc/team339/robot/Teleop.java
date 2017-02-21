@@ -275,7 +275,7 @@ public static void periodic ()
 
     if (isBraking)
         {
-        isBraking = !Hardware.autoDrive.timeBrake(-.1);
+        isBraking = !Hardware.autoDrive.timeBrake(-.1, .5);
         // System.out.println("We are braking; for real");
         // if (Hardware.autoDrive.isStopped(Hardware.leftRearEncoder,
         // Hardware.rightRearEncoder)
