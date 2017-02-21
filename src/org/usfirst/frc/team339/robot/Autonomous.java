@@ -196,7 +196,7 @@ private static final double ALIGN_DEADBAND = 10 // +/- pixels
 
 private static final double ALIGN_ACCEPTED_CENTER = .5; // Relative coordinates
 
-private static final int ALIGN_DISTANCE_FROM_GOAL = 10;
+private static final int ALIGN_DISTANCE_FROM_GOAL = 15;
 
 /**
  * User-Initialization code for autonomous mode should go here. Will be
@@ -243,7 +243,7 @@ public static void periodic ()
             // get the auto program we want to run, get delay pot.
             if (Hardware.enableAutonomous.isOn())
                 {
-                delayTime = Hardware.delayPot.get() * (5 / 270);
+                delayTime = Hardware.delayPot.get(0.0, 5.0);
                 if (Hardware.driverStation
                         .getAlliance() == Alliance.Red)
                     {
@@ -336,7 +336,7 @@ private static boolean placeCenterGearPath ()
             // wait for timer to run out
             if (Hardware.autoStateTimer.get() >= delayTime)
                 {
-                Hardware.axisCamera.saveImagesSafely();
+                // Hardware.axisCamera.saveImagesSafely();
                 currentState = MainState.ACCELERATE;
                 postAccelerateState = MainState.DRIVE_FORWARD_TO_CENTER;
 
@@ -351,6 +351,7 @@ private static boolean placeCenterGearPath ()
                     .1))
                 {
                 currentState = postAccelerateState;
+                Hardware.axisCamera.saveImagesSafely();
                 }
             Hardware.rightUS.getDistanceFromNearestBumper();
             break;
@@ -358,6 +359,9 @@ private static boolean placeCenterGearPath ()
             // If we see blobs, hand over control to camera, otherwise, go
             // forward. Check to make sure we haven't gone too far.
             Hardware.imageProcessor.processImage();
+            System.out.println(
+                    "Number of blobs: " + Hardware.imageProcessor
+                            .getParticleAnalysisReports().length);
             if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
                 {
                 currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
@@ -371,20 +375,15 @@ private static boolean placeCenterGearPath ()
             // transmission,
             // we will strafe. If it uses a four wheel transmission, it will
             // wiggle wiggle on it's way to the peg
-            System.out.println("right front motor: "
-                    + Hardware.rightFrontMotor.getSpeed());
-            System.out.println("left front motor: "
-                    + Hardware.leftFrontMotor.getSpeed());
-            System.out.println("right rear motor: "
-                    + Hardware.rightRearMotor.getSpeed());
-            System.out.println("left Rear motor: "
-                    + Hardware.leftRearMotor.getSpeed());
 
             cameraState = Hardware.autoDrive.strafeToGear(
                     getRealSpeed(ALIGN_DRIVE_SPEED),
                     ALIGN_CORRECT_VAR,
                     ALIGN_DEADBAND, ALIGN_ACCEPTED_CENTER,
                     ALIGN_DISTANCE_FROM_GOAL);
+            System.out.println(
+                    "Number of Blobs: " + Hardware.imageProcessor
+                            .getParticleAnalysisReports().length);
 
             System.out.println("strafeToGear state: " + cameraState);
 
@@ -434,6 +433,7 @@ private static boolean placeCenterGearPath ()
             break;
         default:
         case DONE:
+            Hardware.axisCamera.saveImagesSafely();
             return true;
         }
     return false;
@@ -667,7 +667,7 @@ private static boolean rightSidePath ()
                 }
             break;
         case FIRE:
-            if (Hardware.shooter.fire())
+            if (Hardware.shooter.fire(0))
                 {
                 fireCount++;
                 }
@@ -910,7 +910,7 @@ private static boolean leftSidePath ()
                 }
             break;
         case FIRE:
-            if (Hardware.shooter.fire())
+            if (Hardware.shooter.fire(0))
                 {
                 fireCount++;
                 }

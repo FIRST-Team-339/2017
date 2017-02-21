@@ -6,6 +6,7 @@ import org.usfirst.frc.team339.Vision.ImageProcessor;
 import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 // TODO shooter encoder instead of pot
 /**
@@ -140,12 +141,27 @@ public void reverseLoader ()
  * Prepares to fire and fires a ball.
  * 
  * @return True if we've fired, false if we haven't yet.
+ * @deprecated Use {@link #fire(double)} instead
  */
 public boolean fire ()
 {
+    return fire(0);
+}
+
+/**
+ * Prepares to fire and fires a ball.
+ * 
+ * @param rpmOffset
+ *            TODO
+ * 
+ * @return True if we've fired, false if we haven't yet.
+ */
+public boolean fire (double rpmOffset)
+{
+    System.out.println("RPMOffset in fire: " + rpmOffset);
+    readyToFire = prepareToFire(rpmOffset);
     if (!readyToFire)
         {
-        readyToFire = prepareToFire();
         return false;
         }
 
@@ -167,15 +183,36 @@ private boolean readyToFire = false;
  * ball to be fired.
  * 
  * @return true if we're ready to fire, false otherwise.
+ * @deprecated Use {@link #prepareToFire(double)} instead
  */
 public boolean prepareToFire ()
 {
-    double dist = this.visionTargeter.getZDistanceToFuelTarget(
-            this.visionTargeter.getLargestBlob());
+    return prepareToFire(0);
+}
+
+/**
+ * Prepares to fire a ball by revving up the flywheel motor and sets up a
+ * ball to be fired.
+ * 
+ * @param rpmOffset
+ *            TODO
+ * 
+ * @return true if we're ready to fire, false otherwise.
+ */
+public boolean prepareToFire (double rpmOffset)
+{
+    System.out.println("RPMOffset in prepareToFire: " + rpmOffset);
+    double dist = 1;/*
+                     * this.visionTargeter.getZDistanceToFuelTarget(
+                     * this.visionTargeter.getLargestBlob());
+                     */
     if (dist > 0)
         {
         this.flywheelController
-                .setSetpoint(-2 * this.calculateRPMToMakeGoal(dist));
+                .set(2000
+                        /* .5 * this.calculateRPMToMakeGoal(dist) */ + rpmOffset);
+        SmartDashboard.putNumber("Flywheel speed",
+                this.flywheelController.getSpeed());
         // multiplied by 2 for gear ratio.
         this.loadBalls();
         if (Math.abs(this.flywheelController.getError()
@@ -469,7 +506,7 @@ private final double SLOW_TURN_SPEED = .25;
 
 private final double ELEVATOR_SPEED = -.8;// TODO tune
 
-private final double AGITATOR_SPEED = 1;
+private final double AGITATOR_SPEED = .5;
 
 private final double GIMBAL_LEFT_OFFSET = .1;// Going left is slower than going
                                              // right for some reason

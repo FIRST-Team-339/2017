@@ -275,7 +275,7 @@ public void drive (double magnitude, double direction, double rotation)
                     + rightRearSpeed);
             }
 
-        final double gearPercentage = getFirstGearPercentage();
+        final double gearPercentage = getCurrentGearPercentage();
         // limit the values to our motor range of -1..1
         leftFrontSpeed = this.limit(leftFrontSpeed * gearPercentage);
         leftRearSpeed = this.limit(leftRearSpeed * gearPercentage);
