@@ -158,7 +158,7 @@ public boolean fire ()
  */
 public boolean fire (double rpmOffset)
 {
-    System.out.println("RPMOffset in fire: " + rpmOffset);
+    // System.out.println("RPMOffset in fire: " + rpmOffset);
     readyToFire = prepareToFire(rpmOffset);
     if (!readyToFire)
         {
@@ -201,16 +201,16 @@ public boolean prepareToFire ()
  */
 public boolean prepareToFire (double rpmOffset)
 {
-    System.out.println("RPMOffset in prepareToFire: " + rpmOffset);
-    double dist = 1;/*
-                     * this.visionTargeter.getZDistanceToFuelTarget(
-                     * this.visionTargeter.getLargestBlob());
-                     */
+    // System.out.println("RPMOffset in prepareToFire: " + rpmOffset);
+    double dist = 9.25;/*
+                        * this.visionTargeter.getZDistanceToFuelTarget(
+                        * this.visionTargeter.getLargestBlob());
+                        */
     if (dist > 0)
         {
         this.flywheelController
-                .set(2000
-                        /* .5 * this.calculateRPMToMakeGoal(dist) */ + rpmOffset);
+                .set(.5 * this.calculateRPMToMakeGoal(dist)
+                        + rpmOffset);
         SmartDashboard.putNumber("Flywheel speed",
                 this.flywheelController.getSpeed());
         // multiplied by 2 for gear ratio.
@@ -515,13 +515,13 @@ private final double MAX_GIMBALING_ANGLE = 16;// in degrees
 
 private final double MIN_GIMBALING_ANGLE = -16;// in degrees
 
-private final double MOUNT_ANGLE = 64;// TODO figure out the actual number.
+private final double MOUNT_ANGLE = 67;// TODO figure out the actual number.
 
 private final double RELATIVE_GOAL_HEIGHT_METERS = 1.93;
 
 private final double FLYWHEEL_RADIUS_METERS = 0.0508;
 
-private final double FLYWHEEL_SPEED_CORRECTION_CONSTANT = 0;// TODO tune
+private final double FLYWHEEL_SPEED_CORRECTION_CONSTANT = .13578;// TODO tune
 
 /**
  * factor the gimbal encoder must be set to (distance per pulse)

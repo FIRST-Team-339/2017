@@ -196,8 +196,8 @@ public static void periodic ()
     SmartDashboard.putNumber("Err", Hardware.shooterMotor.getError());
     Hardware.shooterMotor.setPID(Robot.shooterP, Robot.shooterI,
             Robot.shooterD);
-    Hardware.shooterMotor
-            .set(tempSetpoint);
+    // Hardware.shooterMotor
+    // .set(tempSetpoint);
 
     // previousFireButton = Hardware.leftDriver.getTrigger();
     //
@@ -333,20 +333,15 @@ public static void periodic ()
     if (Hardware.rightOperator.getTrigger())
         {
         Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
-        System.out.println(
-                "Shooter motor: " + Hardware.shooterMotor.get());
-        /*
-         * Hardware.shooter.loadBalls();
-         * Hardware.shooterMotor
-         * .set(1850.0
-         * Hardware.shooter.calculateRPMToMakeGoal(9.25)
-         * / 2.0
-         * );
-         */
+        // System.out.println(
+
+        Hardware.shooter.loadBalls();
+        // Hardware.shooterMotor.set(
+        // Hardware.shooter.calculateRPMToMakeGoal(12.25) / 2.0);
         }
     else
         {
-        // Hardware.shooter.stopFlywheelMotor();
+        Hardware.shooter.stopFlywheelMotor();
         }
 
     // END SHOOTER TESTING
@@ -419,7 +414,7 @@ public static void printStatements ()
     // Motor controllers
     // prints value of the motors
     // =================================
-    System.out.println("Delay Pot: " + Hardware.delayPot.get(0, 5));
+    // System.out.println("Delay Pot: " + Hardware.delayPot.get(0, 5));
     // System.out.println("Right Front Motor Controller: "
     // + Hardware.rightFrontMotor.get());
     // System.out.println("Left Front Motor Controller: " +
@@ -428,7 +423,10 @@ public static void printStatements ()
     // Hardware.rightRearMotor.get());
     // System.out.println("Left Rear Motor Controller: " +
     // Hardware.leftRearMotor.get());
-
+    System.out.println("Flywheel thingy thing: "
+            + Hardware.shooter.calculateRPMToMakeGoal(9.25) * .5);
+    System.out.println("Flywheel thingy thing speed really: "
+            + Hardware.shooterMotor.get());
 
     // System.out
     // .println("Flywheel Motor: " + Hardware.shooterMotor.get());
