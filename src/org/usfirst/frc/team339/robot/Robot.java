@@ -299,7 +299,7 @@ public void robotInit ()
         Hardware.intakeMotor.setInverted(true);
         Hardware.mecanumDrive
                 .setDeadbandPercentageZone(Hardware.joystickDeadzone);
-        Hardware.mecanumDrive.setDirectionalDeadzone(5.0);
+        Hardware.mecanumDrive.setDirectionalDeadzone(10.0);
         Hardware.mecanumDrive.setMecanumJoystickReversed(false);
         // Hardware.rightFrontMotorSafety.setExpiration(.5);
         // Hardware.rightRearMotorSafety.setExpiration(.5);
@@ -366,7 +366,7 @@ public void robotInit ()
     // we don't.
     Hardware.shooterMotor.changeControlMode(TalonControlMode.Speed);
     // put back in once finished testing!!!
-    Hardware.shooterMotor.configPeakOutputVoltage(12f, -12f);
+    Hardware.shooterMotor.configPeakOutputVoltage(12f, 0f);
     Hardware.shooterMotor.configNominalOutputVoltage(0f, 0f);
     Hardware.shooterMotor
             .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
@@ -530,7 +530,7 @@ public void testPeriodic ()
 /**
  * The percentage we want the motors to run at while we are in first gear
  */
-public static final double KILROY_XVIII_FIRST_GEAR_PERCENTAGE = .6;
+public static final double KILROY_XVIII_FIRST_GEAR_PERCENTAGE = .85;
 
 /**
  * The percentage we want the motors to run at while we are in second gear
@@ -553,10 +553,10 @@ public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.069;
 
 public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVII = .0197;
 
-public static double shooterP = .005;
+public static double shooterP = .029; 
 
-public static double shooterI = .000018;
+public static double shooterI = .000042;
 
-public static double shooterD = 3.0;
+public static double shooterD = .85;
 
 } // end class

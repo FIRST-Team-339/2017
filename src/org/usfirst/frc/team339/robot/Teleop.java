@@ -116,9 +116,10 @@ public static void init ()
                 Hardware.KILROY_XVIII_US_SCALING_FACTOR);
         Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
         Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
-        Hardware.tankDrive.setGear(1);
+        Hardware.tankDrive.setGear(2);
         Hardware.autoDrive.setDriveCorrection(.3);
         Hardware.autoDrive.setEncoderSlack(1);
+        Hardware.mecanumDrive.setGear(1);
         // Hardware.mecanumDrive.setDirectionalDeadzone(0.2);
         // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
         }
@@ -188,13 +189,6 @@ static double tempSetpoint = 0.0;
 
 public static void periodic ()
 {
-    if (Hardware.leftDriver.getTrigger() && !previousFireButton)
-        {
-        firing = !firing;
-        }
-    if (firing)
-        Hardware.shooter.fire();
-
     Robot.shooterP = SmartDashboard.getNumber("P", Robot.shooterP);
     Robot.shooterI = SmartDashboard.getNumber("I", Robot.shooterI);
     Robot.shooterD = SmartDashboard.getNumber("D", Robot.shooterD);
@@ -202,7 +196,8 @@ public static void periodic ()
     SmartDashboard.putNumber("Err", Hardware.shooterMotor.getError());
     Hardware.shooterMotor.setPID(Robot.shooterP, Robot.shooterI,
             Robot.shooterD);
-    Hardware.shooterMotor.set(tempSetpoint);
+    // Hardware.shooterMotor
+    // .set(tempSetpoint);
 
     // previousFireButton = Hardware.leftDriver.getTrigger();
     //
@@ -248,9 +243,10 @@ public static void periodic ()
         rotationValue = 0.0;
 
 
+
     if (!isTestingDriveCode && !isAligning && !isStrafingToTarget)  // Main
-                                                                    // driving
-                                                                    // function
+    // driving
+    // function
         {
         if (Hardware.isUsingMecanum == true)
             Hardware.mecanumDrive.drive(
@@ -261,30 +257,47 @@ public static void periodic ()
             Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
                     Hardware.leftDriver.getY());
         }
-    // Test code for break
+    // Test code for brake
+    if (Hardware.leftDriver.getRawButton(9))
+        isDrivingStraight = true;
 
-
-
-    if (Hardware.leftDriver.getRawButton(9) == true)
+    if (isDrivingStraight)
         {
-
-        if (Hardware.autoDrive.driveInches(12, .3))
+        // System.out.println("We are driving straight inches");
+        isDrivingStraight = !Hardware.autoDrive.driveStraightInches(12,
+                .75);
+        if (!isDrivingStraight)
             {
-            System.out.println("We drove");
-            // if (Hardware.autoDrive.isStopped(Hardware.leftFrontEncoder,
-            // Hardware.rightFrontEncoder))
-            // System.out.println("We Aren't Stopped");
-            // {
-            // Hardware.leftRearMotor.set(0);
-            // Hardware.leftFrontMotor.set(0);
-            // Hardware.rightRearMotor.set(0);
-            // Hardware.rightFrontMotor.set(0);
-            // System.out.println("We stopped now");
-            // }
+            // System.out.println("We are braking");
+            isBraking = true;
             }
-
         }
 
+    if (isBraking)
+        {
+        isBraking = !Hardware.autoDrive.timeBrake(-.1, .5);
+        // System.out.println("We are braking; for real");
+        // if (Hardware.autoDrive.isStopped(Hardware.leftRearEncoder,
+        // Hardware.rightRearEncoder)
+        // && Hardware.autoDrive.isStopped(
+        // Hardware.leftFrontEncoder,
+        // Hardware.rightFrontEncoder))
+        // {
+        // Hardware.autoDrive.driveNoDeadband(0.0, 0.0);
+        // System.out.println("We are at zero");
+        //
+        // }
+        }
+
+    // if (Hardware.brake.get())
+    // {
+    //
+    // }
+    // if (Hardware.setMotorsZero.get())
+    // {
+    // Hardware.autoDrive.drive(0, 0, 0);
+    // System.out.println("We zeroed now");
+    // }
     // =================================================================
     // OPERATOR CONTROLS
     // =================================================================
@@ -319,62 +332,33 @@ public static void periodic ()
     // TESTING SHOOTER
     if (Hardware.rightOperator.getTrigger())
         {
+        Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
+        // System.out.println(
+
         Hardware.shooter.loadBalls();
-        Hardware.shooterMotor.set(1000);
+        // Hardware.shooterMotor.set(
+        // Hardware.shooter.calculateRPMToMakeGoal(12.25) / 2.0);
+        }
+    else
+        {
+        Hardware.shooter.stopFlywheelMotor();
         }
 
-    else if (Hardware.rightOperator.getRawButton(9))
-        Hardware.shooterMotor.set(1000);
-    else
-        Hardware.shooterMotor.set(0.0);
     // END SHOOTER TESTING
     // =================================================================
     // CAMERA CODE
     // =================================================================
 
-    // Written by Ashley Espeland, has not been tested
-    // cameraServo code setting to either the higher or the lower angle
-    // position
-    // if button 9 equals true and this method had not been called
-    // since the last time the button read false (cameraPositionHasChanged)
-    if (Hardware.rightOperator.getRawButton(5) == true
-            && cameraPositionHasChanged == false)
+    // Sorry ash, this is all you needed.
+    if (Hardware.cameraServoSwitch.isOnCheckNow())
         {
-        // set changeCameraServoPosition to true
-        changeCameraServoPosition = true;
+        Hardware.cameraServo.setAngle(190);
         }
-    // if changeCamerServoPosition equals true
-    if (changeCameraServoPosition == true)
+    else
         {
-        // if the servo is in the lower position
-        if (Hardware.cameraServo
-                .getAngle() == LOWER_CAMERASERVO_POSITION)
-            {
-            // then set the servo to the higher position and change
-            // cameraPositionHasChanged to true
-            Hardware.cameraServo
-                    .setAngle(HIGHER_CAMERASERVO_POSITION);
-            cameraPositionHasChanged = true;
-            }
-        // if the cameraServo is in the higher position
-        else if (Hardware.cameraServo
-                .getAngle() == HIGHER_CAMERASERVO_POSITION)
-            {
-            // set the servo to the lower position and change
-            // cameraPositionHasChanged to true
-            Hardware.cameraServo
-                    .setAngle(LOWER_CAMERASERVO_POSITION);
-            cameraPositionHasChanged = true;
-            }
+        Hardware.cameraServo.setAngle(0);
         }
-    // if camera servo position has been changed and the button equals false
-    if (changeCameraServoPosition == true
-            && Hardware.leftOperator.getRawButton(4) == false)
-        {
-        // set the cameraPositionHasChanged to false to be able to change
-        // the position again when the button is pushed again
-        cameraPositionHasChanged = false;
-        }
+
     Hardware.axisCamera
             .takeSinglePicture(Hardware.leftOperator.getRawButton(8)
                     || Hardware.rightOperator.getRawButton(8)
@@ -382,6 +366,10 @@ public static void periodic ()
 
 } // end
   // Periodic
+
+private static boolean isDrivingStraight = false;
+
+private static boolean isBraking = false;
 
 private static Drive.AlignReturnType alignValue = Drive.AlignReturnType.MISALIGNED;
 
@@ -426,7 +414,7 @@ public static void printStatements ()
     // Motor controllers
     // prints value of the motors
     // =================================
-
+    // System.out.println("Delay Pot: " + Hardware.delayPot.get(0, 5));
     // System.out.println("Right Front Motor Controller: "
     // + Hardware.rightFrontMotor.get());
     // System.out.println("Left Front Motor Controller: " +
@@ -435,7 +423,10 @@ public static void printStatements ()
     // Hardware.rightRearMotor.get());
     // System.out.println("Left Rear Motor Controller: " +
     // Hardware.leftRearMotor.get());
-
+    System.out.println("Flywheel thingy thing: "
+            + Hardware.shooter.calculateRPMToMakeGoal(9.25) * .5);
+    System.out.println("Flywheel thingy thing speed really: "
+            + Hardware.shooterMotor.get());
 
     // System.out
     // .println("Flywheel Motor: " + Hardware.shooterMotor.get());
@@ -496,8 +487,8 @@ public static void printStatements ()
 
     // System.out.println("Right Front Encoder: " +
     // Hardware.rightFrontEncoder.get());
-    // System.out.println("Right Front Encoder Distance: " +
-    // Hardware.autoDrive.getRightRearEncoderDistance());
+    // System.out.println("Right Front Distance: " +
+    // Hardware.autoDrive.getRightFrontEncoderDistance());
     // System.out.println("Right Rear Encoder: " +
     // Hardware.rightRearEncoder.get());
     // System.out.println("Right Rear Encoder Distance: " +
@@ -510,7 +501,9 @@ public static void printStatements ()
     // Hardware.leftRearEncoder.get());
     // System.out.println("Left Rear Encoder Distance: " +
     // Hardware.autoDrive.getLeftFrontEncoderDistance());
-    // System.out.println("Right Front Encoder: " +
+    // System.out.println("Right Front Encoder: " + System.out.println("Right
+    // Front Encoder Distance: " +
+
     // Hardware.rightFrontEncoder.get());
     // System.out.println("Right Front Encoder Distance: " +
     // Hardware.autoDrive.getRightRearEncoderDistance());
@@ -562,6 +555,7 @@ public static void printStatements ()
     // + Hardware.leftUS.getDistanceFromNearestBumper());
     // System.out.println("RightUS = "
     // + Hardware.rightUS.getDistanceFromNearestBumper());
+
     // System.out.println("Delay Pot: " + Hardware.delayPot.get());
     // ---------------------------------
     // pots
@@ -598,9 +592,6 @@ public static void printStatements ()
     // Joysticks
     // information about the joysticks
     // ---------------------------------
-
-
-
     // System.out.println("Right Joystick: " +
     // Hardware.rightDriver.getDirectionDegrees());
     // System.out.println("Left Operator: " +
@@ -615,13 +606,13 @@ public static void printStatements ()
     // Joysticks
     // information about the joysticks
     // ---------------------------------
-    System.out.println("Left Joystick Direction: " +
-            Hardware.leftDriver.getDirectionDegrees());
-    if (Hardware.leftDriver.getTrigger())
-        {
-        System.out.println("Twist: " + Hardware.leftDriver.getTwist());
-        }
-    System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
+    // System.out.println("Left Joystick Direction: " +
+    // Hardware.leftDriver.getDirectionDegrees());
+    // if (Hardware.leftDriver.getTrigger())
+    // {
+    // System.out.println("Twist: " + Hardware.leftDriver.getTwist());
+    // }
+    // System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
     // System.out.println("Right Joystick: " + Hardware.rightDriver.getY());
     // System.out.println("Left Operator: " + Hardware.leftOperator.getY());
     // System.out.println("Right Operator: " +
@@ -673,5 +664,7 @@ public static boolean cancelAgitator = false;
 public static boolean hasCanceledAgitator = false;
 
 private static boolean isTestingDriveCode = false;
+
+private static boolean prevState = false;
 
 } // end class

@@ -216,10 +216,10 @@ public void initEncoders (Encoder _leftFrontEncoder,
  */
 public double getAveragedEncoderValues ()
 {
-    return (this.getLeftFrontEncoderDistance()
-            + this.getRightFrontEncoderDistance()
-            + this.getLeftRearEncoderDistance()
-            + this.getRightRearEncoderDistance()) / 4.0;
+    return (Math.abs(this.getLeftFrontEncoderDistance())
+            + Math.abs(this.getRightFrontEncoderDistance())
+            + Math.abs(this.getLeftRearEncoderDistance())
+            + Math.abs(this.getRightRearEncoderDistance())) / 4.0;
 }
 
 // TODO Test this
@@ -270,7 +270,19 @@ private boolean firstTimeDriveInches = true;
  */
 public boolean driveStraightInches (double inches, double speed)
 {
-    System.out.println("We are driving straight");
+    if (firstTimeDriveInches == true)
+        {
+        this.resetEncoders();
+        firstTimeDriveInches = false;
+        }
+
+    if (this.getAveragedEncoderValues() >= inches)
+        {
+        System.out.println("We are finished driving straight");
+        this.driveNoDeadband(0.0, 0.0);
+        this.firstTimeDriveInches = true;
+        return true;
+        }
     System.out.println(
             "Average Encoder Values"
                     + this.getAveragedEncoderValues());
@@ -278,33 +290,18 @@ public boolean driveStraightInches (double inches, double speed)
             + this.getLeftRearEncoderDistance()) / 2;
     double averageRight = (this.getRightFrontEncoderDistance()
             + this.getRightRearEncoderDistance()) / 2;
-    // System.out.println("Average Left: " + averageLeft);
-    // System.out.println("Average Right: " + averageRight);
-    if (firstTimeDriveInches == true)
-        {
-        this.resetEncoders();
-        firstTimeDriveInches = false;
-        System.out.println("First time inches");
-        }
+    System.out.println("Average Left: " + averageLeft);
+    System.out.println("Average Right: " + averageRight);
+    System.out.println("we correcting");
+    if (Math.abs(averageRight - averageLeft) <= this
+            .getEncoderSlack())
+        this.driveNoDeadband(speed, 0);
+    else if (averageLeft > averageRight)//
+        this.driveNoDeadband(speed, -this.getDriveCorrection());
+    else if (averageLeft < averageRight)//
+        this.driveNoDeadband(speed, this.getDriveCorrection());
 
-    if (Math.abs(this.getAveragedEncoderValues()) <= Math
-            .abs(inches))
-        {
-        if (averageRight >= averageLeft - getEncoderSlack()
-                && averageRight <= averageLeft + getEncoderSlack())
-            this.driveNoDeadband(speed, 0);
-        if (averageLeft > averageRight)//
-            this.driveNoDeadband(speed + getDriveCorrection(), speed);
-        if (averageLeft < averageRight)//
-            this.driveNoDeadband(speed,
-                    speed + getDriveCorrection());
-        return false;
-        }
-
-    this.stopMovement();
-    System.out.println("We are in the brake loop");
-    firstTimeDriveInches = true;
-    return true;
+    return false;
 
 }
 
@@ -603,7 +600,7 @@ public void driveNoDeadband (double speed, double correction)
     switch (this.transmissionType)
         {
         case MECANUM:
-            System.out.println("using macanum");
+            System.out.println("using mecanum");
             this.transmissionMecanum.driveNoDeadband(speed, correction,
                     0.0);
 
@@ -728,269 +725,116 @@ public void resetEncoders ()
 }
 
 /**
- * @return stopMoving()
- * @author Ashley Espeland
- *         should stop movement even if on hill, or turning, also should quit
- *         after five seconds
+ * Brakes for the given iterations
  * 
+ * @param iterations
+ *            the number of times we loop through this brake function
+ * @param speed
+ *            how fast we should brake. Negative if we want to brake after going
+ *            forwards
+ * 
+ * @return true only if we have finished braking, false otherwise
  */
-public brakeReturns stopMovement ()
+public boolean brake (int iterations, double speed)
 {
-    // if stopTimer is equal to 0, start it
-    if (movementTimer.get() == 0)
+    if (brakeIterations < iterations)
         {
-        movementTimer.start();
+        this.driveNoDeadband(speed, 0.0);
+        brakeIterations++;
+        return false;
         }
-    System.out.println("We are trying to brake HOORAH");
-    // if timer is equal to the MAX_STOPPING_TIME then basically remove
-    // deadband range, stop the motors, and stop then reset the stopTimer
-    // returns timeExceeded
-    if (movementTimer.get() == MAX_STOPPING_TIME)
+    this.drive(0.0, 0.0);
+    brakeIterations = 0;
+    return true;
+
+}
+
+private int brakeIterations = 0;
+
+/**
+ * brakes until we have stopped, then sets motors to zero
+ *
+ * 
+ * @param speed
+ *            how fast we should brake, negate for forward
+ * @return true if we have stopped completely
+ */
+public boolean timeBrake (double speed, double time)// COMMENT THIS! | I got chu
+                                                    // fam.
+{
+    double alteredSpeed = Math.abs(speed);
+
+    System.out.println("brake timer:" + movementTimer.get());
+    if (firstTime)
         {
-        this.driveNoDeadband(0.0, 0.0); // TODO
+        // For each speed controller, if they're going backwards (is less than
+        // 0), tell them to go forwards, otherwise, tell them to go backwards
+        // when we do the actual breaking.
+        this.motorSigns[0] = (this.transmissionMecanum.leftSpeedController
+                .get() < 0) ? 1 : -1;
+        this.motorSigns[1] = (this.transmissionMecanum.leftRearSpeedController
+                .get() < 0) ? 1 : -1;
+        this.motorSigns[2] = (this.transmissionMecanum.rightSpeedController
+                .get() < 0) ? 1 : -1;
+        this.motorSigns[3] = (this.transmissionMecanum.rightRearSpeedController
+                .get() < 0) ? 1 : -1;
+        // Setup the timer
         movementTimer.stop();
         movementTimer.reset();
-        return this.timeExceeded;
+        movementTimer.start();
+        // Don't set up again this run
+        firstTime = false;
         }
-    // if both left and left rear motor encoders are not equal to null
-    // and isStopped is equal to true then return to normal controls,
-    // if iStopped is not equal to true then multiply
-    if (this.leftFrontEncoder != null)
+    // if We're done breaking
+    if (movementTimer.get() >= time)
         {
-        if (this.leftRearEncoder != null)
-            {
-            if (this.isStopped(leftFrontEncoder,
-                    leftRearEncoder) == true)
-                ;
-                {
-                this.setJoystickDeadbandRange(savedDeadBandRange);
-                movementTimer.stop();
-                movementTimer.reset();
-                this.drive(0.0, 0.0); // TODO
-                return this.noMovement;
-                }
-
-            }
+        // stop
+        this.driveNoDeadband(0.0, 0.0);
+        // tell the user
+        System.out.println("We are at zero");
+        // stop the timer
+        movementTimer.stop();
+        // be ready to set up again
+        firstTime = true;
+        // Tell the caller we're done
+        return true;
         }
-    return stopMovement();
+    // otherwise...
+    /*
+     * Drive the motors in the opposite direction they were running when the
+     * function was first called. Uses the motorSigns array to find out which
+     * way that was.
+     */
+    this.transmissionMecanum
+            .driveLeftMotor(alteredSpeed * this.motorSigns[0]);
+
+    this.transmissionMecanum
+            .driveLeftRearMotor(alteredSpeed * this.motorSigns[1]);
+
+    this.transmissionMecanum
+            .driveRightMotor(alteredSpeed * this.motorSigns[2]);
+
+    this.transmissionMecanum
+            .driveRightRearMotor(alteredSpeed * this.motorSigns[3]);
+    // Tell the user we're not done
+    System.out.println("We are not at zero");
+    // Tell the caller we're not done
+    return false;
 
 }
 
-// -------------------------------------------------------
 /**
- * Determines the amount of motors present, then calls 1 or 2
- * stopped() functions accordingly. Then waits for the called functions
- * to return true, then returning true itself.
- * 
- * @method stop
- * 
- * @return returns true when isStopped() functions return true
- * @author Eli Neagle
- * @written Aug 29, 2016
- *          -------------------------------------------------------
+ * left front, left rear, right front, right rear
  */
+private int[] motorSigns =
+    {1, 1, 1, 1};
 
+private boolean firstTime = true;
 
-// This function was not called anywhere until Ashley and Cole added it
-// to Teleop around line 1000. Buttons 4 and 5 on the Left Driver Station
-// do something similar
-// TODO give this function a better name
-// Notes from last test: isStopped is yielding true even when wheels
-// are moving
-// See Cole or Ashley for further info; Remove this comment later
-
-// Note from Cole (Dec 15, 16): Added print statements in isStopped
-// because I was trying to figure out why Ashley said it was returning
-// true at the wrong time. My tests showed that isStopped was working,
-// although I didn't have much time to test it. More importantly,
-// the wheels didn't stop when Left Drive Button 7 was pressed. For
-// next time, look into why the wheels weren't stopping, and if we
-// should just use the functions called by buttons 4 and 5 on the Left
-// Driver Station (see the top of this functions comments).
-
-
-// This function is used by Left Drive Button 7
-public brakeReturns stop ()
-{
-    // TODO TEACH THE FUTURE MINIONS TO COMMENT THEIR UGLY CODE
-    // prints out the motor encoder that we are using to the driver
-    // station
-
-    // System.out.println("isStopped left/right front encoders: "
-    // + isStopped(Hardware.transmission.leftMotorEncoder,
-    // Hardware.transmission.oneOrRightMotorEncoder));
-    // System.out.println("isStopped left/right rear encoders: "
-    // + isStopped(Hardware.transmission.leftRearMotorEncoder,
-    // Hardware.transmission.rightRearMotorEncoder));
-    // if timer is at 0, start it
-    if (stopTimer.get() == 0)
-        {
-        stopTimer.start();
-        }
-
-    // if timer is equal to the MAX_STOPPING_TIME then basically remove
-    // deadband range, stop the motors, and stop then reset the stopTimer
-    // returns timeExceeded YIPEE!!!!
-    if (stopTimer.get() == MAX_STOPPING_TIME)
-        {
-        this.setJoystickDeadbandRange(0.0);
-        this.drive(0.0, 0.0); // TODO
-        stopTimer.stop();
-        stopTimer.reset();
-        return this.timeExceeded;
-        }
-
-    // check for amount of motors
-    // 1 set of motors, call one
-    // 2 sets of motors, call two
-    // no encoders, end function
-
-    // sets JoystickDeadbandRange to 0
-    this.setJoystickDeadbandRange(0.0);
-
-    // if both front motor encoders are NOT equal to null then
-    if (this.leftFrontEncoder != null
-            && this.rightFrontEncoder != null)
-        {
-        // if both rear motor controllers are NOT equal to null
-        if (this.leftRearEncoder != null
-                && this.rightRearEncoder != null)
-            {
-            // if isStopped is true for both motor encoders
-            if (isStopped(this.leftFrontEncoder,
-                    this.rightFrontEncoder) == true
-                    && isStopped(this.leftRearEncoder,
-                            this.rightRearEncoder) == true)
-                {
-                // then set JoystickDeadband to the saved range
-                // stop and reset the stopTimer
-                // set controls to 0
-                this.setJoystickDeadbandRange(savedDeadBandRange);
-                stopTimer.stop();
-                stopTimer.reset();
-                this.drive(0.0, 0.0); // TODO
-                return this.noMovement;
-                }
-            // else if direction was changed in both motor encoder sets
-
-            else if (directionChanged(this.leftFrontEncoder,
-                    this.rightFrontEncoder) == true
-                    && directionChanged(this.leftRearEncoder,
-                            this.rightRearEncoder) == true)
-                {
-                // sets JoystickDeadbandRange to the saved range
-                // stop and reset stopTimer, set controls to 0
-                // return directionChanged
-                this.setJoystickDeadbandRange(savedDeadBandRange);
-                stopTimer.stop();
-                stopTimer.reset();
-                this.drive(0.0, 0.0); // TODO
-                return this.directionChanged;
-                }
-
-
-            }
-        else
-            {
-            // if isStopped is equal to true (NOTE isStopped is
-            // questionable)
-            if (isStopped(this.leftFrontEncoder,
-                    this.rightFrontEncoder) == true)
-                {
-                // set deadband range to the saved DeadbandRange
-                // stop and reset the stopTimer, set controls to 0
-                // return noMovement
-                this.setJoystickDeadbandRange(savedDeadBandRange);
-                stopTimer.stop();
-                stopTimer.reset();
-                this.drive(0.0, 0.0); // TODO
-                return this.noMovement;
-                }
-            // else if directionChanged is equal to true
-            else if (directionChanged(this.leftFrontEncoder,
-                    this.rightFrontEncoder) == true)
-                {
-                // then set the DeadbandRange to the saved DeadbandRange
-                // stop and reset the stopTimer, set controls to 0,
-                // return directionChanged
-                this.setJoystickDeadbandRange(savedDeadBandRange);
-                stopTimer.stop();
-                stopTimer.reset();
-                this.drive(0.0, 0.0); // TODO
-                return this.directionChanged;
-                }
-            }
-        }
-    // else if both encoders are NOT equal to null
-    else if (this.leftRearEncoder != null
-            && this.rightRearEncoder != null)
-        {
-        // if isStopped for both motors equals true
-        if (isStopped(this.leftRearEncoder,
-                this.rightRearEncoder) == true)
-            {
-            // then set JoystickDeadbandRange to the saved range
-            // stop and reset stopTimer, set controls to 0
-            // returns noMovement
-            this.setJoystickDeadbandRange(savedDeadBandRange);
-            stopTimer.stop();
-            stopTimer.reset();
-            this.drive(0.0, 0.0); // TODO
-            return this.noMovement;
-            }
-        // if directionChanged is equal to true for both motors
-        else if (directionChanged(this.leftRearEncoder,
-                this.rightRearEncoder) == true)
-            {
-            this.setJoystickDeadbandRange(savedDeadBandRange);
-            stopTimer.stop();
-            stopTimer.reset();
-            this.drive(0.0, 0.0); // TODO
-            return this.directionChanged;
-            }
-        }
-    else
-    // set JoystickDeadbandRange to the saved range
-    // stop and reset stopTimer, return noEncoders
-        {
-        this.setJoystickDeadbandRange(savedDeadBandRange);
-        stopTimer.stop();
-        stopTimer.reset();
-        return this.noEncoders;
-        // No encoders present, we're done here
-        }
-    return this.inMotion;
-
-}
-
-Timer stopTimer = new Timer();
+// public double MAX_TIME = .1;// TODO final?
 
 Timer movementTimer = new Timer();
 
-/**
- * @author Eli Neagle
- * @description When the stop() function is run, it
- *              will return one of these values.
- */
-// TODO: Add Javadoc description
-public enum brakeReturns
-    {
-    TIME_EXCEEDED, NO_MOVEMENT, DIRECTION_CHANGED, NO_ENCODERS, IN_MOTION
-    }
-
-public brakeReturns timeExceeded = brakeReturns.TIME_EXCEEDED;
-
-public brakeReturns noMovement = brakeReturns.NO_MOVEMENT;
-
-public brakeReturns noEncoders = brakeReturns.NO_ENCODERS;
-
-public brakeReturns directionChanged = brakeReturns.DIRECTION_CHANGED;
-
-public brakeReturns inMotion = brakeReturns.IN_MOTION;
-
-private double MAX_STOPPING_TIME = 5;
-
-private double savedDeadBandRange;
 
 /**
  * @method isStopped
@@ -1007,15 +851,6 @@ private double savedDeadBandRange;
 // a certain time
 public boolean isStopped (Encoder leftEncoder, Encoder rightEncoder)
 {
-    // Print statements for current distance brakePreviousDistance_ variables
-    // System.out.println("left encoder current distance is: " +
-    // leftEncoder.getDistance());
-    // System.out.println("brakePreviousDistanceL is: " +
-    // this.brakePreviousDistanceL);
-    // System.out.println("right encoder current distance is: " +
-    // rightEncoder.getDistance());
-    // System.out.println("brakePreviousDistanceR is: " +
-    // this.brakePreviousDistanceR);
 
     // if the difference between the current encoder value and the encoder
     // value from the last time we called this function is equal to 0
@@ -1024,6 +859,12 @@ public boolean isStopped (Encoder leftEncoder, Encoder rightEncoder)
             && Math.abs(rightEncoder.getDistance())
                     - this.brakePreviousDistanceR == 0)
         {
+        System.out.println(
+                "Left Delta: " + (Math.abs(leftEncoder.getDistance())
+                        - this.brakePreviousDistanceL));
+        System.out.println(
+                "Right Delta: " + (Math.abs(rightEncoder.getDistance())
+                        - this.brakePreviousDistanceR));
         // then set the brakePreviousDistance to 0, and return true
         this.brakePreviousDistanceL = 0;
         this.brakePreviousDistanceR = 0;
@@ -1372,7 +1213,7 @@ private TransmissionType transmissionType = null;
  * The value that the getDistance is multiplied by to get an accurate
  * distance.
  */
-private static final double DEFAULT_DISTANCE_PER_PULSE = 1.0 / 12.9375;
+private static final double DEFAULT_DISTANCE_PER_PULSE = .069;// 1.0 / 12.9375;
 
 private static final double Max = 0.3;
 

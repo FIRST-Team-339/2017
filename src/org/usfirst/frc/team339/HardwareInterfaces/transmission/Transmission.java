@@ -180,11 +180,11 @@ public int getMaxGear ()
  * @written 2 July 201
  *          ------------------------------------------------------------
  */
-private SpeedController rightSpeedController = null;
+public SpeedController rightSpeedController = null;
 
 private MotorDirection rightMotorDirection = MotorDirection.FORWARD;
 
-private SpeedController leftSpeedController = null;
+public SpeedController leftSpeedController = null;
 
 private MotorDirection leftMotorDirection = MotorDirection.FORWARD;
 
@@ -304,7 +304,7 @@ public void drive (double rightJoystickVal, double leftJoystickVal)
  * @author Noah Golmant
  * @date 9 July 201
  */
-protected void driveLeftMotor (double motorValue)
+public void driveLeftMotor (double motorValue)
 {
 
     if (this.leftSpeedController == null)
@@ -335,7 +335,7 @@ protected void driveLeftMotor (double motorValue)
  * @author Noah Golmant
  * @date 9 July 201
  */
-protected void driveRightMotor (double motorValue)
+public void driveRightMotor (double motorValue)
 {
 
     if (this.rightSpeedController == null)
