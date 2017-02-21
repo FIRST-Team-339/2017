@@ -244,7 +244,8 @@ public static void periodic ()
 
 
 
-    if (!isTestingDriveCode && !isAligning && !isStrafingToTarget)  // Main
+    if (!isDrivingStraight && !isBraking && !isAligning
+            && !isStrafingToTarget)  // Main
     // driving
     // function
         {
@@ -275,8 +276,9 @@ public static void periodic ()
 
     if (isBraking)
         {
-        isBraking = !Hardware.autoDrive.timeBrake(-.1, .5);
-        // System.out.println("We are braking; for real");
+        isBraking = !Hardware.autoDrive.brakeToZero(.3);
+        // isBraking = !Hardware.autoDrive.timeBrake(-.1, .5);
+        System.out.println("We are braking");
         // if (Hardware.autoDrive.isStopped(Hardware.leftRearEncoder,
         // Hardware.rightRearEncoder)
         // && Hardware.autoDrive.isStopped(
@@ -423,10 +425,10 @@ public static void printStatements ()
     // Hardware.rightRearMotor.get());
     // System.out.println("Left Rear Motor Controller: " +
     // Hardware.leftRearMotor.get());
-    System.out.println("Flywheel thingy thing: "
-            + Hardware.shooter.calculateRPMToMakeGoal(9.25) * .5);
-    System.out.println("Flywheel thingy thing speed really: "
-            + Hardware.shooterMotor.get());
+    // System.out.println("Flywheel thingy thing: "
+    // + Hardware.shooter.calculateRPMToMakeGoal(9.25) * .5);
+    // System.out.println("Flywheel thingy thing speed really: "
+    // + Hardware.shooterMotor.get());
 
     // System.out
     // .println("Flywheel Motor: " + Hardware.shooterMotor.get());
