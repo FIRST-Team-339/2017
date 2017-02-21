@@ -196,7 +196,7 @@ private static final double ALIGN_DEADBAND = 10 // +/- pixels
 
 private static final double ALIGN_ACCEPTED_CENTER = .5; // Relative coordinates
 
-private static final int ALIGN_DISTANCE_FROM_GOAL = 15;
+private static final int ALIGN_DISTANCE_FROM_GOAL = 14;
 
 /**
  * User-Initialization code for autonomous mode should go here. Will be
@@ -325,6 +325,10 @@ private static boolean placeCenterGearPath ()
             // zero out all the sensors, reset timers, etc.
             Hardware.autoStateTimer.start();
             Hardware.ringlightRelay.set(Value.kOn);
+            if (Hardware.backupOrFireOrHopper.isOn())
+                {
+                goForFire = true;
+                }
             currentState = MainState.DELAY_BEFORE_START;
             break;
         case DELAY_BEFORE_START:
@@ -339,7 +343,6 @@ private static boolean placeCenterGearPath ()
                 // Hardware.axisCamera.saveImagesSafely();
                 currentState = MainState.ACCELERATE;
                 postAccelerateState = MainState.DRIVE_FORWARD_TO_CENTER;
-
                 Hardware.autoStateTimer.reset();
                 Hardware.autoStateTimer.start();
                 }
@@ -375,7 +378,6 @@ private static boolean placeCenterGearPath ()
             // transmission,
             // we will strafe. If it uses a four wheel transmission, it will
             // wiggle wiggle on it's way to the peg
-
             cameraState = Hardware.autoDrive.strafeToGear(
                     getRealSpeed(ALIGN_DRIVE_SPEED),
                     ALIGN_CORRECT_VAR,
@@ -399,8 +401,24 @@ private static boolean placeCenterGearPath ()
                 // If we are close enough to the wall, stop.
                 currentState = MainState.WAIT_FOR_GEAR_EXODUS;
                 }
-
-
+            break;
+        case DRIVE_CAREFULLY_TO_PEG:
+            if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
+                {
+                currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
+                }
+            else
+                {
+                if (Hardware.rightUS
+                        .getDistanceFromNearestBumper() >= 14)
+                    {
+                    Hardware.autoDrive.driveNoDeadband(.3, 0.0);
+                    }
+                else
+                    {
+                    currentState = MainState.WAIT_FOR_GEAR_EXODUS;
+                    }
+                }
             break;
         case WAIT_FOR_GEAR_EXODUS:
             Hardware.ringlightRelay.set(Value.kOff);
@@ -421,7 +439,14 @@ private static boolean placeCenterGearPath ()
                 {
                 Hardware.axisCamera.saveImagesSafely();
                 Hardware.autoDrive.resetEncoders();
-                currentState = MainState.DRIVE_AWAY_FROM_PEG;
+                if (goForFire)
+                    {
+                    currentState = MainState.DRIVE_AWAY_FROM_PEG;
+                    }
+                else
+                    {
+                    currentState = MainState.DONE;
+                    }
                 }
             break;
         case DRIVE_AWAY_FROM_PEG:
