@@ -21,7 +21,7 @@ import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyGyro;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyServo;
 import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
-import org.usfirst.frc.team339.HardwareInterfaces.Potentiometer;
+import org.usfirst.frc.team339.HardwareInterfaces.RobotPotentiometer;
 import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
@@ -240,8 +240,10 @@ public static KilroyGyro driveGyro = new KilroyGyro(false);
 // Potentiometers
 // -------------------------------------
 // -------------------------------------
-public static Potentiometer delayPot = new Potentiometer(1, 270);// TODO max //
-                                                                 // degree value
+// TODO swap with us
+public static RobotPotentiometer delayPot = new RobotPotentiometer(1,
+        270);// TODO max //
+// degree value
 
 // -------------------------------------
 // Sonar/Ultrasonic
@@ -266,7 +268,7 @@ public static UsbCamera camForward = CameraServer.getInstance()
         .startAutomaticCapture(0);
 
 
-public static KilroyCamera axisCamera = new KilroyCamera(false);// TODO change
+public static KilroyCamera axisCamera = new KilroyCamera(true);// TODO change
 
 
 public static VisionScript visionScript = new VisionScript(
@@ -320,7 +322,7 @@ public static Joystick leftOperator = new Joystick(2);
 public static Joystick rightOperator = new Joystick(3);
 
 public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
-        rightOperator, 5, false);
+        leftOperator, 5, false);
 
 public static MomentarySwitch cameraServoSwitch = new MomentarySwitch(
         rightOperator, 10, false);

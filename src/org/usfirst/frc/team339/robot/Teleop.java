@@ -116,9 +116,10 @@ public static void init ()
                 Hardware.KILROY_XVIII_US_SCALING_FACTOR);
         Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
         Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
-        Hardware.tankDrive.setGear(1);
+        Hardware.tankDrive.setGear(2);
         Hardware.autoDrive.setDriveCorrection(.3);
-        // Hardware.autoDrive.setEncoderSlack(1); //TODO
+        Hardware.autoDrive.setEncoderSlack(1);
+        Hardware.mecanumDrive.setGear(1);
         // Hardware.mecanumDrive.setDirectionalDeadzone(0.2);
         // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
         }
@@ -188,13 +189,6 @@ static double tempSetpoint = 0.0;
 
 public static void periodic ()
 {
-    if (Hardware.leftDriver.getTrigger() && !previousFireButton)
-        {
-        firing = !firing;
-        }
-    if (firing)
-        Hardware.shooter.fire();
-
     Robot.shooterP = SmartDashboard.getNumber("P", Robot.shooterP);
     Robot.shooterI = SmartDashboard.getNumber("I", Robot.shooterI);
     Robot.shooterD = SmartDashboard.getNumber("D", Robot.shooterD);
@@ -202,7 +196,8 @@ public static void periodic ()
     SmartDashboard.putNumber("Err", Hardware.shooterMotor.getError());
     Hardware.shooterMotor.setPID(Robot.shooterP, Robot.shooterI,
             Robot.shooterD);
-    Hardware.shooterMotor.set(tempSetpoint);
+    Hardware.shooterMotor
+            .set(tempSetpoint);
 
     // previousFireButton = Hardware.leftDriver.getTrigger();
     //
@@ -248,9 +243,10 @@ public static void periodic ()
         rotationValue = 0.0;
 
 
-    if (!isDrivingStraight && !isAligning && !isStrafingToTarget)  // Main
-    // driving
-    // function
+
+    if (!isAligning && !isStrafingToTarget)  // Main
+                                             // driving
+                                             // function
         {
         if (Hardware.isUsingMecanum == true)
             Hardware.mecanumDrive.drive(
@@ -336,15 +332,23 @@ public static void periodic ()
     // TESTING SHOOTER
     if (Hardware.rightOperator.getTrigger())
         {
-        Hardware.shooter.loadBalls();
-        Hardware.shooterMotor
-                .set(Hardware.shooter.calculateRPMToMakeGoal(7.417));
+        Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
+        System.out.println(
+                "Shooter motor: " + Hardware.shooterMotor.get());
+        /*
+         * Hardware.shooter.loadBalls();
+         * Hardware.shooterMotor
+         * .set(1850.0
+         * Hardware.shooter.calculateRPMToMakeGoal(9.25)
+         * / 2.0
+         * );
+         */
         }
-    else if (Hardware.rightOperator.getRawButton(9))
-        Hardware.shooterMotor
-                .set(Hardware.shooter.calculateRPMToMakeGoal(7.417));
     else
-        Hardware.shooterMotor.set(0.0);
+        {
+        // Hardware.shooter.stopFlywheelMotor();
+        }
+
     // END SHOOTER TESTING
     // =================================================================
     // CAMERA CODE
@@ -415,7 +419,7 @@ public static void printStatements ()
     // Motor controllers
     // prints value of the motors
     // =================================
-
+    System.out.println("Delay Pot: " + Hardware.delayPot.get(0, 5));
     // System.out.println("Right Front Motor Controller: "
     // + Hardware.rightFrontMotor.get());
     // System.out.println("Left Front Motor Controller: " +
@@ -590,9 +594,6 @@ public static void printStatements ()
     // Joysticks
     // information about the joysticks
     // ---------------------------------
-
-
-
     // System.out.println("Right Joystick: " +
     // Hardware.rightDriver.getDirectionDegrees());
     // System.out.println("Left Operator: " +
