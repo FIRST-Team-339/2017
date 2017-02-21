@@ -127,7 +127,6 @@ public void drive (double magnitude, double direction, double rotation)
 
     double tempRotation = rotation, tempMagnitude = magnitude,
             tempDirection = direction;
-
     if ((Math.abs(magnitude) >= super.getDeadbandPercentageZone())
             || Math.abs(
                     tempRotation) >= super.getDeadbandPercentageZone())
@@ -141,7 +140,11 @@ public void drive (double magnitude, double direction, double rotation)
         // tempDirection = 45;
         else if (tempDirection < 90 + this.getDirectionalDeadzone()
                 && tempDirection > 90 - this.getDirectionalDeadzone())
+            {
+            // TODO nasty nasty hack
+            tempMagnitude = 2.5;
             tempDirection = 90;
+            }
         // else if (tempDirection < 135 + this.getDirectionalDeadzone()
         // && tempDirection > 135 - this.getDirectionalDeadzone())
         // tempDirection = 135;
@@ -153,7 +156,11 @@ public void drive (double magnitude, double direction, double rotation)
         // tempDirection = -135;
         else if (tempDirection < -90 + this.getDirectionalDeadzone()
                 && tempDirection > -90 - this.getDirectionalDeadzone())
+            {
             tempDirection = -90;
+            // TODO nasty nasty hack
+            tempMagnitude = 2.5;
+            }
         // else if (tempDirection < -45 + this.getDirectionalDeadzone()
         // && tempDirection > -45 - this.getDirectionalDeadzone())
         // tempDirection = -45;
