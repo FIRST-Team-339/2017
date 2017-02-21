@@ -759,12 +759,15 @@ private int brakeIterations = 0;
  *            how fast we should brake, negate for forward
  * @return true if we have stopped completely
  */
-public boolean timeBrake (double speed)// TODO COMMENT THIS!
+public boolean timeBrake (double speed)// COMMENT THIS! | I got chu fam.
 {
 
     System.out.println("brake timer:" + movementTimer.get());
     if (firstTime)
         {
+        // For each speed controller, if they're going backwards (is less than
+        // 0), tell them to go forwards, otherwise, tell them to go backwards
+        // when we do the actual breaking.
         this.motorSigns[0] = (this.transmissionMecanum.leftSpeedController
                 .get() < 0) ? 1 : -1;
         this.motorSigns[1] = (this.transmissionMecanum.leftRearSpeedController
@@ -773,21 +776,33 @@ public boolean timeBrake (double speed)// TODO COMMENT THIS!
                 .get() < 0) ? 1 : -1;
         this.motorSigns[3] = (this.transmissionMecanum.rightRearSpeedController
                 .get() < 0) ? 1 : -1;
+        // Setup the timer
         movementTimer.stop();
         movementTimer.reset();
         movementTimer.start();
+        // Don't set up again this run
         firstTime = false;
         }
-
+    // if We're done breaking
     if (movementTimer.get() >= MAX_TIME)
         {
+        // stop
         this.driveNoDeadband(0.0, 0.0);
+        // tell the user
         System.out.println("We are at zero");
+        // stop the timer
         movementTimer.stop();
+        // be ready to set up again
         firstTime = true;
+        // Tell the caller we're done
         return true;
         }
-
+    // otherwise...
+    /*
+     * Drive the motors in the opposite direction they were running when the
+     * function was first called. Uses the motorSigns array to find out which
+     * way that was.
+     */
     this.transmissionMecanum
             .driveLeftMotor(speed * this.motorSigns[0]);
 
@@ -799,8 +814,9 @@ public boolean timeBrake (double speed)// TODO COMMENT THIS!
 
     this.transmissionMecanum
             .driveRightRearMotor(speed * this.motorSigns[3]);
-
+    // Tell the user we're not done
     System.out.println("We are not at zero");
+    // Tell the caller we're not done
     return false;
 
 }
@@ -813,7 +829,7 @@ private int[] motorSigns =
 
 private boolean firstTime = true;
 
-public double MAX_TIME = .1;
+public double MAX_TIME = .1;// TODO final?
 
 Timer movementTimer = new Timer();
 
