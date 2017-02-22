@@ -34,6 +34,7 @@ package org.usfirst.frc.team339.robot;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Drive.AlignReturnType;
+import org.usfirst.frc.team339.Utils.Shooter.turnReturn;
 import org.usfirst.frc.team339.Utils.Shooter.turnToGoalReturn;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Relay.Value;
@@ -106,7 +107,14 @@ private static enum MainState
      * Drive up to the gear peg when we don't see any blobs.
      */
     DRIVE_CAREFULLY_TO_PEG,
-
+    /**
+     * Stops us moving up to the peg so we don't spear ourselves on it.
+     */
+    BRAKE_UP_TO_PEG,
+    /**
+     * 
+     */
+    TURN_TURRET_OUT_OF_THE_WAY,
     /**
      * Currently unused, may be used to regain vision targets, or make sure the
      * gear is on the spring. It's a bit of a wildcard at the moment.
@@ -187,7 +195,7 @@ private static Drive.AlignReturnType cameraState = Drive.AlignReturnType.NO_BLOB
 // TUNEABLES
 // ==========================================
 
-private static final double ALIGN_CORRECT_VAR = 45;// 30
+private static final double ALIGN_CORRECT_VAR = 50;// 30
 
 private static final double ALIGN_DRIVE_SPEED = .3;
 
@@ -399,7 +407,7 @@ private static boolean placeCenterGearPath ()
             if (cameraState == AlignReturnType.CLOSE_ENOUGH)
                 {
                 // If we are close enough to the wall, stop.
-                currentState = MainState.WAIT_FOR_GEAR_EXODUS;
+                currentState = MainState.BRAKE_UP_TO_PEG;
                 }
             break;
         case DRIVE_CAREFULLY_TO_PEG:
@@ -416,18 +424,74 @@ private static boolean placeCenterGearPath ()
                     }
                 else
                     {
-                    currentState = MainState.WAIT_FOR_GEAR_EXODUS;
+                    currentState = MainState.BRAKE_UP_TO_PEG;
                     }
+                }
+            break;
+        case BRAKE_UP_TO_PEG:
+            if (Hardware.autoDrive.timeBrake(.3, .2))
+                {
+                currentState = MainState.TURN_TURRET_OUT_OF_THE_WAY;
+                }
+            break;
+        case TURN_TURRET_OUT_OF_THE_WAY:
+            if (Hardware.shooter
+                    .turnToBearing(-17) == turnReturn.SUCCESS)
+                {
+                Hardware.shooter.stopGimbal();
+                currentState = MainState.WAIT_FOR_GEAR_EXODUS;
+                Hardware.autoStateTimer.reset();
+                Hardware.autoStateTimer.start();
                 }
             break;
         case WAIT_FOR_GEAR_EXODUS:
             Hardware.ringlightRelay.set(Value.kOff);
+            // if (Hardware.autoStateTimer.get() >= 1.25)
+            // {
+            // runWiggleWiggleSetup = true;
+            // currentState = MainState.WIGGLE_WIGGLE;
+            // }
             if (Hardware.gearLimitSwitch.isOn() == false)
                 {
                 Hardware.autoDrive.drive(0.0, 0.0);
                 currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
                 Hardware.autoStateTimer.reset();
                 Hardware.autoStateTimer.start();
+                }
+            break;
+        case WIGGLE_WIGGLE:
+            if (runWiggleWiggleSetup)
+                {
+                Hardware.autoStateTimer.reset();
+                Hardware.autoStateTimer.start();
+                runWiggleWiggleSetup = false;
+                wiggleWiggleCount++;
+                }
+            if (wiggleWiggleCount == 1)
+                {
+                if (Hardware.autoStateTimer.get() >= .5)
+                    {
+                    Hardware.autoDrive.drive(.5, 90);
+                    }
+                else
+                    {
+                    currentState = MainState.WAIT_FOR_GEAR_EXODUS;
+                    }
+                }
+            else if (wiggleWiggleCount == 2)
+                {
+                if (Hardware.autoStateTimer.get() >= .1)
+                    {
+                    Hardware.autoDrive.drive(.5, -90);
+                    }
+                else
+                    {
+                    currentState = MainState.WAIT_FOR_GEAR_EXODUS;
+                    }
+                }
+            else
+                {
+                currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
                 }
             break;
         case DELAY_AFTER_GEAR_EXODUS:
@@ -463,6 +527,10 @@ private static boolean placeCenterGearPath ()
         }
     return false;
 }
+
+private static int wiggleWiggleCount = 0;
+
+private static boolean runWiggleWiggleSetup = true;
 
 private static boolean rightSidePath ()
 {

@@ -478,12 +478,12 @@ public AlignReturnType strafeToGear (double driveSpeed,
         {
         System.out.println("trying to adjust left");
         // TODO Magic Numbers
-        this.driveNoDeadband(driveSpeed + .4, -alignVar);// TODO nasty hack
+        this.driveNoDeadband(driveSpeed + .3, -alignVar);// TODO nasty hack
         }
     else if (distanceToCenter > 0)
         {
         System.out.println("trying to adjust right");
-        this.driveNoDeadband(driveSpeed + .4, alignVar);
+        this.driveNoDeadband(driveSpeed + .3, alignVar);
         }
     return AlignReturnType.MISALIGNED;
 }
