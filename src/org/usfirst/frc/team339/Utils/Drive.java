@@ -764,7 +764,7 @@ public boolean timeBrake (double speed, double time)// COMMENT THIS! | I got chu
     double alteredSpeed = Math.abs(speed);
 
     System.out.println("brake timer:" + movementTimer.get());
-    if (firstTime)
+    if (firstTimeTimeBrake)
         {
         // For each speed controller, if they're going backwards (is less than
         // 0), tell them to go forwards, otherwise, tell them to go backwards
@@ -782,7 +782,7 @@ public boolean timeBrake (double speed, double time)// COMMENT THIS! | I got chu
         movementTimer.reset();
         movementTimer.start();
         // Don't set up again this run
-        firstTime = false;
+        firstTimeTimeBrake = false;
         }
     // if We're done breaking
     if (movementTimer.get() >= time)
@@ -794,7 +794,7 @@ public boolean timeBrake (double speed, double time)// COMMENT THIS! | I got chu
         // stop the timer
         movementTimer.stop();
         // be ready to set up again
-        firstTime = true;
+        firstTimeTimeBrake = true;
         // Tell the caller we're done
         return true;
         }
@@ -828,11 +828,101 @@ public boolean timeBrake (double speed, double time)// COMMENT THIS! | I got chu
 private int[] motorSigns =
     {1, 1, 1, 1};
 
-private boolean firstTime = true;
+private boolean firstTimeTimeBrake = true;
 
 // public double MAX_TIME = .1;// TODO final?
 
 Timer movementTimer = new Timer();
+
+/**
+ * Brakes based on the encoders, and whether or not they are reading within the
+ * deadband.
+ * 
+ * @author Ryan McGee
+ * 
+ * @param voltage
+ *            How fast we want to stop. Based on how fast we are going now.
+ * @return Whether or not we are finished braking.
+ */
+public boolean brakeToZero (double voltage)
+{
+    if (firstBrakeToZero)
+        {
+        this.resetEncoders();
+        firstBrakeToZero = false;
+        }
+
+    if (!this.brakeEachWheel[0] && !this.brakeEachWheel[1]
+            && !this.brakeEachWheel[2] && !this.brakeEachWheel[3])
+        {
+        this.firstBrakeToZero = true;
+        this.brakeEachWheel = new boolean[]
+            {true, true, true, true};
+        return true;
+        }
+
+    // FOR ALL OF THIS NONSENSE BELOW:
+    // we check if the change in encoder distances FOR EACH MOTOR
+    // is less than the deadband. FOR EACH MOTOR if it is bigger than the
+    // deadband, it runs the motor the reverse of the sign of the delta,
+    // at the absolute value of the voltage input.
+
+    if (Math.abs(this.getLeftFrontEncoderDistance()
+            - this.lastBrakeValues[0]) < this.BRAKE_DEADBAND)
+        this.brakeEachWheel[0] = false;
+
+    if (Math.abs(this.getLeftRearEncoderDistance()
+            - this.lastBrakeValues[1]) < this.BRAKE_DEADBAND)
+        this.brakeEachWheel[1] = false;
+
+    if (Math.abs(this.getRightFrontEncoderDistance()
+            - this.lastBrakeValues[2]) < this.BRAKE_DEADBAND)
+        this.brakeEachWheel[2] = false;
+
+    if (Math.abs(this.getRightRearEncoderDistance()
+            - this.lastBrakeValues[3]) < this.BRAKE_DEADBAND)
+        this.brakeEachWheel[3] = false;
+
+    // Braking code
+
+
+    if (this.brakeEachWheel[0])
+        this.transmissionMecanum.driveLeftMotor(
+                Math.abs(voltage) * ((this.getLeftFrontEncoderDistance()
+                        - this.lastBrakeValues[0] < 0) ? 1 : -1));
+
+    if (this.brakeEachWheel[1])
+        this.transmissionMecanum.driveLeftRearMotor(
+                Math.abs(voltage) * ((this.getLeftRearEncoderDistance()
+                        - this.lastBrakeValues[1] < 0) ? 1 : -1));
+
+    if (this.brakeEachWheel[2])
+        this.transmissionMecanum.driveRightMotor(Math.abs(voltage)
+                * ((this.getRightFrontEncoderDistance()
+                        - this.lastBrakeValues[2] < 0) ? 1 : -1));
+
+    if (this.brakeEachWheel[3])
+        this.transmissionMecanum.driveRightRearMotor(
+                Math.abs(voltage) * ((this.getRightRearEncoderDistance()
+                        - this.lastBrakeValues[3] < 0) ? 1 : -1));
+
+    this.lastBrakeValues[0] = this.getLeftFrontEncoderDistance();
+    this.lastBrakeValues[1] = this.getLeftRearEncoderDistance();
+    this.lastBrakeValues[2] = this.getRightFrontEncoderDistance();
+    this.lastBrakeValues[3] = this.getRightRearEncoderDistance();
+
+    return false;
+}
+
+private boolean firstBrakeToZero = true;
+
+private double[] lastBrakeValues =
+    {0, 0, 0, 0};
+
+private boolean[] brakeEachWheel =
+    {true, true, true, true};
+
+private boolean checkBrakeAgain = false;
 
 
 /**
@@ -1207,6 +1297,8 @@ public static enum TransmissionType
 // Constants
 // =====================================================================
 private TransmissionType transmissionType = null;
+
+private final double BRAKE_DEADBAND = 0.01;
 
 /**
  * The value that the getDistance is multiplied by to get an accurate
