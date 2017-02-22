@@ -478,12 +478,12 @@ public AlignReturnType strafeToGear (double driveSpeed,
         {
         System.out.println("trying to adjust left");
         // TODO Magic Numbers
-        this.driveNoDeadband(driveSpeed + .1, -alignVar);
+        this.driveNoDeadband(driveSpeed + .3, -alignVar);// TODO nasty hack
         }
     else if (distanceToCenter > 0)
         {
         System.out.println("trying to adjust right");
-        this.driveNoDeadband(driveSpeed + .1, alignVar);
+        this.driveNoDeadband(driveSpeed + .3, alignVar);
         }
     return AlignReturnType.MISALIGNED;
 }
@@ -753,7 +753,6 @@ private int brakeIterations = 0;
 
 /**
  * brakes until we have stopped, then sets motors to zero
- *
  * 
  * @param speed
  *            how fast we should brake, negate for forward
