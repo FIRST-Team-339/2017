@@ -35,6 +35,7 @@ import com.ctre.CANTalon.FeedbackDevice;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Shooter;
+import org.usfirst.frc.team339.Utils.Shooter.turnToGoalReturn;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -319,9 +320,31 @@ public static void periodic ()
         Hardware.shooter
                 .turnGimbalSlow(
                         Hardware.rightOperator.getX() > 0 ? -1 : 1);
-    else
+    else if (!isTurningGimbal && !isTurningToGoal)
         Hardware.shooter.stopGimbal();
     // END TURRET OVERRIDE
+
+    // SET TURRET TO 0
+    if (Hardware.rightOperator.getRawButton(5))
+        isTurningGimbal = true;
+
+    if (isTurningGimbal || turnValue == Shooter.turnReturn.WORKING)
+        {
+        turnValue = Hardware.shooter.turnToBearing(0);
+        isTurningGimbal = false;
+        }
+    // END SET TURRET TO 0
+
+    // ALIGN TURRET
+    if (Hardware.leftOperator.getRawButton(4))
+        isTurningToGoal = true;
+
+    if (isTurningToGoal)
+        {
+        // turnToGoalValue = Hardware.shooter.turnToGoal();
+        isTurningToGoal = !Hardware.shooter.turnToGoalRaw();
+        }
+
 
     // ELEVATOR OVERRIDE
     if (Hardware.rightOperator.getRawButton(3))
@@ -334,6 +357,7 @@ public static void periodic ()
     // TESTING SHOOTER
     if (Hardware.rightOperator.getTrigger())
         {
+        Hardware.shooter.turnToGoalRaw();
         Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
         // System.out.println(
 
@@ -341,10 +365,16 @@ public static void periodic ()
         // Hardware.shooterMotor.set(
         // Hardware.shooter.calculateRPMToMakeGoal(12.25) / 2.0);
         }
+    else if (Hardware.leftOperator.getTrigger())
+        {
+        Hardware.shooter.fire(-200 * Hardware.leftOperator.getZ());
+        Hardware.shooter.loadBalls();
+        }
     else
         {
         Hardware.shooter.stopFlywheelMotor();
         }
+
 
     // END SHOOTER TESTING
     // =================================================================
@@ -376,6 +406,10 @@ private static boolean isBraking = false;
 private static Drive.AlignReturnType alignValue = Drive.AlignReturnType.MISALIGNED;
 
 private static Shooter.turnReturn turnValue = Shooter.turnReturn.SUCCESS;
+
+private static boolean isTurningToGoal = false;
+
+private static turnToGoalReturn turnToGoalValue = Shooter.turnToGoalReturn.SUCCESS;
 
 private static double rotationValue = 0.0;
 
