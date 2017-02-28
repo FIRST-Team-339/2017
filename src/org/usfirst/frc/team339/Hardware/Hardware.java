@@ -272,7 +272,9 @@ public static KilroyCamera axisCamera = new KilroyCamera(true);// TODO change
 
 
 public static VisionScript visionScript = new VisionScript(
-        new HSLColorThresholdOperator(76, 200, 71, 255, 50, 255),
+        new HSLColorThresholdOperator(79, 210, 7, 214, 33, 255),// (76, 200, 71,
+                                                                // 255, 50,
+                                                                // 255),
         new RemoveSmallObjectsOperator(1, true),
         new ConvexHullOperator(false));
 

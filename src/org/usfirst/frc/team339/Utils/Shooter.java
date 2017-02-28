@@ -29,7 +29,7 @@ private double acceptableError = 0;
 
 private ImageProcessor visionTargeter = null;
 
-private double acceptableGimbalError = 3;// in degrees
+private double acceptableGimbalError = .5;// in degrees
 
 private CANTalon gimbalMotor = null;
 
@@ -254,6 +254,7 @@ public turnReturn turnToBearing (double newBearing)
         return this.turnGimbal(MEDIUM_TURN_SPEED
                 * (newBearing - getBearing() < 0 ? -1 : 1));
         }
+    this.stopGimbal();
     return turnReturn.SUCCESS;
 }
 
@@ -388,40 +389,67 @@ public static enum turnReturn
 // TODO Radians and degrees
 public turnToGoalReturn turnToGoal ()
 {
-    // if we have at least one blob
-    this.visionTargeter.processImage();
-    if (this.visionTargeter.getNthSizeBlob(0) != null)
+    if (firstTimeRun)
         {
-        // If we haven't yet calculated our setpoint yet.
-        if (gimbalTarget == Double.MIN_VALUE)
-            {
-            // calculate our setpoint
-            gimbalTarget = this.visionTargeter.getYawAngleToTarget(
-                    this.visionTargeter.getNthSizeBlob(0));
-            }
-        else
-            {
-            // turn to our new bearing
-            if (turnToBearing(gimbalTarget
-                    + this.getBearing()) == turnReturn.SUCCESS)
-                {
-                // we're done!
-                gimbalTarget = Double.MIN_VALUE;
-                return turnToGoalReturn.SUCCESS;
-                }
-            else if (turnToBearing(gimbalTarget
-                    + this.getBearing()) == turnReturn.TOO_FAR)
-                {
-                gimbalTarget = Double.MIN_VALUE;
-                return turnToGoalReturn.OUT_OF_GIMBALING_RANGE;
-                }
-            }
-        // still working...
-        return turnToGoalReturn.WORKING;
+        this.visionTargeter.processImage();
+        firstTimeRun = false;
         }
-    // We don't see anything.
-    return turnToGoalReturn.NO_BLOBS;
+    if (this.visionTargeter.getLargestBlob() != null)
+        {
+        if (this.turnToBearing(
+                Math.toDegrees(this.visionTargeter
+                        .getYawAngleToTarget(this.visionTargeter
+                                .getLargestBlob()))) == turnReturn.SUCCESS)
+            {
+            return turnToGoalReturn.SUCCESS;
+            }
+        }
+    else
+        {
+        this.visionTargeter.processImage();
+        return turnToGoalReturn.NO_BLOBS;
+        }
+
+
+    return turnToGoalReturn.WORKING;
+
+
+
 }
+
+public boolean turnToGoalRaw ()
+{
+    this.visionTargeter.processImage();
+    if (this.visionTargeter.getLargestBlob() != null)
+        {
+        if (Math.abs(this.visionTargeter.getLargestBlob().center_mass_x
+                / this.visionTargeter.camera.getHorizontalResolution()
+                - .5) <= TURN_TO_GOAL_RAW_DEADBAND)
+            {
+            this.stopGimbal();
+            return true;
+            }
+        if (this.visionTargeter.getLargestBlob().center_mass_x
+                / this.visionTargeter.camera
+                        .getHorizontalResolution() > .5)
+            {
+            this.turnGimbalMedium(-1);
+            return false;
+            }
+        if (this.visionTargeter.getLargestBlob().center_mass_x
+                / this.visionTargeter.camera
+                        .getHorizontalResolution() < .5)
+            {
+            this.turnGimbalMedium(1);
+            return false;
+            }
+        }
+    return false;
+}
+
+private boolean isTurningToGoal = false;
+
+private turnReturn turningToGoalVal = turnReturn.SUCCESS;
 
 private boolean firstTimeRun = false;
 
@@ -503,6 +531,8 @@ private final double MAX_TURN_SPEED = .5;
 private final double MEDIUM_TURN_SPEED = .35;
 
 private final double SLOW_TURN_SPEED = .25;
+
+private final double TURN_TO_GOAL_RAW_DEADBAND = .05;
 
 private final double ELEVATOR_SPEED = -.8;// TODO tune
 
