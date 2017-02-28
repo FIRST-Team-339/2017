@@ -11,17 +11,19 @@ private boolean hasGyro = true;
 public KilroyGyro (boolean hasGyro)
 {
     this.hasGyro = hasGyro;
+    // if hasGyro is equal to hasGyro
     if (hasGyro == false)
         {
+        // print out Gyro not connected
         System.out.println("Gyro not connected");
-
         }
-    if (hasGyro)
+    if (hasGyro == true)
         {
+        // then declare as a new gyro
         this.gyro = new ADXRS450_Gyro();
-
         }
     else
+        // if neither then return null
         this.gyro = null;
 }
 
