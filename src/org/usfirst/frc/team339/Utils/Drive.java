@@ -17,7 +17,7 @@ import edu.wpi.first.wpilibj.Timer;
  */
 public class Drive
 {
-
+// We have both TransmissionMecanum and TransmissionFourWheel.
 private TransmissionMecanum transmissionMecanum = null;
 
 private TransmissionFourWheel transmissionFourWheel = null;
@@ -40,9 +40,10 @@ private UltraSonic rightUlt = null;
 
 private Timer timer = new Timer();
 
-public double correction = 0.0;
+private double correction = 0.0;// TODO find out what this does.
 
-public double encoderSlack = 0.0;
+// The amount the encoders are allowed to be off and considered "equal"
+private double encoderSlack = 0.0;
 
 /**
  * Creates an instance of the Drive class, with a mecanum drive system.
