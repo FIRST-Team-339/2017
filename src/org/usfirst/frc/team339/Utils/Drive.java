@@ -1299,7 +1299,7 @@ public static enum TransmissionType
 // =====================================================================
 private TransmissionType transmissionType = null;
 
-private final double BRAKE_DEADBAND = 0.01;
+private final double BRAKE_DEADBAND = 0.1;
 
 /**
  * The value that the getDistance is multiplied by to get an accurate
