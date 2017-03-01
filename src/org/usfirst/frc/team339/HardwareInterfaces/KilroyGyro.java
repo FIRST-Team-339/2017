@@ -1,13 +1,44 @@
+
+// ====================================================================
+// FILE NAME: KilroyGyro.java (Team 339 - Kilroy)
+//
+// CREATED ON: sometime during 2017 build season
+// CREATED BY: Becky BUtton
+// MODIFIED ON:2/28/17
+// MODIFIED BY: Ashley Espeland
+// ABSTRACT:
+// sets up and declares a gyro, includes various functions
+// checks to see if we have a gyro and if we do, we declare it, if we
+// dont then we print that to the screen, and if neither we return null
+// calibration, reset, getAngle (in degrees), and getRate functions
+// are included
+//
+
+
+
 package org.usfirst.frc.team339.HardwareInterfaces;
 
 import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 
+/**
+ * sets up the gyro and includes the functions
+ * 
+ * @author Becky Button
+ *
+ */
 public class KilroyGyro
 {
 private final ADXRS450_Gyro gyro;
 
 private boolean hasGyro = true;
 
+/**
+ * determines based on whether we have a gyro or not, whether to declare
+ * the gyro(if we have one), print that we dont have a gyro(if we
+ * dont), and return null if neither apply
+ * 
+ * @param hasGyro
+ */
 public KilroyGyro (boolean hasGyro)
 {
     // set this.hasGyro equal to hasGyro-essentially setting up shorthand
@@ -30,7 +61,9 @@ public KilroyGyro (boolean hasGyro)
         this.gyro = null;
 }
 
-// calibrates the gyro
+/**
+ * calibration of the gyro
+ */
 public void calibrate ()
 {
     // if we do not have a gyro
@@ -43,7 +76,10 @@ public void calibrate ()
     this.gyro.calibrate();
 }
 
-// resets the gyro
+/**
+ * resets the gyro
+ */
+
 public void reset ()
 {
     // if we do not have a gyro
@@ -56,7 +92,13 @@ public void reset ()
     this.gyro.reset();
 }
 
-// will return the gyro angle in degrees
+/**
+ * will return the gyro angle in degrees
+ * 
+ * @return
+ *         return gyro angle
+ */
+
 public double getAngle ()
 {
     // if we don't have a gyro
@@ -70,7 +112,13 @@ public double getAngle ()
 
 }
 
-// returns the rate of rotation for the gyro
+/**
+ * returns the rate of rotation for the gyro
+ * 
+ * @return
+ *         return rate of rotation
+ */
+
 public double getRate ()
 {
     // if we don't have a gyro
