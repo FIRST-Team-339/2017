@@ -217,21 +217,27 @@ private static final int ALIGN_DISTANCE_FROM_GOAL = 14;
 
 public static void init ()
 {
-    // Sets the scaling factor and general ultrasonic stuff
+	//reset encoders
+	Hardware.leftFrontEncoder.reset();
+	Hardware.leftRearEncoder.reset();
+	Hardware.rightFrontEncoder.reset();
+	Hardware.rightRearEncoder.reset();
+    //motors
+	Hardware.leftRearMotor.setInverted(true);
+	Hardware.intakeMotor.setInverted(true);
+	//mecanum drive
+	Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+	Hardware.mecanumDrive.setFirstGearPercentage(1.0);
+	Hardware.mecanumDrive.setGear(1);
+	 Hardware.mecanumDrive
+     .setFirstGearPercentage(Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
+	// Sets the scaling factor and general ultrasonic stuff
     Hardware.rightUS.setScalingFactor(.13);
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
-    Hardware.mecanumDrive.setFirstGearPercentage(1.0);
-
-    Hardware.mecanumDrive.setGear(1);
-    if (Hardware.isRunningOnKilroyXVIII)
-        {
-        robotSpeedScalar = KILROY_XVIII_DEFAULT_SPEED;
-        }
-    else
-        {
-        robotSpeedScalar = KILROY_XVII_DEFAULT_SPEED;
-        }
+	//if running on kilroy XVIII use certain value and different for XVII
+ 
+	
 } // end Init
 
 /**

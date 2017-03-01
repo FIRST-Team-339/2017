@@ -72,102 +72,36 @@ public static void init ()
     Hardware.rightRearMotor.set(0.0);
     Hardware.rightFrontMotor.set(0.0);
     Hardware.leftFrontMotor.set(0.0);
-
     // ---------------------------------------
     // Servo init
     // ---------------------------------------
     Hardware.cameraServo.setAngle(LOWER_CAMERASERVO_POSITION);
-
+    //gimbal motors
     Hardware.gimbalMotor
             .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
     Hardware.gimbalMotor.setEncPosition(0);
+    //mecanum
+    Hardware.mecanumDrive
+    .setFirstGearPercentage(Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
+    
     if (Hardware.isRunningOnKilroyXVIII == true)
-        {
-        Hardware.rightFrontEncoder.setReverseDirection(true);
-        Hardware.rightRearEncoder.setReverseDirection(false);
-        Hardware.leftFrontEncoder.setReverseDirection(true);
-        Hardware.leftRearEncoder.setReverseDirection(false);
-        Hardware.rightRearEncoder.setDistancePerPulse(
-                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-        Hardware.leftRearEncoder.setDistancePerPulse(
-                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-        Hardware.rightFrontEncoder.setDistancePerPulse(
-                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-        Hardware.leftFrontEncoder.setDistancePerPulse(
-                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-        Hardware.tankDrive.setGearPercentage(1,
-                Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
-        Hardware.tankDrive.setGearPercentage(2,
-                Robot.KILROY_XVIII_SECOND_GEAR_PERCENTAGE);
-        Hardware.mecanumDrive.setFirstGearPercentage(
-                Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
-        Hardware.rightFrontMotor.setInverted(false);
-        Hardware.rightRearMotor.setInverted(false);
-        Hardware.leftFrontMotor.setInverted(false);
-        Hardware.leftRearMotor.setInverted(true);
-        Hardware.intakeMotor.setInverted(true);
-        Hardware.mecanumDrive
-                .setDeadbandPercentageZone(Hardware.joystickDeadzone);
-        Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-        // Hardware.rightFrontMotorSafety.setExpiration(.5);
-        // Hardware.rightRearMotorSafety.setExpiration(.5);
-        // Hardware.leftFrontMotorSafety.setExpiration(.5);
-        // Hardware.leftRearMotorSafety.setExpiration(1.0);
-        Hardware.rightUS.setScalingFactor(
-                Hardware.KILROY_XVIII_US_SCALING_FACTOR);
-        Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
-        Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
+        {    	
+        //tank drive values
         Hardware.tankDrive.setGear(2);
+        //auto drive values
         Hardware.autoDrive.setDriveCorrection(.3);
         Hardware.autoDrive.setEncoderSlack(1);
+        //mecanum values
         Hardware.mecanumDrive.setGear(1);
-        // Hardware.mecanumDrive.setDirectionalDeadzone(0.2);
-        // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
         }
     else
+    	//kilroy XVII
         {
-        // Hardware.rightFrontEncoder.setReverseDirection(true);
-        // Hardware.rightRearEncoder.setReverseDirection(false);
-        // Hardware.leftFrontEncoder.setReverseDirection(true);
-        // Hardware.leftRearEncoder.setReverseDirection(false);
-        Hardware.rightRearEncoder.setDistancePerPulse(
-                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-        Hardware.leftRearEncoder.setDistancePerPulse(
-                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-        Hardware.leftFrontEncoder.setDistancePerPulse(
-                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-        Hardware.rightFrontEncoder.setDistancePerPulse(
-                Robot.ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-
-        Hardware.tankDrive.setGearPercentage(1,
-                Robot.KILROY_XVII_FIRST_GEAR_PERCENTAGE);
-        Hardware.tankDrive.setGearPercentage(2,
-                Robot.KILROY_XVII_SECOND_GEAR_PERCENTAGE);
-        Hardware.mecanumDrive
-                .setFirstGearPercentage(
-                        Robot.KILROY_XVII_FIRST_GEAR_PERCENTAGE);
-        // Hardware.tankDrive.setRightMotorDirection(MotorDirection.REVERSED);
-        Hardware.rightFrontMotor.setInverted(true);
-        Hardware.rightRearMotor.setInverted(false);
-        Hardware.leftFrontMotor.setInverted(false);
-        Hardware.leftRearMotor.setInverted(false);
-        Hardware.intakeMotor.setInverted(true);
-        Hardware.mecanumDrive
-                .setDeadbandPercentageZone(
-                        Hardware.KILROY_XVII_JOYSTICK_DEADZONE);
-        Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-        Hardware.rightUS
-                .setScalingFactor(
-                        Hardware.KILROY_XVII_US_SCALING_FACTOR);
-        Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
-        Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
+        // tank drive values
         Hardware.tankDrive.setGear(1);
+        //auto drive values
         Hardware.autoDrive.setDriveCorrection(.3);
-        Hardware.autoDrive.setEncoderSlack(1);
-
-        Hardware.mecanumDrive.setDirectionalDeadzone(
-                Hardware.KILROY_XVII_JOYSTICK_DIRECTIONAL_DEADZONE);
-
+        Hardware.autoDrive.setEncoderSlack(1);      
         }
 
     SmartDashboard.putNumber("P", Robot.shooterP);
@@ -218,7 +152,7 @@ public static void periodic ()
      * Hardware.shooterMotor.getSpeed());
      */
 
-    if (Hardware.ringlightSwitch.isOnCheckNow())
+    if (Hardware.ringlightSwitch.isOnCheckNow() == true)
         {
         Hardware.ringlightRelay.set(Relay.Value.kOn);
         }
@@ -236,7 +170,7 @@ public static void periodic ()
     // =================================================================
 
     // rotate only when we are pulling the trigger
-    if (Hardware.leftDriver.getTrigger())
+    if (Hardware.leftDriver.getTrigger() == true)
         {
         rotationValue = Hardware.leftDriver.getTwist();
         }
@@ -245,8 +179,8 @@ public static void periodic ()
 
 
 
-    if (!isDrivingStraight && !isBraking && !isAligning
-            && !isStrafingToTarget)  // Main
+    if (isDrivingStraight == false && isBraking == false && isAligning == false
+            && isStrafingToTarget == false)  // Main
     // driving
     // function
         {
@@ -260,22 +194,22 @@ public static void periodic ()
                     Hardware.leftDriver.getY());
         }
     // Test code for brake
-    if (Hardware.leftDriver.getRawButton(9))
+    if (Hardware.leftDriver.getRawButton(9) == true)
         isDrivingStraight = true;
 
-    if (isDrivingStraight)
+    if (isDrivingStraight == true)
         {
         // System.out.println("We are driving straight inches");
         isDrivingStraight = !Hardware.autoDrive.driveStraightInches(12,
                 .75);
-        if (!isDrivingStraight)
+        if (isDrivingStraight == false)
             {
             // System.out.println("We are braking");
             isBraking = true;
             }
         }
 
-    if (isBraking)
+    if (isBraking == true)
         {
         isBraking = !Hardware.autoDrive.brakeToZero(.3);
         // isBraking = !Hardware.autoDrive.timeBrake(-.1, .5);
@@ -306,29 +240,29 @@ public static void periodic ()
     // =================================================================
 
     // INTAKE CONTROLS
-    if (Hardware.leftOperator.getRawButton(2))
+    if (Hardware.leftOperator.getRawButton(2) == true)
         Hardware.intake.startIntake();
-    else if (Hardware.leftOperator.getRawButton(3))
+    else if (Hardware.leftOperator.getRawButton(3) == true)
         Hardware.intake.reverseIntake();
     else
         Hardware.intake.stopIntake();
     // END INTAKE CONTROLS
 
     // TURRET OVERRIDE
-    if (Hardware.rightOperator.getRawButton(2)
+    if (Hardware.rightOperator.getRawButton(2) == true
             && Math.abs(Hardware.rightOperator.getX()) > .2)
         Hardware.shooter
                 .turnGimbalSlow(
                         Hardware.rightOperator.getX() > 0 ? -1 : 1);
-    else if (!isTurningGimbal && !isTurningToGoal)
+    else if (isTurningGimbal == false && isTurningToGoal == false)
         Hardware.shooter.stopGimbal();
     // END TURRET OVERRIDE
 
     // SET TURRET TO 0
-    if (Hardware.rightOperator.getRawButton(5))
+    if (Hardware.rightOperator.getRawButton(5) == true)
         isTurningGimbal = true;
 
-    if (isTurningGimbal || turnValue == Shooter.turnReturn.WORKING)
+    if (isTurningGimbal == true || turnValue == Shooter.turnReturn.WORKING)
         {
         turnValue = Hardware.shooter.turnToBearing(0);
         isTurningGimbal = false;
@@ -336,10 +270,10 @@ public static void periodic ()
     // END SET TURRET TO 0
 
     // ALIGN TURRET
-    if (Hardware.leftOperator.getRawButton(4))
+    if (Hardware.leftOperator.getRawButton(4) == true)
         isTurningToGoal = true;
 
-    if (isTurningToGoal)
+    if (isTurningToGoal == true)
         {
         // turnToGoalValue = Hardware.shooter.turnToGoal();
         isTurningToGoal = !Hardware.shooter.turnToGoalRaw();
@@ -347,15 +281,15 @@ public static void periodic ()
 
 
     // ELEVATOR OVERRIDE
-    if (Hardware.rightOperator.getRawButton(3))
+    if (Hardware.rightOperator.getRawButton(3) == true)
         Hardware.shooter.loadBalls();
-    else if (Hardware.rightOperator.getRawButton(4))
+    else if (Hardware.rightOperator.getRawButton(4) == true)
         Hardware.shooter.reverseLoader();
     else
         Hardware.shooter.stopLoader();
     // END ELEVATOR OVERRIDE
     // TESTING SHOOTER
-    if (Hardware.rightOperator.getTrigger())
+    if (Hardware.rightOperator.getTrigger() == true)
         {
         Hardware.shooter.turnToGoalRaw();
         Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
@@ -365,7 +299,7 @@ public static void periodic ()
         // Hardware.shooterMotor.set(
         // Hardware.shooter.calculateRPMToMakeGoal(12.25) / 2.0);
         }
-    else if (Hardware.leftOperator.getTrigger())
+    else if (Hardware.leftOperator.getTrigger() == true)
         {
         Hardware.shooter.fire(-200 * Hardware.leftOperator.getZ());
         Hardware.shooter.loadBalls();
@@ -382,7 +316,7 @@ public static void periodic ()
     // =================================================================
 
     // Sorry ash, this is all you needed.
-    if (Hardware.cameraServoSwitch.isOnCheckNow())
+    if (Hardware.cameraServoSwitch.isOnCheckNow() == true)
         {
         Hardware.cameraServo.setAngle(190);
         }
