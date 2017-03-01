@@ -7,23 +7,6 @@ public class TransmissionMecanum extends TransmissionFourWheel
 {
 
 /**
- * @description If we are within x many degrees of being purely up, down,
- *              left, or right, then we send that "pure" degree value to
- *              account for human error in joystick control.
- *
- * @author Noah Golmant
- * @written 23 July 2015
- */
-private double directionalDeadzone = 0.0;
-
-private double directionalXOrthogonalZone = 0.0;
-
-private double directionalYOrthogonalZone = 0.0;
-
-/** Sets whether or not the mecanum control joystick is reversed */
-private boolean mecanumJoystickReversed = false;
-
-/**
  * Transmission class to control a four-wheel mecanum drive robot.
  *
  * @param rightFrontSpeedController
@@ -40,39 +23,9 @@ public TransmissionMecanum (SpeedController rightFrontSpeedController,
 {
     super(rightFrontSpeedController, rightRearSpeedController,
             leftFrontSpeedController, leftRearSpeedController);
-
 }
 
-/**
- * Drives without taking into account the current deadband set into this
- * class.
- * 
- * @param magnitude
- *            The magnitude of the drive vector we're using
- * @param direction
- *            The direction of the drive vector we're using
- * @param rotation
- *            The rotation we'll drive with.
- */
-public void driveNoDeadband (double magnitude, double direction,
-        double rotation)
-{
-    // Save the current deadbands
-    this.tempSavedDeadband = this.getDeadbandPercentageZone();
-    this.tempSavedAngularDeadband = this.getDirectionalDeadzone();
-    // set the current deadbands to zero so we can drive slowly
-    this.setDeadbandPercentageZone(0.0);
-    this.setDirectionalDeadzone(0.0);
-    // drive without the deadbands
-    this.drive(magnitude, direction, rotation);
-    // restore the deadbands
-    this.setDirectionalDeadzone(tempSavedAngularDeadband);
-    this.setDeadbandPercentageZone(tempSavedDeadband);
-}
 
-private double tempSavedDeadband = 0.0;
-
-private double tempSavedAngularDeadband = 0.0;
 
 /**
  * Drives the transmission in mecanum drive with 0 rotation. NOTE: this
@@ -89,7 +42,7 @@ private double tempSavedAngularDeadband = 0.0;
  */
 @Override
 @Deprecated
-public void drive (double magnitude, double direction)
+public void drive (final double magnitude, final double direction)
 {
     this.drive(magnitude, direction, 0.0);
 }
@@ -122,52 +75,73 @@ public void drive (double magnitude, double direction)
  * @param xValue
  * @written 23 July 2015 Edited By Becky Button
  */
-public void drive (double magnitude, double direction, double rotation)
+public void drive (final double magnitude, final double direction,
+        final double rotation)
 {
-
+    // nasty hack is used to set the temporarily set the magnitude value higher
+    // than it usually would be in order to make strafing certain directions
+    // work; note: the "nasty nasty hack" should be fixed later
     double tempRotation = rotation, tempMagnitude = magnitude,
-            tempDirection = direction;
+            tempDirection = direction, nastyHack = 2.5;
+
+    // checks if the deadbands for magnitude or twist have been exceeded so we
+    // know if the robot should move
     if ((Math.abs(magnitude) >= super.getDeadbandPercentageZone())
             || Math.abs(
                     tempRotation) >= super.getDeadbandPercentageZone())
         {
 
+
+        // "snaps" to a direction of 0 (straight forward) if the input value is
+        // within the Directional Deadzone of 0; helps the driver go directly
+        // forwards
         if (tempDirection < this.getDirectionalDeadzone()
                 && tempDirection > -this.getDirectionalDeadzone())
             tempDirection = 0;
+
         // else if (tempDirection < 45 + this.getDirectionalDeadzone()
         // && tempDirection > 45 - this.getDirectionalDeadzone())
         // tempDirection = 45;
+
+        // "snaps" to a direction of 90 (straight right) if the input value is
+        // within the Directional Deadzone of 90; helps the driver strafe
+        // directly right
         else if (tempDirection < 90 + this.getDirectionalDeadzone()
                 && tempDirection > 90 - this.getDirectionalDeadzone())
             {
             // TODO nasty nasty hack
-            tempMagnitude = 2.5;
+            tempMagnitude = nastyHack;
             tempDirection = 90;
             }
         // else if (tempDirection < 135 + this.getDirectionalDeadzone()
         // && tempDirection > 135 - this.getDirectionalDeadzone())
         // tempDirection = 135;
+
+        // "snaps" to a direction of 180 (straight back) if the input value is
+        // within the Directional Deadzone of 180; helps the driver back
+        // directly back
         else if (tempDirection < -180 + this.getDirectionalDeadzone()
                 && tempDirection > 180 - this.getDirectionalDeadzone())
             tempDirection = 180;
         // else if (tempDirection < -135 + this.getDirectionalDeadzone()
         // && tempDirection > -135 - this.getDirectionalDeadzone())
         // tempDirection = -135;
+
+        // "snaps" to a direction of -90 (straight left) if the input value is
+        // within the Directional Deadzone of -90; helps the driver strafe
+        // directly left
         else if (tempDirection < -90 + this.getDirectionalDeadzone()
                 && tempDirection > -90 - this.getDirectionalDeadzone())
             {
             tempDirection = -90;
             // TODO nasty nasty hack
-            tempMagnitude = 2.5;
+            tempMagnitude = nastyHack;
             }
         // else if (tempDirection < -45 + this.getDirectionalDeadzone()
         // && tempDirection > -45 - this.getDirectionalDeadzone())
         // tempDirection = -45;
-        //
-        // System.out.println("Direction: " + tempDirection);
 
-        // Magnitude and rotation deadzones
+        // // Magnitude and rotation deadzones
 
         // Deadzone for Rotation
         // if (Math.abs(rotation) > this.getDeadbandPercentageZone() &&
@@ -199,6 +173,8 @@ public void drive (double magnitude, double direction, double rotation)
         // tempMagnitude = 0.0;
         // }
 
+
+        // prints out select values if we are in a relevant debug state
         if ((this.getDebugState() == DebugState.DEBUG_MOTOR_DATA)
                 || (this.getDebugState() == DebugState.DEBUG_ALL))
             {
@@ -208,7 +184,7 @@ public void drive (double magnitude, double direction, double rotation)
                             + tempDirection + "\n" + "Magnitude: "
                             + tempMagnitude + "\n" + "Rotation: "
                             + rotation);
-            }
+            } // if
 
         // limit the rotation value between -1 and +1
         tempRotation = this.limit(rotation);
@@ -218,7 +194,7 @@ public void drive (double magnitude, double direction, double rotation)
             {
             tempRotation *= -1.0;
             tempMagnitude *= -1.0;
-            }
+            } // if
 
         /**
          * MECANUM CONTROLS EXPLANATION
@@ -261,18 +237,22 @@ public void drive (double magnitude, double direction, double rotation)
          */
 
         // Add 45 to account for the angle of the rollers
-        // on the mecanum wheels.
+        // on the mecanum wheels; defines several function exclusive variables
         final double dirInRad = ((tempDirection + 45.0) * 3.14159)
-                / 180.0;
+                / 180.0; // TODO
         final double cosD = Math.cos(dirInRad);
         final double sinD = Math.sin(dirInRad);
 
         // Calculate the speed to send to each motor.
+        // uses sine for the \\ wheels (for clarification of this notation,
+        // Noah's javadoc); uses cosine for // wheels
         double leftFrontSpeed = (sinD * tempMagnitude) + tempRotation;
         double rightFrontSpeed = (cosD * tempMagnitude) - tempRotation;
         double leftRearSpeed = (cosD * tempMagnitude) + tempRotation;
         double rightRearSpeed = (sinD * tempMagnitude) - tempRotation;
 
+
+        // prints out select values if we are debugging this part of the code
         if ((this.getDebugState() == DebugState.DEBUG_MOTOR_DATA)
                 || (this.getDebugState() == DebugState.DEBUG_ALL))
             {
@@ -280,7 +260,7 @@ public void drive (double magnitude, double direction, double rotation)
                     + leftFrontSpeed + "\tRF: " + rightFrontSpeed + "\n"
                     + "LR: " + leftRearSpeed + "\tRR: "
                     + rightRearSpeed);
-            }
+            } // if
 
         final double gearPercentage = getCurrentGearPercentage();
         // limit the values to our motor range of -1..1
@@ -305,12 +285,44 @@ public void drive (double magnitude, double direction, double rotation)
         }
     else
         {
+        // if we aren't doing anything else, tell the motors not to move
         this.driveLeftMotor(0.0);
         this.driveRightMotor(0.0);
         this.driveLeftRearMotor(0.0);
         this.driveRightRearMotor(0.0);
-        }
-}
+        } // else
+} // end drive()
+
+/**
+ * Drives without taking into account the current deadband set into this
+ * class.
+ * 
+ * @param magnitude
+ *            The magnitude of the drive vector we're using
+ * @param direction
+ *            The direction of the drive vector we're using
+ * @param rotation
+ *            The rotation we'll drive with.
+ */
+public void driveNoDeadband (final double magnitude,
+        final double direction,
+        final double rotation)
+{
+    double tempSavedDeadband = 0.0;
+    double tempSavedAngularDeadband = 0.0;
+
+    // Save the current deadbands
+    tempSavedDeadband = this.getDeadbandPercentageZone();
+    tempSavedAngularDeadband = this.getDirectionalDeadzone();
+    // set the current deadbands to zero so we can drive slowly
+    this.setDeadbandPercentageZone(0.0);
+    this.setDirectionalDeadzone(0.0);
+    // drive without the deadbands
+    this.drive(magnitude, direction, rotation);
+    // restore the deadbands
+    this.setDeadbandPercentageZone(tempSavedDeadband);
+    this.setDirectionalDeadzone(tempSavedAngularDeadband);
+} // end driveNoDeadBand()
 
 /**
  * Gets the current directional deadzone for the joystick angle.
@@ -322,8 +334,20 @@ public void drive (double magnitude, double direction, double rotation)
  */
 public double getDirectionalDeadzone ()
 {
-    return this.directionalDeadzone;
-}
+    return (this.directionalDeadzone);
+} // end getDirectionalDeadzone()
+
+/**
+ * get first gear percentage (the coefficient that scales input values (such as
+ * joystick) given to the drive function)
+ * 
+ * @return first gear percentage
+ * @author Becky Button
+ */
+public double getFirstGearPercentage ()
+{
+    return (this.getGearPercentage(1));
+} // end getFirstGearPercentage()
 
 /**
  * Gets whether or not the mecanum joystick is reversed
@@ -332,12 +356,12 @@ public double getDirectionalDeadzone ()
  */
 public boolean isMecanumJoystickReversed ()
 {
-    return this.mecanumJoystickReversed;
-}
+    return (this.mecanumJoystickReversed);
+} // end isMecanumJoystickReversed()
 
 /**
  * Sets the deadzone for the direction, in degrees. It will snap to the angle
- * (given in this.drive) if it is +/- the degrees given
+ * (given in this.drive) if it is within +/- the degrees given
  *
  *
  * @author Ryan McGee
@@ -345,10 +369,23 @@ public boolean isMecanumJoystickReversed ()
  *            the degreees that we want the joystick angle to snap to.
  * @written 29 January 2017
  */
-public void setDirectionalDeadzone (double deadzoneDegrees)
+public void setDirectionalDeadzone (final double deadzoneDegrees)
 {
     this.directionalDeadzone = deadzoneDegrees;
+} // end setDirectionalDeadzone()
+
+/**
+ * sets drive coefficient to change speed
+ * 
+ * @param firstGearPercentage
+ *            drive coefficient
+ * @author Becky Button
+ */
+public void setFirstGearPercentage (final double firstGearPercentage)
+{
+    this.setGearPercentage(1, firstGearPercentage);
 }
+
 
 /**
  * Sets whether or not the mecanum joystick is reversed
@@ -356,32 +393,23 @@ public void setDirectionalDeadzone (double deadzoneDegrees)
  * @param isReversed
  *            true if the joystick is reversed
  */
-public void setMecanumJoystickReversed (boolean isReversed)
+public void setMecanumJoystickReversed (final boolean isReversed)
 {
     this.mecanumJoystickReversed = isReversed;
-}
+} // end setMecanumJoystickReversed()
+
 
 /**
- * set drive coefficient to change speed
- * 
- * @param firstGearPercentage
- *            drive coefficient
- * @author Becky Button
+ * @description If we are within x many degrees of being purely up, down,
+ *              left, or right, then we send that "pure" degree value to
+ *              account for human error in joystick control.
+ *
+ * @author Noah Golmant
+ * @written 23 July 2015
  */
-public void setFirstGearPercentage (double firstGearPercentage)
-{
-    this.setGearPercentage(1, firstGearPercentage);
-}
+private double directionalDeadzone = 0.0;
 
-/**
- * get first gear percentage
- * 
- * @return percentage
- * @author Becky Button
- */
-public double getFirstGearPercentage ()
-{
-    return this.getGearPercentage(1);
-}
+/** Sets whether or not the mecanum control joystick is reversed */
+private boolean mecanumJoystickReversed = false;
 
-}
+} // end class TransmissionMechanum

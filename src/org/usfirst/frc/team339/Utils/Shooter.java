@@ -1,3 +1,15 @@
+
+// ====================================================================
+// FILE NAME: KilroyGyro.java (Team 339 - Kilroy)
+//
+// CREATED ON: sometime during 2017 build season
+// CREATED BY: Alex Kneipp
+// MODIFIED ON:2/28/17 and 2/29/17
+// MODIFIED BY: Ashley Espeland
+// ABSTRACT:
+// deals with all of our shooter code
+
+
 package org.usfirst.frc.team339.Utils;
 
 import com.ctre.CANTalon;
@@ -205,7 +217,7 @@ public boolean prepareToFire ()
  * ball to be fired.
  * 
  * @param rpmOffset
- *            TODO
+ * 
  * 
  * @return true if we're ready to fire, false otherwise.
  */
