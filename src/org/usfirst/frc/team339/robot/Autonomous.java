@@ -271,15 +271,28 @@ private static final int STOP_DISTANCE_TO_GEAR = 14;
 
 public static void init ()
 {
+    // reset encoders
+    Hardware.leftFrontEncoder.reset();
+    Hardware.leftRearEncoder.reset();
+    Hardware.rightFrontEncoder.reset();
+    Hardware.rightRearEncoder.reset();
+    // motors
+    Hardware.leftRearMotor.setInverted(true);
+    Hardware.intakeMotor.setInverted(true);
+    // mecanum drive
+    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+    Hardware.mecanumDrive.setFirstGearPercentage(1.0);
+    Hardware.mecanumDrive.setGear(1);
+    Hardware.mecanumDrive
+            .setFirstGearPercentage(
+                    Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
     // Sets the scaling factor and general ultrasonic stuff
     Hardware.rightUS.setScalingFactor(.13);
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
 
-	//if running on kilroy XVIII use certain value and different for XVII
- 
-
-    Hardware.mecanumDrive.setGear(1);
+    // if running on kilroy XVIII use certain value and different for XVII
+    // TODO WHY was this gone in git?
     if (Hardware.isRunningOnKilroyXVIII)
         {
         robotSpeedScalar = KILROY_XVIII_DEFAULT_SPEED;
