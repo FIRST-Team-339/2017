@@ -170,17 +170,43 @@ private static enum MainState
     DONE
     }
 
+/**
+ * The state machine controlling which auto path we are taking
+ * 
+ * @author Alex Kneipp
+ */
 private static enum AutoProgram
     {
+    /**
+     * The state we start in, runs once.
+     */
     INIT,
 
+    /**
+     * The path where we start in the middle and (try to) place the gear on the
+     * center peg.
+     */
     CENTER_GEAR_PLACEMENT,
 
+    /**
+     * The path where we start on the right side of the field and drive
+     * forwards, turn and place the gear, and try and turn around to attempt to
+     * fire. (Based on whether or not we are on the red or blue alliance)
+     */
     RIGHT_PATH,
 
+    /**
+     * The path where we start on the left side of the field and drive
+     * forwards, turn and place the gear, and try and turn around to attempt to
+     * fire. (Based on whether or not we are on the red or blue alliance)
+     */
     LEFT_PATH,
 
-    DELAY_AFTER_GEAR_EXODUS, DONE
+    /**
+     * We are done with this auto path! Yay! (or aww depending on if it
+     * worked...)
+     */
+    DONE
     }
 
 
@@ -188,23 +214,51 @@ private static enum AutoProgram
 // ==================================
 // VARIABLES
 // ==================================
-
+/**
+ * Temporarily holds each state for the return type for Strafing to Gear
+ * 
+ * Found in DRIVE_TO_GEAR_WITH_CAMERA states.
+ */
 private static Drive.AlignReturnType cameraState = Drive.AlignReturnType.NO_BLOBS;
 
 // ==========================================
 // TUNEABLES
 // ==========================================
 
+/**
+ * If we are using mecanum, this is the number of DEGREES the robot will offset
+ * while using StrafeToGear.
+ * 
+ * If we are using Tank drive (for some strange reason) this should be changed
+ * to a percentage that will be offset for each side of the robot.
+ */
 private static final double ALIGN_CORRECT_VAR = 50;// 30
 
+/**
+ * How fast we should drive to the gear peg using the camera
+ */
 private static final double ALIGN_DRIVE_SPEED = .3;
 
+/**
+ * The deadband for considering whether or not we are aligned to the target(s).
+ * Change the pixel value, and the /getHorizontalResolution will change it to
+ * relative coordinates.
+ */
 private static final double ALIGN_DEADBAND = 10 // +/- pixels
         / Hardware.axisCamera.getHorizontalResolution();
 
-private static final double ALIGN_ACCEPTED_CENTER = .5; // Relative coordinates
+/**
+ * Where we say the "center" of the camera is / where we want to correct TO.
+ */
+private static final double ALIGN_ACCEPTED_CENTER = .5; // Relative coordinates;
+                                                        // half the screen = .5
 
-private static final int ALIGN_DISTANCE_FROM_GOAL = 14;
+/**
+ * How far away we are in inches when we stop moving towards the goal
+ * 
+ * Used in DRIVE_CARFULLY_TO_GEAR as well as StrafeToGear
+ */
+private static final int STOP_DISTANCE_TO_GEAR = 14;
 
 /**
  * User-Initialization code for autonomous mode should go here. Will be
@@ -221,7 +275,9 @@ public static void init ()
     Hardware.rightUS.setScalingFactor(.13);
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
-    Hardware.mecanumDrive.setFirstGearPercentage(1.0);
+
+	//if running on kilroy XVIII use certain value and different for XVII
+ 
 
     Hardware.mecanumDrive.setGear(1);
     if (Hardware.isRunningOnKilroyXVIII)
@@ -243,7 +299,7 @@ public static void init ()
  */
 public static void periodic ()
 {
-
+    // The main state machine for figuring out which path we are following
     switch (autoPath)
         {
 
@@ -279,18 +335,22 @@ public static void periodic ()
                 autoPath = AutoProgram.DONE;
                 }
             break;
+        // Drives towards the center gear peg
         case CENTER_GEAR_PLACEMENT:
             if (placeCenterGearPath())
                 autoPath = AutoProgram.DONE;
             break;
+        // Drives towards the right gear peg and turns around to fire
         case RIGHT_PATH:
             if (rightSidePath())
                 autoPath = AutoProgram.DONE;
             break;
+        // Drives towards the left gear peg and turns around to fire
         case LEFT_PATH:
             if (leftSidePath())
                 autoPath = AutoProgram.DONE;
             break;
+        // We are done with the auto program!
         case DONE:
             Hardware.leftRearMotor.set(0);
             Hardware.leftFrontMotor.set(0);
@@ -298,13 +358,23 @@ public static void periodic ()
             Hardware.rightFrontMotor.set(0);
             Hardware.ringlightRelay.set(Value.kOff);
             break;
+        // If we made a horrible mistake in the state machine, default to DONE
+        // (Stop the program)
+        default:
+            autoPath = AutoProgram.DONE;
+            break;
         }
 
 } // end Periodic
 
-
+/**
+ * Which state we are in in the main state machine. Starts at init.
+ */
 private static MainState currentState = MainState.INIT;
 
+/**
+ * 
+ */
 private static MainState postAccelerateState = MainState.DONE;
 
 private static AutoProgram autoPath = AutoProgram.INIT;
@@ -390,7 +460,7 @@ private static boolean placeCenterGearPath ()
                     getRealSpeed(ALIGN_DRIVE_SPEED),
                     ALIGN_CORRECT_VAR,
                     ALIGN_DEADBAND, ALIGN_ACCEPTED_CENTER,
-                    ALIGN_DISTANCE_FROM_GOAL);
+                    STOP_DISTANCE_TO_GEAR);
             System.out.println(
                     "Number of Blobs: " + Hardware.imageProcessor
                             .getParticleAnalysisReports().length);
@@ -418,7 +488,7 @@ private static boolean placeCenterGearPath ()
             else
                 {
                 if (Hardware.rightUS
-                        .getDistanceFromNearestBumper() >= 14)
+                        .getDistanceFromNearestBumper() >= STOP_DISTANCE_TO_GEAR)
                     {
                     Hardware.autoDrive.driveNoDeadband(.3, 0.0);
                     }
