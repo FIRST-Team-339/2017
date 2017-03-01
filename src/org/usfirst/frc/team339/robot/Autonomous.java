@@ -400,8 +400,6 @@ private static boolean goForFire = false;
 
 private static boolean goForHopper = false;
 
-private static boolean driveToTargetFirstStart = true;
-
 private static boolean placeCenterGearPath ()
 {
     System.out.println("CurrentState = " + currentState);
@@ -453,9 +451,6 @@ private static boolean placeCenterGearPath ()
             // If we see blobs, hand over control to camera, otherwise, go
             // forward. Check to make sure we haven't gone too far.
             Hardware.imageProcessor.processImage();
-            System.out.println(
-                    "Number of blobs: " + Hardware.imageProcessor
-                            .getParticleAnalysisReports().length);
             if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
                 {
                 currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
@@ -474,9 +469,6 @@ private static boolean placeCenterGearPath ()
                     ALIGN_CORRECT_VAR,
                     ALIGN_DEADBAND, ALIGN_ACCEPTED_CENTER,
                     STOP_DISTANCE_TO_GEAR);
-            System.out.println(
-                    "Number of Blobs: " + Hardware.imageProcessor
-                            .getParticleAnalysisReports().length);
 
             System.out.println("strafeToGear state: " + cameraState);
 
@@ -862,8 +854,6 @@ private static boolean rightSidePath ()
 
 private static int fireCount = 0;
 
-private static boolean isDrivingByCamera = false;
-
 private static boolean leftSidePath ()
 {
     System.out.println("Current State = " + currentState);
@@ -1102,16 +1092,6 @@ private static boolean leftSidePath ()
         }
     return false;
 }
-
-private static final double[] accelerationSpeeds =
-    {
-            getRealSpeed(.2),
-
-
-            getRealSpeed(.4),
-
-            getRealSpeed(.5)
-    };
 
 /**
  * reset all the sensors and timers, in preparation for an autonomous program.
