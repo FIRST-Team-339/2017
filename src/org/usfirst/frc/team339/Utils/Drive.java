@@ -450,7 +450,6 @@ public AlignReturnType strafeToGear (double driveSpeed,
         this.timer.start();
         this.firstStrafe = false;
         }
-
     /*
      * if (this.purgingUltrasonic)
      * {
@@ -467,7 +466,6 @@ public AlignReturnType strafeToGear (double driveSpeed,
      * }
      * }
      */
-
     this.imageProcessor.processImage();
 
     // If we have no blobs, return so.
