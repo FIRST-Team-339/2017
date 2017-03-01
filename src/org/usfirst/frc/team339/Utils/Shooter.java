@@ -4,7 +4,7 @@ import com.ctre.CANTalon;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
 import edu.wpi.first.wpilibj.Spark;
-import edu.wpi.first.wpilibj.Timer;
+// import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -35,7 +35,7 @@ private CANTalon gimbalMotor = null;
 
 private Spark agitatorMotor = null;
 
-private Timer shooterTimer = new Timer();
+// private Timer shooterTimer = new Timer();
 
 /**
  * Creates a new shooter object for the 2017 season, SteamWorks
@@ -73,8 +73,6 @@ public Shooter (CANTalon controller, IRSensor ballLoaderSensor,
     this.visionTargeter = visionTargeting;
     this.gimbalMotor = gimbalMotor;
     this.agitatorMotor = agitatorMotor;
-
-
 }
 
 /**
@@ -113,24 +111,36 @@ public double getAcceptableFlywheelError ()
     return this.acceptableError;
 }
 
-// TODO write stops for other motors.
+// TODO write stops for other motors. TODO check that we did that.
+/**
+ * Stops the flywheel motor.
+ */
 public void stopFlywheelMotor ()
 {
     this.flywheelController.set(0.0);
 }
 
+/**
+ * Runs the agitator and elevator towards the shooter.
+ */
 public void loadBalls ()
 {
     this.elevatorController.set(ELEVATOR_SPEED);
     this.agitatorMotor.set(AGITATOR_SPEED);
 }
 
+/**
+ * Stops both the elevator and the agitator.
+ */
 public void stopLoader ()
 {
     this.elevatorController.set(0.0);
     this.agitatorMotor.set(0.0);
 }
 
+/**
+ * Runs the elevator backwards and also runs the agitatior.
+ */
 public void reverseLoader ()
 {
     this.elevatorController.set(-ELEVATOR_SPEED);
