@@ -261,11 +261,21 @@ public static void periodic ()
     // TURRET OVERRIDE
     if (Hardware.rightOperator.getRawButton(2) == true
             && Math.abs(Hardware.rightOperator.getX()) > .2)
-        Hardware.shooter
-                .turnGimbalSlow(
-                        Hardware.rightOperator.getX() > 0 ? -1 : 1);
+        {
+        if (Hardware.rightOperator.getX() > 0)
+            {
+            Hardware.shooter.turnGimbalSlow(1);
+            }
+        else
+            {
+            Hardware.shooter
+                    .turnGimbalSlow(-1);
+            }
+        }
     else if (isTurningGimbal == false && isTurningToGoal == false)
+        {
         Hardware.shooter.stopGimbal();
+        }
     // END TURRET OVERRIDE
 
     // SET TURRET TO 0
