@@ -239,12 +239,13 @@ public void drive (final double magnitude, final double direction,
         // Add 45 to account for the angle of the rollers
         // on the mecanum wheels; defines several function exclusive variables
         final double dirInRad = ((tempDirection + 45.0) * 3.14159)
-                / 180.0; // @TODO
+                / 180.0; // TODO
         final double cosD = Math.cos(dirInRad);
         final double sinD = Math.sin(dirInRad);
 
         // Calculate the speed to send to each motor.
-
+        // uses sine for the \\ wheels (for clarification of this notation,
+        // Noah's javadoc); uses cosine for // wheels
         double leftFrontSpeed = (sinD * tempMagnitude) + tempRotation;
         double rightFrontSpeed = (cosD * tempMagnitude) - tempRotation;
         double leftRearSpeed = (cosD * tempMagnitude) + tempRotation;
