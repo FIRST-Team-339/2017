@@ -76,40 +76,44 @@ public static void init ()
     // Servo init
     // ---------------------------------------
     Hardware.cameraServo.setAngle(LOWER_CAMERASERVO_POSITION);
-    //gimbal motors
+    // gimbal motors
     Hardware.gimbalMotor
             .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
     Hardware.gimbalMotor.setEncPosition(0);
-    //mecanum
+    // mecanum
     Hardware.mecanumDrive
-    .setFirstGearPercentage(Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
-    
+            .setFirstGearPercentage(
+                    Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
+
     if (Hardware.isRunningOnKilroyXVIII == true)
-        {    	
-        //tank drive values
+        {
+        // tank drive values
         Hardware.tankDrive.setGear(2);
-        //auto drive values
+        // auto drive values
         Hardware.autoDrive.setDriveCorrection(.3);
         Hardware.autoDrive.setEncoderSlack(1);
-        //mecanum values
+        // mecanum values
         Hardware.mecanumDrive.setGear(1);
         }
     else
-    	//kilroy XVII
+    // kilroy XVII
         {
         // tank drive values
         Hardware.tankDrive.setGear(1);
-        //auto drive values
+        // auto drive values
         Hardware.autoDrive.setDriveCorrection(.3);
-        Hardware.autoDrive.setEncoderSlack(1);      
+        Hardware.autoDrive.setEncoderSlack(1);
         }
-
-    SmartDashboard.putNumber("P", Robot.shooterP);
-    SmartDashboard.putNumber("I", Robot.shooterI);
-    SmartDashboard.putNumber("D", Robot.shooterD);
-    SmartDashboard.putNumber("Setpoint", tempSetpoint);
-    SmartDashboard.putNumber("Err",
-            Hardware.shooterMotor.getError());
+    // PID smartdashboard
+    if (tunePIDLoop == true)
+        {
+        SmartDashboard.putNumber("P", Robot.shooterP);
+        SmartDashboard.putNumber("I", Robot.shooterI);
+        SmartDashboard.putNumber("D", Robot.shooterD);
+        SmartDashboard.putNumber("Setpoint", tempSetpoint);
+        SmartDashboard.putNumber("Err",
+                Hardware.shooterMotor.getError());
+        }
 } // end Init
 
 static double tempSetpoint = 0.0;
@@ -124,13 +128,18 @@ static double tempSetpoint = 0.0;
 
 public static void periodic ()
 {
-    Robot.shooterP = SmartDashboard.getNumber("P", Robot.shooterP);
-    Robot.shooterI = SmartDashboard.getNumber("I", Robot.shooterI);
-    Robot.shooterD = SmartDashboard.getNumber("D", Robot.shooterD);
-    tempSetpoint = SmartDashboard.getNumber("Setpoint", tempSetpoint);
-    SmartDashboard.putNumber("Err", Hardware.shooterMotor.getError());
-    Hardware.shooterMotor.setPID(Robot.shooterP, Robot.shooterI,
-            Robot.shooterD);
+    if (tunePIDLoop == true)
+        {
+        Robot.shooterP = SmartDashboard.getNumber("P", Robot.shooterP);
+        Robot.shooterI = SmartDashboard.getNumber("I", Robot.shooterI);
+        Robot.shooterD = SmartDashboard.getNumber("D", Robot.shooterD);
+        tempSetpoint = SmartDashboard.getNumber("Setpoint",
+                tempSetpoint);
+        SmartDashboard.putNumber("Err",
+                Hardware.shooterMotor.getError());
+        Hardware.shooterMotor.setPID(Robot.shooterP, Robot.shooterI,
+                Robot.shooterD);
+        }
     // Hardware.shooterMotor
     // .set(tempSetpoint);
 
@@ -179,7 +188,8 @@ public static void periodic ()
 
 
 
-    if (isDrivingStraight == false && isBraking == false && isAligning == false
+    if (isDrivingStraight == false && isBraking == false
+            && isAligning == false
             && isStrafingToTarget == false)  // Main
     // driving
     // function
@@ -262,7 +272,8 @@ public static void periodic ()
     if (Hardware.rightOperator.getRawButton(5) == true)
         isTurningGimbal = true;
 
-    if (isTurningGimbal == true || turnValue == Shooter.turnReturn.WORKING)
+    if (isTurningGimbal == true
+            || turnValue == Shooter.turnReturn.WORKING)
         {
         turnValue = Hardware.shooter.turnToBearing(0);
         isTurningGimbal = false;
@@ -600,6 +611,7 @@ public static void printStatements ()
  * =============================================== Constants
  * ===============================================
  */
+
 private static double LFVal = Hardware.autoDrive
         .getLeftFrontEncoderDistance();
 
@@ -615,8 +627,11 @@ private final static double CAMERA_ALIGN_CENTER = .478;  // Relative coordinates
 // ==========================================
 // TUNEABLES
 // ==========================================
-private final static double LOWER_CAMERASERVO_POSITION = 65;                                                                                                                                            // TODO
-                                                                                                                                                                                                        // find
+private final static double LOWER_CAMERASERVO_POSITION = 65;
+
+private static boolean tunePIDLoop = false;
+// TODO
+// find
 // actual value
 
 private final static double HIGHER_CAMERASERVO_POSITION = 90;// TODO find
