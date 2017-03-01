@@ -807,14 +807,51 @@ public boolean timeBrake (double speed, double time)// COMMENT THIS! | I got chu
         // For each speed controller, if they're going backwards (is less than
         // 0), tell them to go forwards, otherwise, tell them to go backwards
         // when we do the actual breaking.
-        this.motorSigns[0] = (this.transmissionMecanum.leftSpeedController
-                .get() < 0) ? 1 : -1;
-        this.motorSigns[1] = (this.transmissionMecanum.leftRearSpeedController
-                .get() < 0) ? 1 : -1;
-        this.motorSigns[2] = (this.transmissionMecanum.rightSpeedController
-                .get() < 0) ? 1 : -1;
-        this.motorSigns[3] = (this.transmissionMecanum.rightRearSpeedController
-                .get() < 0) ? 1 : -1;
+
+        // Left Front speed controller sign
+        if (this.transmissionMecanum.leftSpeedController
+                .get() < 0)
+            {
+            this.motorSigns[0] = 1;
+            }
+        else
+            {
+            this.motorSigns[0] = -1;
+            }
+
+        // Left Rear speed controller sign
+        if (this.transmissionMecanum.leftRearSpeedController
+                .get() < 0)
+            {
+            this.motorSigns[1] = 1;
+            }
+        else
+            {
+            this.motorSigns[1] = -1;
+            }
+
+        // Right Front Speed Controller sign
+        if (this.transmissionMecanum.rightSpeedController
+                .get() < 0)
+            {
+            this.motorSigns[2] = 1;
+            }
+        else
+            {
+            this.motorSigns[2] = -1;
+            }
+
+        // Right Rear Speed Controller Sign
+        if (this.transmissionMecanum.rightRearSpeedController
+                .get() < 0)
+            {
+            this.motorSigns[3] = 1;
+            }
+        else
+            {
+            this.motorSigns[3] = -1;
+            }
+
         // Setup the timer
         movementTimer.stop();
         movementTimer.reset();
