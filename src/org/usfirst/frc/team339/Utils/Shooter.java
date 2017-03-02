@@ -273,8 +273,12 @@ public turnReturn turnToBearing (double newBearing)
     if (Math.abs(
             newBearing - this.getBearing()) >= acceptableGimbalError)
         {
-        return this.turnGimbal(MEDIUM_TURN_SPEED
-                * (newBearing - getBearing() < 0 ? -1 : 1));
+        if (newBearing - getBearing() < 0)
+            {
+            return this.turnGimbal(-MEDIUM_TURN_SPEED);
+            }
+        return this.turnGimbal(MEDIUM_TURN_SPEED);
+
         }
     this.stopGimbal();
     return turnReturn.SUCCESS;
