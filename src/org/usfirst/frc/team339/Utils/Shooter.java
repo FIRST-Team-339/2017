@@ -521,23 +521,32 @@ public boolean turnToGoalRaw ()
         // if the absolute value of the center of the largest blob
         // (x value) divided by the horizontal resolution minus .5 is
         // less than turn to goal raw deadband
-        if (Math.abs(this.visionTargeter.getLargestBlob().center_mass_x
+        if ((Math.abs(this.visionTargeter.getLargestBlob().center_mass_x
                 / this.visionTargeter.camera.getHorizontalResolution()
-                - .5) <= TURN_TO_GOAL_RAW_DEADBAND)
+                - centerXLineOfImage) <= TURN_TO_GOAL_RAW_DEADBAND) == true)
             {
+            // return stopGimbal
             this.stopGimbal();
+            // return true
             return true;
             }
+        // if the center of the largest blob(x value) divided by the
+        // horizontal resolution is greater than .5
+        // (meaning it is too far to the right)
         if (this.visionTargeter.getLargestBlob().center_mass_x
                 / this.visionTargeter.camera
-                        .getHorizontalResolution() > .5)
+                        .getHorizontalResolution() > centerXLineOfImage)
             {
+            // turn the gimbal to the left at -1
             this.turnGimbalMedium(-1);
+            // return false
             return false;
             }
+        // if the center of the largest blob (x value) divided by the
+        // horizontal resolution is greater than the center of the image
         if (this.visionTargeter.getLargestBlob().center_mass_x
                 / this.visionTargeter.camera
-                        .getHorizontalResolution() < .5)
+                        .getHorizontalResolution() < centerXLineOfImage)
             {
             this.turnGimbalMedium(1);
             return false;
@@ -545,6 +554,8 @@ public boolean turnToGoalRaw ()
         }
     return false;
 }
+
+private double centerXLineOfImage = .5;
 
 private boolean isTurningToGoal = false;
 
