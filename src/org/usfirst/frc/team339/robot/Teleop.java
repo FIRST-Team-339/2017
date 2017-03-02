@@ -183,6 +183,29 @@ public static void periodic ()
 
     // rightOperator stuffs
 
+    // TESTING SHOOTER
+    if (Hardware.rightOperator.getTrigger() == true)
+        {
+        Hardware.shooter.turnToGoalRaw();
+        Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
+        // System.out.println(
+
+        Hardware.shooter.loadBalls();
+        // Hardware.shooterMotor.set(
+        // Hardware.shooter.calculateRPMToMakeGoal(12.25) / 2.0);
+        }
+    else if (Hardware.leftOperator.getTrigger() == true)
+        {
+        Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
+        Hardware.shooter.loadBalls();
+        }
+    else
+        {
+        Hardware.shooter.stopFlywheelMotor();
+        }
+
+    // END SHOOTER TESTING
+
     // TURRET OVERRIDE
     if (Hardware.rightOperator.getRawButton(2) == true
             && Math.abs(Hardware.rightOperator.getX()) > .2)
@@ -245,30 +268,6 @@ public static void periodic ()
         Hardware.intake.stopIntake();
     // END INTAKE CONTROLS
 
-    // both operator stuffs
-
-    // TESTING SHOOTER
-    if (Hardware.rightOperator.getTrigger() == true)
-        {
-        Hardware.shooter.turnToGoalRaw();
-        Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
-        // System.out.println(
-
-        Hardware.shooter.loadBalls();
-        // Hardware.shooterMotor.set(
-        // Hardware.shooter.calculateRPMToMakeGoal(12.25) / 2.0);
-        }
-    else if (Hardware.leftOperator.getTrigger() == true)
-        {
-        Hardware.shooter.fire(-200 * Hardware.leftOperator.getZ());
-        Hardware.shooter.loadBalls();
-        }
-    else
-        {
-        Hardware.shooter.stopFlywheelMotor();
-        }
-
-    // END SHOOTER TESTING
     // =================================================================
     // CAMERA CODE
     // =================================================================
