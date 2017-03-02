@@ -128,6 +128,7 @@ static double tempSetpoint = 0.0;
 
 public static void periodic ()
 {
+    // tune pid loop
     if (tunePIDLoop == true)
         {
         Robot.shooterP = SmartDashboard.getNumber("P", Robot.shooterP);
@@ -140,6 +141,7 @@ public static void periodic ()
         Hardware.shooterMotor.setPID(Robot.shooterP, Robot.shooterI,
                 Robot.shooterD);
         }
+
     // Hardware.shooterMotor
     // .set(tempSetpoint);
 
@@ -161,6 +163,7 @@ public static void periodic ()
      * Hardware.shooterMotor.getSpeed());
      */
 
+    // light on/off
     if (Hardware.ringlightSwitch.isOnCheckNow() == true)
         {
         Hardware.ringlightRelay.set(Relay.Value.kOn);
@@ -175,6 +178,114 @@ public static void periodic ()
     printStatements();
 
     // =================================================================
+    // OPERATOR CONTROLS
+    // =================================================================
+
+    // rightOperator stuffs
+
+    // TURRET OVERRIDE
+    if (Hardware.rightOperator.getRawButton(2) == true
+            && Math.abs(Hardware.rightOperator.getX()) > .2)
+        {
+        if (Hardware.rightOperator.getX() > 0)
+            {
+            Hardware.shooter.turnGimbalSlow(1);
+            }
+        else
+            {
+            Hardware.shooter
+                    .turnGimbalSlow(-1);
+            }
+        }
+    else if (isTurningGimbal == false && isTurningToGoal == false)
+        {
+        Hardware.shooter.stopGimbal();
+        }
+    // END TURRET OVERRIDE
+
+    // SET TURRET TO 0
+    if (Hardware.rightOperator.getRawButton(5) == true)
+        isTurningGimbal = true;
+
+    if (isTurningGimbal == true
+            || turnValue == Shooter.turnReturn.WORKING)
+        {
+        turnValue = Hardware.shooter.turnToBearing(0);
+        isTurningGimbal = false;
+        }
+    // END SET TURRET TO 0
+
+    // ELEVATOR OVERRIDE
+    if (Hardware.rightOperator.getRawButton(3) == true)
+        Hardware.shooter.loadBalls();
+    else if (Hardware.rightOperator.getRawButton(4) == true)
+        Hardware.shooter.reverseLoader();
+    else
+        Hardware.shooter.stopLoader();
+    // END ELEVATOR OVERRIDE
+
+    // leftOperator stuffs
+
+    // ALIGN TURRET
+    if (Hardware.leftOperator.getRawButton(4) == true)
+        isTurningToGoal = true;
+
+    if (isTurningToGoal == true)
+        {
+        // turnToGoalValue = Hardware.shooter.turnToGoal();
+        isTurningToGoal = !Hardware.shooter.turnToGoalRaw();
+        }
+
+    // INTAKE CONTROLS
+    if (Hardware.leftOperator.getRawButton(2) == true)
+        Hardware.intake.startIntake();
+    else if (Hardware.leftOperator.getRawButton(3) == true)
+        Hardware.intake.reverseIntake();
+    else
+        Hardware.intake.stopIntake();
+    // END INTAKE CONTROLS
+
+    // both operator stuffs
+
+    // TESTING SHOOTER
+    if (Hardware.rightOperator.getTrigger() == true)
+        {
+        Hardware.shooter.turnToGoalRaw();
+        Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
+        // System.out.println(
+
+        Hardware.shooter.loadBalls();
+        // Hardware.shooterMotor.set(
+        // Hardware.shooter.calculateRPMToMakeGoal(12.25) / 2.0);
+        }
+    else if (Hardware.leftOperator.getTrigger() == true)
+        {
+        Hardware.shooter.fire(-200 * Hardware.leftOperator.getZ());
+        Hardware.shooter.loadBalls();
+        }
+    else
+        {
+        Hardware.shooter.stopFlywheelMotor();
+        }
+
+    // END SHOOTER TESTING
+    // =================================================================
+    // CAMERA CODE
+    // =================================================================
+    if (Hardware.cameraServoSwitch.isOnCheckNow() == true)
+        {
+        Hardware.cameraServo.setAngle(190);
+        }
+    else
+        {
+        Hardware.cameraServo.setAngle(0);
+        }
+
+    Hardware.axisCamera
+            .takeSinglePicture(Hardware.leftOperator.getRawButton(8)
+                    || Hardware.rightOperator.getRawButton(8)
+                    || Hardware.leftOperator.getRawButton(11));
+    // =================================================================
     // Driving code
     // =================================================================
 
@@ -186,13 +297,11 @@ public static void periodic ()
     else
         rotationValue = 0.0;
 
-
-
     if (isDrivingStraight == false && isBraking == false
             && isAligning == false
-            && isStrafingToTarget == false)  // Main
-    // driving
-    // function
+            && isStrafingToTarget == false)
+
+    // main driving function
         {
         if (Hardware.isUsingMecanum == true)
             Hardware.mecanumDrive.drive(
@@ -245,111 +354,6 @@ public static void periodic ()
     // Hardware.autoDrive.drive(0, 0, 0);
     // System.out.println("We zeroed now");
     // }
-    // =================================================================
-    // OPERATOR CONTROLS
-    // =================================================================
-
-    // INTAKE CONTROLS
-    if (Hardware.leftOperator.getRawButton(2) == true)
-        Hardware.intake.startIntake();
-    else if (Hardware.leftOperator.getRawButton(3) == true)
-        Hardware.intake.reverseIntake();
-    else
-        Hardware.intake.stopIntake();
-    // END INTAKE CONTROLS
-
-    // TURRET OVERRIDE
-    if (Hardware.rightOperator.getRawButton(2) == true
-            && Math.abs(Hardware.rightOperator.getX()) > .2)
-        {
-        if (Hardware.rightOperator.getX() > 0)
-            {
-            Hardware.shooter.turnGimbalSlow(1);
-            }
-        else
-            {
-            Hardware.shooter
-                    .turnGimbalSlow(-1);
-            }
-        }
-    else if (isTurningGimbal == false && isTurningToGoal == false)
-        {
-        Hardware.shooter.stopGimbal();
-        }
-    // END TURRET OVERRIDE
-
-    // SET TURRET TO 0
-    if (Hardware.rightOperator.getRawButton(5) == true)
-        isTurningGimbal = true;
-
-    if (isTurningGimbal == true
-            || turnValue == Shooter.turnReturn.WORKING)
-        {
-        turnValue = Hardware.shooter.turnToBearing(0);
-        isTurningGimbal = false;
-        }
-    // END SET TURRET TO 0
-
-    // ALIGN TURRET
-    if (Hardware.leftOperator.getRawButton(4) == true)
-        isTurningToGoal = true;
-
-    if (isTurningToGoal == true)
-        {
-        // turnToGoalValue = Hardware.shooter.turnToGoal();
-        isTurningToGoal = !Hardware.shooter.turnToGoalRaw();
-        }
-
-
-    // ELEVATOR OVERRIDE
-    if (Hardware.rightOperator.getRawButton(3) == true)
-        Hardware.shooter.loadBalls();
-    else if (Hardware.rightOperator.getRawButton(4) == true)
-        Hardware.shooter.reverseLoader();
-    else
-        Hardware.shooter.stopLoader();
-    // END ELEVATOR OVERRIDE
-    // TESTING SHOOTER
-    if (Hardware.rightOperator.getTrigger() == true)
-        {
-        Hardware.shooter.turnToGoalRaw();
-        Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
-        // System.out.println(
-
-        Hardware.shooter.loadBalls();
-        // Hardware.shooterMotor.set(
-        // Hardware.shooter.calculateRPMToMakeGoal(12.25) / 2.0);
-        }
-    else if (Hardware.leftOperator.getTrigger() == true)
-        {
-        Hardware.shooter.fire(-200 * Hardware.leftOperator.getZ());
-        Hardware.shooter.loadBalls();
-        }
-    else
-        {
-        Hardware.shooter.stopFlywheelMotor();
-        }
-
-
-    // END SHOOTER TESTING
-    // =================================================================
-    // CAMERA CODE
-    // =================================================================
-
-    // Sorry ash, this is all you needed.
-    if (Hardware.cameraServoSwitch.isOnCheckNow() == true)
-        {
-        Hardware.cameraServo.setAngle(190);
-        }
-    else
-        {
-        Hardware.cameraServo.setAngle(0);
-        }
-
-    Hardware.axisCamera
-            .takeSinglePicture(Hardware.leftOperator.getRawButton(8)
-                    || Hardware.rightOperator.getRawButton(8)
-                    || Hardware.leftOperator.getRawButton(11));
 
 } // end
   // Periodic
