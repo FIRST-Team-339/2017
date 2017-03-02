@@ -1048,24 +1048,56 @@ public boolean brakeToZero (double voltage)
 
     // Braking code
     if (this.brakeEachWheel[0])
+
+    // Left Front brake
+    if (this.brakeEachWheel[0] && this.getLeftFrontEncoderDistance()
+            - this.lastBrakeValues[0] < 0)
+        {
         this.transmissionMecanum.driveLeftMotor(
-                Math.abs(voltage) * ((this.getLeftFrontEncoderDistance()
-                        - this.lastBrakeValues[0] < 0) ? 1 : -1));
+                Math.abs(voltage));
+        }
+    else
+        {
+        this.transmissionMecanum.driveLeftMotor(
+                Math.abs(-voltage));
+        }
 
-    if (this.brakeEachWheel[1])
+    // Left Rear brake
+    if (this.brakeEachWheel[1] && this.getLeftRearEncoderDistance()
+            - this.lastBrakeValues[1] < 0)
+        {
         this.transmissionMecanum.driveLeftRearMotor(
-                Math.abs(voltage) * ((this.getLeftRearEncoderDistance()
-                        - this.lastBrakeValues[1] < 0) ? 1 : -1));
+                Math.abs(voltage));
+        }
+    else
+        {
+        this.transmissionMecanum.driveLeftRearMotor(
+                Math.abs(-voltage));
+        }
 
-    if (this.brakeEachWheel[2])
-        this.transmissionMecanum.driveRightMotor(Math.abs(voltage)
-                * ((this.getRightFrontEncoderDistance()
-                        - this.lastBrakeValues[2] < 0) ? 1 : -1));
+    // Right Front brake
+    if (this.brakeEachWheel[2] && this.getRightFrontEncoderDistance()
+            - this.lastBrakeValues[2] < 0)
+        {
+        this.transmissionMecanum.driveRightMotor(Math.abs(voltage));
+        }
+    else
+        {
+        this.transmissionMecanum.driveRightMotor(Math.abs(-voltage));
+        }
 
-    if (this.brakeEachWheel[3])
-        this.transmissionMecanum.driveRightRearMotor(
-                Math.abs(voltage) * ((this.getRightRearEncoderDistance()
-                        - this.lastBrakeValues[3] < 0) ? 1 : -1));
+    // Right Rear brake
+    if (this.brakeEachWheel[3] && this.getRightRearEncoderDistance()
+            - this.lastBrakeValues[3] < 0)
+        {
+        this.transmissionMecanum
+                .driveRightRearMotor(Math.abs(voltage));
+        }
+    else
+        {
+        this.transmissionMecanum
+                .driveRightRearMotor(Math.abs(-voltage));
+        }
     // Save the current values for next run
     this.lastBrakeValues[0] = this.getLeftFrontEncoderDistance();
     this.lastBrakeValues[1] = this.getLeftRearEncoderDistance();

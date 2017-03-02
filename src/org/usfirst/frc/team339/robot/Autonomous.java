@@ -400,8 +400,6 @@ private static boolean goForFire = false;
 
 private static boolean goForHopper = false;
 
-private static boolean driveToTargetFirstStart = true;
-
 private static boolean placeCenterGearPath ()
 {
     System.out.println("CurrentState = " + currentState);
@@ -453,9 +451,6 @@ private static boolean placeCenterGearPath ()
             // If we see blobs, hand over control to camera, otherwise, go
             // forward. Check to make sure we haven't gone too far.
             Hardware.imageProcessor.processImage();
-            System.out.println(
-                    "Number of blobs: " + Hardware.imageProcessor
-                            .getParticleAnalysisReports().length);
             if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
                 {
                 currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
@@ -474,9 +469,6 @@ private static boolean placeCenterGearPath ()
                     ALIGN_CORRECT_VAR,
                     ALIGN_DEADBAND, ALIGN_ACCEPTED_CENTER,
                     STOP_DISTANCE_TO_GEAR);
-            System.out.println(
-                    "Number of Blobs: " + Hardware.imageProcessor
-                            .getParticleAnalysisReports().length);
 
             System.out.println("strafeToGear state: " + cameraState);
 
@@ -805,19 +797,43 @@ private static boolean rightSidePath ()
             break;
         case TURN_TO_HOPPER:
             // TODO random magic numbers I selected
-            if (Hardware.autoDrive.turnDegrees(isRedAlliance ? 12 : 90))
+
+            if (isRedAlliance == true)
                 {
-                currentState = MainState.DRIVE_UP_TO_HOPPER;
+                if (Hardware.autoDrive.turnDegrees(12))
+                    {
+                    currentState = MainState.DRIVE_UP_TO_HOPPER;
+                    }
                 }
+            else
+                {
+                if (Hardware.autoDrive.turnDegrees(90))
+                    {
+                    currentState = MainState.DRIVE_UP_TO_HOPPER;
+                    }
+                }
+
             break;
         case DRIVE_UP_TO_HOPPER:
             // TODO see above todo.
             // TODO comment terneries
-            if (Hardware.autoDrive.driveInches(isRedAlliance ? 12 : 90,
-                    getRealSpeed(.6)))
+            if (isRedAlliance == true)
                 {
-                currentState = MainState.DONE;
+                if (Hardware.autoDrive.driveInches(12,
+                        getRealSpeed(.6)))
+                    {
+                    currentState = MainState.DONE;
+                    }
                 }
+            else
+                {
+                if (Hardware.autoDrive.driveInches(90,
+                        getRealSpeed(.6)))
+                    {
+                    currentState = MainState.DONE;
+                    }
+                }
+            break;
         case ALIGN_TO_FIRE:
             if (Hardware.shooter
                     .turnToGoal() == turnToGoalReturn.SUCCESS)
@@ -861,8 +877,6 @@ private static boolean rightSidePath ()
 }
 
 private static int fireCount = 0;
-
-private static boolean isDrivingByCamera = false;
 
 private static boolean leftSidePath ()
 {
@@ -1048,19 +1062,43 @@ private static boolean leftSidePath ()
             break;
         case TURN_TO_HOPPER:
             // TODO random magic numbers I selected
-            if (Hardware.autoDrive.turnDegrees(isRedAlliance ? 12 : 90))
+
+            if (isRedAlliance == true)
                 {
-                currentState = MainState.DRIVE_UP_TO_HOPPER;
+                if (Hardware.autoDrive.turnDegrees(12))
+                    {
+                    currentState = MainState.DRIVE_UP_TO_HOPPER;
+                    }
                 }
+            else
+                {
+                if (Hardware.autoDrive.turnDegrees(90))
+                    {
+                    currentState = MainState.DRIVE_UP_TO_HOPPER;
+                    }
+                }
+
             break;
         case DRIVE_UP_TO_HOPPER:
             // TODO see above todo.
             // TODO comment terneries
-            if (Hardware.autoDrive.driveInches(isRedAlliance ? 12 : 90,
-                    getRealSpeed(.6)))
+            if (isRedAlliance == true)
                 {
-                currentState = MainState.DONE;
+                if (Hardware.autoDrive.driveInches(12,
+                        getRealSpeed(.6)))
+                    {
+                    currentState = MainState.DONE;
+                    }
                 }
+            else
+                {
+                if (Hardware.autoDrive.driveInches(90,
+                        getRealSpeed(.6)))
+                    {
+                    currentState = MainState.DONE;
+                    }
+                }
+            break;
         case ALIGN_TO_FIRE:
             if (Hardware.shooter
                     .turnToGoal() == turnToGoalReturn.SUCCESS)
@@ -1102,16 +1140,6 @@ private static boolean leftSidePath ()
         }
     return false;
 }
-
-private static final double[] accelerationSpeeds =
-    {
-            getRealSpeed(.2),
-
-
-            getRealSpeed(.4),
-
-            getRealSpeed(.5)
-    };
 
 /**
  * reset all the sensors and timers, in preparation for an autonomous program.

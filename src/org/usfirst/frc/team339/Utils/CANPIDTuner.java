@@ -143,14 +143,21 @@ public void update ()
      * is greater than our threshold, tell the RIOlog and time how long it takes
      * to return.
      */
-    if (Math.abs(
-            this.tunedMotorController
-                    .getClosedLoopError()
-                    / (this.feedbackType == FeedbackDevice.CtreMagEncoder_Relative
-                            || this.feedbackType == FeedbackDevice.CtreMagEncoder_Absolute
-                            || this.feedbackType == FeedbackDevice.QuadEncoder
-                                    ? 4 : 1)) >= this.errorThresh
-            && this.wasIncorrect == false)// TODO clean up
+    double tempError = 0;
+    if (this.feedbackType == FeedbackDevice.CtreMagEncoder_Relative
+            || this.feedbackType == FeedbackDevice.CtreMagEncoder_Absolute
+            || this.feedbackType == FeedbackDevice.QuadEncoder)
+        {
+        tempError = Math.abs(
+                this.tunedMotorController.getClosedLoopError() / 4.0);
+        }
+    else
+        {
+        tempError = Math
+                .abs(this.tunedMotorController.getClosedLoopError());
+        }
+    if (tempError >= this.errorThresh
+            && this.wasIncorrect == false)
         {
         this.wasIncorrect = true;
         this.time.reset();
