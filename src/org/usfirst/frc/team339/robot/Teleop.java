@@ -422,7 +422,7 @@ public static void printStatements ()
     // + Hardware.shooter.calculateRPMToMakeGoal(9.25) * .5);
     // System.out.println("Flywheel thingy thing speed really: "
     // + Hardware.shooterMotor.get());
-    System.out.println(Hardware.backupOrFireOrHopper.isOn());
+    // System.out.println(Hardware.backupOrFireOrHopper.isOn());
     // System.out
     // .println("Flywheel Motor: " + Hardware.shooterMotor.get());
     //
