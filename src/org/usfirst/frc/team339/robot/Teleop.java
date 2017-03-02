@@ -128,6 +128,9 @@ static double tempSetpoint = 0.0;
 
 public static void periodic ()
 {
+    // print values from hardware items
+    printStatements();
+
     // tune pid loop
     if (tunePIDLoop == true)
         {
@@ -172,16 +175,41 @@ public static void periodic ()
         {
         Hardware.ringlightRelay.set(Relay.Value.kOff);
         }
+
+    // gear servo set angles
     // Hardware.gearServo.setAngle(200);
     // Hardware.gearServo.getAngle();
-    // Print out any data we want from the hardware elements.
-    printStatements();
+
+
 
     // =================================================================
     // OPERATOR CONTROLS
     // =================================================================
 
     // rightOperator stuffs
+
+    // TESTING SHOOTER
+    if (Hardware.rightOperator.getTrigger() == true)
+        {
+        Hardware.shooter.turnToGoalRaw();
+        Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
+        // System.out.println(
+
+        Hardware.shooter.loadBalls();
+        // Hardware.shooterMotor.set(
+        // Hardware.shooter.calculateRPMToMakeGoal(12.25) / 2.0);
+        }
+    else if (Hardware.leftOperator.getTrigger() == true)
+        {
+        Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
+        Hardware.shooter.loadBalls();
+        }
+    else
+        {
+        Hardware.shooter.stopFlywheelMotor();
+        }
+
+    // END SHOOTER TESTING
 
     // TURRET OVERRIDE
     if (Hardware.rightOperator.getRawButton(2) == true
@@ -245,30 +273,6 @@ public static void periodic ()
         Hardware.intake.stopIntake();
     // END INTAKE CONTROLS
 
-    // both operator stuffs
-
-    // TESTING SHOOTER
-    if (Hardware.rightOperator.getTrigger() == true)
-        {
-        Hardware.shooter.turnToGoalRaw();
-        Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
-        // System.out.println(
-
-        Hardware.shooter.loadBalls();
-        // Hardware.shooterMotor.set(
-        // Hardware.shooter.calculateRPMToMakeGoal(12.25) / 2.0);
-        }
-    else if (Hardware.leftOperator.getTrigger() == true)
-        {
-        Hardware.shooter.fire(-200 * Hardware.leftOperator.getZ());
-        Hardware.shooter.loadBalls();
-        }
-    else
-        {
-        Hardware.shooter.stopFlywheelMotor();
-        }
-
-    // END SHOOTER TESTING
     // =================================================================
     // CAMERA CODE
     // =================================================================
@@ -330,7 +334,7 @@ public static void periodic ()
 
     if (isBraking == true)
         {
-        isBraking = !Hardware.autoDrive.brakeToZero(.3);
+        isBraking = !Hardware.autoDrive.brakeToZero(.4);
         // isBraking = !Hardware.autoDrive.timeBrake(-.1, .5);
         System.out.println("We are braking");
         // if (Hardware.autoDrive.isStopped(Hardware.leftRearEncoder,

@@ -320,7 +320,7 @@ public static void periodic ()
             // get the auto program we want to run, get delay pot.
             if (Hardware.enableAutonomous.isOn())
                 {
-                delayTime = Hardware.delayPot.get(0.0, 5.0);
+                delayBeforeAuto = Hardware.delayPot.get(0.0, 5.0);
                 if (Hardware.driverStation
                         .getAlliance() == Alliance.Red)
                     {
@@ -386,13 +386,21 @@ public static void periodic ()
 private static MainState currentState = MainState.INIT;
 
 /**
- * 
+ * A control enum for choosing which accelerate we are doing (only for left and
+ * right paths)
  */
 private static MainState postAccelerateState = MainState.DONE;
 
+/**
+ * Determines which position we are on the field to control
+ * which auto we use
+ */
 private static AutoProgram autoPath = AutoProgram.INIT;
 
-private static double delayTime = 5;
+/**
+ * Amount of time we delay before starting the auto program
+ */
+private static double delayBeforeAuto = 5;
 
 private static boolean isRedAlliance = false;
 
@@ -427,7 +435,7 @@ private static boolean placeCenterGearPath ()
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
             // wait for timer to run out
-            if (Hardware.autoStateTimer.get() >= delayTime)
+            if (Hardware.autoStateTimer.get() >= delayBeforeAuto)
                 {
                 // Hardware.axisCamera.saveImagesSafely();
                 currentState = MainState.ACCELERATE;
@@ -630,7 +638,7 @@ private static boolean rightSidePath ()
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
             // wait for timer to run out
-            if (Hardware.autoStateTimer.get() >= delayTime)
+            if (Hardware.autoStateTimer.get() >= delayBeforeAuto)
                 {
                 Hardware.axisCamera.saveImagesSafely();
                 currentState = MainState.ACCELERATE;
@@ -901,7 +909,7 @@ private static boolean leftSidePath ()
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
             // wait for timer to run out
-            if (Hardware.autoStateTimer.get() >= delayTime)
+            if (Hardware.autoStateTimer.get() >= delayBeforeAuto)
                 {
                 Hardware.axisCamera.saveImagesSafely();
                 currentState = MainState.ACCELERATE;
