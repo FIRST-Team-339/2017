@@ -260,7 +260,7 @@ public static void periodic ()
         }
     else if (Hardware.leftOperator.getTrigger() == true)
         {
-        Hardware.shooter.fire(-200 * Hardware.leftOperator.getZ());
+        Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
         Hardware.shooter.loadBalls();
         }
     else
@@ -330,7 +330,7 @@ public static void periodic ()
 
     if (isBraking == true)
         {
-        isBraking = !Hardware.autoDrive.brakeToZero(.3);
+        isBraking = !Hardware.autoDrive.brakeToZero(.4);
         // isBraking = !Hardware.autoDrive.timeBrake(-.1, .5);
         System.out.println("We are braking");
         // if (Hardware.autoDrive.isStopped(Hardware.leftRearEncoder,
