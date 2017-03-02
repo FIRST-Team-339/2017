@@ -567,9 +567,9 @@ private final double AGITATOR_SPEED = .5;
 private final double GIMBAL_LEFT_OFFSET = .1;// Going left is slower than going
                                              // right for some reason
 
-private final double MAX_GIMBALING_ANGLE = 16;// in degrees
+public final double MAX_GIMBALING_ANGLE = 16;// in degrees
 
-private final double MIN_GIMBALING_ANGLE = -16;// in degrees
+public final double MIN_GIMBALING_ANGLE = -16;// in degrees
 
 private final double MOUNT_ANGLE = 67;// TODO figure out the actual number.
 

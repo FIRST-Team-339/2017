@@ -874,7 +874,7 @@ public boolean brake (int iterations, double speed)
 private int brakeIterations = 0;
 
 /**
- * brakes until we have stopped, then sets motors to zero
+ * brakes until the time has ellapsed, then sets motors to zero
  * 
  * @param speed
  *            how fast we should brake, negate for forward
@@ -1049,14 +1049,14 @@ public boolean brakeToZero (double voltage)
     // Braking code
     if (this.brakeEachWheel[0])
 
-    // Left Front brake
-    if (this.brakeEachWheel[0] && this.getLeftFrontEncoderDistance()
-            - this.lastBrakeValues[0] < 0)
+        // Left Front brake
+        if (this.brakeEachWheel[0] && this.getLeftFrontEncoderDistance()
+                - this.lastBrakeValues[0] < 0)
         {
         this.transmissionMecanum.driveLeftMotor(
                 Math.abs(voltage));
         }
-    else
+        else
         {
         this.transmissionMecanum.driveLeftMotor(
                 Math.abs(-voltage));
