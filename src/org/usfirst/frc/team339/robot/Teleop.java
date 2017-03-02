@@ -128,6 +128,9 @@ static double tempSetpoint = 0.0;
 
 public static void periodic ()
 {
+    // print values from hardware items
+    printStatements();
+
     // tune pid loop
     if (tunePIDLoop == true)
         {
@@ -172,10 +175,12 @@ public static void periodic ()
         {
         Hardware.ringlightRelay.set(Relay.Value.kOff);
         }
+
+    // gear servo set angles
     // Hardware.gearServo.setAngle(200);
     // Hardware.gearServo.getAngle();
-    // Print out any data we want from the hardware elements.
-    printStatements();
+
+
 
     // =================================================================
     // OPERATOR CONTROLS
