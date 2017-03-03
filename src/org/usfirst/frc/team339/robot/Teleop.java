@@ -131,6 +131,11 @@ public static void periodic ()
     // print values from hardware items
     printStatements();
 
+
+
+    System.out.println("USB Cam Brightness: "
+            + "Hardware.camForward.getBrightness()");
+
     // tune pid loop
     if (tunePIDLoop == true)
         {
@@ -188,6 +193,10 @@ public static void periodic ()
 
     // rightOperator stuffs
 
+
+
+
+
     // TESTING SHOOTER
     if (Hardware.rightOperator.getTrigger() == true)
         {
@@ -212,6 +221,9 @@ public static void periodic ()
     // END SHOOTER TESTING
 
     // TURRET OVERRIDE
+
+
+
     if (Hardware.rightOperator.getRawButton(2) == true
             && Math.abs(Hardware.rightOperator.getX()) > .2)
         {
@@ -292,6 +304,7 @@ public static void periodic ()
     // =================================================================
     // Driving code
     // =================================================================
+
 
     // rotate only when we are pulling the trigger
     if (Hardware.leftDriver.getTrigger() == true)

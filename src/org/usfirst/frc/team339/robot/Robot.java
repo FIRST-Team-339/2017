@@ -373,6 +373,7 @@ public void robotInit ()
     // -------------------------------------
     // USB Camera initialization
     // -------------------------------------
+
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
     // Sets the scaling factor and general ultrasonic stuff
