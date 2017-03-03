@@ -143,10 +143,10 @@ public static void periodic ()
                 Hardware.shooterMotor.getError());
         Hardware.shooterMotor.setPID(Robot.shooterP, Robot.shooterI,
                 Robot.shooterD);
+        Hardware.shooterMotor
+                .set(tempSetpoint);
         }
 
-    Hardware.shooterMotor
-            .set(tempSetpoint);
 
     // previousFireButton = Hardware.leftDriver.getTrigger();
     //
@@ -206,7 +206,7 @@ public static void periodic ()
         }
     else
         {
-        // Hardware.shooter.stopFlywheelMotor();
+        Hardware.shooter.stopFlywheelMotor();
         }
 
     // END SHOOTER TESTING
@@ -422,13 +422,13 @@ public static void printStatements ()
     // Hardware.rightRearMotor.get());
     // System.out.println("Left Rear Motor Controller: " +
     // Hardware.leftRearMotor.get());
-    // System.out.println("Flywheel thingy thing: "
-    // + Hardware.shooter.calculateRPMToMakeGoal(9.25) * .5);
-    // System.out.println("Flywheel thingy thing speed really: "
-    // + Hardware.shooterMotor.get());
+    System.out.println("Flywheel thingy thing: "
+            + Hardware.shooter.calculateRPMToMakeGoal(9.25) * .5);
+    System.out.println("Flywheel thingy thing speed really: "
+            + Hardware.shooterMotor.get());
     // System.out.println(Hardware.backupOrFireOrHopper.isOn());
-    // System.out
-    // .println("Flywheel Motor: " + Hardware.shooterMotor.get());
+    System.out
+            .println("Flywheel Motor: " + Hardware.shooterMotor.get());
     //
     // System.out.println("Intake Motor: " + Hardware.intakeMotor.get());
     // if (Hardware.rightOperator.getRawButton(11)) {
@@ -486,23 +486,20 @@ public static void printStatements ()
 
     // System.out.println("Right Front Encoder: " +
     // Hardware.rightFrontEncoder.get());
-    // System.out.println("Right Front Distance: " +
-    // Hardware.autoDrive.getRightFrontEncoderDistance());
+    System.out.println("Right Front Distance: " +
+            Hardware.autoDrive.getRightFrontEncoderDistance());
     // System.out.println("Right Rear Encoder: " +
     // Hardware.rightRearEncoder.get());
-    // System.out.println("Right Rear Encoder Distance: " +
-    // Hardware.autoDrive.getRightRearEncoderDistance());
+    System.out.println("Right Rear Encoder Distance: " +
+            Hardware.autoDrive.getRightRearEncoderDistance());
     // System.out.println("Left Front Encoder: " +
     // Hardware.leftFrontEncoder.get());
-    // System.out.println("Left Front Encoder Distance: " +
-    // Hardware.autoDrive.getLeftFrontEncoderDistance());
+    System.out.println("Left Front Encoder Distance: " +
+            Hardware.autoDrive.getLeftFrontEncoderDistance());
     // System.out.println("Left Rear Encoder: " +
     // Hardware.leftRearEncoder.get());
-    // System.out.println("Left Rear Encoder Distance: " +
-    // Hardware.autoDrive.getLeftFrontEncoderDistance());
-    // System.out.println("Right Front Encoder: " + System.out.println("Right
-    // Front Encoder Distance: " +
-
+    System.out.println("Left Rear Encoder Distance: " +
+            Hardware.autoDrive.getLeftFrontEncoderDistance());
     // Hardware.rightFrontEncoder.get());
     // System.out.println("Right Front Encoder Distance: " +
     // Hardware.autoDrive.getRightRearEncoderDistance());
@@ -544,7 +541,7 @@ public static void printStatements ()
     // =================================
 
     // GYRO
-    // System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
+    System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
 
     //
     // We don't want the print statements to flood everything and go ahhhhhhhh

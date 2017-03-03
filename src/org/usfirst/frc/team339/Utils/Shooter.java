@@ -251,7 +251,7 @@ public boolean prepareToFire (double rpmOffset)
         // then set flywheel to half the calculated RPM(to make the goal)
         // plus the rpm offset
         this.flywheelController
-                .set(.5 * this.calculateRPMToMakeGoal(dist)
+                .set(1700/* .5 * this.calculateRPMToMakeGoal(dist) */
                         + rpmOffset);
         // print to the smartDashboard the flywheel speed
         SmartDashboard.putNumber("Flywheel speed",
@@ -643,6 +643,9 @@ public double calculateRPMToMakeGoal (double distance)
     return perfectRPM
             + this.FLYWHEEL_SPEED_CORRECTION_CONSTANT * perfectRPM;
 }
+// ---------------------------------------------------------------------
+// variables
+// ---------------------------------------------------------------------
 
 private final double MAX_TURN_SPEED = .5;
 
@@ -652,7 +655,7 @@ private final double SLOW_TURN_SPEED = .25;
 
 private final double TURN_TO_GOAL_RAW_DEADBAND = .5;
 
-private final double ELEVATOR_SPEED = -.8;// TODO tune
+private final double ELEVATOR_SPEED = 1.0;// .8
 
 private final double AGITATOR_SPEED = .5;
 
@@ -663,13 +666,13 @@ public final double MAX_GIMBALING_ANGLE = 16;// in degrees
 
 public final double MIN_GIMBALING_ANGLE = -16;// in degrees
 
-private final double MOUNT_ANGLE = 67;// TODO figure out the actual number.
+private final double MOUNT_ANGLE = 60;// TODO figure out the actual number.
 
 private final double RELATIVE_GOAL_HEIGHT_METERS = 1.93;
 
 private final double FLYWHEEL_RADIUS_METERS = 0.0508;
 
-private final double FLYWHEEL_SPEED_CORRECTION_CONSTANT = .13578;// TODO tune
+private final double FLYWHEEL_SPEED_CORRECTION_CONSTANT = -.13578;// TODO tune
 
 /**
  * factor the gimbal encoder must be set to (distance per pulse)
