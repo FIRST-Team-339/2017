@@ -112,6 +112,7 @@ public double getAcceptableGimbalError ()
  */
 public void setAcceptableFlywheelError (double error)
 {
+    // sets the acceptable error for the flywheel
     this.acceptableError = error;
 }
 
@@ -174,6 +175,7 @@ public void reverseLoader ()
  */
 public boolean fire ()
 {
+    // return true if weve fired and false if we havent yet
     return fire(0);
 }
 
@@ -222,7 +224,7 @@ private boolean readyToFire = false;
  */
 public boolean prepareToFire ()
 {
-    // return prepareToFire(0)
+    // return true if were ready to fire fire and false if we arent
     return prepareToFire(0);
 }
 
@@ -548,7 +550,9 @@ public boolean turnToGoalRaw ()
                 / this.visionTargeter.camera
                         .getHorizontalResolution() < centerXLineOfImage)
             {
+            // turn gimbal at medium speed to the right
             this.turnGimbalMedium(1);
+            // return false
             return false;
             }
         }
@@ -618,10 +622,12 @@ public static enum turnToGoalReturn
  */
 public double calculateRPMToMakeGoal (double distance)
 {
+    // changes the distance into meters by multiplying by a the ratio
     double distanceMeters = distance * 3.28084;// Convert the distance
                                                // parameter
                                                // meters, for easier
                                                // computations.
+    // calculates the "perfect" RPM to set the flywheel to, by calculating
     double perfectRPM = (60.0 / (2 * Math.PI) * (Math.sqrt(
             ((4.9 * (Math.pow(distanceMeters, 2)))
                     / ((this.FLYWHEEL_RADIUS_METERS
@@ -632,6 +638,8 @@ public double calculateRPMToMakeGoal (double distance)
                             * (distanceMeters * Math.tan(
                                     Math.toRadians(this.MOUNT_ANGLE))
                                     - this.RELATIVE_GOAL_HEIGHT_METERS))))));
+    // return perfectRPM plus the flywheel correction speed constant
+    // multiplied by the perfect RPM
     return perfectRPM
             + this.FLYWHEEL_SPEED_CORRECTION_CONSTANT * perfectRPM;
 }
