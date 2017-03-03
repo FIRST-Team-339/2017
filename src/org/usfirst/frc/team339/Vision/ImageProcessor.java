@@ -105,7 +105,7 @@ public enum DebugMode
 
 private DebugMode debug = DebugMode.DEBUG_NONE;
 
-private KilroyCamera camera = null;
+public KilroyCamera camera = null;
 
 private Image currentImage = null;
 
@@ -623,19 +623,24 @@ public double getPitchAngleToTarget (ParticleReport target)
 {
     if (target != null)
         {
-    	System.out.println("Center of mass: " + target.center_mass_y);
-        double adjustedYVal = (this.camera.getVerticalResolution() / 2.0) -target.center_mass_y;
+        System.out.println("Center of mass: " + target.center_mass_y);
+        double adjustedYVal = (this.camera.getVerticalResolution()
+                / 2.0) - target.center_mass_y;
         System.out.println("Adjusted Y value: " + adjustedYVal);
         // System.out.println("Vert Res: " + Hardware.drive.cameraYResolution);
         // System.out.println(
         // "Y coord " + target.center_mass_y);
         // System.out.println(
         // "X coord " + target.center_mass_x);
-        System.out.println("Pitch Angle before offset: " + Math.atan((adjustedYVal + .5)
-                / this.cameraFocalLengthPixels));
-        System.out.println("Focal Length (pixels): " + this.cameraFocalLengthPixels);
-        System.out.println("Vertical Res: " + this.camera.getVerticalResolution());
-        System.out.println("Camera Mount Angle: " + this.getVerticalCameraMountAngle());
+        System.out.println("Pitch Angle before offset: "
+                + Math.atan((adjustedYVal + .5)
+                        / this.cameraFocalLengthPixels));
+        System.out.println("Focal Length (pixels): "
+                + this.cameraFocalLengthPixels);
+        System.out.println(
+                "Vertical Res: " + this.camera.getVerticalResolution());
+        System.out.println("Camera Mount Angle: "
+                + this.getVerticalCameraMountAngle());
         return Math.atan((adjustedYVal + .5)
                 / this.cameraFocalLengthPixels)
                 + this.cameraMountAngleAboveHorizontalRadians;
@@ -647,7 +652,8 @@ public double getPitchAngleToTarget (ParticleReport target)
 /**
  * The distance from the front of the robot to the vertical plane of the target.
  * 
- * Uses the height of the goal, 86 inches, over the tangent of the angle to the target.
+ * Uses the height of the goal, 86 inches, over the tangent of the angle to the
+ * target.
  * 
  * @param target
  *            The blob we're targeting
@@ -659,28 +665,30 @@ public double getPitchAngleToTarget (ParticleReport target)
 
 public double getZDistanceToFuelTarget (ParticleReport target)
 {
-	if(target == null)
-		return -1.0;
-	System.out.println("Pitch Angle: " + this.getPitchAngleToTarget(target));
-	return this.getVisionGoalHeight() / Math.tan(this.getPitchAngleToTarget(target));
+    if (target == null)
+        return -1.0;
+    System.out.println(
+            "Pitch Angle: " + this.getPitchAngleToTarget(target));
+    return this.getVisionGoalHeight()
+            / Math.tan(this.getPitchAngleToTarget(target));
 }
 
-//public double getZDistanceToFuelTarget (ParticleReport topTarget,
-//        ParticleReport bottomTarget)
-//{
-//    if (topTarget != null && bottomTarget != null)
-//        {
-//        // double yaw = this.getYawAngleToTarget(target);
-//        double topTargetPitch = this.getPitchAngleToTarget(topTarget);
-//        double bottomTargetPitch = this
-//                .getPitchAngleToTarget(bottomTarget);
-//        double hypotenuse = (7 * Math.sin(90 - bottomTargetPitch))
-//                / Math.sin(topTargetPitch - bottomTargetPitch);
-//        double zDistance = Math.sqrt((hypotenuse * hypotenuse) - 6241);
-//        return zDistance;
-//        }
-//    return -1.0;
-//}
+// public double getZDistanceToFuelTarget (ParticleReport topTarget,
+// ParticleReport bottomTarget)
+// {
+// if (topTarget != null && bottomTarget != null)
+// {
+// // double yaw = this.getYawAngleToTarget(target);
+// double topTargetPitch = this.getPitchAngleToTarget(topTarget);
+// double bottomTargetPitch = this
+// .getPitchAngleToTarget(bottomTarget);
+// double hypotenuse = (7 * Math.sin(90 - bottomTargetPitch))
+// / Math.sin(topTargetPitch - bottomTargetPitch);
+// double zDistance = Math.sqrt((hypotenuse * hypotenuse) - 6241);
+// return zDistance;
+// }
+// return -1.0;
+// }
 
 /**
  * 

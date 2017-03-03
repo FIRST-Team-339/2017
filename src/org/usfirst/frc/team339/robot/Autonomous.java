@@ -34,6 +34,7 @@ package org.usfirst.frc.team339.robot;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Drive.AlignReturnType;
+import org.usfirst.frc.team339.Utils.Shooter.turnReturn;
 import org.usfirst.frc.team339.Utils.Shooter.turnToGoalReturn;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Relay.Value;
@@ -106,7 +107,14 @@ private static enum MainState
      * Drive up to the gear peg when we don't see any blobs.
      */
     DRIVE_CAREFULLY_TO_PEG,
-
+    /**
+     * Stops us moving up to the peg so we don't spear ourselves on it.
+     */
+    BRAKE_UP_TO_PEG,
+    /**
+     * 
+     */
+    TURN_TURRET_OUT_OF_THE_WAY,
     /**
      * Currently unused, may be used to regain vision targets, or make sure the
      * gear is on the spring. It's a bit of a wildcard at the moment.
@@ -162,17 +170,43 @@ private static enum MainState
     DONE
     }
 
+/**
+ * The state machine controlling which auto path we are taking
+ * 
+ * @author Alex Kneipp
+ */
 private static enum AutoProgram
     {
+    /**
+     * The state we start in, runs once.
+     */
     INIT,
 
+    /**
+     * The path where we start in the middle and (try to) place the gear on the
+     * center peg.
+     */
     CENTER_GEAR_PLACEMENT,
 
+    /**
+     * The path where we start on the right side of the field and drive
+     * forwards, turn and place the gear, and try and turn around to attempt to
+     * fire. (Based on whether or not we are on the red or blue alliance)
+     */
     RIGHT_PATH,
 
+    /**
+     * The path where we start on the left side of the field and drive
+     * forwards, turn and place the gear, and try and turn around to attempt to
+     * fire. (Based on whether or not we are on the red or blue alliance)
+     */
     LEFT_PATH,
 
-    DELAY_AFTER_GEAR_EXODUS, DONE
+    /**
+     * We are done with this auto path! Yay! (or aww depending on if it
+     * worked...)
+     */
+    DONE
     }
 
 
@@ -180,23 +214,68 @@ private static enum AutoProgram
 // ==================================
 // VARIABLES
 // ==================================
-
+/**
+ * Temporarily holds each state for the return type for Strafing to Gear
+ * 
+ * Found in DRIVE_TO_GEAR_WITH_CAMERA states.
+ */
 private static Drive.AlignReturnType cameraState = Drive.AlignReturnType.NO_BLOBS;
 
 // ==========================================
 // TUNEABLES
 // ==========================================
 
-private static final double ALIGN_CORRECT_VAR = 45;// 30
+/**
+ * If we are using mecanum, this is the number of DEGREES the robot will offset
+ * while using StrafeToGear.
+ * 
+ * If we are using Tank drive (for some strange reason) this should be changed
+ * to a percentage that will be offset for each side of the robot.
+ */
+private static final double ALIGN_CORRECT_VAR = 50;// 30
 
-private static final double ALIGN_DRIVE_SPEED = .3;
+/**
+ * How fast we will be driving during all of auto, in percent.
+ */
+private static final double DRIVE_SPEED = .3;
 
+/**
+ * Determines what value we set the motors backwards to in order to brake, in
+ * percentage.
+ */
+private static final double BRAKE_SPEED = .3;
+
+/**
+ * Determines how long we should set the motors backwards in order to brake
+ * using timeBrake in the Drive class, in percentage.
+ */
+private static final double BRAKE_TIME = .2;
+
+/**
+ * The deadband for considering whether or not we are aligned to the target(s).
+ * Change the pixel value, and the /getHorizontalResolution will change it to
+ * relative coordinates.
+ */
 private static final double ALIGN_DEADBAND = 10 // +/- pixels
         / Hardware.axisCamera.getHorizontalResolution();
 
-private static final double ALIGN_ACCEPTED_CENTER = .5; // Relative coordinates
+/**
+ * Where we say the "center" of the camera is / where we want to correct TO.
+ */
+private static final double ALIGN_ACCEPTED_CENTER = .5; // Relative coordinates;
+                                                        // half the screen = .5
 
-private static final int ALIGN_DISTANCE_FROM_GOAL = 15;
+/**
+ * How far away we are in inches when we stop moving towards the goal
+ * 
+ * Used in DRIVE_CARFULLY_TO_GEAR as well as StrafeToGear
+ */
+private static final int STOP_DISTANCE_TO_GEAR = 14;
+
+/**
+ * How fast we should accelerate in the accelerate state, in seconds.
+ */
+private static final double TIME_TO_ACCELERATE = .4;
 
 /**
  * User-Initialization code for autonomous mode should go here. Will be
@@ -209,13 +288,28 @@ private static final int ALIGN_DISTANCE_FROM_GOAL = 15;
 
 public static void init ()
 {
+    // reset encoders
+    Hardware.leftFrontEncoder.reset();
+    Hardware.leftRearEncoder.reset();
+    Hardware.rightFrontEncoder.reset();
+    Hardware.rightRearEncoder.reset();
+    // motors
+    Hardware.leftRearMotor.setInverted(true);
+    Hardware.intakeMotor.setInverted(true);
+    // mecanum drive
+    Hardware.mecanumDrive.setMecanumJoystickReversed(false);
+    Hardware.mecanumDrive.setFirstGearPercentage(1.0);
+    Hardware.mecanumDrive.setGear(1);
+    Hardware.mecanumDrive
+            .setFirstGearPercentage(
+                    Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
     // Sets the scaling factor and general ultrasonic stuff
     Hardware.rightUS.setScalingFactor(.13);
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
-    Hardware.mecanumDrive.setFirstGearPercentage(1.0);
 
-    Hardware.mecanumDrive.setGear(1);
+    // if running on kilroy XVIII use certain value and different for XVII
+    // TODO WHY was this gone in git?
     if (Hardware.isRunningOnKilroyXVIII)
         {
         robotSpeedScalar = KILROY_XVIII_DEFAULT_SPEED;
@@ -235,7 +329,7 @@ public static void init ()
  */
 public static void periodic ()
 {
-
+    // The main state machine for figuring out which path we are following
     switch (autoPath)
         {
 
@@ -243,7 +337,7 @@ public static void periodic ()
             // get the auto program we want to run, get delay pot.
             if (Hardware.enableAutonomous.isOn())
                 {
-                delayTime = Hardware.delayPot.get(0.0, 5.0);
+                delayBeforeAuto = Hardware.delayPot.get(0.0, 5.0);
                 if (Hardware.driverStation
                         .getAlliance() == Alliance.Red)
                     {
@@ -271,18 +365,22 @@ public static void periodic ()
                 autoPath = AutoProgram.DONE;
                 }
             break;
+        // Drives towards the center gear peg
         case CENTER_GEAR_PLACEMENT:
             if (placeCenterGearPath())
                 autoPath = AutoProgram.DONE;
             break;
+        // Drives towards the right gear peg and turns around to fire
         case RIGHT_PATH:
             if (rightSidePath())
                 autoPath = AutoProgram.DONE;
             break;
+        // Drives towards the left gear peg and turns around to fire
         case LEFT_PATH:
             if (leftSidePath())
                 autoPath = AutoProgram.DONE;
             break;
+        // We are done with the auto program!
         case DONE:
             Hardware.leftRearMotor.set(0);
             Hardware.leftFrontMotor.set(0);
@@ -290,27 +388,61 @@ public static void periodic ()
             Hardware.rightFrontMotor.set(0);
             Hardware.ringlightRelay.set(Value.kOff);
             break;
+        // If we made a horrible mistake in the state machine, default to DONE
+        // (Stop the program)
+        default:
+            autoPath = AutoProgram.DONE;
+            break;
         }
 
 } // end Periodic
 
-
+/**
+ * Which state we are in in the main state machine. Starts at init.
+ */
 private static MainState currentState = MainState.INIT;
 
+/**
+ * A control enum for choosing which accelerate we are doing (only for left and
+ * right paths)
+ */
 private static MainState postAccelerateState = MainState.DONE;
 
+/**
+ * Determines which position we are on the field to control
+ * which auto we use
+ */
 private static AutoProgram autoPath = AutoProgram.INIT;
 
-private static double delayTime = 5;
+/**
+ * Amount of time we delay before starting the auto program
+ */
+private static double delayBeforeAuto = 5;
 
+/**
+ * Whether or not we are the red alliance. If not, we are the Blue alliance.
+ */
 private static boolean isRedAlliance = false;
 
+/**
+ * Determines whether or not we choose to go fire after placing the gear.
+ * Will not work if we choose to go to the hopper in goForHopper.
+ */
 private static boolean goForFire = false;
 
+/**
+ * Determines whether or not we choose to go to the hopper after placing the
+ * gear
+ */
 private static boolean goForHopper = false;
 
-private static boolean driveToTargetFirstStart = true;
-
+/**
+ * The auto path where we start in the center position, and try and strafe
+ * towards the camera if we can. If we can't we just use the ultrasonic to
+ * "carefully drive to peg", and back up (if the switch is flicked to true)
+ * 
+ * @return
+ */
 private static boolean placeCenterGearPath ()
 {
     System.out.println("CurrentState = " + currentState);
@@ -325,6 +457,10 @@ private static boolean placeCenterGearPath ()
             // zero out all the sensors, reset timers, etc.
             Hardware.autoStateTimer.start();
             Hardware.ringlightRelay.set(Value.kOn);
+            if (Hardware.backupOrFireOrHopper.isOn())
+                {
+                goForFire = true;
+                }
             currentState = MainState.DELAY_BEFORE_START;
             break;
         case DELAY_BEFORE_START:
@@ -334,34 +470,35 @@ private static boolean placeCenterGearPath ()
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
             // wait for timer to run out
-            if (Hardware.autoStateTimer.get() >= delayTime)
+            if (Hardware.autoStateTimer.get() >= delayBeforeAuto)
                 {
                 // Hardware.axisCamera.saveImagesSafely();
                 currentState = MainState.ACCELERATE;
                 postAccelerateState = MainState.DRIVE_FORWARD_TO_CENTER;
-
                 Hardware.autoStateTimer.reset();
                 Hardware.autoStateTimer.start();
                 }
             break;
         case ACCELERATE:
-            // TODO magic number
+            // Accelerate towards the center gear peg, to save the encoders
             cameraState = AlignReturnType.WAITING;
-            if (Hardware.autoDrive.accelerate(getRealSpeed(.2),
-                    .1))
+            if (Hardware.autoDrive.accelerate(
+                    getRealSpeed(DRIVE_SPEED),
+                    TIME_TO_ACCELERATE))
                 {
+                // Not using this in this state machine, only for left/right
+                // side
                 currentState = postAccelerateState;
                 Hardware.axisCamera.saveImagesSafely();
                 }
+            // Purge the ultrasonic of it's current values while we are
+            // accelerating
             Hardware.rightUS.getDistanceFromNearestBumper();
             break;
         case DRIVE_FORWARD_TO_CENTER:
             // If we see blobs, hand over control to camera, otherwise, go
             // forward. Check to make sure we haven't gone too far.
             Hardware.imageProcessor.processImage();
-            System.out.println(
-                    "Number of blobs: " + Hardware.imageProcessor
-                            .getParticleAnalysisReports().length);
             if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
                 {
                 currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
@@ -375,15 +512,11 @@ private static boolean placeCenterGearPath ()
             // transmission,
             // we will strafe. If it uses a four wheel transmission, it will
             // wiggle wiggle on it's way to the peg
-
             cameraState = Hardware.autoDrive.strafeToGear(
-                    getRealSpeed(ALIGN_DRIVE_SPEED),
+                    getRealSpeed(DRIVE_SPEED),
                     ALIGN_CORRECT_VAR,
                     ALIGN_DEADBAND, ALIGN_ACCEPTED_CENTER,
-                    ALIGN_DISTANCE_FROM_GOAL);
-            System.out.println(
-                    "Number of Blobs: " + Hardware.imageProcessor
-                            .getParticleAnalysisReports().length);
+                    STOP_DISTANCE_TO_GEAR);
 
             System.out.println("strafeToGear state: " + cameraState);
 
@@ -397,19 +530,96 @@ private static boolean placeCenterGearPath ()
             if (cameraState == AlignReturnType.CLOSE_ENOUGH)
                 {
                 // If we are close enough to the wall, stop.
-                currentState = MainState.WAIT_FOR_GEAR_EXODUS;
+                currentState = MainState.BRAKE_UP_TO_PEG;
                 }
-
-
+            break;
+        case DRIVE_CAREFULLY_TO_PEG:
+            // Drives straight to the wall using the encoder, and picks back up
+            // with drive with camera if we can see blobs again
+            if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
+                {
+                currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
+                }
+            else
+                {
+                if (Hardware.rightUS
+                        .getDistanceFromNearestBumper() >= STOP_DISTANCE_TO_GEAR)
+                    {
+                    Hardware.autoDrive.driveNoDeadband(DRIVE_SPEED, 0.0,
+                            0);
+                    }
+                else
+                    {
+                    currentState = MainState.BRAKE_UP_TO_PEG;
+                    }
+                }
+            break;
+        case BRAKE_UP_TO_PEG:
+            // Brakes using the Time Brake function in the Drive class.
+            if (Hardware.autoDrive.timeBrake(BRAKE_SPEED, BRAKE_TIME))
+                {
+                currentState = MainState.TURN_TURRET_OUT_OF_THE_WAY;
+                }
+            break;
+        case TURN_TURRET_OUT_OF_THE_WAY:
+            // Turns the turret out of the way so that when the human player
+            // pulls up the gear, it does not hit the camera
+            if (Hardware.shooter
+                    .turnToBearing(
+                            Hardware.shooter.MIN_GIMBALING_ANGLE) == turnReturn.SUCCESS)
+                {
+                Hardware.shooter.stopGimbal();
+                currentState = MainState.WAIT_FOR_GEAR_EXODUS;
+                }// TODO THIS is where I left off commenting.
             break;
         case WAIT_FOR_GEAR_EXODUS:
             Hardware.ringlightRelay.set(Value.kOff);
+            // if (Hardware.autoStateTimer.get() >= 1.25)
+            // {
+            // runWiggleWiggleSetup = true;
+            // currentState = MainState.WIGGLE_WIGGLE;
+            // }
             if (Hardware.gearLimitSwitch.isOn() == false)
                 {
-                Hardware.autoDrive.drive(0.0, 0.0);
+                Hardware.autoDrive.driveNoDeadband(0.0, 0.0, 0.0);
                 currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
                 Hardware.autoStateTimer.reset();
                 Hardware.autoStateTimer.start();
+                }
+            break;
+        case WIGGLE_WIGGLE:
+            if (runWiggleWiggleSetup)
+                {
+                Hardware.autoStateTimer.reset();
+                Hardware.autoStateTimer.start();
+                runWiggleWiggleSetup = false;
+                wiggleWiggleCount++;
+                }
+            if (wiggleWiggleCount == 1)
+                {
+                if (Hardware.autoStateTimer.get() >= .5)
+                    {
+                    Hardware.autoDrive.drive(.5, 90);
+                    }
+                else
+                    {
+                    currentState = MainState.WAIT_FOR_GEAR_EXODUS;
+                    }
+                }
+            else if (wiggleWiggleCount == 2)
+                {
+                if (Hardware.autoStateTimer.get() >= .1)
+                    {
+                    Hardware.autoDrive.drive(.5, -90);
+                    }
+                else
+                    {
+                    currentState = MainState.WAIT_FOR_GEAR_EXODUS;
+                    }
+                }
+            else
+                {
+                currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
                 }
             break;
         case DELAY_AFTER_GEAR_EXODUS:
@@ -421,7 +631,14 @@ private static boolean placeCenterGearPath ()
                 {
                 Hardware.axisCamera.saveImagesSafely();
                 Hardware.autoDrive.resetEncoders();
-                currentState = MainState.DRIVE_AWAY_FROM_PEG;
+                if (goForFire)
+                    {
+                    currentState = MainState.DRIVE_AWAY_FROM_PEG;
+                    }
+                else
+                    {
+                    currentState = MainState.DONE;
+                    }
                 }
             break;
         case DRIVE_AWAY_FROM_PEG:
@@ -438,6 +655,10 @@ private static boolean placeCenterGearPath ()
         }
     return false;
 }
+
+private static int wiggleWiggleCount = 0;
+
+private static boolean runWiggleWiggleSetup = true;
 
 private static boolean rightSidePath ()
 {
@@ -462,7 +683,7 @@ private static boolean rightSidePath ()
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
             // wait for timer to run out
-            if (Hardware.autoStateTimer.get() >= delayTime)
+            if (Hardware.autoStateTimer.get() >= delayBeforeAuto)
                 {
                 Hardware.axisCamera.saveImagesSafely();
                 currentState = MainState.ACCELERATE;
@@ -476,7 +697,9 @@ private static boolean rightSidePath ()
                     + Hardware.rightFrontMotor.getSpeed());
             System.out.println("left front motor accelerate: "
                     + Hardware.leftFrontMotor.getSpeed());
-            if (Hardware.autoDrive.accelerate(.4, .3))// TODO magic num!
+            if (Hardware.autoDrive.accelerate(.4, TIME_TO_ACCELERATE))// TODO
+                                                                      // magic
+                                                                      // num!
                 {
                 currentState = postAccelerateState;
                 }
@@ -522,7 +745,6 @@ private static boolean rightSidePath ()
                 }
             break;
         case DRIVE_TO_GEAR_WITH_CAMERA:
-            System.out.println("in second drive to gear with camera");
             Hardware.imageProcessor.processImage();
             // If at any time we lose our target blob number
             if (Hardware.imageProcessor.getNthSizeBlob(1) == null)
@@ -534,13 +756,14 @@ private static boolean rightSidePath ()
                 {
                 currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
                 // TODO magic numbers and need to be tuned.
-                Hardware.autoDrive.alignToGear(0.0, .5, .1);
-                }
-            // TODO tune so we end here
-            if (Hardware.rightUS.getDistanceFromNearestBumper() < 8)
-                {
-                Hardware.autoDrive.drive(0.0, 0.0, 0.0);
-                currentState = MainState.WAIT_FOR_GEAR_EXODUS;
+                if (Hardware.autoDrive.strafeToGear(DRIVE_SPEED,
+                        ALIGN_CORRECT_VAR, ALIGN_DEADBAND,
+                        ALIGN_ACCEPTED_CENTER,
+                        STOP_DISTANCE_TO_GEAR) == AlignReturnType.CLOSE_ENOUGH)
+                    {
+                    Hardware.autoDrive.drive(0.0, 0.0, 0.0);
+                    currentState = MainState.WAIT_FOR_GEAR_EXODUS;
+                    }
                 }
             break;
         case DRIVE_CAREFULLY_TO_PEG:
@@ -629,19 +852,43 @@ private static boolean rightSidePath ()
             break;
         case TURN_TO_HOPPER:
             // TODO random magic numbers I selected
-            if (Hardware.autoDrive.turnDegrees(isRedAlliance ? 12 : 90))
+
+            if (isRedAlliance == true)
                 {
-                currentState = MainState.DRIVE_UP_TO_HOPPER;
+                if (Hardware.autoDrive.turnDegrees(12))
+                    {
+                    currentState = MainState.DRIVE_UP_TO_HOPPER;
+                    }
                 }
+            else
+                {
+                if (Hardware.autoDrive.turnDegrees(90))
+                    {
+                    currentState = MainState.DRIVE_UP_TO_HOPPER;
+                    }
+                }
+
             break;
         case DRIVE_UP_TO_HOPPER:
             // TODO see above todo.
             // TODO comment terneries
-            if (Hardware.autoDrive.driveInches(isRedAlliance ? 12 : 90,
-                    getRealSpeed(.6)))
+            if (isRedAlliance == true)
                 {
-                currentState = MainState.DONE;
+                if (Hardware.autoDrive.driveInches(12,
+                        getRealSpeed(.6)))
+                    {
+                    currentState = MainState.DONE;
+                    }
                 }
+            else
+                {
+                if (Hardware.autoDrive.driveInches(90,
+                        getRealSpeed(.6)))
+                    {
+                    currentState = MainState.DONE;
+                    }
+                }
+            break;
         case ALIGN_TO_FIRE:
             if (Hardware.shooter
                     .turnToGoal() == turnToGoalReturn.SUCCESS)
@@ -686,8 +933,6 @@ private static boolean rightSidePath ()
 
 private static int fireCount = 0;
 
-private static boolean isDrivingByCamera = false;
-
 private static boolean leftSidePath ()
 {
     System.out.println("Current State = " + currentState);
@@ -711,7 +956,7 @@ private static boolean leftSidePath ()
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
             // wait for timer to run out
-            if (Hardware.autoStateTimer.get() >= delayTime)
+            if (Hardware.autoStateTimer.get() >= delayBeforeAuto)
                 {
                 Hardware.axisCamera.saveImagesSafely();
                 currentState = MainState.ACCELERATE;
@@ -721,7 +966,8 @@ private static boolean leftSidePath ()
                 }
             break;
         case ACCELERATE:
-            if (Hardware.autoDrive.accelerate(.5, .5))// TODO magic num!
+            if (Hardware.autoDrive.accelerate(DRIVE_SPEED,
+                    TIME_TO_ACCELERATE))
                 {
                 currentState = postAccelerateState;
                 }
@@ -778,8 +1024,10 @@ private static boolean leftSidePath ()
                 {
                 currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
                 // TODO magic numbers and need to be tuned.
-                if (Hardware.autoDrive.strafeToGear(.4, 5, .1, 0.0,
-                        20) == AlignReturnType.CLOSE_ENOUGH)
+                if (Hardware.autoDrive.strafeToGear(DRIVE_SPEED,
+                        ALIGN_CORRECT_VAR, ALIGN_DEADBAND,
+                        ALIGN_ACCEPTED_CENTER,
+                        STOP_DISTANCE_TO_GEAR) == AlignReturnType.CLOSE_ENOUGH)
                     {
                     Hardware.autoDrive.drive(0.0, 0.0, 0.0);
                     currentState = MainState.WAIT_FOR_GEAR_EXODUS;
@@ -872,19 +1120,43 @@ private static boolean leftSidePath ()
             break;
         case TURN_TO_HOPPER:
             // TODO random magic numbers I selected
-            if (Hardware.autoDrive.turnDegrees(isRedAlliance ? 12 : 90))
+
+            if (isRedAlliance == true)
                 {
-                currentState = MainState.DRIVE_UP_TO_HOPPER;
+                if (Hardware.autoDrive.turnDegrees(12))
+                    {
+                    currentState = MainState.DRIVE_UP_TO_HOPPER;
+                    }
                 }
+            else
+                {
+                if (Hardware.autoDrive.turnDegrees(90))
+                    {
+                    currentState = MainState.DRIVE_UP_TO_HOPPER;
+                    }
+                }
+
             break;
         case DRIVE_UP_TO_HOPPER:
             // TODO see above todo.
             // TODO comment terneries
-            if (Hardware.autoDrive.driveInches(isRedAlliance ? 12 : 90,
-                    getRealSpeed(.6)))
+            if (isRedAlliance == true)
                 {
-                currentState = MainState.DONE;
+                if (Hardware.autoDrive.driveInches(12,
+                        getRealSpeed(.6)))
+                    {
+                    currentState = MainState.DONE;
+                    }
                 }
+            else
+                {
+                if (Hardware.autoDrive.driveInches(90,
+                        getRealSpeed(.6)))
+                    {
+                    currentState = MainState.DONE;
+                    }
+                }
+            break;
         case ALIGN_TO_FIRE:
             if (Hardware.shooter
                     .turnToGoal() == turnToGoalReturn.SUCCESS)
@@ -926,16 +1198,6 @@ private static boolean leftSidePath ()
         }
     return false;
 }
-
-private static final double[] accelerationSpeeds =
-    {
-            getRealSpeed(.2),
-
-
-            getRealSpeed(.4),
-
-            getRealSpeed(.5)
-    };
 
 /**
  * reset all the sensors and timers, in preparation for an autonomous program.

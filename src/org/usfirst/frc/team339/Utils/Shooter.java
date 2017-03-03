@@ -1,10 +1,22 @@
+
+// ====================================================================
+// FILE NAME: KilroyGyro.java (Team 339 - Kilroy)
+//
+// CREATED ON: sometime during 2017 build season
+// CREATED BY: Alex Kneipp
+// MODIFIED ON:2/28/17 and 2/29/17
+// MODIFIED BY: Ashley Espeland
+// ABSTRACT:
+// deals with all of our shooter code
+
+
 package org.usfirst.frc.team339.Utils;
 
 import com.ctre.CANTalon;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
 import edu.wpi.first.wpilibj.Spark;
-import edu.wpi.first.wpilibj.Timer;
+// import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -29,13 +41,13 @@ private double acceptableError = 0;
 
 private ImageProcessor visionTargeter = null;
 
-private double acceptableGimbalError = 3;// in degrees
+private double acceptableGimbalError = .5;// in degrees
 
 private CANTalon gimbalMotor = null;
 
 private Spark agitatorMotor = null;
 
-private Timer shooterTimer = new Timer();
+// private Timer shooterTimer = new Timer();
 
 /**
  * Creates a new shooter object for the 2017 season, SteamWorks
@@ -73,8 +85,6 @@ public Shooter (CANTalon controller, IRSensor ballLoaderSensor,
     this.visionTargeter = visionTargeting;
     this.gimbalMotor = gimbalMotor;
     this.agitatorMotor = agitatorMotor;
-
-
 }
 
 /**
@@ -91,6 +101,7 @@ public void setAcceptableGimbalError (double error)
  */
 public double getAcceptableGimbalError ()
 {
+    // returns what we consider an acceptable amount of error for the gimbal
     return this.acceptableGimbalError;
 }
 
@@ -101,6 +112,7 @@ public double getAcceptableGimbalError ()
  */
 public void setAcceptableFlywheelError (double error)
 {
+    // sets the acceptable error for the flywheel
     this.acceptableError = error;
 }
 
@@ -110,29 +122,47 @@ public void setAcceptableFlywheelError (double error)
  */
 public double getAcceptableFlywheelError ()
 {
+    // returns what we consider an acceptable amount of error for the flywheel
     return this.acceptableError;
 }
 
-// TODO write stops for other motors.
+// TODO write stops for other motors. TODO check that we did that.
+/**
+ * Stops the flywheel motor.
+ */
 public void stopFlywheelMotor ()
 {
+    // stops the flywheel motor
     this.flywheelController.set(0.0);
 }
 
+/**
+ * Runs the agitator and elevator towards the shooter.
+ */
 public void loadBalls ()
 {
+    // load balls by running the elevator and agitator at their assigned speeds
     this.elevatorController.set(ELEVATOR_SPEED);
     this.agitatorMotor.set(AGITATOR_SPEED);
 }
 
+/**
+ * Stops both the elevator and the agitator.
+ */
 public void stopLoader ()
 {
+    // stops loading balls by stopping the elevator and the agitator
     this.elevatorController.set(0.0);
     this.agitatorMotor.set(0.0);
 }
 
+/**
+ * Runs the elevator backwards and also runs the agitatior.
+ */
 public void reverseLoader ()
 {
+    // reverse loads by running the elevator in reverse and the agitator at
+    // its normal speed (normal includes its direction)
     this.elevatorController.set(-ELEVATOR_SPEED);
     this.agitatorMotor.set(AGITATOR_SPEED);
 }
@@ -145,6 +175,7 @@ public void reverseLoader ()
  */
 public boolean fire ()
 {
+    // return true if weve fired and false if we havent yet
     return fire(0);
 }
 
@@ -160,18 +191,24 @@ public boolean fire (double rpmOffset)
 {
     // System.out.println("RPMOffset in fire: " + rpmOffset);
     readyToFire = prepareToFire(rpmOffset);
-    if (!readyToFire)
+    // if readyToFire is equal to false
+    if (readyToFire == false)
         {
+        // then return false
         return false;
         }
-
-    if (this.elevatorSensor.isOn())
+    // if the elevator sensor is on
+    if (this.elevatorSensor.isOn() == true)
         {
+        // then set the elevator to its assigned speed
         this.elevatorController.set(ELEVATOR_SPEED);
+        // return false
         return false;
         }
     // this.elevatorController.set(0);
+    // sets readyToFire to false
     readyToFire = false;
+    // return true
     return true;
 
 }
@@ -187,6 +224,7 @@ private boolean readyToFire = false;
  */
 public boolean prepareToFire ()
 {
+    // return true if were ready to fire fire and false if we arent
     return prepareToFire(0);
 }
 
@@ -195,34 +233,43 @@ public boolean prepareToFire ()
  * ball to be fired.
  * 
  * @param rpmOffset
- *            TODO
+ * 
  * 
  * @return true if we're ready to fire, false otherwise.
  */
 public boolean prepareToFire (double rpmOffset)
 {
     // System.out.println("RPMOffset in prepareToFire: " + rpmOffset);
+    // dist is the distance to goal
     double dist = 9.25;/*
                         * this.visionTargeter.getZDistanceToFuelTarget(
                         * this.visionTargeter.getLargestBlob());
                         */
-    if (dist > 0)
+    // if the distance to goal is greater than 0
+    if ((dist > 0) == true)
         {
+        // then set flywheel to half the calculated RPM(to make the goal)
+        // plus the rpm offset
         this.flywheelController
                 .set(.5 * this.calculateRPMToMakeGoal(dist)
                         + rpmOffset);
+        // print to the smartDashboard the flywheel speed
         SmartDashboard.putNumber("Flywheel speed",
                 this.flywheelController.getSpeed());
-        // multiplied by 2 for gear ratio.
+        // calls load balls
         this.loadBalls();
+        // divides the absolute value of the flywheel error by four
+        // if this value is greater than the acceptable error
         if (Math.abs(this.flywheelController.getError()
                 / 4.0) > this.acceptableError)
             {
             // this.stopLoader();
+            // returns false
             return false;
             }
         }
     else
+        // return false
         return false;
     // if (this.elevatorSensor.isOn())
     // {
@@ -233,6 +280,8 @@ public boolean prepareToFire (double rpmOffset)
     // this.loadBalls();
     // return false;
     // }
+
+    // return true
     return true;
 }
 
@@ -248,12 +297,26 @@ public boolean prepareToFire (double rpmOffset)
 // TODO slow down as we approach it
 public turnReturn turnToBearing (double newBearing)
 {
+    // if the absolute value of the difference between the new bearing and
+    // the current bearing is less than or equal to the acceptable Gimbal error
     if (Math.abs(
             newBearing - this.getBearing()) >= acceptableGimbalError)
         {
-        return this.turnGimbal(MEDIUM_TURN_SPEED
-                * (newBearing - getBearing() < 0 ? -1 : 1));
+        // if the difference between the newBearing and the current bearing is
+        // less than 0
+        if (newBearing - getBearing() < 0)
+            {
+            // returns turnGimbal(-MEDIUM_TURN_SPEED)
+            // AKA negative medium turn speed
+            return this.turnGimbal(-MEDIUM_TURN_SPEED);
+            }
+        // returns turnGimbal(MEDIUM_TURN_SPEED)
+        return this.turnGimbal(MEDIUM_TURN_SPEED);
+
         }
+    // stops gimbal
+    this.stopGimbal();
+    // returns turnReturn.SUCCESS
     return turnReturn.SUCCESS;
 }
 
@@ -263,6 +326,7 @@ public turnReturn turnToBearing (double newBearing)
  */
 public void stopGimbal ()
 {
+    // sets the gimbal to 0
     this.turnGimbal(0.0);
 }
 
@@ -278,6 +342,7 @@ public void stopGimbal ()
  */
 public turnReturn turnGimbalSlow (int direction)
 {
+    // returns turnGimbal(direction * SLOW_TURN_SPEED)
     return this.turnGimbal(direction * SLOW_TURN_SPEED);
 }
 
@@ -293,6 +358,7 @@ public turnReturn turnGimbalSlow (int direction)
  */
 public turnReturn turnGimbalMedium (int direction)
 {
+    // returns turnGimbal(direction * MEDIUM_TURN_SPEED)
     return this.turnGimbal(direction * MEDIUM_TURN_SPEED);
 }
 
@@ -308,6 +374,7 @@ public turnReturn turnGimbalMedium (int direction)
  */
 public turnReturn turnGimbalFast (int direction)
 {
+    // returns turnGimbal(direction * MAX_TURN_SPEED)
     return this.turnGimbal(direction * MAX_TURN_SPEED);
 }
 
@@ -322,10 +389,16 @@ public turnReturn turnGimbalFast (int direction)
  */
 private turnReturn turnGimbal (double speed)
 {
+    // if the bearing is greater than or equal to the max gimbaling angle
+    // and the speed is greater than 0
+    // OR if the bearing is less than or equal the max gimbaling angle
+    // and the speed is less than 0
     if ((this.getBearing() >= MAX_GIMBALING_ANGLE && speed > 0)
             || (this.getBearing() <= MIN_GIMBALING_ANGLE && speed < 0))
         {
+        // set gimbal motor to 0
         this.gimbalMotor.set(0.0);
+        // return turnReturn.TOO_FAR
         return turnReturn.TOO_FAR;
         }
     // TODO direction
@@ -333,15 +406,29 @@ private turnReturn turnGimbal (double speed)
      * Make sure we never turn faster than the maximum speed.
      * ALSO motor is reversed so... that's why it's like that.
      */
+    // if the speed is less than 0
     if (speed < 0)
+        {
+        // then set to either the speed or the negative max turn speed,
+        // based on which is greater
         this.gimbalMotor.set(
                 Math.max(speed, -MAX_TURN_SPEED));
+        }
+    // else id speed is greater than 0
     else if (speed > 0)
+        {
+        // set the gimbal motor to the higher value of either the speed
+        // or the Max turn speed
         this.gimbalMotor.set(
                 Math.min(speed, MAX_TURN_SPEED));
+        }
+    // else
     else
+        {
+        // set the gimbal motor to 0 (SSSSTOPPPP)
         this.gimbalMotor.set(0.0);
-
+        }
+    // return turnReturn.WORKING
     return turnReturn.WORKING;
 }
 
@@ -352,6 +439,7 @@ private turnReturn turnGimbal (double speed)
  */
 public double getBearing ()
 {
+    // return the product of the encoder position and the gimbal encoder factor
     return this.gimbalMotor.getEncPosition()
             * this.GIMBAL_ENCODER_FACTOR;
 }
@@ -388,40 +476,94 @@ public static enum turnReturn
 // TODO Radians and degrees
 public turnToGoalReturn turnToGoal ()
 {
-    // if we have at least one blob
-    this.visionTargeter.processImage();
-    if (this.visionTargeter.getNthSizeBlob(0) != null)
+    // if we are running this for the first time
+    if (firstTimeRun == true)
         {
-        // If we haven't yet calculated our setpoint yet.
-        if (gimbalTarget == Double.MIN_VALUE)
-            {
-            // calculate our setpoint
-            gimbalTarget = this.visionTargeter.getYawAngleToTarget(
-                    this.visionTargeter.getNthSizeBlob(0));
-            }
-        else
-            {
-            // turn to our new bearing
-            if (turnToBearing(gimbalTarget
-                    + this.getBearing()) == turnReturn.SUCCESS)
-                {
-                // we're done!
-                gimbalTarget = Double.MIN_VALUE;
-                return turnToGoalReturn.SUCCESS;
-                }
-            else if (turnToBearing(gimbalTarget
-                    + this.getBearing()) == turnReturn.TOO_FAR)
-                {
-                gimbalTarget = Double.MIN_VALUE;
-                return turnToGoalReturn.OUT_OF_GIMBALING_RANGE;
-                }
-            }
-        // still working...
-        return turnToGoalReturn.WORKING;
+        // then process the image
+        this.visionTargeter.processImage();
+        // set firstTimeRun to false
+        firstTimeRun = false;
         }
-    // We don't see anything.
-    return turnToGoalReturn.NO_BLOBS;
+    // if the getLargetBlob is not equal to null
+    if (this.visionTargeter.getLargestBlob() != null)
+        {
+        // if the turnToBearing (ehich is the direction to the largest
+        // blob) is equalt to what we consider a "success"
+        if (this.turnToBearing(
+                Math.toDegrees(this.visionTargeter
+                        .getYawAngleToTarget(this.visionTargeter
+                                .getLargestBlob()))) == turnReturn.SUCCESS)
+            {
+            // return turnToGoalReturn.SUCCESS
+            return turnToGoalReturn.SUCCESS;
+            }
+        }
+    else
+        {
+        // process image
+        this.visionTargeter.processImage();
+        // return turnToGoalReturn.NO_BLOBS
+        return turnToGoalReturn.NO_BLOBS;
+        }
+
+    // return turnToGoalReturn.WORKING
+    return turnToGoalReturn.WORKING;
+
+
+
 }
+
+public boolean turnToGoalRaw ()
+{
+    // process image
+    this.visionTargeter.processImage();
+    // if the getLargestBlob is not equal to null
+    if (this.visionTargeter.getLargestBlob() != null)
+        {
+        // if the absolute value of the center of the largest blob
+        // (x value) divided by the horizontal resolution minus .5 is
+        // less than turn to goal raw deadband
+        if ((Math.abs(this.visionTargeter.getLargestBlob().center_mass_x
+                / this.visionTargeter.camera.getHorizontalResolution()
+                - centerXLineOfImage) <= TURN_TO_GOAL_RAW_DEADBAND) == true)
+            {
+            // return stopGimbal
+            this.stopGimbal();
+            // return true
+            return true;
+            }
+        // if the center of the largest blob(x value) divided by the
+        // horizontal resolution is greater than .5
+        // (meaning it is too far to the right)
+        if (this.visionTargeter.getLargestBlob().center_mass_x
+                / this.visionTargeter.camera
+                        .getHorizontalResolution() > centerXLineOfImage)
+            {
+            // turn the gimbal to the left at -1
+            this.turnGimbalMedium(-1);
+            // return false
+            return false;
+            }
+        // if the center of the largest blob (x value) divided by the
+        // horizontal resolution is greater than the center of the image
+        if (this.visionTargeter.getLargestBlob().center_mass_x
+                / this.visionTargeter.camera
+                        .getHorizontalResolution() < centerXLineOfImage)
+            {
+            // turn gimbal at medium speed to the right
+            this.turnGimbalMedium(1);
+            // return false
+            return false;
+            }
+        }
+    return false;
+}
+
+private double centerXLineOfImage = .5;
+
+private boolean isTurningToGoal = false;
+
+private turnReturn turningToGoalVal = turnReturn.SUCCESS;
 
 private boolean firstTimeRun = false;
 
@@ -480,10 +622,12 @@ public static enum turnToGoalReturn
  */
 public double calculateRPMToMakeGoal (double distance)
 {
+    // changes the distance into meters by multiplying by a the ratio
     double distanceMeters = distance * 3.28084;// Convert the distance
                                                // parameter
                                                // meters, for easier
                                                // computations.
+    // calculates the "perfect" RPM to set the flywheel to, by calculating
     double perfectRPM = (60.0 / (2 * Math.PI) * (Math.sqrt(
             ((4.9 * (Math.pow(distanceMeters, 2)))
                     / ((this.FLYWHEEL_RADIUS_METERS
@@ -494,6 +638,8 @@ public double calculateRPMToMakeGoal (double distance)
                             * (distanceMeters * Math.tan(
                                     Math.toRadians(this.MOUNT_ANGLE))
                                     - this.RELATIVE_GOAL_HEIGHT_METERS))))));
+    // return perfectRPM plus the flywheel correction speed constant
+    // multiplied by the perfect RPM
     return perfectRPM
             + this.FLYWHEEL_SPEED_CORRECTION_CONSTANT * perfectRPM;
 }
@@ -504,6 +650,8 @@ private final double MEDIUM_TURN_SPEED = .35;
 
 private final double SLOW_TURN_SPEED = .25;
 
+private final double TURN_TO_GOAL_RAW_DEADBAND = .05;
+
 private final double ELEVATOR_SPEED = -.8;// TODO tune
 
 private final double AGITATOR_SPEED = .5;
@@ -511,9 +659,9 @@ private final double AGITATOR_SPEED = .5;
 private final double GIMBAL_LEFT_OFFSET = .1;// Going left is slower than going
                                              // right for some reason
 
-private final double MAX_GIMBALING_ANGLE = 16;// in degrees
+public final double MAX_GIMBALING_ANGLE = 16;// in degrees
 
-private final double MIN_GIMBALING_ANGLE = -16;// in degrees
+public final double MIN_GIMBALING_ANGLE = -16;// in degrees
 
 private final double MOUNT_ANGLE = 67;// TODO figure out the actual number.
 

@@ -17,7 +17,13 @@ import edu.wpi.first.wpilibj.Timer;
  */
 public class Drive
 {
-
+/*
+ * We have both TransmissionMecanum and TransmissionFourWheel so we're able to
+ * drive with either. The constructor detects which and then sets the
+ * transmissionType enum so we know which we're using throughout the class, and
+ * can use the appropriate code to drive our wheels.
+ * 
+ */
 private TransmissionMecanum transmissionMecanum = null;
 
 private TransmissionFourWheel transmissionFourWheel = null;
@@ -36,13 +42,17 @@ private boolean isUsingEncoders = false;
 
 private boolean isUsingUltrasonics = false;
 
-private UltraSonic rightUlt = null;
+private UltraSonic ultrasonic = null;
 
 private Timer timer = new Timer();
 
-public double correction = 0.0;
+private double correction = 0.0;// TODO find out what this does.
 
-public double encoderSlack = 0.0;
+// The amount the encoders are allowed to be off and considered "equal"
+private double encoderSlack = 0.0;
+
+// If true, we print out debugging info, else we do not.
+private boolean debugStatus = false;
 
 /**
  * Creates an instance of the Drive class, with a mecanum drive system.
@@ -59,6 +69,7 @@ public Drive (TransmissionMecanum transmissionMecanum,
         ImageProcessor imageProcessor)
 {
     this.transmissionMecanum = transmissionMecanum;
+    // We called the mecanum constructor, so set the drive class to use mecanum
     this.transmissionType = TransmissionType.MECANUM;
     this.imageProcessor = imageProcessor;
 }
@@ -92,18 +103,15 @@ public Drive (TransmissionMecanum transmissionMecanum,
         Encoder leftFrontEncoder, Encoder leftRearEncoder,
         UltraSonic rightUlt)
 {
+    // set up the transmission and vision processor objects
     this(transmissionMecanum, imageProcessor);
+    // Set up the encoders.
     this.initEncoders(leftFrontEncoder, rightFrontEncoder,
             leftRearEncoder, rightRearEncoder);
-
-    this.rightUlt = rightUlt;
+    // Save the ultrasonic object
+    this.ultrasonic = rightUlt;
+    // We have the ultrasonic, so tell the class that.
     isUsingUltrasonics = true;
-    // this.leftFrontEncoder = leftFrontEncoder; // TODO Take out
-    // this.rightFrontEncoder = rightFrontEncoder;
-    // this.leftRearEncoder = leftRearEncoder;
-    // this.rightRearEncoder = rightRearEncoder;
-
-
 }
 
 /**
@@ -121,6 +129,7 @@ public Drive (TransmissionFourWheel transmissionFourWheel,
         ImageProcessor imageProcessor)
 {
     this.transmissionFourWheel = transmissionFourWheel;
+    // We're calling the four wheel version, so tell the class.
     this.transmissionType = TransmissionType.TANK;
     this.imageProcessor = imageProcessor;
 }
@@ -156,11 +165,14 @@ public Drive (TransmissionFourWheel transmissionFourWheel,
         Encoder leftRearEncoder, Encoder rightRearEncoder,
         UltraSonic rightUlt)
 {
+    // Init the four wheel transmission and the image processor.
     this(transmissionFourWheel, imageProcessor);
+    // Set up the encoders
     this.initEncoders(leftFrontEncoder, rightFrontEncoder,
             leftRearEncoder, rightRearEncoder);
-    this.rightUlt = rightUlt;
-
+    // Set up the ultrasonic
+    this.ultrasonic = rightUlt;
+    // tell the class we're using the ultrasonics.
     isUsingUltrasonics = true;
 }
 
@@ -182,37 +194,25 @@ public void initEncoders (Encoder _leftFrontEncoder,
         Encoder _rightFrontEncoder, Encoder _leftRearEncoder,
         Encoder _rightRearEncoder)
 {
+    // tell the class we have the encoders ready to go!
     isUsingEncoders = true;
-
+    // Actually set up the local encoder objects
     this.leftFrontEncoder = _leftFrontEncoder;
     this.rightFrontEncoder = _rightFrontEncoder;
     this.leftRearEncoder = _leftRearEncoder;
     this.rightRearEncoder = _rightRearEncoder;
-
+    // Set the encoder distance per pulse to a default value so we have it.
+    // TODO call with correct value in robot init, possibly remove here
     this.setEncoderDistancePerPulse(DEFAULT_DISTANCE_PER_PULSE);
 }
-
-// public double encoderRate (Encoder _leftFrontEncoder,
-// Encoder _rightFrontEncoder, Encoder _leftRearEncoder,
-// Encoder _rightRearEncoder)
-// {
-//
-// return leftFrontRate = this.leftFrontEncoder.getRate();
-// return rightFrontRate = this.rightFrontEncoder.getRate();
-// return leftRearRate = this.leftRearEncoder.getRate();
-// return rightRearRate = this.rightRearEncoder.getRate();
-//
-// }
-//
-// private double leftFrontRate = 0.0;
-// private double rightFrontRate = 0.0;
-// private double leftRearRate = 0.0;
-// private double rightRearRate = 0.0;
 
 /**
  * Gets the averaged distance out of the four encoders
  * 
- * @return averaged distance after driving forwards
+ * Takes the absolute value of the encoder values, so it's really the average of
+ * the absolute values, and will always be positive.
+ * 
+ * @return averaged current distance of the encoders
  */
 public double getAveragedEncoderValues ()
 {
@@ -235,74 +235,110 @@ public double getAveragedEncoderValues ()
  */
 public boolean driveInches (double inches, double speed)
 {
-
+    /*
+     * If it's our first time running the method, reset everything and tell it
+     * not to run this block again.
+     */
     if (firstTimeDriveInches)
         {
         this.resetEncoders();
         firstTimeDriveInches = false;
         }
 
+    // If we've traveled beyond our target value.
     if (Math.abs(this.getAveragedEncoderValues()) >= Math.abs(inches))
         {
+        // Stop
         this.drive(0.0, 0.0);
+        // Prepare for next run
         firstTimeDriveInches = true;
+        // Tell the caller we're done
         return true;
         }
+    // Drive forward.
     this.drive(speed, 0.0);
-
+    // tell the caller we're not done.
     return false;
 }
 
 private boolean firstTimeDriveInches = true;
-
 
 /**
  * Method takes deltas of each side, and if they aren't equal, compensate by
  * making the other side go faster
  * 
  * @param inches
- *            How far we want to go
+ *            How far we want to go, in inches
  * @param speed
  *            How fast we want to go
- * @return Whether or not we have finished driving yet
+ * @return True if we've reached our target distance, false otherwise.
  * @author Becky Button
  * 
  */
-public boolean driveStraightInches (double inches, double speed)
+public boolean driveStraightInches (final double inches,
+        final double speed)
 {
+    // If it's the first time we're running
     if (firstTimeDriveInches == true)
         {
+        // Reset the encoders (no duh)
         this.resetEncoders();
+        // Tell the method not to run again
         firstTimeDriveInches = false;
         }
-
+    // If we've gone beyond our target distance.
     if (this.getAveragedEncoderValues() >= inches)
         {
-        System.out.println("We are finished driving straight");
+        // if we want debug info out.
+        if (this.getDebugStatus() == true)
+            {
+            // Tell the programmer we're done
+            System.out.println("We are finished driving straight");
+            }
+        // Stop
         this.driveNoDeadband(0.0, 0.0);
+        // Prepare for setup again
         this.firstTimeDriveInches = true;
+        // Tell the caller we're done.
         return true;
         }
-    System.out.println(
-            "Average Encoder Values"
-                    + this.getAveragedEncoderValues());
+    // Calculate the average value of the left and right sides of the drive
+    // train.
     double averageLeft = (this.getLeftFrontEncoderDistance()
             + this.getLeftRearEncoderDistance()) / 2;
     double averageRight = (this.getRightFrontEncoderDistance()
             + this.getRightRearEncoderDistance()) / 2;
-    System.out.println("Average Left: " + averageLeft);
-    System.out.println("Average Right: " + averageRight);
-    System.out.println("we correcting");
+    // If we're printing debug info
+    if (this.getDebugStatus() == true)
+        {
+        System.out.println(
+                "Average Encoder Values"
+                        + this.getAveragedEncoderValues());
+        System.out.println("Average Left: " + averageLeft);
+        System.out.println("Average Right: " + averageRight);
+        System.out.println("we correcting");
+        }
+    // If we're within our error range
     if (Math.abs(averageRight - averageLeft) <= this
             .getEncoderSlack())
+        {
+        // drive straight
         this.driveNoDeadband(speed, 0);
-    else if (averageLeft > averageRight)//
+        }
+    // if we're outside our error range and the left is ahead of the right.
+    else if (averageLeft > averageRight)// TODO this is wrong, fix.
+        {
+        // correct to the right (TODO I think this is also wrong)
         this.driveNoDeadband(speed, -this.getDriveCorrection());
-    else if (averageLeft < averageRight)//
+        }
+    // if we're outside our error range and the right is ahead of the left.
+    else if (averageLeft < averageRight)
+        {
+        // correct to the left (TODO I think this is also wrong)
         this.driveNoDeadband(speed, this.getDriveCorrection());
-
+        }
+    // Tell the caller we're not done.
     return false;
-
 }
 
 
@@ -323,18 +359,24 @@ public boolean driveStraightInches (double inches, double speed)
  *            in this range.
  * @return Whether or not we are aligned to the center yet.
  */
-public AlignReturnType alignToGear (double relativeCenter,
-        double movementSpeed,
-        double deadband)
+public AlignReturnType alignToGear (final double relativeCenter,
+        final double movementSpeed,
+        final double deadband)
 {
-    if (!isTurning)
+    if (isTurning == false)
         {
+        // Process the an image from the camera so we know where we are.
         this.imageProcessor.processImage();
+        // If we don't have two blobs...
         if (this.imageProcessor.getNthSizeBlob(1) == null)
             {
+            // Stop
             this.drive(0.0, 0.0);
+            // Tell the caller we lost at least one of our blobs.
             return AlignReturnType.NO_BLOBS;
             }
+        // Find the distance from the center of the image of a combination of
+        // the blobs.
         double distanceToCenter = imageProcessor
                 .getPositionOfRobotToGear(
                         imageProcessor
@@ -342,22 +384,25 @@ public AlignReturnType alignToGear (double relativeCenter,
                         imageProcessor
                                 .getNthSizeBlob(1),
                         relativeCenter);
-
+        // If the distance to center is the default value, we've lost our blobs.
         if (distanceToCenter == Double.MAX_VALUE)
             {
+            // Stop
             this.drive(0.0, 0.0);
+            // Tell the caller we don't blobs
             return AlignReturnType.NO_BLOBS;
             }
+
+        // If we're were we want to be
         if (Math.abs(distanceToCenter) <= deadband)
             {
+            // Stop
             this.drive(0.0, 0.0);
+            // Tell the caller we're aligned
             return AlignReturnType.ALIGNED;
             }
         }
-    // else if (distanceToCenter > 0)
-    // this.drive(0, movementSpeed);
-    // else if (distanceToCenter < 0)
-    // this.drive(0.0, -movementSpeed);
+    // If we've turned to the goal, we're done, set up the next call as such.
     this.isTurning = this
             .turnDegrees(-Math.toDegrees(this.imageProcessor
                     .getYawAngleToTarget(this.imageProcessor
@@ -366,17 +411,12 @@ public AlignReturnType alignToGear (double relativeCenter,
                             .getYawAngleToTarget(this.imageProcessor
                                     .getNthSizeBlob(1)))
                     / 2.0);
-
-
-
+    // We're not aligned, tell the caller as such.
     return AlignReturnType.MISALIGNED;
 }
 
 private boolean isTurning = false;
 
-
-
-// TODO we need to test this!!
 /**
  * Aligns to the gear peg WHILE driving towards it. If the transmission type
  * is Mecanum, it will STRAFE while moving forwards. If it is tank drive
@@ -394,23 +434,23 @@ private boolean isTurning = false;
  *            coordinates)
  * @param distanceToTarget
  *            What we want the distance to the wall from the bumper
- *            to be when we stop aligning
+ *            to be when we stop aligning, in inches
  * @return Whether or not we are aligned, close enough, misaligned, or see no
  *         blobs.
  */
-// Alex should comment his code. This isn't mine
 public AlignReturnType strafeToGear (double driveSpeed,
         double alignVar, double deadband, double relativeCenter,
         int distanceToTarget)
 {
-
+    // If this is our first call.
     if (this.firstStrafe)
         {
         this.timer.reset();
         this.timer.start();
         this.firstStrafe = false;
         }
-
+    // Keep this here, we're currently purging the US in auto, but if we want to
+    // do it automatically, uncomment this
     /*
      * if (this.purgingUltrasonic)
      * {
@@ -427,7 +467,7 @@ public AlignReturnType strafeToGear (double driveSpeed,
      * }
      * }
      */
-
+    // Make sure we grab the latest image
     this.imageProcessor.processImage();
 
     // If we have no blobs, return so.
@@ -439,52 +479,91 @@ public AlignReturnType strafeToGear (double driveSpeed,
     // If we don't have any ultrasonics in the constructor, stop aligning.
     if (this.isUsingUltrasonics == false)
         {
+        // Stop
         this.driveNoDeadband(0.0, 0.0);
+        // Tell the caller that we're "aligned"
         return AlignReturnType.ALIGNED;
         }
+    // Calculate how far the blob is away from the target coordinate
     double distanceToCenter = this.imageProcessor
             .getPositionOfRobotToGear(
                     this.imageProcessor.getNthSizeBlob(0),
                     this.imageProcessor.getNthSizeBlob(1),
                     relativeCenter);
-    System.out.println("DistanceToCenter: " + distanceToCenter);
-    System.out.println("Distance from wall: "
-            + this.rightUlt.getDistanceFromNearestBumper());
+    if (this.getDebugStatus() == true)
+        {
+        System.out.println("DistanceToCenter: " + distanceToCenter);
+        System.out.println("Distance from wall: "
+                + this.ultrasonic.getDistanceFromNearestBumper());
+        }
+    // If the distance is the default value, we don't have any blobs.
     if (distanceToCenter == Double.MAX_VALUE)
         {
+        // Stop
         this.driveNoDeadband(0.0, 0.0);
+        // We don't have any blobs, tell the Caller.
         return AlignReturnType.NO_BLOBS;
         }
-
-    if (this.rightUlt
+    // If we're close enough.
+    if (this.ultrasonic
             .getDistanceFromNearestBumper() <= distanceToTarget)
         {
-        System.out.println("distance from nearest bumper: "
-                + this.rightUlt.getDistanceFromNearestBumper());
-        System.out.println("distance to target: " + distanceToTarget);
+        // If we want debug info...
+        if (this.getDebugStatus() == true)
+            {
+            // Tell how far away the bumper is from the wall.
+            System.out.println("distance from nearest bumper: "
+                    + this.ultrasonic.getDistanceFromNearestBumper());
+            // Tell how far away we wanted to be from the wall.
+            System.out
+                    .println("distance to target: " + distanceToTarget);
+            }
+        // Set up the US purge for next call
         this.purgingUltrasonic = true;
+        // Set up first call setup for next call.
         this.firstStrafe = true;
+        // Stop
         this.driveNoDeadband(0.0, 0.0);
+        // Tell the caller we're close enough to the wall to stop.
         return AlignReturnType.CLOSE_ENOUGH;
         }
+    // If the blob is within our target area, drive forward and tell the caller
+    // we're aligned.
     if (Math.abs(distanceToCenter) < deadband)
         {
         this.driveNoDeadband(driveSpeed, 0);
         return AlignReturnType.ALIGNED;
         }
-    System.out.println("distanceToCenter: " + distanceToCenter);
-    System.out.println("relative center: " + relativeCenter);
+    if (this.getDebugStatus() == true)
+        {
+        // Tell the programmer where the blob is and where we want it.
+        System.out.println("distanceToCenter: " + distanceToCenter);
+        System.out.println("relative center: " + relativeCenter);
+        }
+    // If the blob is to the left of our target
     if (distanceToCenter < 0)
         {
-        System.out.println("trying to adjust left");
+        if (this.getDebugStatus() == true)
+            {
+            // Tell the programmer we're going left
+            System.out.println("trying to adjust left");
+            }
+        // Drive towards the left.
         // TODO Magic Numbers
-        this.driveNoDeadband(driveSpeed + .1, -alignVar);
+        this.driveNoDeadband(driveSpeed + .3, -alignVar);// TODO nasty hack
         }
+    // If the blob is to the right of our target position
     else if (distanceToCenter > 0)
         {
-        System.out.println("trying to adjust right");
-        this.driveNoDeadband(driveSpeed + .1, alignVar);
+        if (this.getDebugStatus() == true)
+            {
+            // Tell the programmer we're driving towards the right
+            System.out.println("trying to adjust right");
+            }
+        // Drive towards the right
+        this.driveNoDeadband(driveSpeed + .3, alignVar);
         }
+    // Tell the caller we're not yet aligned.
     return AlignReturnType.MISALIGNED;
 }
 
@@ -494,7 +573,7 @@ private boolean firstStrafe = true;
 
 
 /**
- * Tells us how any aligning method returned.
+ * Tells us the current/quit status for any of our align methods.
  * 
  * @author Ryan McGee
  *
@@ -522,15 +601,8 @@ public static enum AlignReturnType
      * before starting
      */
     WAITING
-
-
     }
 
-/**
- * Positive number will make robot strafe right
- * 
- * @param inches
- */
 /**
  * Drives WITH rotation. If we are using tank drive, it only turns based
  * on correction.
@@ -547,6 +619,11 @@ public void drive (double speed, double correction, double rotation)
             this.transmissionMecanum.drive(speed, correction, rotation);
             break;
         case TANK:
+            /*
+             * Drive without correction because that doesn't take into account
+             * any joystick reversals or deadbands that screw with us
+             * autonomously driving.
+             */
             this.transmissionFourWheel.driveWithoutCorrection(
                     speed + correction, speed - correction);
         default:
@@ -561,7 +638,10 @@ public void drive (double speed, double correction, double rotation)
  *            how fast we drive and which direction (+forwards, -backwards)
  * @param correction
  *            how fast we correct, and which direction (+turn right, -turn left)
+ * @deprecated on 3/1/2017 by Alex Kneipp
+ *             Use {@link #drive(double,double,double)} instead
  */
+@Deprecated
 public void drive (double speed, double correction)
 {
     switch (this.transmissionType)
@@ -570,6 +650,11 @@ public void drive (double speed, double correction)
             this.transmissionMecanum.drive(speed, correction, 0.0);
             break;
         case TANK:
+            /*
+             * Drive without correction because that doesn't take into account
+             * any joystick reversals or deadbands that screw with us
+             * autonomously driving.
+             */
             this.transmissionFourWheel.driveWithoutCorrection(
                     speed + correction, speed - correction);
         default:
@@ -577,7 +662,17 @@ public void drive (double speed, double correction)
         }
 }
 
-// TODO comment
+/**
+ * Drives the robot without taking into account any deadbands
+ * 
+ * @param speed
+ *            The speed at which we drive.
+ * @param correction
+ *            Either the difference between the drive train halves in teleop, or
+ *            the angle to add to the mecanum driving (strafes at that angle)
+ * @param rotation
+ *            The speed at which we turn, only used in mecanum
+ */
 public void driveNoDeadband (double speed, double correction,
         double rotation)
 {
@@ -595,6 +690,18 @@ public void driveNoDeadband (double speed, double correction,
         }
 }
 
+/**
+ * Drives the robot without taking into account any deadbands
+ * 
+ * @param speed
+ *            The speed at which we drive.
+ * @param correction
+ *            Either the difference between the drive train halves in teleop, or
+ *            the angle to add to the mecanum driving (strafes at that angle)
+ * @deprecated on 3/1/2017 by Alex Kneipp
+ *             Use {@link #driveNoDeadband(double,double,double)} instead
+ */
+@Deprecated
 public void driveNoDeadband (double speed, double correction)
 {
     switch (this.transmissionType)
@@ -628,6 +735,7 @@ public void driveNoDeadband (double speed, double correction)
 public boolean accelerate (double targetSpeed,
         double timeInWhichToAccelerate)
 {
+    // First time setup
     if (firstTimeAccelerateRun)
         {
         this.timer.stop();
@@ -635,26 +743,35 @@ public boolean accelerate (double targetSpeed,
         this.timer.start();
         firstTimeAccelerateRun = false;
         }
+    /*
+     * Drive without deadband, speeding up throughout the entire period provided
+     * by the argument timeInWhichToAccelerate.
+     * Multiplies the target speed by the ratio of (time passed/total
+     * acceleration period), which continuously increases as the time we've
+     * spent accelerating increases, leading to a continuous in speed from 0 to
+     * target speed
+     */
     this.driveNoDeadband(
             Math.max(targetSpeed
                     * (this.timer.get() / timeInWhichToAccelerate),
-                    Max),
+                    ACCELERATE_MINIMUM),
             0, 0);
+    // If we've accelerated for the whole time
     if (this.timer.get() > timeInWhichToAccelerate)
         {
+        // set up for first run and tell the caller we're done
         firstTimeAccelerateRun = true;
         return true;
         }
+    // Tell the caller we're still accelerating.
     return false;
 }
 
 private boolean firstTimeAccelerateRun = true;
 
-private double savedDeadband = 0.0;
-
 /**
- * @return the distance the front left encoder has driven based on the
- *         distance per pulse set earlier.
+ * @return the distance the front left encoder has driven since the last reset
+ *         based on the distance per pulse set earlier.
  */
 public double getLeftFrontEncoderDistance ()
 {
@@ -662,8 +779,8 @@ public double getLeftFrontEncoderDistance ()
 }
 
 /**
- * @return the distance the front right encoder has driven based on the
- *         distance per pulse set earlier.
+ * @return the distance the front right encoder has driven since its last reset
+ *         based on the distance per pulse set earlier.
  */
 public double getRightFrontEncoderDistance ()
 {
@@ -671,8 +788,8 @@ public double getRightFrontEncoderDistance ()
 }
 
 /**
- * @return the distance the back left encoder has driven based on the
- *         distance per pulse set earlier.
+ * @return the distance the back left encoder has driven since its last reset
+ *         based on the distance per pulse set earlier.
  */
 public double getLeftRearEncoderDistance ()
 {
@@ -680,8 +797,8 @@ public double getLeftRearEncoderDistance ()
 }
 
 /**
- * @return the distance the back rear encoder has driven based on the
- *         distance per pulse set earlier.
+ * @return the distance the back rear encoder has driven since its last reset
+ *         based on the distance per pulse set earlier.
  */
 public double getRightRearEncoderDistance ()
 {
@@ -706,7 +823,10 @@ public void setEncoderDistancePerPulse (double value)
  * method reads distance per pulse
  * 
  * @param encoder
- * @return Distance per pulse
+ *            The encoder to pull the distance per pulse off of.
+ * @return
+ *         The previously set distance per pulse of the encoder
+ * 
  */
 public double getEncoderDistancePulse (Encoder encoder)
 {
@@ -732,9 +852,12 @@ public void resetEncoders ()
  * @param speed
  *            how fast we should brake. Negative if we want to brake after going
  *            forwards
- * 
  * @return true only if we have finished braking, false otherwise
+ * @deprecated by Alex Kneipp on 3/1/2017
+ *             use {@link #timeBreak(double,double)} or, preferably
+ *             {@link #brakeToZero(double)} instead.
  */
+@Deprecated
 public boolean brake (int iterations, double speed)
 {
     if (brakeIterations < iterations)
@@ -746,44 +869,78 @@ public boolean brake (int iterations, double speed)
     this.drive(0.0, 0.0);
     brakeIterations = 0;
     return true;
-
 }
 
 private int brakeIterations = 0;
 
 /**
- * brakes until we have stopped, then sets motors to zero
- *
+ * brakes until the time has ellapsed, then sets motors to zero
  * 
  * @param speed
  *            how fast we should brake, negate for forward
  * @return true if we have stopped completely
  */
-public boolean timeBrake (double speed, double time)// COMMENT THIS! | I got chu
-                                                    // fam.
+public boolean timeBrake (double speed, double time)
 {
     double alteredSpeed = Math.abs(speed);
 
     System.out.println("brake timer:" + movementTimer.get());
-    if (firstTime)
+    if (firstTimeTimeBrake)
         {
         // For each speed controller, if they're going backwards (is less than
         // 0), tell them to go forwards, otherwise, tell them to go backwards
         // when we do the actual breaking.
-        this.motorSigns[0] = (this.transmissionMecanum.leftSpeedController
-                .get() < 0) ? 1 : -1;
-        this.motorSigns[1] = (this.transmissionMecanum.leftRearSpeedController
-                .get() < 0) ? 1 : -1;
-        this.motorSigns[2] = (this.transmissionMecanum.rightSpeedController
-                .get() < 0) ? 1 : -1;
-        this.motorSigns[3] = (this.transmissionMecanum.rightRearSpeedController
-                .get() < 0) ? 1 : -1;
+
+        // Left Front speed controller sign
+        if (this.transmissionMecanum.leftSpeedController
+                .get() < 0)
+            {
+            this.motorSigns[0] = 1;
+            }
+        else
+            {
+            this.motorSigns[0] = -1;
+            }
+
+        // Left Rear speed controller sign
+        if (this.transmissionMecanum.leftRearSpeedController
+                .get() < 0)
+            {
+            this.motorSigns[1] = 1;
+            }
+        else
+            {
+            this.motorSigns[1] = -1;
+            }
+
+        // Right Front Speed Controller sign
+        if (this.transmissionMecanum.rightSpeedController
+                .get() < 0)
+            {
+            this.motorSigns[2] = 1;
+            }
+        else
+            {
+            this.motorSigns[2] = -1;
+            }
+
+        // Right Rear Speed Controller Sign
+        if (this.transmissionMecanum.rightRearSpeedController
+                .get() < 0)
+            {
+            this.motorSigns[3] = 1;
+            }
+        else
+            {
+            this.motorSigns[3] = -1;
+            }
+
         // Setup the timer
         movementTimer.stop();
         movementTimer.reset();
         movementTimer.start();
         // Don't set up again this run
-        firstTime = false;
+        firstTimeTimeBrake = false;
         }
     // if We're done breaking
     if (movementTimer.get() >= time)
@@ -795,7 +952,7 @@ public boolean timeBrake (double speed, double time)// COMMENT THIS! | I got chu
         // stop the timer
         movementTimer.stop();
         // be ready to set up again
-        firstTime = true;
+        firstTimeTimeBrake = true;
         // Tell the caller we're done
         return true;
         }
@@ -829,11 +986,136 @@ public boolean timeBrake (double speed, double time)// COMMENT THIS! | I got chu
 private int[] motorSigns =
     {1, 1, 1, 1};
 
-private boolean firstTime = true;
+private boolean firstTimeTimeBrake = true;
 
 // public double MAX_TIME = .1;// TODO final?
 
 Timer movementTimer = new Timer();
+
+/**
+ * Brakes based on the encoders, and whether or not they are reading within the
+ * deadband.
+ * 
+ * @author Ryan McGee
+ * 
+ * @param voltage
+ *            How fast we want to stop. Based on how fast we are going now.
+ * @return Whether or not we are finished braking.
+ */
+public boolean brakeToZero (double voltage)
+{
+    // First time setup
+    if (firstBrakeToZero)
+        {
+        this.resetEncoders();
+        firstBrakeToZero = false;
+        }
+    // If all the wheels are stopped
+    if (this.brakeEachWheel[0] == false
+            && this.brakeEachWheel[1] == false
+            && this.brakeEachWheel[2] == false
+            && this.brakeEachWheel[3] == false)
+        {
+        // setup for next call
+        this.firstBrakeToZero = true;
+        this.brakeEachWheel = new boolean[]
+            {true, true, true, true};
+        // tell the caller we're done.
+        return true;
+        }
+    /*
+     * FOR ALL OF THIS NONSENSE BELOW:
+     * we check if the change in encoder distances FOR EACH MOTOR
+     * is less than the deadband. FOR EACH MOTOR if it is bigger than the
+     * deadband, it runs the motor the reverse of the sign of the delta,
+     * at the absolute value of the voltage input.
+     */
+    if (Math.abs(this.getLeftFrontEncoderDistance()
+            - this.lastBrakeValues[0]) < this.BRAKE_DEADBAND)
+        this.brakeEachWheel[0] = false;
+
+    if (Math.abs(this.getLeftRearEncoderDistance()
+            - this.lastBrakeValues[1]) < this.BRAKE_DEADBAND)
+        this.brakeEachWheel[1] = false;
+
+    if (Math.abs(this.getRightFrontEncoderDistance()
+            - this.lastBrakeValues[2]) < this.BRAKE_DEADBAND)
+        this.brakeEachWheel[2] = false;
+
+    if (Math.abs(this.getRightRearEncoderDistance()
+            - this.lastBrakeValues[3]) < this.BRAKE_DEADBAND)
+        this.brakeEachWheel[3] = false;
+
+    // Braking code
+    if (this.brakeEachWheel[0])
+
+        // Left Front brake
+        if (this.brakeEachWheel[0] && this.getLeftFrontEncoderDistance()
+                - this.lastBrakeValues[0] < 0)
+        {
+        this.transmissionMecanum.driveLeftMotor(
+                Math.abs(voltage));
+        }
+        else
+        {
+        this.transmissionMecanum.driveLeftMotor(
+                Math.abs(-voltage));
+        }
+
+    // Left Rear brake
+    if (this.brakeEachWheel[1] && this.getLeftRearEncoderDistance()
+            - this.lastBrakeValues[1] < 0)
+        {
+        this.transmissionMecanum.driveLeftRearMotor(
+                Math.abs(voltage));
+        }
+    else
+        {
+        this.transmissionMecanum.driveLeftRearMotor(
+                Math.abs(-voltage));
+        }
+
+    // Right Front brake
+    if (this.brakeEachWheel[2] && this.getRightFrontEncoderDistance()
+            - this.lastBrakeValues[2] < 0)
+        {
+        this.transmissionMecanum.driveRightMotor(Math.abs(voltage));
+        }
+    else
+        {
+        this.transmissionMecanum.driveRightMotor(Math.abs(-voltage));
+        }
+
+    // Right Rear brake
+    if (this.brakeEachWheel[3] && this.getRightRearEncoderDistance()
+            - this.lastBrakeValues[3] < 0)
+        {
+        this.transmissionMecanum
+                .driveRightRearMotor(Math.abs(voltage));
+        }
+    else
+        {
+        this.transmissionMecanum
+                .driveRightRearMotor(Math.abs(-voltage));
+        }
+    // Save the current values for next run
+    this.lastBrakeValues[0] = this.getLeftFrontEncoderDistance();
+    this.lastBrakeValues[1] = this.getLeftRearEncoderDistance();
+    this.lastBrakeValues[2] = this.getRightFrontEncoderDistance();
+    this.lastBrakeValues[3] = this.getRightRearEncoderDistance();
+    // Tell the caller we're not yet done braking
+    return false;
+}
+
+private boolean firstBrakeToZero = true;
+
+private double[] lastBrakeValues =
+    {0, 0, 0, 0};
+
+private boolean[] brakeEachWheel =
+    {true, true, true, true};
+
+private boolean checkBrakeAgain = false;
 
 
 /**
@@ -859,12 +1141,19 @@ public boolean isStopped (Encoder leftEncoder, Encoder rightEncoder)
             && Math.abs(rightEncoder.getDistance())
                     - this.brakePreviousDistanceR == 0)
         {
-        System.out.println(
-                "Left Delta: " + (Math.abs(leftEncoder.getDistance())
-                        - this.brakePreviousDistanceL));
-        System.out.println(
-                "Right Delta: " + (Math.abs(rightEncoder.getDistance())
-                        - this.brakePreviousDistanceR));
+        if (this.getDebugStatus() == true)
+            {
+            // Tell the programmer the change in each encoder side since our
+            // last run of this method
+            System.out.println(
+                    "Left Delta: "
+                            + (Math.abs(leftEncoder.getDistance())
+                                    - this.brakePreviousDistanceL));
+            System.out.println(
+                    "Right Delta: "
+                            + (Math.abs(rightEncoder.getDistance())
+                                    - this.brakePreviousDistanceR));
+            }
         // then set the brakePreviousDistance to 0, and return true
         this.brakePreviousDistanceL = 0;
         this.brakePreviousDistanceR = 0;
@@ -878,6 +1167,17 @@ public boolean isStopped (Encoder leftEncoder, Encoder rightEncoder)
     return false;
 }
 
+/**
+ * Checks to see if either side of encoders has changed direction since the last
+ * call.
+ * 
+ * @param leftEncoder
+ *            The left encoder to check for direction.
+ * @param rightEncoder
+ *            The right encoder to check for direction.
+ * @return
+ *         True if either drive train has changed direction since the last call.
+ */
 public boolean directionChanged (Encoder leftEncoder,
         Encoder rightEncoder)
 {
@@ -893,21 +1193,26 @@ public boolean directionChanged (Encoder leftEncoder,
         this.brakePreviousDistanceR = 0;
         return true;
         }
-    else
-        {
-        // set brakePreviousDistance to the encoder value
-        brakePreviousDistanceL = Math.abs(leftEncoder.getDistance());
-        brakePreviousDistanceR = Math.abs(rightEncoder.getDistance());
-        return false;
-        }
+    // set brakePreviousDistance to the encoder value
+    brakePreviousDistanceL = Math.abs(leftEncoder.getDistance());
+    brakePreviousDistanceR = Math.abs(rightEncoder.getDistance());
+    return false;
 }
 
+// The last distance we checked of the left encoders in any method that uses
+// brake.
 private double brakePreviousDistanceL = 0.0;
 
+// The second to last distance we checked of the left encoders in any method
+// that uses brake.
 private double brakePreviousPreviousDistanceL = 0.0;
 
+// The last distance we checked of the right encoders in any method that uses
+// brake.
 private double brakePreviousDistanceR = 0.0;
 
+// The second to last distance we checked of the right encoders in any method
+// that uses brake.
 private double brakePreviousPreviousDistanceR = 0.0;
 
 // distance we've moved in two reads where we consider ourselves braked in
@@ -929,6 +1234,7 @@ private final double AUTO_ENCODER_THRESHOLD_INCHES = 0.25;
  */
 public boolean setJoystickDeadbandRange (double percentage)
 {
+    // Make sure we only set the joystick values between zero and 1
     if ((percentage >= 0) && (percentage <= 1.0))
         {
         this.deadbandPercentageZone = percentage;
@@ -938,107 +1244,6 @@ public boolean setJoystickDeadbandRange (double percentage)
 } // setJoystickDeadbandRange
 
 private double deadbandPercentageZone = 0.0;
-/// **
-// *
-// * @param lBrakeSpeed
-// * @param rBrakeSpeed
-// * @return have we finished true = yes
-// */
-// public boolean brake (final double lBrakeSpeed,
-// final double rBrakeSpeed)
-// {
-// if (((Math.abs(
-// leftFrontEncoder.getDistance()) >= (this.prevBrakeDistanceLF
-// * this.encoderFactorUpperRange)
-// - this.ENCODER_THRESHOLD
-// && Math.abs(leftFrontEncoder
-// .getDistance()) <= (this.prevBrakeDistanceLF
-// * this.encoderFactorLowerRange)
-// + ENCODER_THRESHOLD)))
-// {
-// withinLeftFrontRange = true;
-// }
-// if (((Math.abs(
-// leftRearEncoder.getDistance()) >= (this.prevBrakeDistanceLR
-// * this.encoderFactorUpperRange)
-// - this.ENCODER_THRESHOLD
-// && Math.abs(leftRearEncoder
-// .getDistance()) <= (this.prevBrakeDistanceLR
-// * this.encoderFactorLowerRange)
-// + ENCODER_THRESHOLD)))
-// {
-// withinLeftRearRange = true;
-// }
-// if (((Math.abs(
-// rightFrontEncoder
-// .getDistance()) >= (this.prevBrakeDistanceRF
-// * this.encoderFactorUpperRange)
-// - this.ENCODER_THRESHOLD
-// && Math.abs(rightFrontEncoder
-// .getDistance()) <= (this.prevBrakeDistanceRF
-// * this.encoderFactorLowerRange)
-// + ENCODER_THRESHOLD)))
-// {
-// withinRightFrontRange = true;
-// }
-// if (((Math.abs(
-// rightRearEncoder.getDistance()) >= (this.prevBrakeDistanceRR
-// * this.encoderFactorUpperRange)
-// - this.ENCODER_THRESHOLD
-// && Math.abs(rightRearEncoder
-// .getDistance()) <= (this.prevBrakeDistanceRR
-// * this.encoderFactorLowerRange)
-// + ENCODER_THRESHOLD)))
-// {
-// withinRightRearRange = true;
-// }
-//
-//
-// if (transmissionType == TransmissionType.MECANUM)
-// {
-// this.transmissionMecanum.drive(lBrakeSpeed, 0, 0);
-// }
-// if (transmissionType == TransmissionType.TANK)
-// {
-// this.transmissionFourWheel.drive(rBrakeSpeed, lBrakeSpeed);
-// }
-//
-//
-// this.prevBrakeDistanceLF = leftFrontEncoder.getDistance();
-// this.prevBrakeDistanceLR = leftRearEncoder.getDistance();
-// this.prevBrakeDistanceRF = rightFrontEncoder.getDistance();
-// this.prevBrakeDistanceRR = rightRearEncoder.getDistance();
-//
-// if (withinRightRearRange && withinRightFrontRange
-// && withinLeftFrontRange && withinLeftRearRange)
-// {
-// this.transmissionFourWheel.drive(0, 0);
-// return true;
-// }
-//
-// return false;
-//
-// }
-//
-// private double prevBrakeDistanceRR = 0;
-// private double prevBrakeDistanceRF = 0;
-// private double prevBrakeDistanceLR = 0;
-// private double prevBrakeDistanceLF = 0;
-//
-//// private double prevPrevBrakeDistanceRR = 0;
-//// private double prevPrevBrakeDistanceRF = 0;
-//// private double prevPrevBrakeDistanceLR = 0;
-//// private double prevPrevBrakeDistanceLF = 0;
-//
-// private boolean withinRightFrontRange = false;
-// private boolean withinRightRearRange = false;
-// private boolean withinLeftFrontRange = false;
-// private boolean withinLeftRearRange = false;
-//
-// final private double encoderFactorUpperRange = .5;
-// final private double encoderFactorLowerRange = .3;
-//
-// private double ENCODER_THRESHOLD = .25;
 
 /**
  * Rotates the robot by degrees.
@@ -1052,21 +1257,24 @@ private double deadbandPercentageZone = 0.0;
  */
 public boolean turnDegrees (double degrees, double speed)
 {
-    if (firstAlign)
+    // first time setup
+    if (firstAlign == true)
         {
         this.resetEncoders();
         this.firstAlign = false;
         }
     // We do not know why, but the robot by default turns opposite what we want.
     double adjustedDegrees = -degrees;
-
-    if (!isUsingEncoders)
+    // If we don't have any encoders
+    if (isUsingEncoders == true)
         {
         this.firstAlign = true;
+        // Quit the method, lying and saying we've turned the correct distance
         return true;
         }
+    // Convert the degree parameter to radians for calculations
     double angleInRadians = Math.toRadians(Math.abs(degrees));
-
+    // Get the average distances on both sides of the robot
     double leftSideAverage = Math
             .abs(this.getLeftFrontEncoderDistance()
                     + this.getLeftRearEncoderDistance())
@@ -1082,6 +1290,7 @@ public boolean turnDegrees (double degrees, double speed)
             || leftSideAverage >= angleInRadians * turningCircleRadius)
         {
         this.firstAlign = true;
+        // Tell the caller we're done
         return true;
         }
 
@@ -1100,6 +1309,7 @@ public boolean turnDegrees (double degrees, double speed)
         else
             transmissionMecanum.drive(0.0, 0.0, speed);
         }
+    // we're not done
     return false;
 }
 
@@ -1165,26 +1375,62 @@ public void setTurningCircleRadius (double radius)
 
 private boolean firstAlign = true;
 
+/**
+ * Sets the amount of error we allow in the encoder checks
+ * 
+ * @param slack
+ *            The new slack value
+ */
 public void setEncoderSlack (double slack)
 {
     this.encoderSlack = slack;
 }
 
+/**
+ * @return
+ *         The amount of error we allow in checking the encoders
+ */
 public double getEncoderSlack ()
 {
     return this.encoderSlack;
 }
 
-public void setDriveCorrection (double correction)
+/**
+ * @param correction
+ */
+public void setDriveCorrection (double correction)// TODO KILL IT BEFORE IT LAYS
+                                                  // EGGS
 {
     this.correction = correction;
 }
 
+/**
+ * @return
+ */
 public double getDriveCorrection ()
 {
     return this.correction;
 }
 
+/**
+ * Set whether we want debug information from this class
+ * 
+ * @param debug
+ *            True if we want debug info, false otherwise
+ */
+public void setDebugStatus (boolean debug)
+{
+    this.debugStatus = debug;
+}
+
+/**
+ * @return
+ *         True if we want debug info, false otherwise.
+ */
+public boolean getDebugStatus ()
+{
+    return this.debugStatus;
+}
 
 /**
  * The type of transmission we are using. Is set in the constructor.
@@ -1209,13 +1455,13 @@ public static enum TransmissionType
 // =====================================================================
 private TransmissionType transmissionType = null;
 
+private final double BRAKE_DEADBAND = 0.01;
+
 /**
  * The value that the getDistance is multiplied by to get an accurate
  * distance.
  */
 private static final double DEFAULT_DISTANCE_PER_PULSE = .069;// 1.0 / 12.9375;
 
-private static final double Max = 0.3;
-
-
-}
+private static final double ACCELERATE_MINIMUM = 0.3;
+}// end Drive
