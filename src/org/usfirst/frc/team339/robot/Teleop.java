@@ -467,10 +467,10 @@ public static void printStatements ()
             + Hardware.gearLimitSwitch.isOn());
     // System.out.println("Backup or fire: " +
     // Hardware.backupOrFire.isOn());
-    // System.out.println("Enable Auto: " +
-    // Hardware.enableAutonomous.isOn());
-    // System.out.println(
-    // "Path Selector: " + Hardware.pathSelector.getPosition());
+    System.out.println("Enable Auto: " +
+            Hardware.enableAutonomous.isOn());
+    System.out.println(
+            "Path Selector: " + Hardware.pathSelector.getPosition());
 
     System.out.println("Right UltraSonic distance from bumper: "
             + Hardware.rightUS.getDistanceFromNearestBumper());
