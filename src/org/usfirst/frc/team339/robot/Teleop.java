@@ -145,8 +145,8 @@ public static void periodic ()
                 Robot.shooterD);
         }
 
-    // Hardware.shooterMotor
-    // .set(tempSetpoint);
+    Hardware.shooterMotor
+            .set(tempSetpoint);
 
     // previousFireButton = Hardware.leftDriver.getTrigger();
     //
@@ -206,7 +206,7 @@ public static void periodic ()
         }
     else
         {
-        Hardware.shooter.stopFlywheelMotor();
+        // Hardware.shooter.stopFlywheelMotor();
         }
 
     // END SHOOTER TESTING
@@ -278,11 +278,11 @@ public static void periodic ()
     // =================================================================
     if (Hardware.cameraServoSwitch.isOnCheckNow() == true)
         {
-        Hardware.cameraServo.setAngle(190);
+        Hardware.cameraServo.setAngle(HIGHER_CAMERASERVO_POSITION);
         }
     else
         {
-        Hardware.cameraServo.setAngle(0);
+        Hardware.cameraServo.setAngle(LOWER_CAMERASERVO_POSITION);
         }
 
     Hardware.axisCamera
@@ -465,12 +465,12 @@ public static void printStatements ()
     // ---------------------------------
     // System.out.println("Gear Limit Switch: "
     // + Hardware.gearLimitSwitch.isOn());
-    // System.out.println("Backup or fire: " +
-    // Hardware.backupOrFire.isOn());
-    // System.out.println("Enable Auto: " +
-    // Hardware.enableAutonomous.isOn());
-    // System.out.println(
-    // "Path Selector: " + Hardware.pathSelector.getPosition());
+    System.out.println("Backup or fire: " +
+            Hardware.backupOrFireOrHopper.isOn());
+    System.out.println("Enable Auto: " +
+            Hardware.enableAutonomous.isOn());
+    System.out.println(
+            "Path Selector: " + Hardware.pathSelector.getPosition());
 
     // System.out.println("Right UltraSonic distance from bumper: "
     // + Hardware.rightUS.getDistanceFromNearestBumper());
@@ -645,14 +645,14 @@ private final static double CAMERA_ALIGN_CENTER = .478;  // Relative coordinates
 // ==========================================
 // TUNEABLES
 // ==========================================
-private final static double LOWER_CAMERASERVO_POSITION = 65;
+private final static double LOWER_CAMERASERVO_POSITION = 190;
 
-private static boolean tunePIDLoop = false;
+private static boolean tunePIDLoop = true;
 // TODO
 // find
 // actual value
 
-private final static double HIGHER_CAMERASERVO_POSITION = 90;// TODO find
+private final static double HIGHER_CAMERASERVO_POSITION = 170;// TODO find
 // actual
 // actual value
 

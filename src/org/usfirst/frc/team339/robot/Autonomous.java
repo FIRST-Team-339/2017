@@ -232,12 +232,12 @@ private static Drive.AlignReturnType cameraState = Drive.AlignReturnType.NO_BLOB
  * If we are using Tank drive (for some strange reason) this should be changed
  * to a percentage that will be offset for each side of the robot.
  */
-private static final double ALIGN_CORRECT_VAR = 50;// 30
+private static final double ALIGN_CORRECT_VAR = 30;// 45
 
 /**
  * How fast we will be driving during all of auto, in percent.
  */
-private static final double DRIVE_SPEED = .3;
+private static final double DRIVE_SPEED = .35;
 
 /**
  * Determines what value we set the motors backwards to in order to brake, in
@@ -256,7 +256,7 @@ private static final double BRAKE_TIME = .2;
  * Change the pixel value, and the /getHorizontalResolution will change it to
  * relative coordinates.
  */
-private static final double ALIGN_DEADBAND = 10 // +/- pixels
+private static final double ALIGN_DEADBAND = 7 // +/- pixels
         / Hardware.axisCamera.getHorizontalResolution();
 
 /**
@@ -308,6 +308,7 @@ public static void init ()
     Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
     Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
 
+    Hardware.cameraServo.setAngle(190);
     // if running on kilroy XVIII use certain value and different for XVII
     // TODO WHY was this gone in git?
     if (Hardware.isRunningOnKilroyXVIII)

@@ -327,7 +327,7 @@ public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
         leftOperator, 5, false);
 
 public static MomentarySwitch cameraServoSwitch = new MomentarySwitch(
-        rightOperator, 10, false);
+        leftOperator, 10, false);
 
 public static MomentarySwitch setMotorsZero = new MomentarySwitch(
         leftDriver, 8, false);

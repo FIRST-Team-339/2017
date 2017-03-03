@@ -650,7 +650,7 @@ private final double MEDIUM_TURN_SPEED = .35;
 
 private final double SLOW_TURN_SPEED = .25;
 
-private final double TURN_TO_GOAL_RAW_DEADBAND = .05;
+private final double TURN_TO_GOAL_RAW_DEADBAND = .5;
 
 private final double ELEVATOR_SPEED = -.8;// TODO tune
 
