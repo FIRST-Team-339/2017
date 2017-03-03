@@ -243,9 +243,17 @@ public void drive (final double magnitude, final double direction,
         final double cosD = Math.cos(dirInRad);
         final double sinD = Math.sin(dirInRad);
 
-        // Calculate the speed to send to each motor.
+        // Calculates the speed to send to each motor.
         // uses sine for the \\ wheels (for clarification of this notation,
-        // Noah's javadoc); uses cosine for // wheels
+        // see Noah's javadoc above); uses cosine for // wheels, then scales
+        // them according to the magnitude
+        // Also add/ subtracts the rotation value so we can turn while
+        // driving in a direction
+        // Other notes: because of the 45 degrees added earlier and the
+        // nature of trig functions, going straight forward, even at a magnitude
+        // of 1, the motors be given about .707. A motor value of 1.0 is only
+        // theoretically achievable at a joystick angle of -135, -45, 45, and
+        // 135 (assuming a magnitude of 1.0)
         double leftFrontSpeed = (sinD * tempMagnitude) + tempRotation;
         double rightFrontSpeed = (cosD * tempMagnitude) - tempRotation;
         double leftRearSpeed = (cosD * tempMagnitude) + tempRotation;
