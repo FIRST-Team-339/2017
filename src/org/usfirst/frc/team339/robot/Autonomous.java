@@ -517,7 +517,7 @@ private static boolean placeCenterGearPath ()
                     getRealSpeed(DRIVE_SPEED),
                     ALIGN_CORRECT_VAR,
                     ALIGN_DEADBAND, ALIGN_ACCEPTED_CENTER,
-                    STOP_DISTANCE_TO_GEAR);
+                    STOP_DISTANCE_TO_GEAR, 1, .9);
 
             System.out.println("strafeToGear state: " + cameraState);
 
@@ -760,7 +760,7 @@ private static boolean rightSidePath ()
                 if (Hardware.autoDrive.strafeToGear(DRIVE_SPEED,
                         ALIGN_CORRECT_VAR, ALIGN_DEADBAND,
                         ALIGN_ACCEPTED_CENTER,
-                        STOP_DISTANCE_TO_GEAR) == AlignReturnType.CLOSE_ENOUGH)
+                        STOP_DISTANCE_TO_GEAR, 1, .9) == AlignReturnType.CLOSE_ENOUGH)
                     {
                     Hardware.autoDrive.drive(0.0, 0.0, 0.0);
                     currentState = MainState.WAIT_FOR_GEAR_EXODUS;
@@ -1028,7 +1028,7 @@ private static boolean leftSidePath ()
                 if (Hardware.autoDrive.strafeToGear(DRIVE_SPEED,
                         ALIGN_CORRECT_VAR, ALIGN_DEADBAND,
                         ALIGN_ACCEPTED_CENTER,
-                        STOP_DISTANCE_TO_GEAR) == AlignReturnType.CLOSE_ENOUGH)
+                        STOP_DISTANCE_TO_GEAR, 1, .9) == AlignReturnType.CLOSE_ENOUGH)
                     {
                     Hardware.autoDrive.drive(0.0, 0.0, 0.0);
                     currentState = MainState.WAIT_FOR_GEAR_EXODUS;

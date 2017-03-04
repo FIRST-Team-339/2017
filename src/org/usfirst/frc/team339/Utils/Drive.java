@@ -435,12 +435,17 @@ private boolean isTurning = false;
  * @param distanceToTarget
  *            What we want the distance to the wall from the bumper
  *            to be when we stop aligning, in inches
+ * @param lowerFilterRange
+ *            TODO
+ * @param upperFilterRange
+ *            TODO
  * @return Whether or not we are aligned, close enough, misaligned, or see no
  *         blobs.
  */
 public AlignReturnType strafeToGear (double driveSpeed,
         double alignVar, double deadband, double relativeCenter,
-        int distanceToTarget)
+        int distanceToTarget, double lowerFilterRange,
+        double upperFilterRange)
 {
     // If this is our first call.
     if (this.firstStrafe)
@@ -469,6 +474,9 @@ public AlignReturnType strafeToGear (double driveSpeed,
      */
     // Make sure we grab the latest image
     this.imageProcessor.processImage();
+
+    // this.imageProcessor.filterBlobsInYRange(lowerFilterRange,
+    // upperFilterRange);
 
     // If we have no blobs, return so.
     if (this.imageProcessor.getNthSizeBlob(1) == null)

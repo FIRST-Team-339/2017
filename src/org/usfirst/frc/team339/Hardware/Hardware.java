@@ -33,7 +33,6 @@ import org.usfirst.frc.team339.Vision.ImageProcessor;
 import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
-import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -272,11 +271,16 @@ public static KilroyCamera axisCamera = new KilroyCamera(true);// TODO change
 
 
 public static VisionScript visionScript = new VisionScript(
-        new HSLColorThresholdOperator(79, 210, 7, 214, 33, 255),// (76, 200, 71,
-                                                                // 255, 50,
-                                                                // 255),
-        new RemoveSmallObjectsOperator(1, true),
+        new HSLColorThresholdOperator(34, 117, 34, 181, 9, 160), /*
+                                                                  * 79, 210, 7,
+                                                                  * 214, 33,
+                                                                  * 255)
+                                                                  */// (76, 200,
+                                                                   // 71,
+        // new RemoveSmallObjectsOperator(1, true), // // 255, 50,255),
         new ConvexHullOperator(false));
+
+
 
 
 public static ImageProcessor imageProcessor = new ImageProcessor(

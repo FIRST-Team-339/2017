@@ -1,5 +1,6 @@
 package org.usfirst.frc.team339.Vision;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Vector;
 import com.ni.vision.NIVision;
@@ -262,6 +263,49 @@ public ParticleReport getNthSizeBlob (int n)
     else
         return null;
 }
+
+/**
+ * Filters out any blobs that are inside the range.
+ * 
+ * @param lowerBound
+ *            Lowest area we will want to filter out the blobs, in relative
+ *            coordinates
+ * @param upperBound
+ *            Highest area we will want to filter out the blobs, in relative
+ *            coordinates
+ */
+public void filterBlobsInYRange (double lowerBound, double upperBound)
+{
+    // Make sure the temporary list is cleared before continuing
+    tempBlobs.clear();
+    // If we've seen a blob
+    if (this.reports != null)
+        {
+        for (int i = 0; i < this.reports.length; i++)
+            {
+            // If the current blob is actually there. (We shouldn't have to do
+            // this, but we do.)
+            if (this.reports[i] != null)
+                {
+                // If we are not inside the range, add it back to the list in
+                // the same order.
+                if (((this.reports[i].center_mass_y
+                        / this.camera
+                                .getVerticalResolution()) > upperBound
+                        && (this.reports[i].center_mass_y / this.camera
+                                .getVerticalResolution()) < lowerBound) == false)
+                    {
+                    // Make sure we're adding to the right position in the array
+                    // tempBlobs.add(i,this.reports[i]);
+                    tempBlobs.add(this.reports[i]);
+                    }
+                }
+            }
+        this.reports = tempBlobs.toArray(this.reports);
+        }
+}
+
+ArrayList<ParticleReport> tempBlobs = new ArrayList<ParticleReport>();
 
 /**
  * Changes the camera which captures images for processing

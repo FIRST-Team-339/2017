@@ -366,10 +366,10 @@ public void robotInit ()
     // Preceed the USB camera setResolution() code
     // -------------------------------------
     CameraServer.getInstance().addAxisCamera("10.3.39.11");
-    Hardware.axisCamera.writeColorLevel(79);
-    Hardware.axisCamera.writeBrightness(1);
+    Hardware.axisCamera.writeColorLevel(19);
+    Hardware.axisCamera.writeBrightness(10);
     Hardware.axisCamera.writeResolution(Resolution.k320x240);
-    Hardware.axisCamera.writeWhiteBalance(WhiteBalance.kFixedOutdoor1);
+    Hardware.axisCamera.writeWhiteBalance(WhiteBalance.kFixedOutdoor2);
     // -------------------------------------
     // USB Camera initialization
     // -------------------------------------

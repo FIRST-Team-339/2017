@@ -422,13 +422,13 @@ public static void printStatements ()
     // Hardware.rightRearMotor.get());
     // System.out.println("Left Rear Motor Controller: " +
     // Hardware.leftRearMotor.get());
-    System.out.println("Flywheel thingy thing: "
-            + Hardware.shooter.calculateRPMToMakeGoal(9.25) * .5);
-    System.out.println("Flywheel thingy thing speed really: "
-            + Hardware.shooterMotor.get());
+    // System.out.println("Flywheel thingy thing: "
+    // + Hardware.shooter.calculateRPMToMakeGoal(9.25) * .5);
+    // System.out.println("Flywheel thingy thing speed really: "
+    // + Hardware.shooterMotor.get());
     // System.out.println(Hardware.backupOrFireOrHopper.isOn());
-    System.out
-            .println("Flywheel Motor: " + Hardware.shooterMotor.get());
+    // System.out
+    // .println("Flywheel Motor: " + Hardware.shooterMotor.get());
     //
     // System.out.println("Intake Motor: " + Hardware.intakeMotor.get());
     // if (Hardware.rightOperator.getRawButton(11)) {
@@ -465,12 +465,12 @@ public static void printStatements ()
     // ---------------------------------
     // System.out.println("Gear Limit Switch: "
     // + Hardware.gearLimitSwitch.isOn());
-    System.out.println("Backup or fire: " +
-            Hardware.backupOrFireOrHopper.isOn());
-    System.out.println("Enable Auto: " +
-            Hardware.enableAutonomous.isOn());
-    System.out.println(
-            "Path Selector: " + Hardware.pathSelector.getPosition());
+    // System.out.println("Backup or fire: " +
+    // Hardware.backupOrFireOrHopper.isOn());
+    // System.out.println("Enable Auto: " +
+    // Hardware.enableAutonomous.isOn());
+    // System.out.println(
+    // "Path Selector: " + Hardware.pathSelector.getPosition());
 
     // System.out.println("Right UltraSonic distance from bumper: "
     // + Hardware.rightUS.getDistanceFromNearestBumper());
@@ -486,20 +486,20 @@ public static void printStatements ()
 
     // System.out.println("Right Front Encoder: " +
     // Hardware.rightFrontEncoder.get());
-    System.out.println("Right Front Distance: " +
-            Hardware.autoDrive.getRightFrontEncoderDistance());
+    // System.out.println("Right Front Distance: " +
+    // Hardware.autoDrive.getRightFrontEncoderDistance());
     // System.out.println("Right Rear Encoder: " +
     // Hardware.rightRearEncoder.get());
-    System.out.println("Right Rear Encoder Distance: " +
-            Hardware.autoDrive.getRightRearEncoderDistance());
+    // System.out.println("Right Rear Encoder Distance: " +
+    // Hardware.autoDrive.getRightRearEncoderDistance());
     // System.out.println("Left Front Encoder: " +
     // Hardware.leftFrontEncoder.get());
-    System.out.println("Left Front Encoder Distance: " +
-            Hardware.autoDrive.getLeftFrontEncoderDistance());
+    // System.out.println("Left Front Encoder Distance: " +
+    // Hardware.autoDrive.getLeftFrontEncoderDistance());
     // System.out.println("Left Rear Encoder: " +
     // Hardware.leftRearEncoder.get());
-    System.out.println("Left Rear Encoder Distance: " +
-            Hardware.autoDrive.getLeftFrontEncoderDistance());
+    // System.out.println("Left Rear Encoder Distance: " +
+    // Hardware.autoDrive.getLeftFrontEncoderDistance());
     // Hardware.rightFrontEncoder.get());
     // System.out.println("Right Front Encoder Distance: " +
     // Hardware.autoDrive.getRightRearEncoderDistance());
@@ -541,7 +541,7 @@ public static void printStatements ()
     // =================================
 
     // GYRO
-    System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
+    // System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
 
     //
     // We don't want the print statements to flood everything and go ahhhhhhhh
@@ -567,9 +567,17 @@ public static void printStatements ()
     // ---------------------------------
     // System.out.println("Expected center: " + CAMERA_ALIGN_CENTER);
     //
-    // Hardware.imageProcessor.processImage();
-    // System.out.println("Number of blobs: " + Hardware.imageProcessor
-    // .getParticleAnalysisReports().length);
+    Hardware.imageProcessor.processImage();
+    Hardware.imageProcessor.filterBlobsInYRange(1, .9);
+    if (Hardware.imageProcessor.getLargestBlob() != null)
+        {
+        System.out.println("Center of Mass: " + Hardware.imageProcessor
+                .getLargestBlob().center_mass_y);
+        }
+    else
+        {
+        System.out.println("NO BLOBS!");
+        }
     // if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
     // System.out
     // .println("Actual center: " + ((Hardware.imageProcessor
