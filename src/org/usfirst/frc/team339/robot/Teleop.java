@@ -79,7 +79,8 @@ public static void init ()
     // gimbal motors
     Hardware.gimbalMotor
             .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-    Hardware.gimbalMotor.setEncPosition(0);
+    // Hardware.gimbalMotor.setEncPosition(0); //THIS WILL RESET AFTER AUTO
+    // (dont do that)
     // mecanum
     Hardware.mecanumDrive
             .setFirstGearPercentage(
@@ -194,8 +195,6 @@ public static void periodic ()
         Hardware.shooter.turnToGoalRaw();
         Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
         // System.out.println(
-
-        Hardware.shooter.loadBalls();
         // Hardware.shooterMotor.set(
         // Hardware.shooter.calculateRPMToMakeGoal(12.25) / 2.0);
         }
@@ -217,12 +216,12 @@ public static void periodic ()
         {
         if (Hardware.rightOperator.getX() > 0)
             {
-            Hardware.shooter.turnGimbalSlow(1);
+            Hardware.shooter.turnGimbalMedium(-1);
             }
         else
             {
             Hardware.shooter
-                    .turnGimbalSlow(-1);
+                    .turnGimbalMedium(1);
             }
         }
     else if (isTurningGimbal == false && isTurningToGoal == false)
@@ -567,17 +566,17 @@ public static void printStatements ()
     // ---------------------------------
     // System.out.println("Expected center: " + CAMERA_ALIGN_CENTER);
     //
-    Hardware.imageProcessor.processImage();
-    Hardware.imageProcessor.filterBlobsInYRange(1, .9);
-    if (Hardware.imageProcessor.getLargestBlob() != null)
-        {
-        System.out.println("Center of Mass: " + Hardware.imageProcessor
-                .getLargestBlob().center_mass_y);
-        }
-    else
-        {
-        System.out.println("NO BLOBS!");
-        }
+    // Hardware.imageProcessor.processImage();
+    // Hardware.imageProcessor.filterBlobsInYRange(1, .9);
+    // if (Hardware.imageProcessor.getLargestBlob() != null)
+    // {
+    // System.out.println("Center of Mass: " + Hardware.imageProcessor
+    // .getLargestBlob().center_mass_y);
+    // }
+    // else
+    // {
+    // System.out.println("NO BLOBS!");
+    // }
     // if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
     // System.out
     // .println("Actual center: " + ((Hardware.imageProcessor
@@ -652,12 +651,14 @@ private final static double CAMERA_ALIGN_CENTER = .478;  // Relative coordinates
 // ==========================================
 private final static double LOWER_CAMERASERVO_POSITION = 190;
 
-private static boolean tunePIDLoop = true;
+private static boolean tunePIDLoop = false;
 // TODO
 // find
 // actual value
 
-private final static double HIGHER_CAMERASERVO_POSITION = 170;// TODO find
+private final static double HIGHER_CAMERASERVO_POSITION = 150;
+
+// TODO find
 // actual
 // actual value
 

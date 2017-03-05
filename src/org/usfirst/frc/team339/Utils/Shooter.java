@@ -14,6 +14,7 @@ package org.usfirst.frc.team339.Utils;
 
 import com.ctre.CANTalon;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
+import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
 import edu.wpi.first.wpilibj.Spark;
 // import edu.wpi.first.wpilibj.Timer;
@@ -37,7 +38,7 @@ private IRSensor elevatorSensor = null;
 
 private Victor elevatorController = null;
 
-private double acceptableError = 0;
+private double acceptableError = 75;
 
 private ImageProcessor visionTargeter = null;
 
@@ -46,6 +47,8 @@ private double acceptableGimbalError = .5;// in degrees
 private CANTalon gimbalMotor = null;
 
 private Spark agitatorMotor = null;
+
+private UltraSonic distanceSensor = null;
 
 // private Timer shooterTimer = new Timer();
 
@@ -63,8 +66,6 @@ private Spark agitatorMotor = null;
  *            accuracy
  * @param visionTargeting
  *            Our vision processor object, used to target the high boiler.
- * @param gimbalEnc
- *            The potentiometer that reads the bearing of the turret.
  * @param acceptableGimbalError
  *            The acceptable angular angle, in degrees, the gimbal turret is
  *            allowed to be off.
@@ -72,11 +73,16 @@ private Spark agitatorMotor = null;
  *            The motor controller the turret is run on
  * @param agitatorMotor
  *            The motor controller the agitator motor is connected to
+ * @param distanceSensor
+ *            TODO
+ * @param gimbalEnc
+ *            The potentiometer that reads the bearing of the turret.
  */
 public Shooter (CANTalon controller, IRSensor ballLoaderSensor,
         Victor elevator, double acceptableFlywheelSpeedError,
         ImageProcessor visionTargeting, double acceptableGimbalError,
-        CANTalon gimbalMotor, Spark agitatorMotor)
+        CANTalon gimbalMotor, Spark agitatorMotor,
+        UltraSonic distanceSensor)
 {
     this.flywheelController = controller;
     this.elevatorSensor = ballLoaderSensor;
@@ -85,6 +91,7 @@ public Shooter (CANTalon controller, IRSensor ballLoaderSensor,
     this.visionTargeter = visionTargeting;
     this.gimbalMotor = gimbalMotor;
     this.agitatorMotor = agitatorMotor;
+    this.distanceSensor = distanceSensor;
 }
 
 /**
@@ -197,14 +204,6 @@ public boolean fire (double rpmOffset)
         // then return false
         return false;
         }
-    // if the elevator sensor is on
-    if (this.elevatorSensor.isOn() == true)
-        {
-        // then set the elevator to its assigned speed
-        this.elevatorController.set(ELEVATOR_SPEED);
-        // return false
-        return false;
-        }
     // this.elevatorController.set(0);
     // sets readyToFire to false
     readyToFire = false;
@@ -241,29 +240,35 @@ public boolean prepareToFire (double rpmOffset)
 {
     // System.out.println("RPMOffset in prepareToFire: " + rpmOffset);
     // dist is the distance to goal
-    double dist = 9.25;/*
-                        * this.visionTargeter.getZDistanceToFuelTarget(
-                        * this.visionTargeter.getLargestBlob());
-                        */
+    double dist = this.distanceSensor.getDistanceFromNearestBumper()
+            / 12.0;
     // if the distance to goal is greater than 0
-    if ((dist > 0) == true)
+    if (dist > 0)
         {
         // then set flywheel to half the calculated RPM(to make the goal)
         // plus the rpm offset
         this.flywheelController
-                .set(1700/* .5 * this.calculateRPMToMakeGoal(dist) */
+                .set(.5 * this.calculateRPMToMakeGoal(dist)
                         + rpmOffset);
         // print to the smartDashboard the flywheel speed
         SmartDashboard.putNumber("Flywheel speed",
                 this.flywheelController.getSpeed());
-        // calls load balls
-        this.loadBalls();
         // divides the absolute value of the flywheel error by four
         // if this value is greater than the acceptable error
         if (Math.abs(this.flywheelController.getError()
                 / 4.0) > this.acceptableError)
             {
+            // IF we are not in the error range AND the sensor does not read
+            // balls, start loading balls
+            // if (this.elevatorSensor.isOn() == false)
+            // {
+            // this.loadBalls();
+            // }
+            // else // IF we are not in the error range AND the sensor DOES read
+            // // balls, stop loading balls
+            // {
             // this.stopLoader();
+            // }
             // returns false
             return false;
             }
@@ -271,6 +276,8 @@ public boolean prepareToFire (double rpmOffset)
     else
         // return false
         return false;
+
+
     // if (this.elevatorSensor.isOn())
     // {
     // this.stopLoader();
@@ -280,6 +287,9 @@ public boolean prepareToFire (double rpmOffset)
     // this.loadBalls();
     // return false;
     // }
+
+    // IF we are in the error range then load balls and we are ready to fire
+    // this.loadBalls();
 
     // return true
     return true;
@@ -523,9 +533,11 @@ public boolean turnToGoalRaw ()
         // if the absolute value of the center of the largest blob
         // (x value) divided by the horizontal resolution minus .5 is
         // less than turn to goal raw deadband
-        if ((Math.abs(this.visionTargeter.getLargestBlob().center_mass_x
-                / this.visionTargeter.camera.getHorizontalResolution()
-                - centerXLineOfImage) <= TURN_TO_GOAL_RAW_DEADBAND) == true)
+        if ((Math
+                .abs((this.visionTargeter.getLargestBlob().center_mass_x
+                        / this.visionTargeter.camera
+                                .getHorizontalResolution())
+                        - .5) <= TURN_TO_GOAL_RAW_DEADBAND) == true)
             {
             // return stopGimbal
             this.stopGimbal();
@@ -653,7 +665,7 @@ private final double MEDIUM_TURN_SPEED = .35;
 
 private final double SLOW_TURN_SPEED = .25;
 
-private final double TURN_TO_GOAL_RAW_DEADBAND = .5;
+private final double TURN_TO_GOAL_RAW_DEADBAND = .07;
 
 private final double ELEVATOR_SPEED = 1.0;// .8
 
