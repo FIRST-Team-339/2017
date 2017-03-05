@@ -499,7 +499,7 @@ public void testPeriodic ()
 /**
  * The percentage we want the motors to run at while we are in first gear
  */
-public static final double KILROY_XVIII_FIRST_GEAR_PERCENTAGE = .85;
+public static final double KILROY_XVIII_FIRST_GEAR_PERCENTAGE = .8;
 
 /**
  * The percentage we want the motors to run at while we are in second gear
@@ -532,10 +532,10 @@ public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.069;
 public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVII = .0197;
 
 // pid stuff
-public static double shooterP = .029;
+public static double shooterP = .3;
 
-public static double shooterI = .000042;
+public static double shooterI = .0000084;
 
-public static double shooterD = .85;
+public static double shooterD = 2.0;
 
 } // end class

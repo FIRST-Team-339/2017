@@ -116,11 +116,14 @@ public static TalonSRX leftFrontMotor = new TalonSRX(4);
 // ------------------------------------
 // Victor classes
 // ------------------------------------
-public static Victor elevatorMotor = new Victor(0);// PWM 0
+// public static Victor elevatorMotor = new Victor(0);// PWM 0
 
 public static Victor intakeMotor = new Victor(5);
 
-public static Spark agitatorMotor = new Spark(6);
+public static Spark agitatorMotor = new Spark(0); // did this to make shooter
+                                                  // method happy
+
+public static Victor elevatorMotor = new Victor(6);
 
 // ====================================
 // CAN classes

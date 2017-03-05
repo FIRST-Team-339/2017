@@ -256,7 +256,7 @@ public boolean driveInches (double inches, double speed)
         return true;
         }
     // Drive forward.
-    this.drive(speed, 0.0);
+    this.driveNoDeadband(speed, 0.0, 0.0);
     // tell the caller we're not done.
     return false;
 }
@@ -475,8 +475,8 @@ public AlignReturnType strafeToGear (double driveSpeed,
     // Make sure we grab the latest image
     this.imageProcessor.processImage();
 
-    // this.imageProcessor.filterBlobsInYRange(lowerFilterRange,
-    // upperFilterRange);
+    this.imageProcessor.filterBlobsInYRange(lowerFilterRange,
+            upperFilterRange);
 
     // If we have no blobs, return so.
     if (this.imageProcessor.getNthSizeBlob(1) == null)
