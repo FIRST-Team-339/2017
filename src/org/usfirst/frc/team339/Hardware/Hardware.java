@@ -401,7 +401,7 @@ public static boolean twoJoystickControl = false;
 // -------------------
 public static Shooter shooter = new Shooter(shooterMotor,
         ballLoaderSensor, elevatorMotor, 25, imageProcessor,
-        3, gimbalMotor, agitatorMotor);
+        3, gimbalMotor, agitatorMotor, rightUS);
 
 public static BallIntake intake = new BallIntake(intakeMotor,
         agitatorMotor);

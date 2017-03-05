@@ -14,6 +14,7 @@ package org.usfirst.frc.team339.Utils;
 
 import com.ctre.CANTalon;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
+import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
 import edu.wpi.first.wpilibj.Spark;
 // import edu.wpi.first.wpilibj.Timer;
@@ -37,8 +38,6 @@ private IRSensor elevatorSensor = null;
 
 private Victor elevatorController = null;
 
-// private Spark elevator = null;
-
 private double acceptableError = 75;
 
 private ImageProcessor visionTargeter = null;
@@ -48,6 +47,8 @@ private double acceptableGimbalError = .5;// in degrees
 private CANTalon gimbalMotor = null;
 
 private Spark agitatorMotor = null;
+
+private UltraSonic distanceSensor = null;
 
 // private Timer shooterTimer = new Timer();1
 
@@ -65,8 +66,6 @@ private Spark agitatorMotor = null;
  *            accuracy
  * @param visionTargeting
  *            Our vision processor object, used to target the high boiler.
- * @param gimbalEnc
- *            The potentiometer that reads the bearing of the turret.
  * @param acceptableGimbalError
  *            The acceptable angular angle, in degrees, the gimbal turret is
  *            allowed to be off.
@@ -74,11 +73,16 @@ private Spark agitatorMotor = null;
  *            The motor controller the turret is run on
  * @param agitatorMotor
  *            The motor controller the agitator motor is connected to
+ * @param distanceSensor
+ *            TODO
+ * @param gimbalEnc
+ *            The potentiometer that reads the bearing of the turret.
  */
 public Shooter (CANTalon controller, IRSensor ballLoaderSensor,
         Victor elevator, double acceptableFlywheelSpeedError,
         ImageProcessor visionTargeting, double acceptableGimbalError,
-        CANTalon gimbalMotor, Spark agitatorMotor)
+        CANTalon gimbalMotor, Spark agitatorMotor,
+        UltraSonic distanceSensor)
 {
     this.flywheelController = controller;
     this.elevatorSensor = ballLoaderSensor;
@@ -87,6 +91,7 @@ public Shooter (CANTalon controller, IRSensor ballLoaderSensor,
     this.visionTargeter = visionTargeting;
     this.gimbalMotor = gimbalMotor;
     this.agitatorMotor = agitatorMotor;
+    this.distanceSensor = distanceSensor;
 }
 
 //// TODO MAKE SURE THIS IS OK!!!!
@@ -251,17 +256,15 @@ public boolean prepareToFire (double rpmOffset)
 {
     // System.out.println("RPMOffset in prepareToFire: " + rpmOffset);
     // dist is the distance to goal
-    double dist = 9.25;/*
-                        * this.visionTargeter.getZDistanceToFuelTarget(
-                        * this.visionTargeter.getLargestBlob());
-                        */
+    double dist = this.distanceSensor.getDistanceFromNearestBumper()
+            / 12.0;
     // if the distance to goal is greater than 0
-    if ((dist > 0) == true)
+    if (dist > 0)
         {
         // then set flywheel to half the calculated RPM(to make the goal)
         // plus the rpm offset
         this.flywheelController
-                .set(1700/* .5 * this.calculateRPMToMakeGoal(dist) */
+                .set(.5 * this.calculateRPMToMakeGoal(dist)
                         + rpmOffset);
         // print to the smartDashboard the flywheel speed
         SmartDashboard.putNumber("Flywheel speed",
