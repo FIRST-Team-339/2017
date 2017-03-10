@@ -13,6 +13,7 @@
 package org.usfirst.frc.team339.Utils;
 
 import com.ctre.CANTalon;
+import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
@@ -167,6 +168,7 @@ public void loadBalls ()
     // load balls by running the elevator and agitator at their assigned speeds
     this.elevatorController.set(ELEVATOR_SPEED);
     this.agitatorMotor.set(AGITATOR_SPEED);
+    Hardware.intake.startIntake();
 }
 
 /**
@@ -177,6 +179,7 @@ public void stopLoader ()
     // stops loading balls by stopping the elevator and the agitator
     this.elevatorController.set(0.0);
     this.agitatorMotor.set(0.0);
+    Hardware.intake.stopIntake();
 }
 
 /**
@@ -256,15 +259,17 @@ public boolean prepareToFire (double rpmOffset)
 {
     // System.out.println("RPMOffset in prepareToFire: " + rpmOffset);
     // dist is the distance to goal
-    double dist = this.distanceSensor.getDistanceFromNearestBumper()
-            / 12.0;
+    double dist = 1;/*
+                     * this.distanceSensor.getDistanceFromNearestBumper()
+                     * / 12.0;
+                     */
     // if the distance to goal is greater than 0
     if (dist > 0)
         {
         // then set flywheel to half the calculated RPM(to make the goal)
         // plus the rpm offset
         this.flywheelController
-                .set(.5 * this.calculateRPMToMakeGoal(dist)
+                .set(/* .5 * this.calculateRPMToMakeGoal(dist) */1900
                         + rpmOffset);
         // print to the smartDashboard the flywheel speed
         SmartDashboard.putNumber("Flywheel speed",
@@ -568,7 +573,7 @@ public boolean turnToGoalRaw ()
                         .getHorizontalResolution() > centerXLineOfImage)
             {
             // turn the gimbal to the left at -1
-            this.turnGimbalMedium(-1);
+            this.turnGimbalSlow(-1);
             // return false
             return false;
             }
@@ -679,9 +684,9 @@ private final double MAX_TURN_SPEED = .5;
 
 private final double MEDIUM_TURN_SPEED = .35;
 
-private final double SLOW_TURN_SPEED = .25;
+private final double SLOW_TURN_SPEED = .3;
 
-private final double TURN_TO_GOAL_RAW_DEADBAND = .07;
+private final double TURN_TO_GOAL_RAW_DEADBAND = .05;
 
 private final double ELEVATOR_SPEED = 1;// .8
 

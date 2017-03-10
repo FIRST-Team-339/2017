@@ -365,7 +365,15 @@ public void robotInit ()
     // NOTE: The AXIS Camera getInstance() MUST
     // Preceed the USB camera setResolution() code
     // -------------------------------------
-    CameraServer.getInstance().addAxisCamera("10.3.39.11");
+    if (Hardware.isRunningOnKilroyXVIII)
+        {
+        CameraServer.getInstance().addAxisCamera("10.3.39.11");
+        }
+    else
+        {
+        CameraServer.getInstance().addAxisCamera("10.13.39.11");
+        }
+
     Hardware.axisCamera.writeColorLevel(19);
     Hardware.axisCamera.writeBrightness(10);
     Hardware.axisCamera.writeResolution(Resolution.k320x240);

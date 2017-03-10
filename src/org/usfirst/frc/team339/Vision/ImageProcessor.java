@@ -621,6 +621,7 @@ public void updateParticalAnalysisReports ()
             }
         this.reports = new ParticleReport[particles.size()];
         particles.copyInto(this.reports);
+        particles.clear();
         }
 }
 

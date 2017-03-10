@@ -56,6 +56,7 @@ private static int txtNumber = 0;
 
 // The focal length of the camera, you can find it in the camera documentation
 private double focalLength = 2.8;
+
 // The horizontal field of view of the camera in degrees.
 private double horizFieldOfView = 67;
 
@@ -93,6 +94,35 @@ public KilroyCamera (boolean hasCamera)
     this.haveCamera = hasCamera;
     if (hasCamera)
         {
+        this.camera = new AxisCamera(KILROY_CAMERA_IP);
+        }
+    else
+        {
+        this.camera = null;
+        }
+}
+
+/**
+ * Sets the Camera boolean, in case a change is necessary
+ *
+ * @method KilroyCamera() - constructor
+ * @param hasCamera
+ *            - whether we have a camera
+ * @param ip
+ *            The ip that the camera is at with the context of 10.x.39.11
+ * @author Ryan McGee
+ *
+ * @written Mar 9, 2017
+ *          -------------------------------------------------------
+ */
+public KilroyCamera (boolean hasCamera, String ip)
+{
+    if (hasCamera == false)
+        System.out.println("ATTENTION: the AXIS CAMERA is DISABLED :(");
+    this.haveCamera = hasCamera;
+    if (hasCamera)
+        {
+        KILROY_CAMERA_IP = ip;
         this.camera = new AxisCamera(KILROY_CAMERA_IP);
         }
     else

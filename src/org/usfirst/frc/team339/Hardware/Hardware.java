@@ -74,7 +74,7 @@ public static double KILROY_XVII_JOYSTICK_DIRECTIONAL_DEADZONE = 10.0;
  */
 public static boolean runningInLab = false;
 
-public static boolean isRunningOnKilroyXVIII = true; // 18
+public static boolean isRunningOnKilroyXVIII = false; // 18
 // -------------------------------------
 // Private Constants
 // -------------------------------------
@@ -236,7 +236,7 @@ public static IRSensor ballLoaderSensor = new IRSensor(6);
 // ------------------------------------
 // Gyro class
 // ------------------------------------
-public static KilroyGyro driveGyro = new KilroyGyro(false);
+public static KilroyGyro driveGyro = new KilroyGyro(true);
 
 // -------------------------------------
 // Potentiometers
@@ -270,7 +270,8 @@ public static UsbCamera camForward = CameraServer.getInstance()
         .startAutomaticCapture(0);
 
 
-public static KilroyCamera axisCamera = new KilroyCamera(true);// TODO change
+public static KilroyCamera axisCamera = new KilroyCamera(true,
+        "10.13.39.11");// TODO change
 
 
 public static VisionScript visionScript = new VisionScript(
@@ -342,8 +343,6 @@ public static MomentarySwitch setMotorsZero = new MomentarySwitch(
 public static MomentarySwitch brake = new MomentarySwitch(
         leftDriver, 11, false);
 
-public static MomentarySwitch drive = new MomentarySwitch(leftDriver, 9,
-        false);
 
 
 // **********************************************************
