@@ -222,6 +222,33 @@ public double getAveragedEncoderValues ()
             + Math.abs(this.getRightRearEncoderDistance())) / 4.0;
 }
 
+/**
+ * @return
+ *         The value of the encoder which reads the least distance.
+ */
+public double getLowestEncoderValue ()
+{
+    return Math.min(
+            Math.min(Math.abs(this.getLeftFrontEncoderDistance()),
+                    Math.abs(this.getLeftRearEncoderDistance())),
+            Math.min(Math.abs(this.getRightFrontEncoderDistance()),
+                    Math.abs(this.getRightRearEncoderDistance())));
+}
+
+/**
+ * 
+ * @return
+ *         The value of the encoder which reads the furthest distance.
+ */
+public double getHighestEncoderValue ()
+{
+    return Math.max(
+            Math.max(Math.abs(this.getLeftFrontEncoderDistance()),
+                    Math.abs(this.getLeftRearEncoderDistance())),
+            Math.max(Math.abs(this.getRightFrontEncoderDistance()),
+                    Math.abs(this.getRightRearEncoderDistance())));
+}
+
 // TODO Test this
 /**
  * Drives a distance given. To drive backwards, give negative speed, not
@@ -271,13 +298,16 @@ private boolean firstTimeDriveInches = true;
  *            How far we want to go, in inches
  * @param speed
  *            How fast we want to go
+ * @param driveCorrection
+ *            Amount we correct when we get off, in rotation.
  * @return True if we've reached our target distance, false otherwise.
  * @author Becky Button
  * 
  */
 public boolean driveStraightInches (final double inches,
-        final double speed)
+        final double speed, double driveCorrection)
 {
+    driveCorrection = Math.abs(driveCorrection);
     // If it's the first time we're running
     if (firstTimeDriveInches == true)
         {
@@ -287,7 +317,7 @@ public boolean driveStraightInches (final double inches,
         firstTimeDriveInches = false;
         }
     // If we've gone beyond our target distance.
-    if (this.getAveragedEncoderValues() >= inches)
+    if (this.getHighestEncoderValue() >= inches)
         {
         // if we want debug info out.
         if (this.getDebugStatus() == true)
@@ -304,10 +334,10 @@ public boolean driveStraightInches (final double inches,
         }
     // Calculate the average value of the left and right sides of the drive
     // train.
-    double averageLeft = (this.getLeftFrontEncoderDistance()
-            + this.getLeftRearEncoderDistance()) / 2;
-    double averageRight = (this.getRightFrontEncoderDistance()
-            + this.getRightRearEncoderDistance()) / 2;
+    double averageLeft = Math.max(this.getLeftFrontEncoderDistance(),
+            this.getLeftRearEncoderDistance());
+    double averageRight = Math.max(this.getRightFrontEncoderDistance(),
+            this.getRightRearEncoderDistance());
     // If we're printing debug info
     if (this.getDebugStatus() == true)
         {
@@ -326,16 +356,16 @@ public boolean driveStraightInches (final double inches,
         this.driveNoDeadband(speed, 0, 0.0);
         }
     // if we're outside our error range and the left is ahead of the right.
-    else if (averageLeft > averageRight)// TODO this is wrong, fix.
+    else if (averageLeft > averageRight)
         {
-        // correct to the right (TODO I think this is also wrong)
-        this.driveNoDeadband(speed, 0.0, -this.getDriveCorrection());
+        // correct to the right
+        this.driveNoDeadband(speed, 0.0, -driveCorrection);
         }
     // if we're outside our error range and the right is ahead of the left.
     else if (averageLeft < averageRight)
         {
-        // correct to the left (TODO I think this is also wrong)
-        this.driveNoDeadband(speed, 0.0, -this.getDriveCorrection());
+        // correct to the left
+        this.driveNoDeadband(speed, 0.0, driveCorrection);
         }
     // Tell the caller we're not done.
     return false;
@@ -356,7 +386,8 @@ public boolean
         driveStraightInchesBrake (double inches,
                 double speed, double brakeSpeed)
 {
-    if (driveStraightInches(inches, speed))
+
+    if (driveStraightInches(inches, speed, this.getDriveCorrection()))
         {
         this.timeBrake(-2, 2);
         return true;
@@ -1463,16 +1494,25 @@ public double getEncoderSlack ()
 
 /**
  * @param correction
+ *            The amount we correct in driveStraightByInches methods
+ * @deprecated on 3/9/17 by Alex Kneipp
+ *             Not necessary, use the correction parameter in
+ *             {@link #driveStraightInches(double,double,double)} instead
  */
-public void setDriveCorrection (double correction)// TODO KILL IT BEFORE IT LAYS
-                                                  // EGGS
+@Deprecated
+public void setDriveCorrection (double correction)
 {
     this.correction = correction;
 }
 
 /**
  * @return
+ *         The amount we correct in driveStraightByInches methods
+ * @deprecated on 3/9/17 by Alex Kneipp
+ *             Not necessary, use the correction parameter in
+ *             {@link #driveStraightInches(double,double,double)} instead
  */
+@Deprecated
 public double getDriveCorrection ()
 {
     return this.correction;
@@ -1521,7 +1561,7 @@ public static enum TransmissionType
 // =====================================================================
 private TransmissionType transmissionType = null;
 
-private final double BRAKE_DEADBAND = 0.04;
+private final double BRAKE_DEADBAND = .05;// todo .07
 
 /**
  * The value that the getDistance is multiplied by to get an accurate
