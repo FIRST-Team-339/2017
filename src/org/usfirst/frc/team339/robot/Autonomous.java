@@ -790,10 +790,13 @@ private static boolean leftSidePath ()
             break;
         case DRIVE_FORWARD_TO_SIDES:
             // If we haven't yet driven too far...
+            System.out.println("Encoders: "
+                    + Hardware.autoDrive.getAveragedEncoderValues());
             if (Hardware.autoDrive.getAveragedEncoderValues() <= 95.5)
                 {
                 // keep going
-                Hardware.autoDrive.drive(DRIVE_SPEED, 0.0, 0.0);
+                Hardware.autoDrive.driveNoDeadband(DRIVE_SPEED, 0.0,
+                        0.0);
                 }
             else
                 {

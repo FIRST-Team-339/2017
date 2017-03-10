@@ -46,7 +46,7 @@ private UltraSonic ultrasonic = null;
 
 private Timer timer = new Timer();
 
-private double correction = 0.0;// TODO find out what this does.
+private double correction = 0.1;// TODO find out what this does.
 
 // The amount the encoders are allowed to be off and considered "equal"
 private double encoderSlack = 0.0;
@@ -222,6 +222,33 @@ public double getAveragedEncoderValues ()
             + Math.abs(this.getRightRearEncoderDistance())) / 4.0;
 }
 
+/**
+ * @return
+ *         The value of the encoder which reads the least distance.
+ */
+public double getLowestEncoderValue ()
+{
+    return Math.min(
+            Math.min(Math.abs(this.getLeftFrontEncoderDistance()),
+                    Math.abs(this.getLeftRearEncoderDistance())),
+            Math.min(Math.abs(this.getRightFrontEncoderDistance()),
+                    Math.abs(this.getRightRearEncoderDistance())));
+}
+
+/**
+ * 
+ * @return
+ *         The value of the encoder which reads the furthest distance.
+ */
+public double getHighestEncoderValue ()
+{
+    return Math.max(
+            Math.max(Math.abs(this.getLeftFrontEncoderDistance()),
+                    Math.abs(this.getLeftRearEncoderDistance())),
+            Math.max(Math.abs(this.getRightFrontEncoderDistance()),
+                    Math.abs(this.getRightRearEncoderDistance())));
+}
+
 // TODO Test this
 /**
  * Drives a distance given. To drive backwards, give negative speed, not
@@ -271,13 +298,16 @@ private boolean firstTimeDriveInches = true;
  *            How far we want to go, in inches
  * @param speed
  *            How fast we want to go
+ * @param driveCorrection
+ *            Amount we correct when we get off, in rotation.
  * @return True if we've reached our target distance, false otherwise.
  * @author Becky Button
  * 
  */
 public boolean driveStraightInches (final double inches,
-        final double speed)
+        final double speed, double driveCorrection)
 {
+    driveCorrection = Math.abs(driveCorrection);
     // If it's the first time we're running
     if (firstTimeDriveInches == true)
         {
@@ -287,7 +317,7 @@ public boolean driveStraightInches (final double inches,
         firstTimeDriveInches = false;
         }
     // If we've gone beyond our target distance.
-    if (this.getAveragedEncoderValues() >= inches)
+    if (this.getHighestEncoderValue() >= inches)
         {
         // if we want debug info out.
         if (this.getDebugStatus() == true)
@@ -296,7 +326,7 @@ public boolean driveStraightInches (final double inches,
             System.out.println("We are finished driving straight");
             }
         // Stop
-        this.driveNoDeadband(0.0, 0.0);
+        this.driveNoDeadband(0.0, 0.0, 0.0);
         // Prepare for setup again
         this.firstTimeDriveInches = true;
         // Tell the caller we're done.
@@ -304,10 +334,10 @@ public boolean driveStraightInches (final double inches,
         }
     // Calculate the average value of the left and right sides of the drive
     // train.
-    double averageLeft = (this.getLeftFrontEncoderDistance()
-            + this.getLeftRearEncoderDistance()) / 2;
-    double averageRight = (this.getRightFrontEncoderDistance()
-            + this.getRightRearEncoderDistance()) / 2;
+    double averageLeft = Math.max(this.getLeftFrontEncoderDistance(),
+            this.getLeftRearEncoderDistance());
+    double averageRight = Math.max(this.getRightFrontEncoderDistance(),
+            this.getRightRearEncoderDistance());
     // If we're printing debug info
     if (this.getDebugStatus() == true)
         {
@@ -323,24 +353,46 @@ public boolean driveStraightInches (final double inches,
             .getEncoderSlack())
         {
         // drive straight
-        this.driveNoDeadband(speed, 0);
+        this.driveNoDeadband(speed, 0, 0.0);
         }
     // if we're outside our error range and the left is ahead of the right.
-    else if (averageLeft > averageRight)// TODO this is wrong, fix.
+    else if (averageLeft > averageRight)
         {
-        // correct to the right (TODO I think this is also wrong)
-        this.driveNoDeadband(speed, -this.getDriveCorrection());
+        // correct to the right
+        this.driveNoDeadband(speed, 0.0, driveCorrection);
         }
     // if we're outside our error range and the right is ahead of the left.
     else if (averageLeft < averageRight)
         {
-        // correct to the left (TODO I think this is also wrong)
-        this.driveNoDeadband(speed, this.getDriveCorrection());
+        // correct to the left
+        this.driveNoDeadband(speed, 0.0, -driveCorrection);
         }
     // Tell the caller we're not done.
     return false;
 }
 
+/**
+ * calls driveInches, then brakes to a complete stop
+ * 
+ * @param inches
+ *            how far you want to go
+ * @param speed
+ *            how fast you want to drive
+ * @param brakeSpeed
+ *            how fast you want to brake
+ * @return true if it has Driven and stopped (braked)
+ */
+public boolean
+        driveStraightInchesBrake (double inches,
+                double speed, double brakeSpeed)
+{
+    if (driveStraightInches(inches, speed, this.getDriveCorrection()))
+        {
+        this.timeBrake(-2, 2);
+        return true;
+        }
+    return false;
+}
 
 /**
  * Aligns to the low dual targets for the gear peg. This finds the
@@ -1013,10 +1065,20 @@ Timer movementTimer = new Timer();
 public boolean brakeToZero (double voltage)
 {
     // First time setup
-    if (firstBrakeToZero)
+    if (firstBrakeToZero == true)
         {
         this.resetEncoders();
         firstBrakeToZero = false;
+        // this.lastBrakeValues = new double[][]
+        // {
+        // new double[]
+        // {0.0, 0.0, 0.0, 0.0},
+        // new double[]
+        // {0.0, 0.0, 0.0, 0}
+        // };
+        this.lastBrakeValues = new double[]
+            {0.0, 0.0, 0.0, 0.0};
+        return false;
         }
     // If all the wheels are stopped
     if (this.brakeEachWheel[0] == false
@@ -1028,6 +1090,8 @@ public boolean brakeToZero (double voltage)
         this.firstBrakeToZero = true;
         this.brakeEachWheel = new boolean[]
             {true, true, true, true};
+
+        this.driveNoDeadband(0, 0, 0);
         // tell the caller we're done.
         return true;
         }
@@ -1055,58 +1119,79 @@ public boolean brakeToZero (double voltage)
         this.brakeEachWheel[3] = false;
 
     // Braking code
-    if (this.brakeEachWheel[0])
-
-        // Left Front brake
-        if (this.brakeEachWheel[0] && this.getLeftFrontEncoderDistance()
-                - this.lastBrakeValues[0] < 0)
+    // Left Front brake
+    if (this.brakeEachWheel[0] && this
+            .getLeftFrontEncoderDistance() < this.lastBrakeValues[0])
         {
-        this.transmissionMecanum.driveLeftMotor(
-                Math.abs(voltage));
+        this.transmissionMecanum.leftSpeedController
+                .set(Math.abs(voltage));
         }
-        else
+    else if (this.brakeEachWheel[0])
         {
-        this.transmissionMecanum.driveLeftMotor(
-                Math.abs(-voltage));
+        this.transmissionMecanum.leftSpeedController
+                .set(-Math.abs(voltage));
+        }
+    else
+        {
+        this.transmissionMecanum.leftSpeedController.set(0.0);
         }
 
     // Left Rear brake
-    if (this.brakeEachWheel[1] && this.getLeftRearEncoderDistance()
-            - this.lastBrakeValues[1] < 0)
+    if (this.brakeEachWheel[1] && this
+            .getLeftRearEncoderDistance() < this.lastBrakeValues[1])
         {
-        this.transmissionMecanum.driveLeftRearMotor(
-                Math.abs(voltage));
+        this.transmissionMecanum.leftRearSpeedController
+                .set(Math.abs(voltage));
+        }
+    else if (this.brakeEachWheel[1])
+        {
+        this.transmissionMecanum.leftRearSpeedController
+                .set(-Math.abs(voltage));
         }
     else
         {
-        this.transmissionMecanum.driveLeftRearMotor(
-                Math.abs(-voltage));
+        this.transmissionMecanum.leftRearSpeedController.set(0.0);
         }
 
     // Right Front brake
-    if (this.brakeEachWheel[2] && this.getRightFrontEncoderDistance()
-            - this.lastBrakeValues[2] < 0)
+    if (this.brakeEachWheel[2] && this
+            .getRightFrontEncoderDistance() < this.lastBrakeValues[2])
         {
-        this.transmissionMecanum.driveRightMotor(Math.abs(voltage));
+        this.transmissionMecanum.rightSpeedController
+                .set(Math.abs(voltage));
+        }
+    else if (this.brakeEachWheel[2])
+        {
+        this.transmissionMecanum.rightSpeedController
+                .set(-Math.abs(voltage));
         }
     else
         {
-        this.transmissionMecanum.driveRightMotor(Math.abs(-voltage));
+        this.transmissionMecanum.rightSpeedController.set(0.0);
+        }
+    // Right Rear brake
+    if (this.brakeEachWheel[3] && this
+            .getRightRearEncoderDistance() < this.lastBrakeValues[3])
+        {
+        this.transmissionMecanum.rightRearSpeedController
+                .set(-Math.abs(voltage));
+        }
+    else if (this.brakeEachWheel[3])
+        {
+        this.transmissionMecanum.rightRearSpeedController
+                .set(Math.abs(voltage));
+        }
+    else
+        {
+        this.transmissionMecanum.rightRearSpeedController.set(0.0);
         }
 
-    // Right Rear brake
-    if (this.brakeEachWheel[3] && this.getRightRearEncoderDistance()
-            - this.lastBrakeValues[3] < 0)
-        {
-        this.transmissionMecanum
-                .driveRightRearMotor(Math.abs(voltage));
-        }
-    else
-        {
-        this.transmissionMecanum
-                .driveRightRearMotor(Math.abs(-voltage));
-        }
     // Save the current values for next run
+    // for (int i = 0; i < this.lastBrakeValues[0].length; i++)
+    // {
+    // this.lastBrakeValues[1][i] = this.lastBrakeValues[0][i];
+    // }
+
     this.lastBrakeValues[0] = this.getLeftFrontEncoderDistance();
     this.lastBrakeValues[1] = this.getLeftRearEncoderDistance();
     this.lastBrakeValues[2] = this.getRightFrontEncoderDistance();
@@ -1118,7 +1203,7 @@ public boolean brakeToZero (double voltage)
 private boolean firstBrakeToZero = true;
 
 private double[] lastBrakeValues =
-    {0, 0, 0, 0};
+    {0.0, 0.0, 0.0, 0.0};
 
 private boolean[] brakeEachWheel =
     {true, true, true, true};
@@ -1405,16 +1490,25 @@ public double getEncoderSlack ()
 
 /**
  * @param correction
+ *            The amount we correct in driveStraightByInches methods
+ * @deprecated on 3/9/17 by Alex Kneipp
+ *             Not necessary, use the correction parameter in
+ *             {@link #driveStraightInches(double,double,double)} instead
  */
-public void setDriveCorrection (double correction)// TODO KILL IT BEFORE IT LAYS
-                                                  // EGGS
+@Deprecated
+public void setDriveCorrection (double correction)
 {
     this.correction = correction;
 }
 
 /**
  * @return
+ *         The amount we correct in driveStraightByInches methods
+ * @deprecated on 3/9/17 by Alex Kneipp
+ *             Not necessary, use the correction parameter in
+ *             {@link #driveStraightInches(double,double,double)} instead
  */
+@Deprecated
 public double getDriveCorrection ()
 {
     return this.correction;
@@ -1463,7 +1557,7 @@ public static enum TransmissionType
 // =====================================================================
 private TransmissionType transmissionType = null;
 
-private final double BRAKE_DEADBAND = 0.01;
+private final double BRAKE_DEADBAND = 0.04;
 
 /**
  * The value that the getDistance is multiplied by to get an accurate

@@ -75,7 +75,7 @@ public static void init ()
     // ---------------------------------------
     // Servo init
     // ---------------------------------------
-    Hardware.cameraServo.setAngle(LOWER_CAMERASERVO_POSITION);
+    Hardware.cameraServo.setAngle(HIGHER_CAMERASERVO_POSITION);
     // gimbal motors
     Hardware.gimbalMotor
             .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
@@ -114,6 +114,12 @@ public static void init ()
         SmartDashboard.putNumber("Setpoint", tempSetpoint);
         SmartDashboard.putNumber("Err",
                 Hardware.shooterMotor.getError());
+        }
+
+    if (Hardware.driveGyro.isConnected())
+        {
+        Hardware.driveGyro.calibrate();
+        Hardware.driveGyro.reset();
         }
 } // end Init
 
@@ -192,7 +198,7 @@ public static void periodic ()
     // TESTING SHOOTER
     if (Hardware.rightOperator.getTrigger() == true)
         {
-        Hardware.shooter.turnToGoalRaw();
+        isTurningToGoal = true;
         Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
         // System.out.println(
         // Hardware.shooterMotor.set(
@@ -295,7 +301,8 @@ public static void periodic ()
     // rotate only when we are pulling the trigger
     if (Hardware.leftDriver.getTrigger() == true)
         {
-        rotationValue = Hardware.leftDriver.getTwist();
+        rotationValue = ROTATION_FACTOR
+                * Hardware.leftDriver.getTwist();
         }
     else
         rotationValue = 0.0;
@@ -322,18 +329,17 @@ public static void periodic ()
     if (isDrivingStraight == true)
         {
         // System.out.println("We are driving straight inches");
-        isDrivingStraight = !Hardware.autoDrive.driveStraightInches(12,
-                .75);
+        isDrivingStraight = !Hardware.autoDrive.driveStraightInches(100,
+                .4, .2);
         if (isDrivingStraight == false)
             {
-            // System.out.println("We are braking");
-            isBraking = true;
+            isBraking = false;
             }
         }
 
     if (isBraking == true)
         {
-        isBraking = !Hardware.autoDrive.brakeToZero(.4);
+        isBraking = !Hardware.autoDrive.brakeToZero(.3);
         // isBraking = !Hardware.autoDrive.timeBrake(-.1, .5);
         System.out.println("We are braking");
         // if (Hardware.autoDrive.isStopped(Hardware.leftRearEncoder,
@@ -360,6 +366,7 @@ public static void periodic ()
 
 } // end
   // Periodic
+
 
 private static boolean isDrivingStraight = false;
 
@@ -485,20 +492,20 @@ public static void printStatements ()
 
     // System.out.println("Right Front Encoder: " +
     // Hardware.rightFrontEncoder.get());
-    // System.out.println("Right Front Distance: " +
-    // Hardware.autoDrive.getRightFrontEncoderDistance());
+    System.out.println("Right Front Distance: " +
+            Hardware.autoDrive.getRightFrontEncoderDistance());
     // System.out.println("Right Rear Encoder: " +
     // Hardware.rightRearEncoder.get());
-    // System.out.println("Right Rear Encoder Distance: " +
-    // Hardware.autoDrive.getRightRearEncoderDistance());
+    System.out.println("Right Rear Encoder Distance: " +
+            Hardware.autoDrive.getRightRearEncoderDistance());
     // System.out.println("Left Front Encoder: " +
     // Hardware.leftFrontEncoder.get());
-    // System.out.println("Left Front Encoder Distance: " +
-    // Hardware.autoDrive.getLeftFrontEncoderDistance());
+    System.out.println("Left Front Encoder Distance: " +
+            Hardware.autoDrive.getLeftFrontEncoderDistance());
     // System.out.println("Left Rear Encoder: " +
     // Hardware.leftRearEncoder.get());
-    // System.out.println("Left Rear Encoder Distance: " +
-    // Hardware.autoDrive.getLeftFrontEncoderDistance());
+    System.out.println("Left Rear Encoder Distance: " +
+            Hardware.autoDrive.getLeftRearEncoderDistance());
     // Hardware.rightFrontEncoder.get());
     // System.out.println("Right Front Encoder Distance: " +
     // Hardware.autoDrive.getRightRearEncoderDistance());
@@ -542,8 +549,8 @@ public static void printStatements ()
     // GYRO
     // System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
 
-    System.out.println("Ultrasonic = "
-            + Hardware.rightUS.getDistanceFromNearestBumper());
+    // System.out.println("Ultrasonic = "
+    // + Hardware.rightUS.getDistanceFromNearestBumper());
 
     // System.out.println("Delay Pot: " + Hardware.delayPot.get());
     // ---------------------------------
@@ -643,6 +650,9 @@ private final static double CAMERA_ALIGN_CENTER = .478;  // Relative coordinates
 // ==========================================
 // TUNEABLES
 // ==========================================
+
+private final static double ROTATION_FACTOR = .7;
+
 private final static double LOWER_CAMERASERVO_POSITION = 190;
 
 private static boolean tunePIDLoop = false;
