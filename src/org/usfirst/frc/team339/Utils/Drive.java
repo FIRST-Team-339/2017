@@ -359,13 +359,13 @@ public boolean driveStraightInches (final double inches,
     else if (averageLeft > averageRight)
         {
         // correct to the right
-        this.driveNoDeadband(speed, 0.0, driveCorrection);
+        this.driveNoDeadband(speed, 0.0, -driveCorrection);
         }
     // if we're outside our error range and the right is ahead of the left.
     else if (averageLeft < averageRight)
         {
         // correct to the left
-        this.driveNoDeadband(speed, 0.0, -driveCorrection);
+        this.driveNoDeadband(speed, 0.0, driveCorrection);
         }
     // Tell the caller we're not done.
     return false;
@@ -1557,7 +1557,7 @@ public static enum TransmissionType
 // =====================================================================
 private TransmissionType transmissionType = null;
 
-private final double BRAKE_DEADBAND = 0.04;
+private final double BRAKE_DEADBAND = .05;// todo .07
 
 /**
  * The value that the getDistance is multiplied by to get an accurate

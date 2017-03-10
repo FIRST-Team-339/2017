@@ -92,7 +92,7 @@ public static void init ()
         Hardware.tankDrive.setGear(2);
         // auto drive values
         Hardware.autoDrive.setDriveCorrection(.3);
-        Hardware.autoDrive.setEncoderSlack(1);
+        Hardware.autoDrive.setEncoderSlack(.45);
         // mecanum values
         Hardware.mecanumDrive.setGear(1);
         }
@@ -330,16 +330,16 @@ public static void periodic ()
         {
         // System.out.println("We are driving straight inches");
         isDrivingStraight = !Hardware.autoDrive.driveStraightInches(100,
-                .4, .2);
+                .6, .2);
         if (isDrivingStraight == false)
             {
-            isBraking = false;
+            isBraking = true;
             }
         }
 
     if (isBraking == true)
         {
-        isBraking = !Hardware.autoDrive.brakeToZero(.3);
+        isBraking = !Hardware.autoDrive.brakeToZero(.18);
         // isBraking = !Hardware.autoDrive.timeBrake(-.1, .5);
         System.out.println("We are braking");
         // if (Hardware.autoDrive.isStopped(Hardware.leftRearEncoder,
