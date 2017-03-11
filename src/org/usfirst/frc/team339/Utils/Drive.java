@@ -1473,14 +1473,11 @@ public boolean turnDegreesByGyro (double degrees, double speed)
     if (firstTurnByGyro == true)
         {
         this.gyro.reset();
-        System.out.println("Gyro Value Reset to: "
-                + this.gyro.getAngle());
         firstTurnByGyro = false;
         }
 
     if (firstTurnByGyro == false)
         {
-
         System.out.println("Moving Modififed Gyro: "
                 + this.getModifiedGyroAngle());
         System.out.println(
@@ -1489,7 +1486,7 @@ public boolean turnDegreesByGyro (double degrees, double speed)
         // specified gyro value
         if (degrees > 0 && this.getModifiedGyroAngle() < degrees)
             {
-            drive(0, speed, 0);
+            driveNoDeadband(0, 0, speed);
             }
         else
 
@@ -1497,7 +1494,7 @@ public boolean turnDegreesByGyro (double degrees, double speed)
         // specified gyro value
         if (degrees < 0 && this.getModifiedGyroAngle() > degrees)
             {
-            drive(0, -speed, 0);
+            driveNoDeadband(0, 0, -speed);
 
             }
         else
@@ -1515,7 +1512,6 @@ public boolean turnDegreesByGyro (double degrees, double speed)
 
         }
     return false;
-
 }
 
 private boolean firstTurnByGyro = true;
@@ -1536,7 +1532,7 @@ private double gyroDegreesVariationConstant = 1.0;
  *            the value 7 should be inputted into this function
  * @return double; the new value of the gyroDegreesVariationConstant
  * 
- * @author Cole Ramos last edited: 10 February 2017
+ * @author Cole Ramos last edited: 11 Mar 2017
  */
 public double setGyroDegreesVariationConstant (double gyroVariation)
 {
@@ -1550,7 +1546,7 @@ public double setGyroDegreesVariationConstant (double gyroVariation)
  * @return the value of the gyroDegreesVariationConstant; used by
  *         turnDegreesByGyro to correct the values coming in from the gyro
  * 
- * @author Cole Ramos last edited: 10 February 2017
+ * @author Cole Ramos last edited: 11 Mar 2017
  */
 public double getGyroDegreesVariationConstant ()
 {
@@ -1564,7 +1560,7 @@ public double getGyroDegreesVariationConstant ()
  * 
  * @return the modified gyro angle- gyro angle * gyroDegreesVariationConstant
  * 
- * @author Cole Ramos; last edited 11 Feb 2017
+ * @author Cole Ramos; last edited 11 Mar 2017
  */
 
 public double getModifiedGyroAngle ()

@@ -358,7 +358,8 @@ public static void periodic ()
     if (isDrivingStraight == true)
         {
         // System.out.println("We are driving straight inches");
-        isDrivingStraight = !Hardware.autoDrive.driveStraightInches(75,
+        isDrivingStraight = !Hardware.autoDrive.driveStraightInches(
+                77.9,
                 .6, .2);
         if (isDrivingStraight == false)
             {
@@ -380,7 +381,19 @@ public static void periodic ()
     if (isTurningToGoal == true)
         {
         System.out.println("We Are turning");
-        isTurningToGoal = !Hardware.autoDrive.turnDegrees(-45, .3);
+        isTurningToGoal = !Hardware.autoDrive.turnDegreesByGyro(-30.0,
+                .4);
+        if (isTurningToGoal == false)
+            {
+            isDrivingStraightSecond = true;
+            }
+        }
+
+    if (isDrivingStraightSecond == true)
+        {
+        isDrivingStraightSecond = !Hardware.autoDrive
+                .driveStraightInches(
+                        24.2, .6, .2);
         }
     // if (Hardware.brake.get())
     // {
@@ -397,6 +410,8 @@ public static void periodic ()
 
 
 private static boolean isDrivingStraight = false;
+
+private static boolean isDrivingStraightSecond = false;
 
 private static boolean isAccelerating = false;
 
