@@ -16,15 +16,20 @@ public DilateOperator (int iterations)
 @Override
 public Image operate (Image Source)
 {
-    final Image out = NIVision
-            .imaqCreateImage(ImageType.IMAGE_U8, 0);
-    for (int i = 0; i < iterations; i++)
+    Image returnImage = null;
+    Image input = Source;
+    for (int i = 0; i < this.iterations; i++)
         {
-            NIVision.imaqGrayMorphology(Source, out,
-                    NIVision.MorphologyMethod.DILATE,
-                    new NIVision.StructuringElement());
+        Image out = NIVision
+                .imaqCreateImage(ImageType.IMAGE_U8, 0);
+        NIVision.imaqGrayMorphology(out, input,
+                NIVision.MorphologyMethod.DILATE,
+                new NIVision.StructuringElement());
+        Source.free();
+        returnImage = out;
+        input = out;
         }
-    return out;
+    return (returnImage);
 }
 
 }
