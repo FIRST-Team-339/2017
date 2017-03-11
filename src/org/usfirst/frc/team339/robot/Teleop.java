@@ -34,6 +34,7 @@ package org.usfirst.frc.team339.robot;
 import com.ctre.CANTalon.FeedbackDevice;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
+import org.usfirst.frc.team339.Utils.Drive.AlignReturnType;
 import org.usfirst.frc.team339.Utils.Shooter;
 import org.usfirst.frc.team339.Utils.Shooter.turnToGoalReturn;
 import edu.wpi.first.wpilibj.Relay;
@@ -99,6 +100,7 @@ public static void init ()
     else
     // kilroy XVII
         {
+        Hardware.autoDrive.setDebugStatus(false);
         // tank drive values
         Hardware.tankDrive.setGear(1);
         // auto drive values
@@ -135,8 +137,6 @@ static double tempSetpoint = 0.0;
 
 public static void periodic ()
 {
-
-    Hardware.imageProcessor.processImage();
     // print values from hardware items
     printStatements();
 
@@ -292,25 +292,44 @@ public static void periodic ()
         Hardware.cameraServo.setAngle(LOWER_CAMERASERVO_POSITION);
         }
 
-
+    // Testing the *new* alinging to gear peg code
+    // IF button 8 is pressed, start aligning.
     if (Hardware.leftOperator.getRawButton(8))
         {
         isAligning = true;
         }
 
+    // IF we are still aligning,
     if (isAligning == true)
         {
-        alignValue = Hardware.autoDrive.strafeToGear(.4, 30, .03, .5,
-                15, 1, 1);
-
         System.out.println(alignValue);
-
-        if (Hardware.leftOperator.getRawButton(6)
-                || Hardware.leftOperator.getRawButton(7))
+        alignValue = Hardware.autoDrive.alignToGear(.6958, .55, 5); // <<Fix
+                                                                    // these
+                                                                    // values<<
+        if (alignValue == AlignReturnType.ALIGNED
+                || Hardware.leftOperator.getRawButton(7)
+                || Hardware.leftOperator.getRawButton(6))
             {
             isAligning = false;
+            isMovingToWall = true;
             }
         }
+
+    if (isMovingToWall == true)
+        {
+        System.out.println("Moving towards the wall");
+        if (Hardware.leftOperator.getRawButton(7)
+                || Hardware.leftOperator.getRawButton(6)
+                || Hardware.ultraSonic
+                        .getDistanceFromNearestBumper() <= 15)
+            {
+            Hardware.autoDrive.driveNoDeadband(0.0, 0.0, 0.0);
+            isMovingToWall = false;
+            }
+        Hardware.autoDrive.driveNoDeadband(.7, -90, 0.0);
+        }
+
+
 
     Hardware.axisCamera
             .takeSinglePicture(Hardware.leftOperator.getRawButton(8)
@@ -407,6 +426,8 @@ private static double rotationValue = 0.0;
 private static boolean isTurningGimbal = false;
 
 private static boolean isAligning = false;
+
+private static boolean isMovingToWall = false;
 
 private static boolean previousFireButton = false;
 
@@ -514,20 +535,20 @@ public static void printStatements ()
 
     // System.out.println("Right Front Encoder: " +
     // Hardware.rightFrontEncoder.get());
-    System.out.println("Right Front Distance: " +
-            Hardware.autoDrive.getRightFrontEncoderDistance());
+    // System.out.println("Right Front Distance: " +
+    // Hardware.autoDrive.getRightFrontEncoderDistance());
     // System.out.println("Right Rear Encoder: " +
     // Hardware.rightRearEncoder.get());
-    System.out.println("Right Rear Encoder Distance: " +
-            Hardware.autoDrive.getRightRearEncoderDistance());
+    // System.out.println("Right Rear Encoder Distance: " +
+    // Hardware.autoDrive.getRightRearEncoderDistance());
     // System.out.println("Left Front Encoder: " +
     // Hardware.leftFrontEncoder.get());
-    System.out.println("Left Front Encoder Distance: " +
-            Hardware.autoDrive.getLeftFrontEncoderDistance());
+    // System.out.println("Left Front Encoder Distance: " +
+    // Hardware.autoDrive.getLeftFrontEncoderDistance());
     // System.out.println("Left Rear Encoder: " +
     // Hardware.leftRearEncoder.get());
-    System.out.println("Left Rear Encoder Distance: " +
-            Hardware.autoDrive.getLeftRearEncoderDistance());
+    // System.out.println("Left Rear Encoder Distance: " +
+    // Hardware.autoDrive.getLeftRearEncoderDistance());
     // Hardware.rightFrontEncoder.get());
     // System.out.println("Right Front Encoder Distance: " +
     // Hardware.autoDrive.getRightRearEncoderDistance());
@@ -571,8 +592,8 @@ public static void printStatements ()
     // GYRO
     // System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
 
-    System.out.println("Ultrasonic = "
-            + Hardware.ultraSonic.getDistanceFromNearestBumper());
+    // System.out.println("Ultrasonic = "
+    // + Hardware.ultraSonic.getDistanceFromNearestBumper());
 
     // System.out.println("Delay Pot: " + Hardware.delayPot.get());
     // ---------------------------------

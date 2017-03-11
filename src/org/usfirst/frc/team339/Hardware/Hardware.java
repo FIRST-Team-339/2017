@@ -254,7 +254,7 @@ public static UltraSonic ultraSonic = new UltraSonic(2);
 
 public static final double KILROY_XVIII_US_SCALING_FACTOR = .13;
 
-public static final double KILROY_XVII_US_SCALING_FACTOR = .219;
+public static final double KILROY_XVII_US_SCALING_FACTOR = .13;
 
 // **********************************************************
 // roboRIO CONNECTIONS CLASSES
@@ -273,12 +273,14 @@ public static KilroyCamera axisCamera = new KilroyCamera(true,
         "10.13.39.11");// TODO change
 
 public static VisionScript visionScript = new VisionScript(
-        new HSLColorThresholdOperator(34, 117, 34, 181, 9, 160), /*
-                                                                  * 79, 210, 7,
-                                                                  * 214, 33,
-                                                                  * 255)
-                                                                  */// (76, 200,
-                                                                   // 71,
+        new HSLColorThresholdOperator(57, 157, 164, 255, 21, 136), /*
+                                                                    * 79, 210,
+                                                                    * 7,
+                                                                    * 214, 33,
+                                                                    * 255)
+                                                                    */// (76,
+                                                                     // 200,
+                                                                     // 71,
         // new RemoveSmallObjectsOperator(1, true), // // 255, 50,255),
         new ConvexHullOperator(false));
 

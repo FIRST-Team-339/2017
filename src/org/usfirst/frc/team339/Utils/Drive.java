@@ -416,54 +416,74 @@ public AlignReturnType alignToGear (final double relativeCenter,
         final double movementSpeed,
         final double deadband)
 {
-    if (isTurning == false)
+    // if (isTurning == false)
+    // {
+    // Process the an image from the camera so we know where we are.
+    this.imageProcessor.processImage();
+    // If we don't have two blobs...
+    if (this.imageProcessor.getNthSizeBlob(1) == null)
         {
-        // Process the an image from the camera so we know where we are.
-        this.imageProcessor.processImage();
-        // If we don't have two blobs...
-        if (this.imageProcessor.getNthSizeBlob(1) == null)
-            {
-            // Stop
-            this.drive(0.0, 0.0);
-            // Tell the caller we lost at least one of our blobs.
-            return AlignReturnType.NO_BLOBS;
-            }
-        // Find the distance from the center of the image of a combination of
-        // the blobs.
-        double distanceToCenter = imageProcessor
-                .getPositionOfRobotToGear(
-                        imageProcessor
-                                .getNthSizeBlob(0),
-                        imageProcessor
-                                .getNthSizeBlob(1),
-                        relativeCenter);
-        // If the distance to center is the default value, we've lost our blobs.
-        if (distanceToCenter == Double.MAX_VALUE)
-            {
-            // Stop
-            this.drive(0.0, 0.0);
-            // Tell the caller we don't blobs
-            return AlignReturnType.NO_BLOBS;
-            }
-
-        // If we're were we want to be
-        if (Math.abs(distanceToCenter) <= deadband)
-            {
-            // Stop
-            this.drive(0.0, 0.0);
-            // Tell the caller we're aligned
-            return AlignReturnType.ALIGNED;
-            }
+        // Stop
+        this.drive(0.0, 0.0, 0.0);
+        // Tell the caller we lost at least one of our blobs.
+        return AlignReturnType.NO_BLOBS;
         }
+    // Find the distance from the center of the image of a combination of
+    // the blobs.
+    double distanceToCenter = imageProcessor
+            .getPositionOfRobotToGear(
+                    imageProcessor
+                            .getNthSizeBlob(0),
+                    imageProcessor
+                            .getNthSizeBlob(1),
+                    relativeCenter);
+    // If the distance to center is the default value, we've lost our blobs.
+    if (distanceToCenter == Double.MAX_VALUE)
+        {
+        // Stop
+        this.drive(0.0, 0.0, 0.0);
+        // Tell the caller we don't blobs
+        return AlignReturnType.NO_BLOBS;
+        }
+
+    // If we're were we want to be
+    if (Math.abs(distanceToCenter) <= deadband)
+        {
+        // Stop
+        this.drive(0.0, 0.0, 0.0);
+        // Tell the caller we're aligned
+        return AlignReturnType.ALIGNED;
+        }
+
+
+    if (distanceToCenter < 0)
+        {
+        this.driveNoDeadband(-movementSpeed, 0.0, 0.0);
+        }
+    else if (distanceToCenter > 0)
+        {
+        this.driveNoDeadband(movementSpeed, 0.0, 0.0);
+        }
+
+    // }
     // If we've turned to the goal, we're done, set up the next call as such.
-    this.isTurning = this
-            .turnDegrees(-Math.toDegrees(this.imageProcessor
-                    .getYawAngleToTarget(this.imageProcessor
-                            .getNthSizeBlob(0))
-                    + this.imageProcessor
-                            .getYawAngleToTarget(this.imageProcessor
-                                    .getNthSizeBlob(1)))
-                    / 2.0);
+    // -----------------------------------------------------------------
+    // This is for rotating left and right in tank drive. Normally use this, but
+    // for the 2017 game, aligning to the gear peg will run forwards and
+    // backwards.
+    // -----------------------------------------------------------------
+
+    // this.isTurning = this
+    // .turnDegrees(-Math.toDegrees(this.imageProcessor
+    // .getYawAngleToTarget(this.imageProcessor
+    // .getNthSizeBlob(0))
+    // + this.imageProcessor
+    // .getYawAngleToTarget(this.imageProcessor
+    // .getNthSizeBlob(1)))
+    // / 2.0);
+
+
+
     // We're not aligned, tell the caller as such.
     return AlignReturnType.MISALIGNED;
 }
@@ -593,7 +613,7 @@ public AlignReturnType strafeToGear (double driveSpeed,
     if (Math.abs(distanceToCenter) < deadband)
         {
         // TODO I have a 50/50 chance that this is the correct side (right side)
-        this.driveNoDeadband(driveSpeed, 90, 0.0);
+        this.driveNoDeadband(driveSpeed, -90, 0.0);
         return AlignReturnType.ALIGNED;
         }
     if (this.getDebugStatus() == true)
@@ -612,8 +632,7 @@ public AlignReturnType strafeToGear (double driveSpeed,
             }
         // Drive towards the right with correction to the left.
         // TODO Magic Numbers
-        this.driveNoDeadband(driveSpeed + .3, -alignVar + 90, 0.0);// TODO nasty
-                                                                   // hack
+        this.driveNoDeadband(driveSpeed, -alignVar - 90, 0.0);
         }
     // If the blob is to the right of our target position
     else if (distanceToCenter > 0)
@@ -624,7 +643,7 @@ public AlignReturnType strafeToGear (double driveSpeed,
             System.out.println("trying to adjust right");
             }
         // Drive towards the right with correction to the right
-        this.driveNoDeadband(driveSpeed + .3, alignVar + 90, 0.0);
+        this.driveNoDeadband(driveSpeed, alignVar - 90, 0.0);
         }
     // Tell the caller we're not yet aligned.
     return AlignReturnType.MISALIGNED;

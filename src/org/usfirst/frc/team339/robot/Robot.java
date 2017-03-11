@@ -374,8 +374,8 @@ public void robotInit ()
         CameraServer.getInstance().addAxisCamera("10.13.39.11");
         }
 
-    Hardware.axisCamera.writeColorLevel(19);
-    Hardware.axisCamera.writeBrightness(10);
+    Hardware.axisCamera.writeColorLevel(60);
+    Hardware.axisCamera.writeBrightness(4);
     Hardware.axisCamera.writeResolution(Resolution.k320x240);
     Hardware.axisCamera.writeWhiteBalance(WhiteBalance.kFixedOutdoor2);
     // -------------------------------------
@@ -383,8 +383,6 @@ public void robotInit ()
     // -------------------------------------
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
-    // Sets the scaling factor and general ultrasonic stuff
-    Hardware.ultraSonic.setScalingFactor(.13);
     Hardware.ultraSonic.setOffsetDistanceFromNearestBummper(3);
     Hardware.ultraSonic.setNumberOfItemsToCheckBackwardForValidity(3);
     // gimbal motors
