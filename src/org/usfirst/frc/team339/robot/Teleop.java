@@ -135,6 +135,8 @@ static double tempSetpoint = 0.0;
 
 public static void periodic ()
 {
+
+    Hardware.imageProcessor.processImage();
     // print values from hardware items
     printStatements();
 
@@ -569,8 +571,8 @@ public static void printStatements ()
     // GYRO
     // System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
 
-    // System.out.println("Ultrasonic = "
-    // + Hardware.rightUS.getDistanceFromNearestBumper());
+    System.out.println("Ultrasonic = "
+            + Hardware.ultraSonic.getDistanceFromNearestBumper());
 
     // System.out.println("Delay Pot: " + Hardware.delayPot.get());
     // ---------------------------------

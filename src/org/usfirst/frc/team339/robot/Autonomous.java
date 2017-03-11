@@ -314,9 +314,9 @@ public static void init ()
             .setFirstGearPercentage(
                     Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
     // Sets the scaling factor and general ultrasonic stuff
-    Hardware.rightUS.setScalingFactor(.13);
-    Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
-    Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
+    Hardware.ultraSonic.setScalingFactor(.13);
+    Hardware.ultraSonic.setOffsetDistanceFromNearestBummper(3);
+    Hardware.ultraSonic.setNumberOfItemsToCheckBackwardForValidity(3);
 
     Hardware.cameraServo.setAngle(190);
     // if running on kilroy XVIII use certain value and different for XVII
@@ -459,7 +459,7 @@ private static boolean placeCenterGearPath ()
 {
     System.out.println("CurrentState = " + currentState);
     System.out.println("Right US: "
-            + Hardware.rightUS.getDistanceFromNearestBumper());
+            + Hardware.ultraSonic.getDistanceFromNearestBumper());
     System.out.println(Hardware.autoDrive.getAveragedEncoderValues());
     System.out.println(
             "Gear " + Hardware.mecanumDrive.getCurrentGearPercentage());
@@ -505,7 +505,7 @@ private static boolean placeCenterGearPath ()
                 }
             // Purge the ultrasonic of it's current values while we are
             // accelerating
-            Hardware.rightUS.getDistanceFromNearestBumper();
+            Hardware.ultraSonic.getDistanceFromNearestBumper();
             break;
         case DRIVE_FORWARD_TO_CENTER:
             // If we see blobs, hand over control to camera, otherwise, go
@@ -554,7 +554,7 @@ private static boolean placeCenterGearPath ()
                 }
             else
                 {
-                if (Hardware.rightUS
+                if (Hardware.ultraSonic
                         .getDistanceFromNearestBumper() >= STOP_DISTANCE_TO_GEAR)
                     {
                     Hardware.autoDrive.driveNoDeadband(DRIVE_SPEED, 0.0,
@@ -886,7 +886,7 @@ private static boolean leftSidePath ()
             Hardware.imageProcessor.processImage();
             Hardware.imageProcessor.filterBlobsInYRange(1, .9);
             // If we're too far from the peg wall to stop...
-            if (Hardware.rightUS.getDistanceFromNearestBumper() > 8)
+            if (Hardware.ultraSonic.getDistanceFromNearestBumper() > 8)
                 {
                 // Check an see that we have both the blobs we need.
                 if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
