@@ -250,7 +250,7 @@ public static RobotPotentiometer delayPot = new RobotPotentiometer(1,
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------
-public static UltraSonic rightUS = new UltraSonic(2);
+public static UltraSonic ultraSonic = new UltraSonic(2);
 
 public static final double KILROY_XVIII_US_SCALING_FACTOR = .13;
 
@@ -380,7 +380,7 @@ public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
 
 public static Drive autoDrive = new Drive(mecanumDrive,
         imageProcessor, rightFrontEncoder, rightRearEncoder,
-        leftFrontEncoder, leftRearEncoder, rightUS, driveGyro);
+        leftFrontEncoder, leftRearEncoder,ultraSonic, driveGyro);
 
 /**
  * are we using mecanum? set false for tank drive
@@ -398,7 +398,7 @@ public static boolean twoJoystickControl = false;
 // -------------------
 public static Shooter shooter = new Shooter(shooterMotor,
         ballLoaderSensor, elevatorMotor, 25, imageProcessor,
-        3, gimbalMotor, agitatorMotor, rightUS);
+        3, gimbalMotor, agitatorMotor, ultraSonic);
 
 public static BallIntake intake = new BallIntake(intakeMotor,
         agitatorMotor);

@@ -293,7 +293,7 @@ public void robotInit ()
         // Hardware.leftFrontMotorSafety.setExpiration(.5);
         // Hardware.leftRearMotorSafety.setExpiration(1.0);
         // Sets the scaling factor and general ultrasonic stuff
-        Hardware.rightUS.setScalingFactor(
+        Hardware.ultraSonic.setScalingFactor(
                 Hardware.KILROY_XVIII_US_SCALING_FACTOR);
         }
     // kilroy XVII is below this statement of commented code in code
@@ -334,7 +334,7 @@ public void robotInit ()
                 Hardware.KILROY_XVII_JOYSTICK_DIRECTIONAL_DEADZONE);
         Hardware.mecanumDrive.setMecanumJoystickReversed(false);
         // Sets the scaling factor and general ultrasonic stuff
-        Hardware.rightUS.setScalingFactor(
+        Hardware.ultraSonic.setScalingFactor(
                 Hardware.KILROY_XVII_US_SCALING_FACTOR);
         }
     // -------------------------------------
@@ -379,12 +379,13 @@ public void robotInit ()
     // -------------------------------------
     // USB Camera initialization
     // -------------------------------------
+
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
     // Sets the scaling factor and general ultrasonic stuff
-    Hardware.rightUS.setScalingFactor(.13);
-    Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
-    Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
+    Hardware.ultraSonic.setScalingFactor(.13);
+    Hardware.ultraSonic.setOffsetDistanceFromNearestBummper(3);
+    Hardware.ultraSonic.setNumberOfItemsToCheckBackwardForValidity(3);
     // gimbal motors
     Hardware.gimbalMotor
             .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);

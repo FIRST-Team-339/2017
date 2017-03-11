@@ -79,8 +79,7 @@ public static void init ()
     // gimbal motors
     Hardware.gimbalMotor
             .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-    // Hardware.gimbalMotor.setEncPosition(0); //THIS WILL RESET AFTER AUTO
-    // (dont do that)
+    Hardware.gimbalMotor.setEncPosition(0);
     // mecanum
     Hardware.mecanumDrive
             .setFirstGearPercentage(
@@ -92,7 +91,7 @@ public static void init ()
         Hardware.tankDrive.setGear(2);
         // auto drive values
         Hardware.autoDrive.setDriveCorrection(.3);
-        Hardware.autoDrive.setEncoderSlack(.45);
+        Hardware.autoDrive.setEncoderSlack(1);
         // mecanum values
         Hardware.mecanumDrive.setGear(1);
         }
@@ -115,12 +114,6 @@ public static void init ()
         SmartDashboard.putNumber("Err",
                 Hardware.shooterMotor.getError());
         }
-
-    if (Hardware.driveGyro.isConnected())
-        {
-        Hardware.driveGyro.calibrate();
-        Hardware.driveGyro.reset();
-        }
 } // end Init
 
 static double tempSetpoint = 0.0;
@@ -138,6 +131,9 @@ public static void periodic ()
     // print values from hardware items
     printStatements();
 
+
+    System.out.println("USB Cam Brightness: "
+            + "Hardware.camForward.getBrightness()");
     // tune pid loop
     if (tunePIDLoop == true)
         {
@@ -154,6 +150,8 @@ public static void periodic ()
                 .set(tempSetpoint);
         }
 
+    // Hardware.shooterMotor
+    // .set(tempSetpoint);
 
     // previousFireButton = Hardware.leftDriver.getTrigger();
     //
@@ -195,10 +193,14 @@ public static void periodic ()
 
     // rightOperator stuffs
 
+
+
+
+
     // TESTING SHOOTER
     if (Hardware.rightOperator.getTrigger() == true)
         {
-        isTurningToGoal = true;
+        Hardware.shooter.turnToGoalRaw();
         Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
         // System.out.println(
         // Hardware.shooterMotor.set(
@@ -217,17 +219,20 @@ public static void periodic ()
     // END SHOOTER TESTING
 
     // TURRET OVERRIDE
+
+
+
     if (Hardware.rightOperator.getRawButton(2) == true
             && Math.abs(Hardware.rightOperator.getX()) > .2)
         {
         if (Hardware.rightOperator.getX() > 0)
             {
-            Hardware.shooter.turnGimbalMedium(-1);
+            Hardware.shooter.turnGimbalSlow(1);
             }
         else
             {
             Hardware.shooter
-                    .turnGimbalMedium(1);
+                    .turnGimbalSlow(-1);
             }
         }
     else if (isTurningGimbal == false && isTurningToGoal == false)
@@ -283,31 +288,11 @@ public static void periodic ()
     // =================================================================
     if (Hardware.cameraServoSwitch.isOnCheckNow() == true)
         {
-        Hardware.cameraServo.setAngle(HIGHER_CAMERASERVO_POSITION);
+        Hardware.cameraServo.setAngle(190);
         }
     else
         {
-        Hardware.cameraServo.setAngle(LOWER_CAMERASERVO_POSITION);
-        }
-
-
-    if (Hardware.leftOperator.getRawButton(8))
-        {
-        isAligning = true;
-        }
-
-    if (isAligning == true)
-        {
-        alignValue = Hardware.autoDrive.strafeToGear(.4, 30, .03, .5,
-                15, 1, 1);
-
-        System.out.println(alignValue);
-
-        if (Hardware.leftOperator.getRawButton(6)
-                || Hardware.leftOperator.getRawButton(7))
-            {
-            isAligning = false;
-            }
+        Hardware.cameraServo.setAngle(0);
         }
 
     Hardware.axisCamera
@@ -318,11 +303,11 @@ public static void periodic ()
     // Driving code
     // =================================================================
 
+
     // rotate only when we are pulling the trigger
     if (Hardware.leftDriver.getTrigger() == true)
         {
-        rotationValue = ROTATION_FACTOR
-                * Hardware.leftDriver.getTwist();
+        rotationValue = Hardware.leftDriver.getTwist();
         }
     else
         rotationValue = 0.0;
@@ -369,7 +354,7 @@ public static void periodic ()
 
     if (isBraking == true)
         {
-        isBraking = !Hardware.autoDrive.brakeToZero(.18);
+        isBraking = !Hardware.autoDrive.brakeToZero(.4);
         // isBraking = !Hardware.autoDrive.timeBrake(-.1, .5);
         if (isBraking == false)
             {
@@ -407,7 +392,6 @@ public static void periodic ()
 
 } // end
   // Periodic
-
 
 private static boolean isDrivingStraight = false;
 
@@ -464,30 +448,30 @@ public static void printStatements ()
     // Motor controllers
     // prints value of the motors
     // =================================
-    // System.out.println("Delay Pot: " + Hardware.delayPot.get(0, 5));
-    // System.out.println("Right Front Motor Controller: "
-    // + Hardware.rightFrontMotor.get());
-    // System.out.println("Left Front Motor Controller: " +
-    // Hardware.leftFrontMotor.get());
-    // System.out.println("Right Rear Motor Controller: " +
-    // Hardware.rightRearMotor.get());
-    // System.out.println("Left Rear Motor Controller: " +
-    // Hardware.leftRearMotor.get());
+    System.out.println("Delay Pot: " + Hardware.delayPot.get(0, 5));
+    System.out.println("Right Front Motor Controller: "
+            + Hardware.rightFrontMotor.get());
+    System.out.println("Left Front Motor Controller: " +
+            Hardware.leftFrontMotor.get());
+    System.out.println("Right Rear Motor Controller: " +
+            Hardware.rightRearMotor.get());
+    System.out.println("Left Rear Motor Controller: " +
+            Hardware.leftRearMotor.get());
     // System.out.println("Flywheel thingy thing: "
     // + Hardware.shooter.calculateRPMToMakeGoal(9.25) * .5);
     // System.out.println("Flywheel thingy thing speed really: "
     // + Hardware.shooterMotor.get());
     // System.out.println(Hardware.backupOrFireOrHopper.isOn());
-    // System.out
-    // .println("Flywheel Motor: " + Hardware.shooterMotor.get());
+    System.out
+            .println("Flywheel Motor: " + Hardware.shooterMotor.get());
     //
-    // System.out.println("Intake Motor: " + Hardware.intakeMotor.get());
+    System.out.println("Intake Motor: " + Hardware.intakeMotor.get());
     // if (Hardware.rightOperator.getRawButton(11)) {
     // Hardware.elevatorMotor.setSpeed(1);
     // System.out.println("Elevator Motor: " +
     // Hardware.elevatorMotor.get());
     // }
-    // System.out.println("Turret Spark: " + Hardware.gimbalMotor.get());
+    System.out.println("Turret Spark: " + Hardware.gimbalMotor.get());
 
     // =================================
     // CAN items
@@ -499,14 +483,14 @@ public static void printStatements ()
     // Relay
     // prints value of the relay states
     // =================================
-    // if (Hardware.ringlightSwitch.isOnCheckNow())
-    // {
-    // System.out.println("Ring light relay is On");
-    // }
-    // else if (!Hardware.ringlightSwitch.isOnCheckNow())
-    // {
-    // System.out.println("Ring light relay is Off");
-    // }
+    if (Hardware.ringlightSwitch.isOnCheckNow())
+        {
+        System.out.println("Ring light relay is On");
+        }
+    else if (!Hardware.ringlightSwitch.isOnCheckNow())
+        {
+        System.out.println("Ring light relay is Off");
+        }
     // =================================
     // Digital Inputs
     // =================================
@@ -514,10 +498,10 @@ public static void printStatements ()
     // Switches
     // prints state of switches
     // ---------------------------------
-    // System.out.println("Gear Limit Switch: "
-    // + Hardware.gearLimitSwitch.isOn());
+    System.out.println("Gear Limit Switch: "
+            + Hardware.gearLimitSwitch.isOn());
     // System.out.println("Backup or fire: " +
-    // Hardware.backupOrFireOrHopper.isOn());
+    // Hardware.backupOrFire.isOn());
     // System.out.println("Enable Auto: " +
     // Hardware.enableAutonomous.isOn());
     // System.out.println(
@@ -570,7 +554,7 @@ public static void printStatements ()
     // Red Light/IR Sensors
     // prints the state of the sensor
     // ---------------------------------
-    // System.out.println("Ball IR: " + Hardware.ballLoaderSensor.isOn());
+    System.out.println("Ball IR: " + Hardware.ballLoaderSensor.isOn());
     // =================================
     // Pneumatics
     // =================================
@@ -592,12 +576,18 @@ public static void printStatements ()
     // =================================
 
     // GYRO
-    // System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
+    System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
 
-    // System.out.println("Ultrasonic = "
+    //
+    // We don't want the print statements to flood everything and go ahhhhhhhh
+    //
+    // if (Hardware.rightOperator.getRawButton(11))
+    // System.out.println("LeftUS = "
+    // + Hardware.leftUS.getDistanceFromNearestBumper());
+    // System.out.println("RightUS = "
     // + Hardware.rightUS.getDistanceFromNearestBumper());
 
-    // System.out.println("Delay Pot: " + Hardware.delayPot.get());
+    System.out.println("Delay Pot: " + Hardware.delayPot.get());
     // ---------------------------------
     // pots
     // where the pot is turned to
@@ -693,21 +683,21 @@ private final static double CAMERA_ALIGN_CENTER = .478;  // Relative coordinates
 
 
 // ==========================================
+
 // TUNEABLES
 // ==========================================
+private final static double LOWER_CAMERASERVO_POSITION = 65;
 
 private final static double ROTATION_FACTOR = .7;
 
-private final static double LOWER_CAMERASERVO_POSITION = 190;
+
 
 private static boolean tunePIDLoop = false;
 // TODO
 // find
 // actual value
 
-private final static double HIGHER_CAMERASERVO_POSITION = 150;
-
-// TODO find
+private final static double HIGHER_CAMERASERVO_POSITION = 90;// TODO find
 // actual
 // actual value
 

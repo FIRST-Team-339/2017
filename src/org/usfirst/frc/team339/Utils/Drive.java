@@ -545,12 +545,12 @@ public AlignReturnType strafeToGear (double driveSpeed,
         double upperFilterRange)
 {
     // If this is our first call.
-    if (this.firstStrafe)
-        {
-        this.timer.reset();
-        this.timer.start();
-        this.firstStrafe = false;
-        }
+    // if (this.firstStrafe)
+    // {
+    // this.timer.reset();
+    // this.timer.start();
+    // this.firstStrafe = false;
+    // }
     // Keep this here, we're currently purging the US in auto, but if we want to
     // do it automatically, uncomment this
     /*
@@ -624,9 +624,9 @@ public AlignReturnType strafeToGear (double driveSpeed,
                     .println("distance to target: " + distanceToTarget);
             }
         // Set up the US purge for next call
-        this.purgingUltrasonic = true;
+        // this.purgingUltrasonic = true;
         // Set up first call setup for next call.
-        this.firstStrafe = true;
+        // this.firstStrafe = true;
         // Stop
         this.driveNoDeadband(0.0, 0.0, 0.0);
         // Tell the caller we're close enough to the wall to stop.
@@ -674,9 +674,9 @@ public AlignReturnType strafeToGear (double driveSpeed,
     return AlignReturnType.MISALIGNED;
 }
 
-private boolean purgingUltrasonic = true;
-
-private boolean firstStrafe = true;
+// private boolean purgingUltrasonic = true;
+//
+// private boolean firstStrafe = true;
 
 
 /**
