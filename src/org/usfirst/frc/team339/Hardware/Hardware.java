@@ -33,7 +33,6 @@ import org.usfirst.frc.team339.Vision.ImageProcessor;
 import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
-import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -75,7 +74,7 @@ public static double KILROY_XVII_JOYSTICK_DIRECTIONAL_DEADZONE = 10.0;
  */
 public static boolean runningInLab = false;
 
-public static boolean isRunningOnKilroyXVIII = true; // 18
+public static boolean isRunningOnKilroyXVIII = false; // 18
 // -------------------------------------
 // Private Constants
 // -------------------------------------
@@ -117,11 +116,14 @@ public static TalonSRX leftFrontMotor = new TalonSRX(4);
 // ------------------------------------
 // Victor classes
 // ------------------------------------
-public static Victor elevatorMotor = new Victor(0);// PWM 0
+// public static Victor elevatorMotor = new Victor(0);// PWM 0
 
 public static Victor intakeMotor = new Victor(5);
 
-public static Spark agitatorMotor = new Spark(6);
+public static Spark agitatorMotor = new Spark(0); // did this to make shooter
+                                                  // method happy
+
+public static Victor elevatorMotor = new Victor(6);
 
 // ====================================
 // CAN classes
@@ -234,7 +236,7 @@ public static IRSensor ballLoaderSensor = new IRSensor(6);
 // ------------------------------------
 // Gyro class
 // ------------------------------------
-public static KilroyGyro driveGyro = new KilroyGyro(false);
+public static KilroyGyro driveGyro = new KilroyGyro(true);
 
 // -------------------------------------
 // Potentiometers
@@ -248,7 +250,7 @@ public static RobotPotentiometer delayPot = new RobotPotentiometer(1,
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------
-public static UltraSonic rightUS = new UltraSonic(2);
+public static UltraSonic ultraSonic = new UltraSonic(2);
 
 public static final double KILROY_XVIII_US_SCALING_FACTOR = .13;
 
@@ -267,16 +269,20 @@ public static final double KILROY_XVII_US_SCALING_FACTOR = .219;
 public static UsbCamera camForward = CameraServer.getInstance()
         .startAutomaticCapture(0);
 
-
-public static KilroyCamera axisCamera = new KilroyCamera(true);// TODO change
-
+public static KilroyCamera axisCamera = new KilroyCamera(true,
+        "10.13.39.11");// TODO change
 
 public static VisionScript visionScript = new VisionScript(
-        new HSLColorThresholdOperator(79, 210, 7, 214, 33, 255),// (76, 200, 71,
-                                                                // 255, 50,
-                                                                // 255),
-        new RemoveSmallObjectsOperator(1, true),
+        new HSLColorThresholdOperator(34, 117, 34, 181, 9, 160), /*
+                                                                  * 79, 210, 7,
+                                                                  * 214, 33,
+                                                                  * 255)
+                                                                  */// (76, 200,
+                                                                   // 71,
+        // new RemoveSmallObjectsOperator(1, true), // // 255, 50,255),
         new ConvexHullOperator(false));
+
+
 
 
 public static ImageProcessor imageProcessor = new ImageProcessor(
@@ -327,7 +333,7 @@ public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
         leftOperator, 5, false);
 
 public static MomentarySwitch cameraServoSwitch = new MomentarySwitch(
-        rightOperator, 10, false);
+        leftOperator, 10, false);
 
 public static MomentarySwitch setMotorsZero = new MomentarySwitch(
         leftDriver, 8, false);
@@ -335,8 +341,6 @@ public static MomentarySwitch setMotorsZero = new MomentarySwitch(
 public static MomentarySwitch brake = new MomentarySwitch(
         leftDriver, 11, false);
 
-public static MomentarySwitch drive = new MomentarySwitch(leftDriver, 9,
-        false);
 
 
 // **********************************************************
@@ -376,7 +380,7 @@ public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
 
 public static Drive autoDrive = new Drive(mecanumDrive,
         imageProcessor, rightFrontEncoder, rightRearEncoder,
-        leftFrontEncoder, leftRearEncoder, rightUS);
+        leftFrontEncoder, leftRearEncoder, ultraSonic);
 
 /**
  * are we using mecanum? set false for tank drive
@@ -394,7 +398,7 @@ public static boolean twoJoystickControl = false;
 // -------------------
 public static Shooter shooter = new Shooter(shooterMotor,
         ballLoaderSensor, elevatorMotor, 25, imageProcessor,
-        3, gimbalMotor, agitatorMotor);
+        3, gimbalMotor, agitatorMotor, ultraSonic);
 
 public static BallIntake intake = new BallIntake(intakeMotor,
         agitatorMotor);

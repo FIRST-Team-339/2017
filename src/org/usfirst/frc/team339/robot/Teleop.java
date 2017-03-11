@@ -75,7 +75,7 @@ public static void init ()
     // ---------------------------------------
     // Servo init
     // ---------------------------------------
-    Hardware.cameraServo.setAngle(LOWER_CAMERASERVO_POSITION);
+    Hardware.cameraServo.setAngle(HIGHER_CAMERASERVO_POSITION);
     // gimbal motors
     Hardware.gimbalMotor
             .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
@@ -132,10 +132,8 @@ public static void periodic ()
     printStatements();
 
 
-
     System.out.println("USB Cam Brightness: "
             + "Hardware.camForward.getBrightness()");
-
     // tune pid loop
     if (tunePIDLoop == true)
         {
@@ -148,6 +146,8 @@ public static void periodic ()
                 Hardware.shooterMotor.getError());
         Hardware.shooterMotor.setPID(Robot.shooterP, Robot.shooterI,
                 Robot.shooterD);
+        Hardware.shooterMotor
+                .set(tempSetpoint);
         }
 
     // Hardware.shooterMotor
@@ -203,8 +203,6 @@ public static void periodic ()
         Hardware.shooter.turnToGoalRaw();
         Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
         // System.out.println(
-
-        Hardware.shooter.loadBalls();
         // Hardware.shooterMotor.set(
         // Hardware.shooter.calculateRPMToMakeGoal(12.25) / 2.0);
         }
@@ -337,7 +335,7 @@ public static void periodic ()
         {
         // System.out.println("We are driving straight inches");
         isDrivingStraight = !Hardware.autoDrive.driveStraightInches(12,
-                .75);
+                .75, -.2);
         if (isDrivingStraight == false)
             {
             // System.out.println("We are braking");
@@ -480,13 +478,13 @@ public static void printStatements ()
             + Hardware.gearLimitSwitch.isOn());
     // System.out.println("Backup or fire: " +
     // Hardware.backupOrFire.isOn());
-    System.out.println("Enable Auto: " +
-            Hardware.enableAutonomous.isOn());
-    System.out.println(
-            "Path Selector: " + Hardware.pathSelector.getPosition());
+    // System.out.println("Enable Auto: " +
+    // Hardware.enableAutonomous.isOn());
+    // System.out.println(
+    // "Path Selector: " + Hardware.pathSelector.getPosition());
 
-    System.out.println("Right UltraSonic distance from bumper: "
-            + Hardware.rightUS.getDistanceFromNearestBumper());
+    // System.out.println("Right UltraSonic distance from bumper: "
+    // + Hardware.rightUS.getDistanceFromNearestBumper());
     // System.out.println("Right UltraSonic refined distance: "
     // + Hardware.rightUS.getRefinedDistanceValue());
     // System.out.println("Right UltraSonic raw distance: "
@@ -581,8 +579,16 @@ public static void printStatements ()
     // System.out.println("Expected center: " + CAMERA_ALIGN_CENTER);
     //
     // Hardware.imageProcessor.processImage();
-    // System.out.println("Number of blobs: " + Hardware.imageProcessor
-    // .getParticleAnalysisReports().length);
+    // Hardware.imageProcessor.filterBlobsInYRange(1, .9);
+    // if (Hardware.imageProcessor.getLargestBlob() != null)
+    // {
+    // System.out.println("Center of Mass: " + Hardware.imageProcessor
+    // .getLargestBlob().center_mass_y);
+    // }
+    // else
+    // {
+    // System.out.println("NO BLOBS!");
+    // }
     // if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
     // System.out
     // .println("Actual center: " + ((Hardware.imageProcessor
@@ -653,9 +659,14 @@ private final static double CAMERA_ALIGN_CENTER = .478;  // Relative coordinates
 
 
 // ==========================================
+
 // TUNEABLES
 // ==========================================
 private final static double LOWER_CAMERASERVO_POSITION = 65;
+
+private final static double ROTATION_FACTOR = .7;
+
+
 
 private static boolean tunePIDLoop = false;
 // TODO
