@@ -76,8 +76,8 @@ public static void init ()
     // Servo init
     // ---------------------------------------
 
-    Hardware.cameraservoX.setAngle(HIGHER_CAMERA_POSITIONX);
-    Hardware.cameraservoX.setAngle(HIGHER_CAMERASERVO_POSITIONY);
+    Hardware.cameraservoX.setAngle(HIGHER_CAMERASERVO_POSITIONX);
+    Hardware.cameraservoY.setAngle(HIGHER_CAMERASERVO_POSITIONY);
     // gimbal motors
     Hardware.gimbalMotor
             .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
@@ -291,12 +291,12 @@ public static void periodic ()
     if (Hardware.cameraServoSwitch.isOnCheckNow() == true)
         {
         Hardware.cameraservoX.setAngle(190);// TODO find actual value
-        Hardware.cameraservoX.setAngle(190);
+        Hardware.cameraservoY.setAngle(190);
         }
     else
         {
         Hardware.cameraservoX.setAngle(0);// TODO find actual value
-        Hardware.cameraservoX.setAngle(0);
+        Hardware.cameraservoY.setAngle(0);
         }
 
     Hardware.axisCamera
@@ -583,7 +583,7 @@ public static void printStatements ()
     // Servos
     // =========================
     System.out.println(
-            "camera servo Y" + Hardware.cameraservoX.getAngle());
+            "camera servo Y" + Hardware.cameraservoY.getAngle());
     System.out.println(
             "camera servo X" + Hardware.cameraservoX.getAngle());
     // ================
@@ -712,11 +712,11 @@ private static boolean tunePIDLoop = false;
 // find
 // actual value
 
-private final static double HIGHER_CAMERA_POSITIONX = 90;// TODO find
+private final static double HIGHER_CAMERASERVO_POSITIONY = 90;// TODO find
 // actual
 // actual value
 
-private final static double HIGHER_CAMERASERVO_POSITIONY = 90;// TODO find
+private final static double HIGHER_CAMERASERVO_POSITIONX = 90;// TODO find
                                                               // actual value
 
 public static boolean changeCameraServoPosition = false;
