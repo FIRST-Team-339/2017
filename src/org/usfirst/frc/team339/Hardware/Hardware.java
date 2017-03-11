@@ -153,12 +153,12 @@ public static SingleThrowSwitch gearLimitSwitch = new SingleThrowSwitch(
 public static SingleThrowSwitch backupOrFireOrHopper = new SingleThrowSwitch(
         3);
 
-public static SingleThrowSwitch rightPath = new SingleThrowSwitch(7);
+public static SingleThrowSwitch sideGearPath = new SingleThrowSwitch(7);
 
-public static SingleThrowSwitch leftPath = new SingleThrowSwitch(8);
+public static SingleThrowSwitch autoBaseLinePath = new SingleThrowSwitch(8);
 
 public static DoubleThrowSwitch pathSelector = new DoubleThrowSwitch(
-        rightPath, leftPath);
+        sideGearPath, autoBaseLinePath);
 
 public static SingleThrowSwitch enableAutonomous = new SingleThrowSwitch(
         4);
