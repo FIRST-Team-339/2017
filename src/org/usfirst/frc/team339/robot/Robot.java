@@ -336,8 +336,6 @@ public void robotInit ()
         // Sets the scaling factor and general ultrasonic stuff
         Hardware.ultraSonic.setScalingFactor(
                 Hardware.KILROY_XVII_US_SCALING_FACTOR);
-
-
         }
     // -------------------------------------
     // motor initialization
@@ -381,6 +379,7 @@ public void robotInit ()
     // -------------------------------------
     // USB Camera initialization
     // -------------------------------------
+
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
     Hardware.ultraSonic.setOffsetDistanceFromNearestBummper(3);

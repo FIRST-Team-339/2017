@@ -76,12 +76,13 @@ public static void init ()
     // ---------------------------------------
     // Servo init
     // ---------------------------------------
-    Hardware.cameraServo.setAngle(HIGHER_CAMERASERVO_POSITION);
+
+    Hardware.cameraservoX.setAngle(HIGHER_CAMERA_POSITIONX);
+    Hardware.cameraservoX.setAngle(HIGHER_CAMERASERVO_POSITIONY);
     // gimbal motors
     Hardware.gimbalMotor
             .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-    // Hardware.gimbalMotor.setEncPosition(0); //THIS WILL RESET AFTER AUTO
-    // (dont do that)
+    Hardware.gimbalMotor.setEncPosition(0);
     // mecanum
     Hardware.mecanumDrive
             .setFirstGearPercentage(
@@ -93,7 +94,7 @@ public static void init ()
         Hardware.tankDrive.setGear(2);
         // auto drive values
         Hardware.autoDrive.setDriveCorrection(.3);
-        Hardware.autoDrive.setEncoderSlack(.45);
+        Hardware.autoDrive.setEncoderSlack(1);
         // mecanum values
         Hardware.mecanumDrive.setGear(1);
         }
@@ -117,12 +118,6 @@ public static void init ()
         SmartDashboard.putNumber("Err",
                 Hardware.shooterMotor.getError());
         }
-
-    if (Hardware.driveGyro.isConnected())
-        {
-        Hardware.driveGyro.calibrate();
-        Hardware.driveGyro.reset();
-        }
 } // end Init
 
 static double tempSetpoint = 0.0;
@@ -140,6 +135,8 @@ public static void periodic ()
     // print values from hardware items
     printStatements();
 
+
+
     // tune pid loop
     if (tunePIDLoop == true)
         {
@@ -156,6 +153,8 @@ public static void periodic ()
                 .set(tempSetpoint);
         }
 
+    // Hardware.shooterMotor
+    // .set(tempSetpoint);
 
     // previousFireButton = Hardware.leftDriver.getTrigger();
     //
@@ -197,10 +196,14 @@ public static void periodic ()
 
     // rightOperator stuffs
 
+
+
+
+
     // TESTING SHOOTER
     if (Hardware.rightOperator.getTrigger() == true)
         {
-        isTurningToGoal = true;
+        Hardware.shooter.turnToGoalRaw();
         Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
         // System.out.println(
         // Hardware.shooterMotor.set(
@@ -219,17 +222,20 @@ public static void periodic ()
     // END SHOOTER TESTING
 
     // TURRET OVERRIDE
+
+
+
     if (Hardware.rightOperator.getRawButton(2) == true
             && Math.abs(Hardware.rightOperator.getX()) > .2)
         {
         if (Hardware.rightOperator.getX() > 0)
             {
-            Hardware.shooter.turnGimbalMedium(-1);
+            Hardware.shooter.turnGimbalSlow(1);
             }
         else
             {
             Hardware.shooter
-                    .turnGimbalMedium(1);
+                    .turnGimbalSlow(-1);
             }
         }
     else if (isTurningGimbal == false && isTurningToGoal == false)
@@ -285,11 +291,13 @@ public static void periodic ()
     // =================================================================
     if (Hardware.cameraServoSwitch.isOnCheckNow() == true)
         {
-        Hardware.cameraServo.setAngle(HIGHER_CAMERASERVO_POSITION);
+        Hardware.cameraservoX.setAngle(190);// TODO find actual value
+        Hardware.cameraservoY.setAngle(190);
         }
     else
         {
-        Hardware.cameraServo.setAngle(LOWER_CAMERASERVO_POSITION);
+        Hardware.cameraservoX.setAngle(0);// TODO find actual value
+        Hardware.cameraservoY.setAngle(0);
         }
 
     // Testing the *new* alinging to gear peg code
@@ -339,11 +347,11 @@ public static void periodic ()
     // Driving code
     // =================================================================
 
+
     // rotate only when we are pulling the trigger
     if (Hardware.leftDriver.getTrigger() == true)
         {
-        rotationValue = ROTATION_FACTOR
-                * Hardware.leftDriver.getTwist();
+        rotationValue = Hardware.leftDriver.getTwist();
         }
     else
         rotationValue = 0.0;
@@ -365,36 +373,57 @@ public static void periodic ()
         }
     // Test code for brake
     if (Hardware.leftDriver.getRawButton(9) == true)
-        isDrivingStraight = true;
+        isAccelerating = true;
+
+    if (isAccelerating == true)
+        {
+        isAccelerating = !Hardware.autoDrive.accelerate(.6, .4);
+        if (isAccelerating == false)
+            {
+            isDrivingStraight = true;
+            }
+        }
 
     if (isDrivingStraight == true)
         {
         // System.out.println("We are driving straight inches");
-        isDrivingStraight = !Hardware.autoDrive.driveStraightInches(100,
+        isDrivingStraight = !Hardware.autoDrive.driveStraightInches(
+                77.9,
                 .6, .2);
         if (isDrivingStraight == false)
             {
-            isBraking = true;
+            isTurningToGoal = true;
             }
         }
 
     if (isBraking == true)
         {
-        isBraking = !Hardware.autoDrive.brakeToZero(.18);
+        isBraking = !Hardware.autoDrive.brakeToZero(.4);
         // isBraking = !Hardware.autoDrive.timeBrake(-.1, .5);
+        if (isBraking == false)
+            {
+            isTurningToGoal = true;
+            }
         System.out.println("We are braking");
-        // if (Hardware.autoDrive.isStopped(Hardware.leftRearEncoder,
-        // Hardware.rightRearEncoder)
-        // && Hardware.autoDrive.isStopped(
-        // Hardware.leftFrontEncoder,
-        // Hardware.rightFrontEncoder))
-        // {
-        // Hardware.autoDrive.driveNoDeadband(0.0, 0.0);
-        // System.out.println("We are at zero");
-        //
-        // }
         }
 
+    if (isTurningToGoal == true)
+        {
+        System.out.println("We Are turning");
+        isTurningToGoal = !Hardware.autoDrive.turnDegreesByGyro(-30.0,
+                .4);
+        if (isTurningToGoal == false)
+            {
+            isDrivingStraightSecond = true;
+            }
+        }
+
+    if (isDrivingStraightSecond == true)
+        {
+        isDrivingStraightSecond = !Hardware.autoDrive
+                .driveStraightInches(
+                        24.2, .6, .2);
+        }
     // if (Hardware.brake.get())
     // {
     //
@@ -408,8 +437,11 @@ public static void periodic ()
 } // end
   // Periodic
 
-
 private static boolean isDrivingStraight = false;
+
+private static boolean isDrivingStraightSecond = false;
+
+private static boolean isAccelerating = false;
 
 private static boolean isBraking = false;
 
@@ -515,7 +547,7 @@ public static void printStatements ()
     // System.out.println("Gear Limit Switch: "
     // + Hardware.gearLimitSwitch.isOn());
     // System.out.println("Backup or fire: " +
-    // Hardware.backupOrFireOrHopper.isOn());
+    // Hardware.backupOrFire.isOn());
     // System.out.println("Enable Auto: " +
     // Hardware.enableAutonomous.isOn());
     // System.out.println(
@@ -589,7 +621,16 @@ public static void printStatements ()
     // Analogs
     // =================================
 
+    // =========================
+    // Servos
+    // =========================
+    System.out.println(
+            "camera servo Y" + Hardware.cameraservoX.getAngle());
+    System.out.println(
+            "camera servo X" + Hardware.cameraservoY.getAngle());
+    // ================
     // GYRO
+    // =================
     // System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
 
     // System.out.println("Ultrasonic = "
@@ -610,6 +651,8 @@ public static void printStatements ()
     // ---------------------------------
     // System.out.println("Expected center: " + CAMERA_ALIGN_CENTER);
     //
+    // System.out.println("USB Cam Brightness: "
+    // + "Hardware.camForward.getBrightness()");
     // Hardware.imageProcessor.processImage();
     // Hardware.imageProcessor.filterBlobsInYRange(1, .9);
     // if (Hardware.imageProcessor.getLargestBlob() != null)
@@ -691,23 +734,26 @@ private final static double CAMERA_ALIGN_CENTER = .478;  // Relative coordinates
 
 
 // ==========================================
+
 // TUNEABLES
 // ==========================================
+private final static double LOWER_CAMERASERVO_POSITION = 65;
 
 private final static double ROTATION_FACTOR = .7;
 
-private final static double LOWER_CAMERASERVO_POSITION = 190;
+
 
 private static boolean tunePIDLoop = false;
 // TODO
 // find
 // actual value
 
-private final static double HIGHER_CAMERASERVO_POSITION = 150;
-
-// TODO find
+private final static double HIGHER_CAMERA_POSITIONX = 90;// TODO find
 // actual
 // actual value
+
+private final static double HIGHER_CAMERASERVO_POSITIONY = 90;// TODO find
+                                                              // actual value
 
 public static boolean changeCameraServoPosition = false;
 

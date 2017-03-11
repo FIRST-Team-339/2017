@@ -203,14 +203,14 @@ private static enum AutoProgram
      * forwards, turn and place the gear, and try and turn around to attempt to
      * fire. (Based on whether or not we are on the red or blue alliance)
      */
-    RIGHT_PATH,
+    SIDE_GEAR_PATH,
 
     /**
      * The path where we start on the left side of the field and drive
      * forwards, turn and place the gear, and try and turn around to attempt to
      * fire. (Based on whether or not we are on the red or blue alliance)
      */
-    LEFT_PATH,
+    BASELINE_PATH,
 
     /**
      * We are done with this auto path! Yay! (or aww depending on if it
@@ -247,7 +247,7 @@ private static final double ALIGN_CORRECT_VAR = 30;// 45
 /**
  * How fast we will be driving during all of auto, in percent.
  */
-private static final double DRIVE_SPEED = .45;
+private static final double DRIVE_SPEED = .6;// .45
 
 /**
  * Determines what value we set the motors backwards to in order to brake, in
@@ -318,7 +318,7 @@ public static void init ()
     Hardware.ultraSonic.setOffsetDistanceFromNearestBummper(3);
     Hardware.ultraSonic.setNumberOfItemsToCheckBackwardForValidity(3);
 
-    Hardware.cameraServo.setAngle(190);
+    Hardware.cameraservoX.setAngle(190);
     // if running on kilroy XVIII use certain value and different for XVII
     // TODO WHY was this gone in git?
     if (Hardware.isRunningOnKilroyXVIII)
@@ -360,14 +360,14 @@ public static void periodic ()
                     autoPath = AutoProgram.CENTER_GEAR_PLACEMENT;
                     break;
                     }
-                if (Hardware.rightPath.isOn())
+                if (Hardware.sideGearPath.isOn())
                     {
-                    autoPath = AutoProgram.RIGHT_PATH;
+                    autoPath = AutoProgram.SIDE_GEAR_PATH;
                     break;
                     }
-                if (Hardware.leftPath.isOn())
+                if (Hardware.autoBaseLinePath.isOn())
                     {
-                    autoPath = AutoProgram.LEFT_PATH;
+                    autoPath = AutoProgram.BASELINE_PATH;
                     break;
                     }
                 autoPath = AutoProgram.DONE;
@@ -383,13 +383,13 @@ public static void periodic ()
                 autoPath = AutoProgram.DONE;
             break;
         // Drives towards the right gear peg and turns around to fire
-        case RIGHT_PATH:
-            if (rightSidePath() == true)
+        case SIDE_GEAR_PATH:
+            if (baselinePath() == true)
                 autoPath = AutoProgram.DONE;
             break;
         // Drives towards the left gear peg and turns around to fire
-        case LEFT_PATH:
-            if (leftSidePath() == true)
+        case BASELINE_PATH:
+            if (sideGearPath() == true)
                 autoPath = AutoProgram.DONE;
             break;
         // We are done with the auto program!
@@ -672,7 +672,7 @@ private static int wiggleWiggleCount = 0;
 
 private static boolean runWiggleWiggleSetup = true;
 
-private static boolean rightSidePath ()
+private static boolean baselinePath ()
 {
     System.out.println("Current State = " + currentState);
     System.out.println("Encoder Val: "
@@ -739,7 +739,7 @@ private static boolean rightSidePath ()
 
 private static int fireCount = 0;
 
-private static boolean leftSidePath ()
+private static boolean sideGearPath ()
 {
     System.out.println("Current State = " + currentState);
     switch (currentState)
@@ -789,19 +789,27 @@ private static boolean leftSidePath ()
                 }
             break;
         case DRIVE_FORWARD_TO_SIDES:
-            // If we haven't yet driven too far...
-            System.out.println("Encoders: "
-                    + Hardware.autoDrive.getAveragedEncoderValues());
-            if (Hardware.autoDrive.getAveragedEncoderValues() <= 95.5)
+            // System.out.println("Encoders: "
+            // + Hardware.autoDrive.getAveragedEncoderValues());
+            if (Hardware.driverStation.getAlliance() == Alliance.Blue)
                 {
-                // keep going
-                Hardware.autoDrive.driveNoDeadband(DRIVE_SPEED, 0.0,
-                        0.0);
+                // According to Cole's numbers, we drive forward 77.9 inches as
+                // the first step in our auto program.
+                if (Hardware.autoDrive.driveStraightInches(77.9,
+                        DRIVE_SPEED, .2) == false)
+                    {
+                    // keep going
+                    currentState = MainState.BRAKE_BEFORE_TURN_TO_GEAR_PEG;
+                    }
                 }
             else
                 {
-                // Stop before we start turning.
-                currentState = MainState.BRAKE_BEFORE_TURN_TO_GEAR_PEG;
+                // if we're red we have to drive backwards.
+                if (Hardware.autoDrive.driveStraightInches(77.9,
+                        -DRIVE_SPEED, .2) == false)
+                    {
+                    currentState = MainState.BRAKE_BEFORE_TURN_TO_GEAR_PEG;
+                    }
                 }
             break;
         case BRAKE_BEFORE_TURN_TO_GEAR_PEG:
@@ -815,7 +823,7 @@ private static boolean leftSidePath ()
             break;
         case TURN_TO_GEAR_PEG:
             // If we're done turning.// turn right on both red and blue
-            if (Hardware.autoDrive.turnDegrees(55, .4))
+            if (Hardware.autoDrive.turnDegrees(55, .4) == true)
                 {
                 currentState = MainState.BRAKE_AFTER_TURN_TO_GEAR_PEG;
                 }

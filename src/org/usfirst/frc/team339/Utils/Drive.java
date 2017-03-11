@@ -1,5 +1,6 @@
 package org.usfirst.frc.team339.Utils;
 
+import org.usfirst.frc.team339.HardwareInterfaces.KilroyGyro;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
@@ -45,6 +46,8 @@ private boolean isUsingUltrasonics = false;
 private UltraSonic ultrasonic = null;
 
 private Timer timer = new Timer();
+
+private KilroyGyro gyro = null;
 
 private double correction = 0.1;// TODO find out what this does.
 
@@ -96,6 +99,9 @@ public Drive (TransmissionMecanum transmissionMecanum,
  *            The ultrasonic on the left side of the robot
  * @param rightUlt
  *            The ultrasonic on the right side of the robot
+ * @deprecated Use
+ *             {@link #Drive(TransmissionMecanum,ImageProcessor,Encoder,Encoder,Encoder,Encoder,UltraSonic,KilroyGyro)}
+ *             instead
  */
 public Drive (TransmissionMecanum transmissionMecanum,
         ImageProcessor imageProcessor,
@@ -103,11 +109,49 @@ public Drive (TransmissionMecanum transmissionMecanum,
         Encoder leftFrontEncoder, Encoder leftRearEncoder,
         UltraSonic rightUlt)
 {
+    this(transmissionMecanum, imageProcessor, rightFrontEncoder,
+            rightRearEncoder, leftFrontEncoder, leftRearEncoder,
+            rightUlt, null);
+}
+
+/**
+ * Creates an instance of the Drive class, with a mecanum drive system.
+ * If this is called, the mecanum versions of each method are used.
+ * 
+ * @param transmissionMecanum
+ *            The transmission to be input
+ * @param imageProcessor
+ *            The processor we want to use for aiming and aligning
+ * @param rightFrontEncoder
+ *            The front right encoder
+ * @param rightRearEncoder
+ *            The back right encoder
+ * @param leftFrontEncoder
+ *            The front left encoder
+ * @param leftRearEncoder
+ *            The back left encoder
+ * @param rightUlt
+ *            The ultrasonic on the right side of the robot
+ * @param gyro
+ *            TODO
+ * @param camera
+ *            The camera we want to use for image saving
+ * @param leftUlt
+ *            The ultrasonic on the left side of the robot
+ */
+public Drive (TransmissionMecanum transmissionMecanum,
+        ImageProcessor imageProcessor,
+        Encoder rightFrontEncoder, Encoder rightRearEncoder,
+        Encoder leftFrontEncoder, Encoder leftRearEncoder,
+        UltraSonic rightUlt, KilroyGyro gyro)
+{
     // set up the transmission and vision processor objects
     this(transmissionMecanum, imageProcessor);
     // Set up the encoders.
     this.initEncoders(leftFrontEncoder, rightFrontEncoder,
             leftRearEncoder, rightRearEncoder);
+    // Save our gyro
+    this.gyro = gyro;
     // Save the ultrasonic object
     this.ultrasonic = rightUlt;
     // We have the ultrasonic, so tell the class that.
@@ -1382,7 +1426,7 @@ public boolean turnDegrees (double degrees, double speed)
     // We do not know why, but the robot by default turns opposite what we want.
     double adjustedDegrees = -degrees;
     // If we don't have any encoders
-    if (isUsingEncoders == true)
+    if (isUsingEncoders == false)
         {
         this.firstAlign = true;
         // Quit the method, lying and saying we've turned the correct distance
@@ -1416,14 +1460,14 @@ public boolean turnDegrees (double degrees, double speed)
         if (transmissionType == TransmissionType.TANK)
             transmissionFourWheel.drive(speed, -speed);
         else
-            transmissionMecanum.drive(0.0, 0.0, -speed);
+            transmissionMecanum.driveNoDeadband(0.0, 0.0, -speed);
         }
     else if (adjustedDegrees > 0)
         {
         if (transmissionType == TransmissionType.TANK)
             transmissionFourWheel.drive(-speed, speed);
         else
-            transmissionMecanum.drive(0.0, 0.0, speed);
+            transmissionMecanum.driveNoDeadband(0.0, 0.0, speed);
         }
     // we're not done
     return false;
@@ -1442,6 +1486,107 @@ public boolean turnDegrees (double degrees)
 }
 
 private double rotateSpeed = .6;
+
+public boolean turnDegreesByGyro (double degrees, double speed)
+{
+    if (firstTurnByGyro == true)
+        {
+        this.gyro.reset();
+        firstTurnByGyro = false;
+        }
+
+    if (firstTurnByGyro == false)
+        {
+        System.out.println("Moving Modififed Gyro: "
+                + this.getModifiedGyroAngle());
+        System.out.println(
+                "Moving Gyro: " + this.gyro.getAngle());
+        // If we are turning right, keep turning until we reach the
+        // specified gyro value
+        if (degrees > 0 && this.getModifiedGyroAngle() < degrees)
+            {
+            driveNoDeadband(0, 0, speed);
+            }
+        else
+
+        // If we are turning left, keep turning until we reach the
+        // specified gyro value
+        if (degrees < 0 && this.getModifiedGyroAngle() > degrees)
+            {
+            driveNoDeadband(0, 0, -speed);
+
+            }
+        else
+            {
+            // turns off the function and resets for the next time the function
+            // is
+            // called
+            System.out.println("STOPPING; Modififed Gyro: "
+                    + this.getModifiedGyroAngle());
+            System.out.println(
+                    "STOPPING; Gyro: " + this.gyro.getAngle());
+            firstTurnByGyro = true;
+            return true;
+            }
+
+        }
+    return false;
+}
+
+private boolean firstTurnByGyro = true;
+
+private double gyroDegreesVariationConstant = 1.0;
+
+
+/**
+ * Setter function for the gyroDegreesVariationConstant; sets and returns
+ * the variation constant for turning with the gyro
+ * 
+ * @param gyroVariation-
+ *            The difference between the actual degrees turned by the robot and
+ *            degrees
+ *            you wanted it to turn (uncorrected);
+ *            Example: if you told the robot to turn 90 degrees (uncorrected),
+ *            and it turned 97, then
+ *            the value 7 should be inputted into this function
+ * @return double; the new value of the gyroDegreesVariationConstant
+ * 
+ * @author Cole Ramos last edited: 11 Mar 2017
+ */
+public double setGyroDegreesVariationConstant (double gyroVariation)
+{
+    gyroDegreesVariationConstant = (90.0 + gyroVariation) / 90.0;
+    return gyroDegreesVariationConstant;
+}
+
+/**
+ * Getter function for the gyroDegreesVariationConstant variable
+ * 
+ * @return the value of the gyroDegreesVariationConstant; used by
+ *         turnDegreesByGyro to correct the values coming in from the gyro
+ * 
+ * @author Cole Ramos last edited: 11 Mar 2017
+ */
+public double getGyroDegreesVariationConstant ()
+{
+    return gyroDegreesVariationConstant;
+}
+
+/**
+ * Calculates and returns the corrected angle of the gyro; used by
+ * turnDegreesByGyro
+ * to determine how far to turn
+ * 
+ * @return the modified gyro angle- gyro angle * gyroDegreesVariationConstant
+ * 
+ * @author Cole Ramos; last edited 11 Mar 2017
+ */
+
+public double getModifiedGyroAngle ()
+{
+    return this.gyro.getAngle()
+            * this.getGyroDegreesVariationConstant();
+}
 
 /**
  * Gets how fast we are rotating in turnDegrees

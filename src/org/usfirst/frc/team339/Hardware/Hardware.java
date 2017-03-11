@@ -91,7 +91,9 @@ public static final double CAMERA_MOUNT_ANGLE = Math.toRadians(65);
 // ====================================
 // PWM classes
 // ====================================
-public static KilroyServo cameraServo = new KilroyServo(7, 190);
+public static KilroyServo cameraservoY = new KilroyServo(7, 190);
+
+public static KilroyServo cameraservoX = new KilroyServo(8, 190);
 // TODO find actual values
 
 // ------------------------------------
@@ -153,12 +155,13 @@ public static SingleThrowSwitch gearLimitSwitch = new SingleThrowSwitch(
 public static SingleThrowSwitch backupOrFireOrHopper = new SingleThrowSwitch(
         3);
 
-public static SingleThrowSwitch rightPath = new SingleThrowSwitch(7);
+public static SingleThrowSwitch sideGearPath = new SingleThrowSwitch(7);
 
-public static SingleThrowSwitch leftPath = new SingleThrowSwitch(8);
+public static SingleThrowSwitch autoBaseLinePath = new SingleThrowSwitch(
+        8);
 
 public static DoubleThrowSwitch pathSelector = new DoubleThrowSwitch(
-        rightPath, leftPath);
+        sideGearPath, autoBaseLinePath);
 
 public static SingleThrowSwitch enableAutonomous = new SingleThrowSwitch(
         4);
@@ -269,7 +272,7 @@ public static final double KILROY_XVII_US_SCALING_FACTOR = .13;
 public static UsbCamera camForward = CameraServer.getInstance()
         .startAutomaticCapture(0);
 
-public static KilroyCamera axisCamera = new KilroyCamera(true,
+public static KilroyCamera axisCamera = new KilroyCamera(false,
         "10.13.39.11");// TODO change
 
 public static VisionScript visionScript = new VisionScript(
@@ -382,7 +385,7 @@ public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
 
 public static Drive autoDrive = new Drive(mecanumDrive,
         imageProcessor, rightFrontEncoder, rightRearEncoder,
-        leftFrontEncoder, leftRearEncoder, ultraSonic);
+        leftFrontEncoder, leftRearEncoder, ultraSonic, driveGyro);
 
 /**
  * are we using mecanum? set false for tank drive
