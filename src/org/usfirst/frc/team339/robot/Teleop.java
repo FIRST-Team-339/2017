@@ -344,16 +344,25 @@ public static void periodic ()
         }
     // Test code for brake
     if (Hardware.leftDriver.getRawButton(9) == true)
-        isDrivingStraight = true;
+        isAccelerating = true;
+
+    if (isAccelerating == true)
+        {
+        isAccelerating = !Hardware.autoDrive.accelerate(.6, .4);
+        if (isAccelerating == false)
+            {
+            isDrivingStraight = true;
+            }
+        }
 
     if (isDrivingStraight == true)
         {
         // System.out.println("We are driving straight inches");
-        isDrivingStraight = !Hardware.autoDrive.driveStraightInches(100,
+        isDrivingStraight = !Hardware.autoDrive.driveStraightInches(75,
                 .6, .2);
         if (isDrivingStraight == false)
             {
-            isBraking = true;
+            isTurningToGoal = true;
             }
         }
 
@@ -361,19 +370,18 @@ public static void periodic ()
         {
         isBraking = !Hardware.autoDrive.brakeToZero(.18);
         // isBraking = !Hardware.autoDrive.timeBrake(-.1, .5);
+        if (isBraking == false)
+            {
+            isTurningToGoal = true;
+            }
         System.out.println("We are braking");
-        // if (Hardware.autoDrive.isStopped(Hardware.leftRearEncoder,
-        // Hardware.rightRearEncoder)
-        // && Hardware.autoDrive.isStopped(
-        // Hardware.leftFrontEncoder,
-        // Hardware.rightFrontEncoder))
-        // {
-        // Hardware.autoDrive.driveNoDeadband(0.0, 0.0);
-        // System.out.println("We are at zero");
-        //
-        // }
         }
 
+    if (isTurningToGoal == true)
+        {
+        System.out.println("We Are turning");
+        isTurningToGoal = !Hardware.autoDrive.turnDegrees(-45, .3);
+        }
     // if (Hardware.brake.get())
     // {
     //
@@ -389,6 +397,8 @@ public static void periodic ()
 
 
 private static boolean isDrivingStraight = false;
+
+private static boolean isAccelerating = false;
 
 private static boolean isBraking = false;
 
@@ -512,20 +522,20 @@ public static void printStatements ()
 
     // System.out.println("Right Front Encoder: " +
     // Hardware.rightFrontEncoder.get());
-    System.out.println("Right Front Distance: " +
-            Hardware.autoDrive.getRightFrontEncoderDistance());
+    // System.out.println("Right Front Distance: " +
+    // Hardware.autoDrive.getRightFrontEncoderDistance());
     // System.out.println("Right Rear Encoder: " +
     // Hardware.rightRearEncoder.get());
-    System.out.println("Right Rear Encoder Distance: " +
-            Hardware.autoDrive.getRightRearEncoderDistance());
+    // System.out.println("Right Rear Encoder Distance: " +
+    // Hardware.autoDrive.getRightRearEncoderDistance());
     // System.out.println("Left Front Encoder: " +
     // Hardware.leftFrontEncoder.get());
-    System.out.println("Left Front Encoder Distance: " +
-            Hardware.autoDrive.getLeftFrontEncoderDistance());
+    // System.out.println("Left Front Encoder Distance: " +
+    // Hardware.autoDrive.getLeftFrontEncoderDistance());
     // System.out.println("Left Rear Encoder: " +
     // Hardware.leftRearEncoder.get());
-    System.out.println("Left Rear Encoder Distance: " +
-            Hardware.autoDrive.getLeftRearEncoderDistance());
+    // System.out.println("Left Rear Encoder Distance: " +
+    // Hardware.autoDrive.getLeftRearEncoderDistance());
     // Hardware.rightFrontEncoder.get());
     // System.out.println("Right Front Encoder Distance: " +
     // Hardware.autoDrive.getRightRearEncoderDistance());

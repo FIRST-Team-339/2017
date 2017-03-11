@@ -336,8 +336,6 @@ public void robotInit ()
         // Sets the scaling factor and general ultrasonic stuff
         Hardware.rightUS.setScalingFactor(
                 Hardware.KILROY_XVII_US_SCALING_FACTOR);
-
-
         }
     // -------------------------------------
     // motor initialization
