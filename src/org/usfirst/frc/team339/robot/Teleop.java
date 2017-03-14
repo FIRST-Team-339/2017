@@ -555,10 +555,10 @@ public static void printStatements ()
 
     // System.out.println("Right UltraSonic distance from bumper: "
     // + Hardware.rightUS.getDistanceFromNearestBumper());
-    // System.out.println("Right UltraSonic refined distance: "
-    // + Hardware.rightUS.getRefinedDistanceValue());
-    // System.out.println("Right UltraSonic raw distance: "
-    // + Hardware.rightUS.getValue());
+    System.out.println("Right UltraSonic refined distance: "
+            + Hardware.ultraSonic.getRefinedDistanceValue());
+    System.out.println("Right UltraSonic raw distance: "
+            + Hardware.ultraSonic.getValue());
 
     // ---------------------------------
     // Encoders
@@ -624,10 +624,10 @@ public static void printStatements ()
     // =========================
     // Servos
     // =========================
-    System.out.println(
-            "camera servo Y" + Hardware.cameraservoY.getAngle());
-    System.out.println(
-            "camera servo X" + Hardware.cameraservoY.getAngle());
+    // System.out.println(
+    // "camera servo Y" + Hardware.cameraservoY.getAngle());
+    // System.out.println(
+    // "camera servo X" + Hardware.cameraservoY.getAngle());
     // ================
     // GYRO
     // =================

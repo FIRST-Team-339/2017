@@ -257,7 +257,7 @@ public static UltraSonic ultraSonic = new UltraSonic(2);
 
 public static final double KILROY_XVIII_US_SCALING_FACTOR = .13;
 
-public static final double KILROY_XVII_US_SCALING_FACTOR = .13;
+public static final double KILROY_XVII_US_SCALING_FACTOR = 1.0;
 
 // **********************************************************
 // roboRIO CONNECTIONS CLASSES

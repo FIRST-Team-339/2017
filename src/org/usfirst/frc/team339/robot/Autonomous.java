@@ -253,7 +253,7 @@ private static final double DRIVE_SPEED = .6;// .45
  * Determines what value we set the motors backwards to in order to brake, in
  * percentage.
  */
-private static final double BRAKE_SPEED = .3;
+private static final double BRAKE_SPEED = .18;
 
 /**
  * Determines how long we should set the motors backwards in order to brake
@@ -314,9 +314,9 @@ public static void init ()
             .setFirstGearPercentage(
                     Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
     // Sets the scaling factor and general ultrasonic stuff
-    Hardware.ultraSonic.setScalingFactor(.13);
-    Hardware.ultraSonic.setOffsetDistanceFromNearestBummper(3);
-    Hardware.ultraSonic.setNumberOfItemsToCheckBackwardForValidity(3);
+    // Hardware.ultraSonic.setScalingFactor(.13);
+    // Hardware.ultraSonic.setOffsetDistanceFromNearestBummper(3);
+    // Hardware.ultraSonic.setNumberOfItemsToCheckBackwardForValidity(3);
 
     Hardware.cameraservoX.setAngle(190);
     // if running on kilroy XVIII use certain value and different for XVII
@@ -791,7 +791,7 @@ private static boolean sideGearPath ()
         case DRIVE_FORWARD_TO_SIDES:
             // System.out.println("Encoders: "
             // + Hardware.autoDrive.getAveragedEncoderValues());
-            if (Hardware.driverStation.getAlliance() == Alliance.Blue)
+            if (isRedAlliance == false)
                 {
                 // According to Cole's numbers, we drive forward 77.9 inches as
                 // the first step in our auto program.
@@ -823,15 +823,19 @@ private static boolean sideGearPath ()
             break;
         case TURN_TO_GEAR_PEG:
             // If we're done turning.// turn right on both red and blue
-            if (Hardware.autoDrive.turnDegrees(55, .4) == true)
+            if (isRedAlliance == true)
                 {
-                currentState = MainState.BRAKE_AFTER_TURN_TO_GEAR_PEG;
+                if (Hardware.autoDrive.turnDegrees(-30, .4) == true)
+                    {
+                    currentState = MainState.BRAKE_AFTER_TURN_TO_GEAR_PEG;
+                    }
                 }
-            // If we're not done turning
-            else
+            else if (isRedAlliance == false)
                 {
-                // Keep Turning!
-                currentState = MainState.TURN_TO_GEAR_PEG;
+                if (Hardware.autoDrive.turnDegrees(30, .4))
+                    {
+                    currentState = MainState.BRAKE_AFTER_TURN_TO_GEAR_PEG;
+                    }
                 }
             break;
         case BRAKE_AFTER_TURN_TO_GEAR_PEG:
