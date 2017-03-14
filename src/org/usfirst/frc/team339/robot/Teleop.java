@@ -348,7 +348,7 @@ public static void periodic ()
     if (isDrivingStraight == false && isBraking == false
             && isAligning == false
             && isStrafingToTarget == false && isMovingToWall == false
-            && Hardware.leftOperator.getRawButton(9) == true)
+            && Hardware.leftOperator.getRawButton(9) == false)
 
     // main driving function
         {
