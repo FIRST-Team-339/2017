@@ -335,6 +335,118 @@ public boolean driveInches (double inches, double speed)
 private boolean firstTimeDriveInches = true;
 
 /**
+ * Strafes either left or right based off of encoders.
+ * 
+ * @param direction
+ *            Whether we are strafing left or right (at 90 degree angles)
+ * @param deadband
+ *            Where we are considered 'straight', in inches.
+ * @param speed
+ *            How fast we want to strafe, in percentage.
+ * @param correctionVal
+ *            How much we want to correct each wheel if it is outside the
+ *            acceptable range.
+ */
+public void strafeStraight (Direction direction, double deadband,
+        double speed, double correctionVal)
+{
+    double average = this.getAveragedEncoderValues();
+    switch (direction)
+        {
+        case LEFT:
+            // Front Left distance
+            if (Math.abs(this.getLeftFrontEncoderDistance()
+                    - average) < deadband)
+                {
+                this.transmissionMecanum.leftSpeedController
+                        .set(-speed);
+                }
+            else if (Math
+                    .abs(this.getLeftFrontEncoderDistance()) < average)
+                {
+                this.transmissionMecanum.leftSpeedController
+                        .set(-speed - correctionVal);
+                }
+            else
+                {
+                this.transmissionMecanum.leftSpeedController
+                        .set(-speed + correctionVal);
+                }
+            // Front Rear distance
+            if (Math.abs(this.getRightFrontEncoderDistance()
+                    - average) < deadband)
+                {
+                this.transmissionMecanum.rightSpeedController
+                        .set(speed);
+                }
+            else if (Math
+                    .abs(this.getRightFrontEncoderDistance()) < average)
+                {
+                this.transmissionMecanum.rightSpeedController
+                        .set(speed - correctionVal);
+                }
+            else
+                {
+                this.transmissionMecanum.rightSpeedController
+                        .set(speed + correctionVal);
+                }
+            // Left Rear Distance
+            if (Math.abs(this.getLeftRearEncoderDistance()
+                    - average) < deadband)
+                {
+                this.transmissionMecanum.leftRearSpeedController
+                        .set(speed);
+                }
+            else if (Math
+                    .abs(this.getLeftFrontEncoderDistance()) < average)
+                {
+                this.transmissionMecanum.leftRearSpeedController
+                        .set(speed + correctionVal);
+                }
+            else
+                {
+                this.transmissionMecanum.leftRearSpeedController
+                        .set(speed - correctionVal);
+                }
+
+            // Right Rear Distance
+            if (Math.abs(this.getRightRearEncoderDistance()
+                    - average) < deadband)
+                {
+                this.transmissionMecanum.rightRearSpeedController
+                        .set(-speed);
+                }
+            else if (Math
+                    .abs(this.getRightRearEncoderDistance()) < average)
+                {
+                this.transmissionMecanum.rightRearSpeedController
+                        .set(-speed + correctionVal);
+                }
+            else
+                {
+                this.transmissionMecanum.rightRearSpeedController
+                        .set(-speed - correctionVal);
+                }
+
+            break;
+        case RIGHT:
+
+            break;
+        default:
+            this.driveNoDeadband(0.0, 0.0, 0.0);
+            break;
+        }
+
+    this.resetEncoders();
+
+}
+
+public static enum Direction
+    {
+    LEFT, RIGHT
+    }
+
+/**
  * Method takes deltas of each side, and if they aren't equal, compensate by
  * making the other side go faster
  * 
@@ -448,12 +560,13 @@ public boolean
  * @author Ryan McGee
  * 
  * @param relativeCenter
- *            The "center" of the camera, the value we want to align to.
+ *            The "center" of the camera, the value we want to align to. (In
+ *            relative coordinates, 0 to 1 left to right.)
  * @param movementSpeed
  *            The speed we want the motors to run at
  * @param deadband
  *            The "happy" value; the method will say "I am aligned!" when we are
- *            in this range.
+ *            in this range. (RELATIVE coordinates)
  * @return Whether or not we are aligned to the center yet.
  */
 public AlignReturnType alignToGear (final double relativeCenter,
@@ -693,6 +806,81 @@ public AlignReturnType strafeToGear (double driveSpeed,
     return AlignReturnType.MISALIGNED;
 }
 
+/**
+ * 
+ * Used for the side-mounted gear mechanism. Will align (only if the camera is
+ * mounted/swiveled sideways) forwards and backwards, and then drive towards the
+ * wall until the ultrasonic picks up that we are close enough to the wall.
+ * 
+ * @param driveSpeed
+ *            How fast the robot will drive to the wall (percentage)
+ * @param alignSpeed
+ *            How fast the robot will align to the target (fowards and
+ *            backwards, percentage)
+ * @param relativeCenter
+ *            Where we want the center of the blob to be when we are considered
+ *            "aligned" (Relative coordinates)
+ * @param deadband
+ *            How far off we will allow the robot to be from the center to be
+ *            precise, but avoid oscillating. (relative coordinates)
+ * @param distanceToTarget
+ *            How far from the wall we should be when the robot stops moving and
+ *            resets it's values.
+ * @return
+ */
+public AlignReturnType driveToGear (final double driveSpeed,
+        final double alignSpeed,
+        final double relativeCenter, final double deadband,
+        final double distanceToTarget)
+{
+    // IF the last stored value was NOT driving towards the wall, align to the
+    // target.
+    if (this.driveToGearStatus != AlignReturnType.MOVING_TOWARDS_WALL)
+        {
+        this.driveToGearStatus = this.alignToGear(relativeCenter,
+                alignSpeed, deadband);
+        }
+    // ELSE IF the last stored value WAS driving towards the wall AND the
+    // ultrasonic value is less than or equal to what we want, stop the robot
+    // and return we are DONE.
+    else if (this.ultrasonic
+            .getDistanceFromNearestBumper() <= distanceToTarget)
+        {
+        this.driveNoDeadband(0.0, 0.0, 0.0);
+        // Reset the variable so that it doesn't start moving to the wall
+        // immediately.
+        this.driveToGearStatus = AlignReturnType.NO_BLOBS;
+        return AlignReturnType.CLOSE_ENOUGH;
+        }
+    // ELSE if we are not close enough AND the last stored value was move
+    // towards wall, then do that.
+    else
+        {
+        this.driveNoDeadband(driveSpeed, -90, 0.0);
+        return this.driveToGearStatus;
+        }
+
+    // IF we are aligned, then start moving towards the wall.
+    if (this.driveToGearStatus == AlignReturnType.ALIGNED)
+        {
+        this.driveToGearStatus = AlignReturnType.MOVING_TOWARDS_WALL;
+        return this.driveToGearStatus;
+        }
+
+    // return the current status if nothing else applies.
+    return this.driveToGearStatus;
+}
+
+/**
+ * Resets the drive to gear status in case it is canceled with the buttons.
+ */
+public void resetDriveToGearStatus ()
+{
+    this.driveToGearStatus = AlignReturnType.NO_BLOBS;
+}
+
+private AlignReturnType driveToGearStatus = AlignReturnType.NO_BLOBS;
+
 // private boolean purgingUltrasonic = true;
 //
 // private boolean firstStrafe = true;
@@ -726,7 +914,13 @@ public static enum AlignReturnType
      * We are waiting for the ultrasonic to purge bad values
      * before starting
      */
-    WAITING
+    WAITING,
+
+    /**
+     * Used in the strafeToGear method to return that we are moving towards the
+     * wall after aligning to the peg.
+     */
+    MOVING_TOWARDS_WALL
     }
 
 /**

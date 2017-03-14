@@ -35,6 +35,7 @@ import com.ctre.CANTalon.FeedbackDevice;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Drive.AlignReturnType;
+import org.usfirst.frc.team339.Utils.Drive.Direction;
 import org.usfirst.frc.team339.Utils.Shooter;
 import org.usfirst.frc.team339.Utils.Shooter.turnToGoalReturn;
 import edu.wpi.first.wpilibj.Relay;
@@ -310,31 +311,15 @@ public static void periodic ()
     // IF we are still aligning,
     if (isAligning == true)
         {
-        System.out.println(alignValue);
-        alignValue = Hardware.autoDrive.alignToGear(.6958, .55, 5); // <<Fix
-                                                                    // these
-                                                                    // values<<
-        if (alignValue == AlignReturnType.ALIGNED
-                || Hardware.leftOperator.getRawButton(7)
-                || Hardware.leftOperator.getRawButton(6))
+        alignValue = Hardware.autoDrive.driveToGear(.7, .7, .7, .07, 7);
+        if (alignValue == AlignReturnType.CLOSE_ENOUGH
+                || Hardware.leftOperator.getRawButton(6) == true
+                || Hardware.leftOperator.getRawButton(7) == true)
             {
+            Hardware.autoDrive.resetDriveToGearStatus();
             isAligning = false;
-            isMovingToWall = true;
             }
-        }
-
-    if (isMovingToWall == true)
-        {
-        System.out.println("Moving towards the wall");
-        if (Hardware.leftOperator.getRawButton(7)
-                || Hardware.leftOperator.getRawButton(6)
-                || Hardware.ultraSonic
-                        .getDistanceFromNearestBumper() <= 15)
-            {
-            Hardware.autoDrive.driveNoDeadband(0.0, 0.0, 0.0);
-            isMovingToWall = false;
-            }
-        Hardware.autoDrive.driveNoDeadband(.7, -90, 0.0);
+        System.out.println(alignValue);
         }
 
 
@@ -347,6 +332,10 @@ public static void periodic ()
     // Driving code
     // =================================================================
 
+    if (Hardware.leftOperator.getRawButton(9))
+        {
+        Hardware.autoDrive.strafeStraight(Direction.LEFT, .5, .5, .07);
+        }
 
     // rotate only when we are pulling the trigger
     if (Hardware.leftDriver.getTrigger() == true)
@@ -358,7 +347,8 @@ public static void periodic ()
 
     if (isDrivingStraight == false && isBraking == false
             && isAligning == false
-            && isStrafingToTarget == false)
+            && isStrafingToTarget == false && isMovingToWall == false
+            && Hardware.leftOperator.getRawButton(9) == false)
 
     // main driving function
         {
@@ -627,7 +617,7 @@ public static void printStatements ()
     // System.out.println(
     // "camera servo Y" + Hardware.cameraservoY.getAngle());
     // System.out.println(
-    // "camera servo X" + Hardware.cameraservoY.getAngle());
+    // "camera servo X" + Hardware.cameraservoX.getAngle());
     // ================
     // GYRO
     // =================
