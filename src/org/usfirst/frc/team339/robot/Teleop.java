@@ -310,8 +310,10 @@ public static void periodic ()
     // IF we are still aligning,
     if (isAligning == true)
         {
-        alignValue = Hardware.autoDrive.driveToGear(.7, .7, .3, .03,
-                (Hardware.leftOperator.getRawButton(6) == true
+        alignValue = Hardware.autoDrive.driveToGear(.5, .5, .2, .03,
+                ((Hardware.gearSensor1.isOn()
+                        || Hardware.gearSensor2.isOn())
+                        || Hardware.leftOperator.getRawButton(6) == true
                         || Hardware.leftOperator.getRawButton(7)));
         if (alignValue == AlignReturnType.DONE
                 || Hardware.leftOperator.getRawButton(6) == true
@@ -538,10 +540,10 @@ public static void printStatements ()
 
     // System.out.println("Right UltraSonic distance from bumper: "
     // + Hardware.rightUS.getDistanceFromNearestBumper());
-    System.out.println("Right UltraSonic refined distance: "
-            + Hardware.ultraSonic.getRefinedDistanceValue());
-    System.out.println("Right UltraSonic raw distance: "
-            + Hardware.ultraSonic.getValue());
+    // System.out.println("Right UltraSonic refined distance: "
+    // + Hardware.ultraSonic.getRefinedDistanceValue());
+    // System.out.println("Right UltraSonic raw distance: "
+    // + Hardware.ultraSonic.getValue());
     // ---------------------------------
     // Encoders
     // prints the distance from the encoders
@@ -637,30 +639,30 @@ public static void printStatements ()
     //
     // System.out.println("USB Cam Brightness: "
     // + "Hardware.camForward.getBrightness()");
-    Hardware.imageProcessor.processImage();
+    // Hardware.imageProcessor.processImage();
     // Hardware.imageProcessor.filterBlobsInYRange(1, .9);
-    if (Hardware.imageProcessor.getLargestBlob() != null)
-        {
-        System.out.println("Center of Mass: " + Hardware.imageProcessor
-                .getLargestBlob().center_mass_y);
-        }
-    else
-        {
-        System.out.println("NO BLOBS!");
-        }
-    if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
-        {
-        System.out.println("Angle to target 1: "
-                + Hardware.imageProcessor.getYawAngleToTarget(
-                        Hardware.imageProcessor.getLargestBlob()));
-        System.out.println("Angle to target 2: "
-                + Hardware.imageProcessor.getYawAngleToTarget(
-                        Hardware.imageProcessor.getNthSizeBlob(1)));
-        System.out.println("Distance from peg: "
-                + Hardware.imageProcessor.getZDistanceToGearTarget(
-                        Hardware.imageProcessor.getLargestBlob(),
-                        Hardware.imageProcessor.getNthSizeBlob(1)));
-        }
+    // if (Hardware.imageProcessor.getLargestBlob() != null)
+    // {
+    // System.out.println("Center of Mass: " + Hardware.imageProcessor
+    // .getLargestBlob().center_mass_y);
+    // }
+    // else
+    // {
+    // System.out.println("NO BLOBS!");
+    // }
+    // if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
+    // {
+    // System.out.println("Angle to target 1: "
+    // + Hardware.imageProcessor.getYawAngleToTarget(
+    // Hardware.imageProcessor.getLargestBlob()));
+    // System.out.println("Angle to target 2: "
+    // + Hardware.imageProcessor.getYawAngleToTarget(
+    // Hardware.imageProcessor.getNthSizeBlob(1)));
+    // System.out.println("Distance from peg: "
+    // + Hardware.imageProcessor.getZDistanceToGearTarget(
+    // Hardware.imageProcessor.getLargestBlob(),
+    // Hardware.imageProcessor.getNthSizeBlob(1)));
+    // }
     // if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
     // System.out
     // .println("Actual center: " + ((Hardware.imageProcessor

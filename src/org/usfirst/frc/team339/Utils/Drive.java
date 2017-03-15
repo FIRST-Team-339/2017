@@ -871,7 +871,7 @@ public AlignReturnType driveToGear (final double driveSpeed,
     // towards wall, then do that.
     else if (this.driveToGearStatus == AlignReturnType.MOVING_TOWARDS_WALL)
         {
-        this.strafeStraight(Direction.LEFT, .7, .5, .1);
+        this.strafeStraight(Direction.LEFT, .7, driveSpeed, .15);
         return this.driveToGearStatus;
         }
 

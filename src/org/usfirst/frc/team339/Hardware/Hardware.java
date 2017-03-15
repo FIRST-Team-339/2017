@@ -202,7 +202,9 @@ public static Encoder rightFrontEncoder = new Encoder(16, 17);
 // -------------------------------------
 // Red Light/IR Sensor class
 // -------------------------------------
-public static IRSensor ballLoaderSensor = new IRSensor(6);
+public static IRSensor gearSensor1 = new IRSensor(6);
+
+public static IRSensor gearSensor2 = new IRSensor(0);
 // ====================================
 // I2C Classes
 // ====================================
@@ -402,7 +404,7 @@ public static boolean twoJoystickControl = false;
 // Assembly classes (e.g. forklift)
 // -------------------
 public static Shooter shooter = new Shooter(shooterMotor,
-        ballLoaderSensor, elevatorMotor, 25, imageProcessor,
+        gearSensor1, elevatorMotor, 25, imageProcessor,
         3, gimbalMotor, agitatorMotor, ultraSonic);
 
 public static BallIntake intake = new BallIntake(intakeMotor,
