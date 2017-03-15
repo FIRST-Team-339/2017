@@ -35,7 +35,6 @@ import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Drive.AlignReturnType;
 import org.usfirst.frc.team339.Utils.Shooter.turnReturn;
-import org.usfirst.frc.team339.Utils.Shooter.turnToGoalReturn;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Relay.Value;
 
@@ -253,7 +252,7 @@ private static final double DRIVE_SPEED = .6;// .45
  * Determines what value we set the motors backwards to in order to brake, in
  * percentage.
  */
-private static final double BRAKE_SPEED = .3;
+private static final double BRAKE_SPEED = .18;
 
 /**
  * Determines how long we should set the motors backwards in order to brake
@@ -314,9 +313,9 @@ public static void init ()
             .setFirstGearPercentage(
                     Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
     // Sets the scaling factor and general ultrasonic stuff
-    Hardware.ultraSonic.setScalingFactor(.13);
-    Hardware.ultraSonic.setOffsetDistanceFromNearestBummper(3);
-    Hardware.ultraSonic.setNumberOfItemsToCheckBackwardForValidity(3);
+    // Hardware.ultraSonic.setScalingFactor(.13);
+    // Hardware.ultraSonic.setOffsetDistanceFromNearestBummper(3);
+    // Hardware.ultraSonic.setNumberOfItemsToCheckBackwardForValidity(3);
 
     Hardware.cameraservoX.setAngle(190);
     // if running on kilroy XVIII use certain value and different for XVII
@@ -791,7 +790,7 @@ private static boolean sideGearPath ()
         case DRIVE_FORWARD_TO_SIDES:
             // System.out.println("Encoders: "
             // + Hardware.autoDrive.getAveragedEncoderValues());
-            if (Hardware.driverStation.getAlliance() == Alliance.Blue)
+            if (isRedAlliance == false)
                 {
                 // According to Cole's numbers, we drive forward 77.9 inches as
                 // the first step in our auto program.
@@ -823,15 +822,19 @@ private static boolean sideGearPath ()
             break;
         case TURN_TO_GEAR_PEG:
             // If we're done turning.// turn right on both red and blue
-            if (Hardware.autoDrive.turnDegrees(55, .4) == true)
+            if (isRedAlliance == true)
                 {
-                currentState = MainState.BRAKE_AFTER_TURN_TO_GEAR_PEG;
+                if (Hardware.autoDrive.turnDegrees(-30, .4) == true)
+                    {
+                    currentState = MainState.BRAKE_AFTER_TURN_TO_GEAR_PEG;
+                    }
                 }
-            // If we're not done turning
-            else
+            else if (isRedAlliance == false)
                 {
-                // Keep Turning!
-                currentState = MainState.TURN_TO_GEAR_PEG;
+                if (Hardware.autoDrive.turnDegrees(30, .4))
+                    {
+                    currentState = MainState.BRAKE_AFTER_TURN_TO_GEAR_PEG;
+                    }
                 }
             break;
         case BRAKE_AFTER_TURN_TO_GEAR_PEG:
@@ -841,84 +844,34 @@ private static boolean sideGearPath ()
                 // Take a picture and filter the bottom 10% of it out to drop
                 // the gear blobs
                 Hardware.imageProcessor.processImage();
+                // TODO may be able to remove this in the future, given
+                // our new camera position
                 Hardware.imageProcessor.filterBlobsInYRange(1, .9);
-                // If we have enough blobs to drive with the camera...
-                if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
-                    {
-                    // accelerate again, but go to the drive with camera state
-                    // afterwards.
-                    currentState = MainState.ACCELERATE;
-                    postAccelerateState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
-                    }
-                // we don't have enough blobs to try and align using the camera
-                else
-                    {
-                    // Accelerate again, but drive forward to peg w/o camera
-                    // afterwards.
-                    currentState = MainState.ACCELERATE;
-                    postAccelerateState = MainState.DRIVE_CAREFULLY_TO_PEG;
-                    }
+                currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
                 }
             break;
         case DRIVE_TO_GEAR_WITH_CAMERA:
             // Make sure we have the most recent blob info
             Hardware.imageProcessor.processImage();
             // Eliminate the gear from the blob count
+            // TODO may be able to remove this in the future, given
+            // our new camera position
             Hardware.imageProcessor.filterBlobsInYRange(1, .9);
             // If at any time we lose our target blob number
-            if (Hardware.imageProcessor.getNthSizeBlob(1) == null)
+            if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
                 {
-                // Drive to the peg straight from here
-                currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
-                }
-            else// we have enough blobs
-                {
-                // Keep going into this state
-                currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
                 // TODO magic numbers and need to be tuned.
                 // If we're close enough to the gear wall to quit...
-                if (Hardware.autoDrive.strafeToGear(DRIVE_SPEED,
-                        ALIGN_CORRECT_VAR, ALIGN_DEADBAND,
-                        ALIGN_ACCEPTED_CENTER,
-                        STOP_DISTANCE_TO_GEAR, 1,
-                        .9) == AlignReturnType.CLOSE_ENOUGH)
+                // TODO find a new relative center
+                if (Hardware.autoDrive.driveToGear(DRIVE_SPEED,
+                        DRIVE_SPEED, 0, .05,
+                        10) == AlignReturnType.CLOSE_ENOUGH)
                     {
                     // Stop and wait for Mr. Human player to pull out our gear.
                     Hardware.autoDrive.drive(0.0, 0.0, 0.0);
                     currentState = MainState.WAIT_FOR_GEAR_EXODUS;
                     }
                 }
-            break;
-        case DRIVE_CAREFULLY_TO_PEG:
-            // TODO could cause issues, check in testing.
-            Hardware.imageProcessor.processImage();
-            Hardware.imageProcessor.filterBlobsInYRange(1, .9);
-            // If we're too far from the peg wall to stop...
-            if (Hardware.ultraSonic.getDistanceFromNearestBumper() > 8)
-                {
-                // Check an see that we have both the blobs we need.
-                if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
-                    {
-                    // if we do, drive up to the gear using the camera to strafe
-                    // us.
-                    currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
-                    }
-                else// We don't have enough blobs to use the camera
-                    {
-                    // drive straight up to the gear peg.
-                    Hardware.autoDrive.drive(DRIVE_SPEED, 0.0, 0.0);
-                    }
-                }
-            else// If we're up on the wall
-                {
-                // stop and wait for the pilot to pull the gear out.
-                currentState = MainState.WAIT_FOR_GEAR_EXODUS;
-                Hardware.autoDrive.drive(0.0, 0.0, 0.0);
-                }
-            break;
-        case WIGGLE_WIGGLE:
-            // jump over this state, just in case anything goes into it.
-            currentState = MainState.WAIT_FOR_GEAR_EXODUS;
             break;
         case WAIT_FOR_GEAR_EXODUS:
             // If the gear limit switch is of (e.g. we don't have the gear
@@ -928,7 +881,7 @@ private static boolean sideGearPath ()
                 // reset the time for the delay after this and start delaying
                 Hardware.autoStateTimer.reset();
                 Hardware.autoStateTimer.start();
-                currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
+                currentState = MainState.DONE;
                 }
             break;
         case DELAY_AFTER_GEAR_EXODUS:
@@ -953,129 +906,6 @@ private static boolean sideGearPath ()
                     // We're done with Auto!
                     currentState = MainState.DONE;
                     }
-                }
-            break;
-        case DRIVE_AWAY_FROM_PEG:
-            // If we're done driving back from the gear peg.
-            if (Hardware.autoDrive.driveInches(24, -.3))
-                {
-                // If we're the red alliance and they want us to trigger the
-                // hopper.
-                if (isRedAlliance && goForHopper)
-                    {
-                    // turn to face the hopper
-                    currentState = MainState.TURN_TO_HOPPER;
-                    }
-                // If we're blue and we want to fire
-                if (!isRedAlliance && goForFire)
-                    {
-                    // Turn to the goal
-                    currentState = MainState.TURN_TO_FACE_GOAL;
-                    }
-                else// anything else happens
-                    {
-                    // we're done
-                    currentState = MainState.DONE;
-                    }
-                }
-            break;
-        case TURN_TO_FACE_GOAL:
-            if (Hardware.autoDrive.turnDegrees(180))
-                {
-                currentState = MainState.DRIVE_TO_FIRERANGE;
-                }
-            break;
-        case DRIVE_TO_FIRERANGE:
-            Hardware.imageProcessor.processImage();
-            if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
-                {
-                currentState = MainState.DRIVE_INTO_RANGE_WITH_CAMERA;
-                }
-            else
-                {
-                // TODO random number I selected
-                if (Hardware.autoDrive.driveInches(6, getRealSpeed(.6)))
-                    currentState = MainState.ALIGN_TO_FIRE;
-                }
-            break;
-        case DRIVE_INTO_RANGE_WITH_CAMERA:
-            Hardware.imageProcessor.processImage();
-            if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
-                {
-
-                }
-            break;
-        case TURN_TO_HOPPER:
-            // TODO random magic numbers I selected
-
-            if (isRedAlliance == true)
-                {
-                if (Hardware.autoDrive.turnDegrees(12))
-                    {
-                    currentState = MainState.DRIVE_UP_TO_HOPPER;
-                    }
-                }
-            else
-                {
-                if (Hardware.autoDrive.turnDegrees(90))
-                    {
-                    currentState = MainState.DRIVE_UP_TO_HOPPER;
-                    }
-                }
-
-            break;
-        case DRIVE_UP_TO_HOPPER:
-            // TODO see above todo.
-            // TODO comment terneries
-            if (isRedAlliance == true)
-                {
-                if (Hardware.autoDrive.driveInches(12,
-                        getRealSpeed(.6)))
-                    {
-                    currentState = MainState.DONE;
-                    }
-                }
-            else
-                {
-                if (Hardware.autoDrive.driveInches(90,
-                        getRealSpeed(.6)))
-                    {
-                    currentState = MainState.DONE;
-                    }
-                }
-            break;
-        case ALIGN_TO_FIRE:
-            if (Hardware.shooter
-                    .turnToGoal() == turnToGoalReturn.SUCCESS)
-                {
-                // align By camera, probably in a firemech
-                currentState = MainState.FIRE;
-                }
-            else if (Hardware.shooter
-                    .turnToGoal() == turnToGoalReturn.NO_BLOBS)
-                {
-                currentState = MainState.DONE;
-                }
-            else if (Hardware.shooter
-                    .turnToGoal() == turnToGoalReturn.OUT_OF_GIMBALING_RANGE)
-                {
-                // TODO magic numbers
-                if (Hardware.autoDrive.alignToGear(0, .4,
-                        .1) == Drive.AlignReturnType.ALIGNED)
-                    {
-                    // Will probably never reach this part.
-                    currentState = MainState.FIRE;
-                    }
-                }
-            break;
-        case FIRE:
-            if (Hardware.shooter.fire(0))
-                {
-                fireCount++;
-                }
-            if (fireCount >= 10)
-                {
-                currentState = MainState.DONE;
                 }
             break;
         default:
