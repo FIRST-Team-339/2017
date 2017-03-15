@@ -736,29 +736,35 @@ public double getZDistanceToFuelTarget (ParticleReport target)
 // }
 
 /**
- * 
- * @param leftTarget
- * @param rightTarget
+ * @param target1
+ *            One of the blobs representing a retro-reflective target
+ *            around the gear peg.
+ * @param target2
+ *            The other one of the blobs representing a retro-reflective target
+ *            around the gear peg
  * @return
+ *         The distance of the camera from the wall supporting the
+ *         gear peg, or negative 1 if one or both of the blobs are null.
  */
-public double getZDistanceToGearTarget (ParticleReport leftTarget,
-        ParticleReport rightTarget)
+public double getZDistanceToGearTarget (ParticleReport target1,
+        ParticleReport target2)
 {
-    if (leftTarget != null && rightTarget != null)
+    // If neither blob is null
+    if (target1 != null && target2 != null)
         {
-        double leftTargetYaw = this.getYawAngleToTarget(leftTarget);
-        double rightTargetYaw = this.getYawAngleToTarget(rightTarget);
-
-        double totalAngleBetweenTargets = (-leftTargetYaw)
-                + rightTargetYaw;
-        // TODO Fix this for future use.
-        return -1.0;
+        // just math. It probably works
+        return (DISTANCE_BETWEEN_LOW_GOALS
+                * Math.sin((Math.PI / 2.0)
+                        - Math.abs(this.getYawAngleToTarget(target1)))
+                * Math.cos(Math.abs(this.getYawAngleToTarget(target2))))
+                / Math.sin(Math.abs(this.getYawAngleToTarget(target2))
+                        + Math.abs(this.getYawAngleToTarget(target1)));
         }
-    else
-        {
-        return -1.0;
-        }
+    // If we're missing one or both blobs, return negative 1 inch
+    return -1.0;
 }
+
+private final double DISTANCE_BETWEEN_LOW_GOALS = 8.25;
 
 /**
  * Returns the number of pixels away the center of the robot is from the
