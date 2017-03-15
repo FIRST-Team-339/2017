@@ -466,6 +466,7 @@ private static boolean placeCenterGearPath ()
         {
         case INIT:
             // zero out all the sensors, reset timers, etc.
+            initializeDriveProgram();
             Hardware.autoStateTimer.start();
             Hardware.ringlightRelay.set(Value.kOn);
             if (Hardware.backupOrFireOrHopper.isOn())
@@ -495,7 +496,7 @@ private static boolean placeCenterGearPath ()
             cameraState = AlignReturnType.WAITING;
             if (Hardware.autoDrive.accelerate(
                     getRealSpeed(DRIVE_SPEED),
-                    TIME_TO_ACCELERATE))
+                    TIME_TO_ACCELERATE) == true)
                 {
                 // Not using this in this state machine, only for left/right
                 // side
