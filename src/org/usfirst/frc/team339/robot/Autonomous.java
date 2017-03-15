@@ -538,7 +538,7 @@ private static boolean placeCenterGearPath ()
                 // close enough
                 currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
                 }
-            if (cameraState == AlignReturnType.CLOSE_ENOUGH)
+            if (cameraState == AlignReturnType.DONE)
                 {
                 // If we are close enough to the wall, stop.
                 currentState = MainState.BRAKE_UP_TO_PEG;
@@ -865,7 +865,8 @@ private static boolean sideGearPath ()
                 // TODO find a new relative center
                 if (Hardware.autoDrive.driveToGear(DRIVE_SPEED,
                         DRIVE_SPEED, 0, .05,
-                        10) == AlignReturnType.CLOSE_ENOUGH)
+                        (Hardware.ultraSonic
+                                .getDistanceFromNearestBumper() <= 10)) == AlignReturnType.DONE)
                     {
                     // Stop and wait for Mr. Human player to pull out our gear.
                     Hardware.autoDrive.drive(0.0, 0.0, 0.0);

@@ -763,7 +763,7 @@ public AlignReturnType strafeToGear (double driveSpeed,
         // Stop
         this.driveNoDeadband(0.0, 0.0, 0.0);
         // Tell the caller we're close enough to the wall to stop.
-        return AlignReturnType.CLOSE_ENOUGH;
+        return AlignReturnType.DONE;
         }
     // If the blob is within our target area, drive forward and tell the caller
     // we're aligned.
@@ -823,16 +823,25 @@ public AlignReturnType strafeToGear (double driveSpeed,
  * @param deadband
  *            How far off we will allow the robot to be from the center to be
  *            precise, but avoid oscillating. (relative coordinates)
- * @param distanceToTarget
- *            How far from the wall we should be when the robot stops moving and
- *            resets it's values.
+ * @param terminate
+ *            Set to true when we want to stop moving and reset. Allows you to
+ *            use ultrasonic/camera/IR sensor.
  * @return
  */
 public AlignReturnType driveToGear (final double driveSpeed,
         final double alignSpeed,
         final double relativeCenter, final double deadband,
-        final double distanceToTarget)
+        boolean terminate)
 {
+    if (terminate == true)
+        {
+        this.driveNoDeadband(0.0, 0.0, 0.0);
+        // Reset the variable so that it doesn't start moving to the wall
+        // immediately.
+        this.driveToGearStatus = AlignReturnType.NO_BLOBS;
+        return AlignReturnType.DONE;
+        }
+
     // IF the last stored value was NOT driving towards the wall, align to the
     // target.
     if (this.driveToGearStatus == AlignReturnType.MISALIGNED
@@ -848,8 +857,7 @@ public AlignReturnType driveToGear (final double driveSpeed,
         this.driveToGearStatus = AlignReturnType.BRAKING;
         return this.driveToGearStatus;
         }
-    // ELSE if we are not close enough AND the last stored value was move
-    // towards wall, then do that.
+
     // ELSE IF we are braking, then check if we are still braking. If not, start
     // moving towards the wall.
     else if (this.driveToGearStatus == AlignReturnType.BRAKING)
@@ -859,18 +867,8 @@ public AlignReturnType driveToGear (final double driveSpeed,
             this.driveToGearStatus = AlignReturnType.MOVING_TOWARDS_WALL;
             }
         }
-    // ELSE IF the last stored value WAS driving towards the wall AND the
-    // ultrasonic value is less than or equal to what we want, stop the robot
-    // and return we are DONE.
-    else if (this.ultrasonic
-            .getDistanceFromNearestBumper() <= distanceToTarget)
-        {
-        this.driveNoDeadband(0.0, 0.0, 0.0);
-        // Reset the variable so that it doesn't start moving to the wall
-        // immediately.
-        this.driveToGearStatus = AlignReturnType.NO_BLOBS;
-        return AlignReturnType.CLOSE_ENOUGH;
-        }
+    // ELSE if we are not close enough AND the last stored value was move
+    // towards wall, then do that.
     else if (this.driveToGearStatus == AlignReturnType.MOVING_TOWARDS_WALL)
         {
         this.strafeStraight(Direction.LEFT, .7, .5, .1);
@@ -917,9 +915,9 @@ public static enum AlignReturnType
      */
     MISALIGNED,
     /**
-     * Only used if we are using an ultrasonic
+     * We are finished aligning/moving!
      */
-    CLOSE_ENOUGH,
+    DONE,
     /**
      * We are waiting for the ultrasonic to purge bad values
      * before starting

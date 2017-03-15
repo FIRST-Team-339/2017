@@ -310,8 +310,10 @@ public static void periodic ()
     // IF we are still aligning,
     if (isAligning == true)
         {
-        alignValue = Hardware.autoDrive.driveToGear(.7, .7, .3, .07, 7);
-        if (alignValue == AlignReturnType.CLOSE_ENOUGH
+        alignValue = Hardware.autoDrive.driveToGear(.7, .7, .3, .03,
+                (Hardware.leftOperator.getRawButton(6) == true
+                        || Hardware.leftOperator.getRawButton(7)));
+        if (alignValue == AlignReturnType.DONE
                 || Hardware.leftOperator.getRawButton(6) == true
                 || Hardware.leftOperator.getRawButton(7) == true)
             {
