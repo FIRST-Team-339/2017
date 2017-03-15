@@ -35,7 +35,6 @@ import com.ctre.CANTalon.FeedbackDevice;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Drive.AlignReturnType;
-import org.usfirst.frc.team339.Utils.Drive.Direction;
 import org.usfirst.frc.team339.Utils.Shooter;
 import org.usfirst.frc.team339.Utils.Shooter.turnToGoalReturn;
 import edu.wpi.first.wpilibj.Relay;
@@ -311,7 +310,7 @@ public static void periodic ()
     // IF we are still aligning,
     if (isAligning == true)
         {
-        alignValue = Hardware.autoDrive.driveToGear(.7, .7, .7, .07, 7);
+        alignValue = Hardware.autoDrive.driveToGear(.7, .7, .3, .07, 7);
         if (alignValue == AlignReturnType.CLOSE_ENOUGH
                 || Hardware.leftOperator.getRawButton(6) == true
                 || Hardware.leftOperator.getRawButton(7) == true)
@@ -332,11 +331,6 @@ public static void periodic ()
     // Driving code
     // =================================================================
 
-    if (Hardware.leftOperator.getRawButton(9))
-        {
-        Hardware.autoDrive.strafeStraight(Direction.LEFT, .5, .5, .07);
-        }
-
     // rotate only when we are pulling the trigger
     if (Hardware.leftDriver.getTrigger() == true)
         {
@@ -347,8 +341,7 @@ public static void periodic ()
 
     if (isDrivingStraight == false && isBraking == false
             && isAligning == false
-            && isStrafingToTarget == false && isMovingToWall == false
-            && Hardware.leftOperator.getRawButton(9) == false)
+            && isStrafingToTarget == false)
 
     // main driving function
         {
@@ -448,8 +441,6 @@ private static double rotationValue = 0.0;
 private static boolean isTurningGimbal = false;
 
 private static boolean isAligning = false;
-
-private static boolean isMovingToWall = false;
 
 private static boolean previousFireButton = false;
 
@@ -624,7 +615,9 @@ public static void printStatements ()
     // System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
 
     // System.out.println("Ultrasonic = "
-    // + Hardware.ultraSonic.getDistanceFromNearestBumper());
+    // + Hardware.ultraSonic.getValue());
+    // System.out.println("Ultrasonic refined: "
+    // + Hardware.ultraSonic.getRefinedDistanceValue());
 
     // System.out.println("Delay Pot: " + Hardware.delayPot.get());
     // ---------------------------------

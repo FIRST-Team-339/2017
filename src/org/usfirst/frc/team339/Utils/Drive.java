@@ -372,7 +372,7 @@ public void strafeStraight (Direction direction, double deadband,
                 this.transmissionMecanum.leftSpeedController
                         .set(-speed + correctionVal);
                 }
-            // Front Rear distance
+            // Front Right distance
             if (Math.abs(this.getRightFrontEncoderDistance()
                     - average) < deadband)
                 {
@@ -414,18 +414,18 @@ public void strafeStraight (Direction direction, double deadband,
                     - average) < deadband)
                 {
                 this.transmissionMecanum.rightRearSpeedController
-                        .set(-speed);
+                        .set(speed);
                 }
             else if (Math
                     .abs(this.getRightRearEncoderDistance()) < average)
                 {
                 this.transmissionMecanum.rightRearSpeedController
-                        .set(-speed + correctionVal);
+                        .set(speed + correctionVal);
                 }
             else
                 {
                 this.transmissionMecanum.rightRearSpeedController
-                        .set(-speed - correctionVal);
+                        .set(speed - correctionVal);
                 }
 
             break;
@@ -835,10 +835,29 @@ public AlignReturnType driveToGear (final double driveSpeed,
 {
     // IF the last stored value was NOT driving towards the wall, align to the
     // target.
-    if (this.driveToGearStatus != AlignReturnType.MOVING_TOWARDS_WALL)
+    if (this.driveToGearStatus == AlignReturnType.MISALIGNED
+            || this.driveToGearStatus == AlignReturnType.NO_BLOBS)
         {
         this.driveToGearStatus = this.alignToGear(relativeCenter,
                 alignSpeed, deadband);
+        }
+    // IF we are aligned, then start moving towards the wall.
+    else if (this.driveToGearStatus == AlignReturnType.ALIGNED)
+        {
+        this.resetBrakeToZero();
+        this.driveToGearStatus = AlignReturnType.BRAKING;
+        return this.driveToGearStatus;
+        }
+    // ELSE if we are not close enough AND the last stored value was move
+    // towards wall, then do that.
+    // ELSE IF we are braking, then check if we are still braking. If not, start
+    // moving towards the wall.
+    else if (this.driveToGearStatus == AlignReturnType.BRAKING)
+        {
+        if (this.brakeToZero(alignSpeed / 2.0) == true)
+            {
+            this.driveToGearStatus = AlignReturnType.MOVING_TOWARDS_WALL;
+            }
         }
     // ELSE IF the last stored value WAS driving towards the wall AND the
     // ultrasonic value is less than or equal to what we want, stop the robot
@@ -852,18 +871,9 @@ public AlignReturnType driveToGear (final double driveSpeed,
         this.driveToGearStatus = AlignReturnType.NO_BLOBS;
         return AlignReturnType.CLOSE_ENOUGH;
         }
-    // ELSE if we are not close enough AND the last stored value was move
-    // towards wall, then do that.
-    else
+    else if (this.driveToGearStatus == AlignReturnType.MOVING_TOWARDS_WALL)
         {
-        this.driveNoDeadband(driveSpeed, -90, 0.0);
-        return this.driveToGearStatus;
-        }
-
-    // IF we are aligned, then start moving towards the wall.
-    if (this.driveToGearStatus == AlignReturnType.ALIGNED)
-        {
-        this.driveToGearStatus = AlignReturnType.MOVING_TOWARDS_WALL;
+        this.strafeStraight(Direction.LEFT, .7, .5, .1);
         return this.driveToGearStatus;
         }
 
@@ -915,9 +925,13 @@ public static enum AlignReturnType
      * before starting
      */
     WAITING,
+    /**
+     * We are braking; pretty self explanatory.
+     */
+    BRAKING,
 
     /**
-     * Used in the strafeToGear method to return that we are moving towards the
+     * Used in the driveToGear method to return that we are moving towards the
      * wall after aligning to the peg.
      */
     MOVING_TOWARDS_WALL
@@ -1461,6 +1475,14 @@ public boolean brakeToZero (double voltage)
     return false;
 }
 
+/**
+ * Resets the brakeToZero function if we cancel.
+ */
+public void resetBrakeToZero ()
+{
+    this.firstBrakeToZero = true;
+}
+
 private boolean firstBrakeToZero = true;
 
 private double[] lastBrakeValues =
@@ -1919,7 +1941,7 @@ public static enum TransmissionType
 // =====================================================================
 private TransmissionType transmissionType = null;
 
-private final double BRAKE_DEADBAND = .05;// todo .07
+private final double BRAKE_DEADBAND = .1;// todo .07
 
 /**
  * The value that the getDistance is multiplied by to get an accurate
