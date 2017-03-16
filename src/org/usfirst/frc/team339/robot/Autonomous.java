@@ -355,7 +355,12 @@ public static void periodic ()
 
         case INIT:
             // get the auto program we want to run, get delay pot.
-            if (Hardware.enableAutonomous.isOn())
+            boolean switchOverride = false;
+            if (Hardware.isRunningOnKilroyXVIII == false)
+                {
+                switchOverride = true;
+                }
+            if (Hardware.enableAutonomous.isOn() || switchOverride)
                 {
                 delayBeforeAuto = Hardware.delayPot.get(0.0, 5.0);
                 if (Hardware.driverStation
@@ -368,7 +373,7 @@ public static void periodic ()
                     autoPath = AutoProgram.CENTER_GEAR_PLACEMENT;
                     break;
                     }
-                if (Hardware.sideGearPath.isOn())
+                if (Hardware.sideGearPath.isOn() || switchOverride)
                     {
                     autoPath = AutoProgram.SIDE_GEAR_PATH;
                     break;
@@ -558,7 +563,8 @@ private static boolean placeCenterGearPath ()
             // wiggle wiggle on it's way to the peg
             cameraState = Hardware.autoDrive.driveToGear(DRIVE_SPEED,
                     .4, .2, .03, Hardware.gearSensor1.isOn()
-                            || Hardware.gearSensor2.isOn());
+                            || Hardware.gearSensor2.isOn(),
+                    .5, .05);
 
             System.out.println("strafeToGear state: " + cameraState);
             if (cameraState == AlignReturnType.NO_BLOBS)
@@ -570,29 +576,8 @@ private static boolean placeCenterGearPath ()
             if (cameraState == AlignReturnType.DONE)
                 {
                 // If we are close enough to the wall, stop.
-                postBrakeState = MainState.DONE;
+                postBrakeState = MainState.WAIT_FOR_GEAR_EXODUS;
                 currentState = MainState.BRAKE;
-                }
-            break;
-        case DRIVE_CAREFULLY_TO_PEG:
-            // Drives straight to the wall using the encoder, and picks back up
-            // with drive with camera if we can see blobs again
-            if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
-                {
-                currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
-                }
-            else
-                {
-                if (Hardware.ultraSonic
-                        .getDistanceFromNearestBumper() >= STOP_DISTANCE_TO_GEAR)
-                    {
-                    Hardware.autoDrive.driveNoDeadband(DRIVE_SPEED, 0.0,
-                            0);
-                    }
-                else
-                    {
-                    currentState = MainState.BRAKE_UP_TO_PEG;
-                    }
                 }
             break;
         case DELAY_AFTER_GEAR_EXODUS:
@@ -756,7 +741,7 @@ private static boolean sideGearPath ()
                 {
                 // According to Cole's numbers, we drive forward 77.9 inches as
                 // the first step in our auto program.
-                if (Hardware.autoDrive.driveStraightInches(77.9,
+                if (Hardware.autoDrive.driveStraightInches(62,// 77.9
                         DRIVE_SPEED, .2) == false)
                     {
                     // keep going
@@ -766,7 +751,7 @@ private static boolean sideGearPath ()
             else
                 {
                 // if we're red we have to drive backwards.
-                if (Hardware.autoDrive.driveStraightInches(77.9,
+                if (Hardware.autoDrive.driveStraightInches(62,// 77.9
                         -DRIVE_SPEED, .2) == false)
                     {
                     currentState = MainState.BRAKE_BEFORE_TURN_TO_GEAR_PEG;
@@ -828,7 +813,8 @@ private static boolean sideGearPath ()
                 if (Hardware.autoDrive.driveToGear(DRIVE_SPEED,
                         DRIVE_SPEED, 0, .05,
                         (Hardware.ultraSonic
-                                .getDistanceFromNearestBumper() <= 10), .7, .15) == AlignReturnType.DONE)
+                                .getDistanceFromNearestBumper() <= 10),
+                        .7, .15) == AlignReturnType.DONE)
                     {
                     // Stop and wait for Mr. Human player to pull out our gear.
                     Hardware.autoDrive.drive(0.0, 0.0, 0.0);
