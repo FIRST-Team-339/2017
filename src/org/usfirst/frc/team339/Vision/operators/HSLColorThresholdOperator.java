@@ -34,7 +34,7 @@ public HSLColorThresholdOperator (NIVision.Range hueRange,
 public Image operate (Image source)
 {
     // Creating new monocolor image with no border
-    final Image thresholdImage = NIVision
+    Image thresholdImage = NIVision
             .imaqCreateImage(ImageType.IMAGE_U8, 0);
 
     // @TODO: Store NIVision.Range instead of integers so we don't make a
@@ -43,7 +43,7 @@ public Image operate (Image source)
             NIVision.ColorMode.HSL, this.hueRange, this.satRange,
             this.lumRange);
     source.free();
-    return thresholdImage;
+    return (thresholdImage);
 }
 
 }

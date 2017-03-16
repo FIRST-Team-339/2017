@@ -1,5 +1,6 @@
 package org.usfirst.frc.team339.Vision;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Vector;
 import com.ni.vision.NIVision;
@@ -262,6 +263,49 @@ public ParticleReport getNthSizeBlob (int n)
     else
         return null;
 }
+
+/**
+ * Filters out any blobs that are inside the range.
+ * 
+ * @param lowerBound
+ *            Lowest area we will want to filter out the blobs, in relative
+ *            coordinates
+ * @param upperBound
+ *            Highest area we will want to filter out the blobs, in relative
+ *            coordinates
+ */
+public void filterBlobsInYRange (double lowerBound, double upperBound)
+{
+    // Make sure the temporary list is cleared before continuing
+    tempBlobs.clear();
+    // If we've seen a blob
+    if (this.reports != null)
+        {
+        for (int i = 0; i < this.reports.length; i++)
+            {
+            // If the current blob is actually there. (We shouldn't have to do
+            // this, but we do.)
+            if (this.reports[i] != null)
+                {
+                // If we are not inside the range, add it back to the list in
+                // the same order.
+                if (((this.reports[i].center_mass_y
+                        / this.camera
+                                .getVerticalResolution()) > upperBound
+                        && (this.reports[i].center_mass_y / this.camera
+                                .getVerticalResolution()) < lowerBound) == false)
+                    {
+                    // Make sure we're adding to the right position in the array
+                    // tempBlobs.add(i,this.reports[i]);
+                    tempBlobs.add(this.reports[i]);
+                    }
+                }
+            }
+        this.reports = tempBlobs.toArray(this.reports);
+        }
+}
+
+ArrayList<ParticleReport> tempBlobs = new ArrayList<ParticleReport>();
 
 /**
  * Changes the camera which captures images for processing
@@ -577,6 +621,7 @@ public void updateParticalAnalysisReports ()
             }
         this.reports = new ParticleReport[particles.size()];
         particles.copyInto(this.reports);
+        particles.clear();
         }
 }
 
@@ -691,29 +736,35 @@ public double getZDistanceToFuelTarget (ParticleReport target)
 // }
 
 /**
- * 
- * @param leftTarget
- * @param rightTarget
+ * @param target1
+ *            One of the blobs representing a retro-reflective target
+ *            around the gear peg.
+ * @param target2
+ *            The other one of the blobs representing a retro-reflective target
+ *            around the gear peg
  * @return
+ *         The distance of the camera from the wall supporting the
+ *         gear peg, or negative 1 if one or both of the blobs are null.
  */
-public double getZDistanceToGearTarget (ParticleReport leftTarget,
-        ParticleReport rightTarget)
+public double getZDistanceToGearTarget (ParticleReport target1,
+        ParticleReport target2)
 {
-    if (leftTarget != null && rightTarget != null)
+    // If neither blob is null
+    if (target1 != null && target2 != null)
         {
-        double leftTargetYaw = this.getYawAngleToTarget(leftTarget);
-        double rightTargetYaw = this.getYawAngleToTarget(rightTarget);
-
-        double totalAngleBetweenTargets = (-leftTargetYaw)
-                + rightTargetYaw;
-        // TODO Fix this for future use.
-        return -1.0;
+        // just math. It probably works
+        return (DISTANCE_BETWEEN_LOW_GOALS
+                * Math.sin((Math.PI / 2.0)
+                        - Math.abs(this.getYawAngleToTarget(target1)))
+                * Math.cos(Math.abs(this.getYawAngleToTarget(target2))))
+                / Math.sin(Math.abs(this.getYawAngleToTarget(target2))
+                        + Math.abs(this.getYawAngleToTarget(target1)));
         }
-    else
-        {
-        return -1.0;
-        }
+    // If we're missing one or both blobs, return negative 1 inch
+    return -1.0;
 }
+
+private final double DISTANCE_BETWEEN_LOW_GOALS = 8.25;
 
 /**
  * Returns the number of pixels away the center of the robot is from the

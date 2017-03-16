@@ -293,7 +293,7 @@ public void robotInit ()
         // Hardware.leftFrontMotorSafety.setExpiration(.5);
         // Hardware.leftRearMotorSafety.setExpiration(1.0);
         // Sets the scaling factor and general ultrasonic stuff
-        Hardware.rightUS.setScalingFactor(
+        Hardware.ultraSonic.setScalingFactor(
                 Hardware.KILROY_XVIII_US_SCALING_FACTOR);
         }
     // kilroy XVII is below this statement of commented code in code
@@ -334,10 +334,8 @@ public void robotInit ()
                 Hardware.KILROY_XVII_JOYSTICK_DIRECTIONAL_DEADZONE);
         Hardware.mecanumDrive.setMecanumJoystickReversed(false);
         // Sets the scaling factor and general ultrasonic stuff
-        Hardware.rightUS.setScalingFactor(
+        Hardware.ultraSonic.setScalingFactor(
                 Hardware.KILROY_XVII_US_SCALING_FACTOR);
-
-
         }
     // -------------------------------------
     // motor initialization
@@ -365,20 +363,27 @@ public void robotInit ()
     // NOTE: The AXIS Camera getInstance() MUST
     // Preceed the USB camera setResolution() code
     // -------------------------------------
-    CameraServer.getInstance().addAxisCamera("10.3.39.11");
-    Hardware.axisCamera.writeColorLevel(79);
-    Hardware.axisCamera.writeBrightness(1);
+    if (Hardware.isRunningOnKilroyXVIII)
+        {
+        CameraServer.getInstance().addAxisCamera("10.3.39.11");
+        }
+    else
+        {
+        CameraServer.getInstance().addAxisCamera("10.13.39.11");
+        }
+
+    Hardware.axisCamera.writeColorLevel(60);
+    Hardware.axisCamera.writeBrightness(4);
     Hardware.axisCamera.writeResolution(Resolution.k320x240);
-    Hardware.axisCamera.writeWhiteBalance(WhiteBalance.kFixedOutdoor1);
+    Hardware.axisCamera.writeWhiteBalance(WhiteBalance.kFixedOutdoor2);
     // -------------------------------------
     // USB Camera initialization
     // -------------------------------------
+
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
-    // Sets the scaling factor and general ultrasonic stuff
-    Hardware.rightUS.setScalingFactor(.13);
-    Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
-    Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
+    Hardware.ultraSonic.setOffsetDistanceFromNearestBummper(3);
+    Hardware.ultraSonic.setNumberOfItemsToCheckBackwardForValidity(3);
     // gimbal motors
     Hardware.gimbalMotor
             .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
@@ -499,7 +504,7 @@ public void testPeriodic ()
 /**
  * The percentage we want the motors to run at while we are in first gear
  */
-public static final double KILROY_XVIII_FIRST_GEAR_PERCENTAGE = .85;
+public static final double KILROY_XVIII_FIRST_GEAR_PERCENTAGE = .9;
 
 /**
  * The percentage we want the motors to run at while we are in second gear
@@ -529,13 +534,13 @@ public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.069;
  * 
  */
 
-public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVII = .0197;
+public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVII = .018605;
 
 // pid stuff
-public static double shooterP = .029;
+public static double shooterP = .3;
 
-public static double shooterI = .000042;
+public static double shooterI = .0000084;
 
-public static double shooterD = .85;
+public static double shooterD = 2.0;
 
 } // end class

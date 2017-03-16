@@ -130,4 +130,14 @@ public double getRate ()
     // return the rate of rotation of the gyro
     return this.gyro.getRate();
 }
+
+/**
+ * 
+ * @return Whether or not the gyro boolean statement is true or false in the
+ *         constructor.
+ */
+public boolean isConnected ()
+{
+    return this.hasGyro;
+}
 }

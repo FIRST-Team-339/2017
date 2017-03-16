@@ -12,11 +12,6 @@
 			<attribute name="javadoc_location" value="file:/C:/Users/Kilroy/wpilib/java/current/javadoc/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="wpilib" sourcepath="wpilib.sources">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Users/Kilroy%20Programming/wpilib/java/current/lib/"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="var" path="networktables" sourcepath="networktables.sources">
 		<attributes>
 			<attribute name="javadoc_location" value="file:/C:/Users/Kilroy%20Programming/wpilib/java/current/lib/"/>
@@ -40,5 +35,6 @@
 	<classpathentry kind="lib" path="C:/Users/Kilroy/wpilib/user/java/lib/CTRLib.jar"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/CTRLib.jar"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/TalonSRXLibJava.jar"/>
+	<classpathentry kind="var" path="wpilib" sourcepath="wpilib.sources"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
