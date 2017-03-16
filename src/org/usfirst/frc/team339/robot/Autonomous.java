@@ -566,7 +566,7 @@ private static boolean placeCenterGearPath ()
             // we will strafe. If it uses a four wheel transmission, it will
             // wiggle wiggle on it's way to the peg
             cameraState = Hardware.autoDrive.driveToGear(DRIVE_SPEED,
-                    .4, .2, .03, false);
+                    .4, .2, .03, false, .7, .15);
 
             System.out.println("strafeToGear state: " + cameraState);
 
@@ -905,7 +905,8 @@ private static boolean sideGearPath ()
                 if (Hardware.autoDrive.driveToGear(DRIVE_SPEED,
                         DRIVE_SPEED, 0, .05,
                         (Hardware.ultraSonic
-                                .getDistanceFromNearestBumper() <= 10), .7, .15) == AlignReturnType.DONE)
+                                .getDistanceFromNearestBumper() <= 10),
+                        .7, .15) == AlignReturnType.DONE)
                     {
                     // Stop and wait for Mr. Human player to pull out our gear.
                     Hardware.autoDrive.drive(0.0, 0.0, 0.0);

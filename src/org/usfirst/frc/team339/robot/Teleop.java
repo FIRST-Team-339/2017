@@ -312,9 +312,10 @@ public static void periodic ()
         {
         alignValue = Hardware.autoDrive.driveToGear(.5, .5, .2, .03,
                 ((Hardware.gearSensor1.isOn()
-                        || Hardware.gearSensor2.isOn())
+                        && Hardware.gearSensor2.isOn())
                         || Hardware.leftOperator.getRawButton(6) == true
-                        || Hardware.leftOperator.getRawButton(7)), .7, .15);
+                        || Hardware.leftOperator.getRawButton(7)),
+                .7, .15);
         if (alignValue == AlignReturnType.DONE)
             {
             Hardware.autoDrive.resetDriveToGearStatus();

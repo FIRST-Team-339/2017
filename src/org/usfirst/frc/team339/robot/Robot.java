@@ -534,7 +534,7 @@ public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.069;
  * 
  */
 
-public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVII = .0197;
+public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVII = .018605;
 
 // pid stuff
 public static double shooterP = .3;
