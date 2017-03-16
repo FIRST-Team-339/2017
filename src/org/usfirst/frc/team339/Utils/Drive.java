@@ -826,12 +826,17 @@ public AlignReturnType strafeToGear (double driveSpeed,
  * @param terminate
  *            Set to true when we want to stop moving and reset. Allows you to
  *            use ultrasonic/camera/IR sensor.
+ * @param strafeStraightDeadband
+ *            TODO
+ * @param strafeStraightCorrection
+ *            TODO
  * @return
  */
 public AlignReturnType driveToGear (final double driveSpeed,
         final double alignSpeed,
         final double relativeCenter, final double deadband,
-        boolean terminate)
+        boolean terminate, double strafeStraightDeadband,
+        double strafeStraightCorrection)
 {
     if (terminate == true)
         {
@@ -871,7 +876,8 @@ public AlignReturnType driveToGear (final double driveSpeed,
     // towards wall, then do that.
     else if (this.driveToGearStatus == AlignReturnType.MOVING_TOWARDS_WALL)
         {
-        this.strafeStraight(Direction.LEFT, .7, driveSpeed, .15);
+        this.strafeStraight(Direction.LEFT, strafeStraightDeadband,
+                driveSpeed, strafeStraightCorrection);
         return this.driveToGearStatus;
         }
 
