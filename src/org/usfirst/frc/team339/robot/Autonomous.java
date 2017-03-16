@@ -34,6 +34,7 @@ package org.usfirst.frc.team339.robot;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Drive.AlignReturnType;
+import org.usfirst.frc.team339.Utils.Drive.Direction;
 import org.usfirst.frc.team339.Utils.Shooter.turnReturn;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Relay.Value;
@@ -84,6 +85,15 @@ private static enum MainState
      * Accelerates so we don't jerk our encoders.
      */
     ACCELERATE,
+    /**
+     * Stops, moving to whatever we tell it to afterwards.
+     */
+    BRAKE,
+    /**
+     * Drives part of the way to the center goal, so we don't have to trust the
+     * camera too far away.
+     */
+    STRAFE_TOWARD_TARGET_BEFORE_CAMERA,
     /**
      * Drives up the the gear.
      */
@@ -420,6 +430,11 @@ private static MainState currentState = MainState.INIT;
 private static MainState postAccelerateState = MainState.DONE;
 
 /**
+ * A control enum for choosing which brake we are doing
+ */
+private static MainState postBrakeState = MainState.DONE;
+
+/**
  * Determines which position we are on the field to control
  * which auto we use
  */
@@ -466,6 +481,7 @@ private static boolean placeCenterGearPath ()
         {
         case INIT:
             // zero out all the sensors, reset timers, etc.
+            initializeDriveProgram();
             Hardware.autoStateTimer.start();
             Hardware.ringlightRelay.set(Value.kOn);
             if (Hardware.backupOrFireOrHopper.isOn())
@@ -485,7 +501,7 @@ private static boolean placeCenterGearPath ()
                 {
                 // Hardware.axisCamera.saveImagesSafely();
                 currentState = MainState.ACCELERATE;
-                postAccelerateState = MainState.DRIVE_FORWARD_TO_CENTER;
+                postAccelerateState = MainState.STRAFE_TOWARD_TARGET_BEFORE_CAMERA;
                 Hardware.autoStateTimer.reset();
                 Hardware.autoStateTimer.start();
                 }
@@ -495,16 +511,42 @@ private static boolean placeCenterGearPath ()
             cameraState = AlignReturnType.WAITING;
             if (Hardware.autoDrive.accelerate(
                     getRealSpeed(DRIVE_SPEED),
-                    TIME_TO_ACCELERATE))
+                    TIME_TO_ACCELERATE) == true)
                 {
                 // Not using this in this state machine, only for left/right
                 // side
                 currentState = postAccelerateState;
                 Hardware.axisCamera.saveImagesSafely();
+                Hardware.autoStateTimer.reset();
+                Hardware.autoStateTimer.start();
                 }
             // Purge the ultrasonic of it's current values while we are
             // accelerating
             Hardware.ultraSonic.getDistanceFromNearestBumper();
+            break;
+        case BRAKE:
+            cameraState = AlignReturnType.WAITING;
+            if (Hardware.autoDrive.brakeToZero(DRIVE_SPEED / 2.0))
+                {
+                // Not using this in this state machine, only for left/right
+                // side
+                currentState = postBrakeState;
+                Hardware.autoStateTimer.reset();
+                Hardware.autoStateTimer.start();
+                }
+            // Purge the ultrasonic of it's current values while we are
+            // braking
+            Hardware.ultraSonic.getDistanceFromNearestBumper();
+            break;
+        case STRAFE_TOWARD_TARGET_BEFORE_CAMERA:
+            Hardware.autoDrive.strafeStraight(Direction.LEFT, .5,
+                    DRIVE_SPEED, .05);
+            if (Hardware.autoStateTimer.get() > 1)// TODO random second number
+                {
+                Hardware.autoDrive.drive(0.0, 0.0, 0.0);
+                postBrakeState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
+                currentState = MainState.BRAKE;
+                }
             break;
         case DRIVE_FORWARD_TO_CENTER:
             // If we see blobs, hand over control to camera, otherwise, go
@@ -523,11 +565,8 @@ private static boolean placeCenterGearPath ()
             // transmission,
             // we will strafe. If it uses a four wheel transmission, it will
             // wiggle wiggle on it's way to the peg
-            cameraState = Hardware.autoDrive.strafeToGear(
-                    getRealSpeed(DRIVE_SPEED),
-                    ALIGN_CORRECT_VAR,
-                    ALIGN_DEADBAND, ALIGN_ACCEPTED_CENTER,
-                    STOP_DISTANCE_TO_GEAR, 1, .9);
+            cameraState = Hardware.autoDrive.driveToGear(DRIVE_SPEED,
+                    .4, .2, .03, false);
 
             System.out.println("strafeToGear state: " + cameraState);
 
