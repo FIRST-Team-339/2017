@@ -35,7 +35,6 @@ import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Drive.AlignReturnType;
 import org.usfirst.frc.team339.Utils.Drive.Direction;
-import org.usfirst.frc.team339.Utils.Shooter.turnReturn;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Relay.Value;
 
@@ -462,6 +461,8 @@ private static boolean goForFire = false;
  */
 private static boolean goForHopper = false;
 
+private static boolean backUp = false;
+
 /**
  * The auto path where we start in the center position, and try and strafe
  * towards the camera if we can. If we can't we just use the ultrasonic to
@@ -486,7 +487,7 @@ private static boolean placeCenterGearPath ()
             Hardware.ringlightRelay.set(Value.kOn);
             if (Hardware.backupOrFireOrHopper.isOn())
                 {
-                goForFire = true;
+                backUp = true;
                 }
             currentState = MainState.DELAY_BEFORE_START;
             break;
@@ -548,39 +549,29 @@ private static boolean placeCenterGearPath ()
                 currentState = MainState.BRAKE;
                 }
             break;
-        case DRIVE_FORWARD_TO_CENTER:
-            // If we see blobs, hand over control to camera, otherwise, go
-            // forward. Check to make sure we haven't gone too far.
-            Hardware.imageProcessor.processImage();
-            if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
-                {
-                currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
-                }
-            else
-                currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
-            break;
         case DRIVE_TO_GEAR_WITH_CAMERA:
+            // TODO have the ability to back up afterwards.
             // Get our return type from the strafe to gear.
             // NOTE: if the constructor for autoDrive uses a mecanum
             // transmission,
             // we will strafe. If it uses a four wheel transmission, it will
             // wiggle wiggle on it's way to the peg
             cameraState = Hardware.autoDrive.driveToGear(DRIVE_SPEED,
-                    .4, .2, .03, false);
+                    .4, .2, .03, Hardware.gearSensor1.isOn()
+                            || Hardware.gearSensor2.isOn());
 
             System.out.println("strafeToGear state: " + cameraState);
-
-
             if (cameraState == AlignReturnType.NO_BLOBS)
                 {
                 // If we don't see anything, just drive forwards till we are
                 // close enough
-                currentState = MainState.DRIVE_CAREFULLY_TO_PEG;
+                currentState = MainState.DONE;
                 }
             if (cameraState == AlignReturnType.DONE)
                 {
                 // If we are close enough to the wall, stop.
-                currentState = MainState.BRAKE_UP_TO_PEG;
+                postBrakeState = MainState.DONE;
+                currentState = MainState.BRAKE;
                 }
             break;
         case DRIVE_CAREFULLY_TO_PEG:
@@ -602,74 +593,6 @@ private static boolean placeCenterGearPath ()
                     {
                     currentState = MainState.BRAKE_UP_TO_PEG;
                     }
-                }
-            break;
-        case BRAKE_UP_TO_PEG:
-            // Brakes using the Time Brake function in the Drive class.
-            if (Hardware.autoDrive.timeBrake(BRAKE_SPEED, BRAKE_TIME))
-                {
-                currentState = MainState.TURN_TURRET_OUT_OF_THE_WAY;
-                }
-            break;
-        case TURN_TURRET_OUT_OF_THE_WAY:
-            // Turns the turret out of the way so that when the human player
-            // pulls up the gear, it does not hit the camera
-            if (Hardware.shooter
-                    .turnToBearing(
-                            Hardware.shooter.MIN_GIMBALING_ANGLE) == turnReturn.SUCCESS)
-                {
-                Hardware.shooter.stopGimbal();
-                currentState = MainState.WAIT_FOR_GEAR_EXODUS;
-                }// TODO THIS is where I left off commenting.
-            break;
-        case WAIT_FOR_GEAR_EXODUS:
-            Hardware.ringlightRelay.set(Value.kOff);
-            // if (Hardware.autoStateTimer.get() >= 1.25)
-            // {
-            // runWiggleWiggleSetup = true;
-            // currentState = MainState.WIGGLE_WIGGLE;
-            // }
-            if (Hardware.gearLimitSwitch.isOn() == false)
-                {
-                Hardware.autoDrive.driveNoDeadband(0.0, 0.0, 0.0);
-                currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                }
-            break;
-        case WIGGLE_WIGGLE:
-            if (runWiggleWiggleSetup)
-                {
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                runWiggleWiggleSetup = false;
-                wiggleWiggleCount++;
-                }
-            if (wiggleWiggleCount == 1)
-                {
-                if (Hardware.autoStateTimer.get() >= .5)
-                    {
-                    Hardware.autoDrive.drive(.5, 90);
-                    }
-                else
-                    {
-                    currentState = MainState.WAIT_FOR_GEAR_EXODUS;
-                    }
-                }
-            else if (wiggleWiggleCount == 2)
-                {
-                if (Hardware.autoStateTimer.get() >= .1)
-                    {
-                    Hardware.autoDrive.drive(.5, -90);
-                    }
-                else
-                    {
-                    currentState = MainState.WAIT_FOR_GEAR_EXODUS;
-                    }
-                }
-            else
-                {
-                currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
                 }
             break;
         case DELAY_AFTER_GEAR_EXODUS:
