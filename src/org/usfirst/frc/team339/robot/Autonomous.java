@@ -866,7 +866,7 @@ private static boolean sideGearPath ()
                 if (Hardware.autoDrive.driveToGear(DRIVE_SPEED,
                         DRIVE_SPEED, 0, .05,
                         (Hardware.ultraSonic
-                                .getDistanceFromNearestBumper() <= 10)) == AlignReturnType.DONE)
+                                .getDistanceFromNearestBumper() <= 10), .7, .15) == AlignReturnType.DONE)
                     {
                     // Stop and wait for Mr. Human player to pull out our gear.
                     Hardware.autoDrive.drive(0.0, 0.0, 0.0);
