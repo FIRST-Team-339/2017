@@ -413,30 +413,31 @@ public static void printStatements ()
     // Motor controllers
     // prints value of the motors
     // =================================
-    System.out.println("Delay Pot: " + Hardware.delayPot.get(0, 5));
-    System.out.println("Right Front Motor Controller: "
-            + Hardware.rightFrontMotor.get());
-    System.out.println("Left Front Motor Controller: " +
-            Hardware.leftFrontMotor.get());
-    System.out.println("Right Rear Motor Controller: " +
-            Hardware.rightRearMotor.get());
-    System.out.println("Left Rear Motor Controller: " +
-            Hardware.leftRearMotor.get());
+
+    // System.out.println("Delay Pot: " + Hardware.delayPot.get(0, 5));
+    // System.out.println("Right Front Motor Controller: "
+    // + Hardware.rightFrontMotor.get());
+    // System.out.println("Left Front Motor Controller: " +
+    // Hardware.leftFrontMotor.get());
+    // System.out.println("Right Rear Motor Controller: " +
+    // Hardware.rightRearMotor.get());
+    // System.out.println("Left Rear Motor Controller: " +
+    // Hardware.leftRearMotor.get());
     // System.out.println("Flywheel thingy thing: "
     // + Hardware.shooter.calculateRPMToMakeGoal(9.25) * .5);
     // System.out.println("Flywheel thingy thing speed really: "
     // + Hardware.shooterMotor.get());
     // System.out.println(Hardware.backupOrFireOrHopper.isOn());
-    System.out
-            .println("Flywheel Motor: " + Hardware.shooterMotor.get());
+    // System.out
+    // .println("Flywheel Motor: " + Hardware.shooterMotor.get());
     //
-    System.out.println("Intake Motor: " + Hardware.intakeMotor.get());
+    // System.out.println("Intake Motor: " + Hardware.intakeMotor.get());
     // if (Hardware.rightOperator.getRawButton(11)) {
     // Hardware.elevatorMotor.setSpeed(1);
     // System.out.println("Elevator Motor: " +
     // Hardware.elevatorMotor.get());
     // }
-    System.out.println("Turret Spark: " + Hardware.gimbalMotor.get());
+    // System.out.println("Turret Spark: " + Hardware.gimbalMotor.get());
 
     // =================================
     // CAN items
@@ -448,14 +449,14 @@ public static void printStatements ()
     // Relay
     // prints value of the relay states
     // =================================
-    if (Hardware.ringlightSwitch.isOnCheckNow())
-        {
-        System.out.println("Ring light relay is On");
-        }
-    else if (!Hardware.ringlightSwitch.isOnCheckNow())
-        {
-        System.out.println("Ring light relay is Off");
-        }
+    // if (Hardware.ringlightSwitch.isOnCheckNow())
+    // {
+    // System.out.println("Ring light relay is On");
+    // }
+    // else if (!Hardware.ringlightSwitch.isOnCheckNow())
+    // {
+    // System.out.println("Ring light relay is Off");
+    // }
     // =================================
     // Digital Inputs
     // =================================
@@ -463,8 +464,8 @@ public static void printStatements ()
     // Switches
     // prints state of switches
     // ---------------------------------
-    System.out.println("Gear Limit Switch: "
-            + Hardware.gearLimitSwitch.isOn());
+    // System.out.println("Gear Limit Switch: "
+    // + Hardware.gearLimitSwitch.isOn());
     // System.out.println("Backup or fire: " +
     // Hardware.backupOrFire.isOn());
     // System.out.println("Enable Auto: " +
@@ -472,8 +473,8 @@ public static void printStatements ()
     // System.out.println(
     // "Path Selector: " + Hardware.pathSelector.getPosition());
 
-    System.out.println("Right UltraSonic distance from bumper: "
-            + Hardware.rightUS.getDistanceFromNearestBumper());
+    // System.out.println("Right UltraSonic distance from bumper: "
+    // + Hardware.rightUS.getDistanceFromNearestBumper());
     // System.out.println("Right UltraSonic refined distance: "
     // + Hardware.rightUS.getRefinedDistanceValue());
     // System.out.println("Right UltraSonic raw distance: "
@@ -486,20 +487,20 @@ public static void printStatements ()
 
     // System.out.println("Right Front Encoder: " +
     // Hardware.rightFrontEncoder.get());
-    System.out.println("Right Front Distance: " +
-            Hardware.autoDrive.getRightFrontEncoderDistance());
+    // System.out.println("Right Front Distance: " +
+    // Hardware.autoDrive.getRightFrontEncoderDistance());
     // System.out.println("Right Rear Encoder: " +
     // Hardware.rightRearEncoder.get());
-    System.out.println("Right Rear Encoder Distance: " +
-            Hardware.autoDrive.getRightRearEncoderDistance());
+    // System.out.println("Right Rear Encoder Distance: " +
+    // Hardware.autoDrive.getRightRearEncoderDistance());
     // System.out.println("Left Front Encoder: " +
     // Hardware.leftFrontEncoder.get());
-    System.out.println("Left Front Encoder Distance: " +
-            Hardware.autoDrive.getLeftFrontEncoderDistance());
+    // System.out.println("Left Front Encoder Distance: " +
+    // Hardware.autoDrive.getLeftFrontEncoderDistance());
     // System.out.println("Left Rear Encoder: " +
     // Hardware.leftRearEncoder.get());
-    System.out.println("Left Rear Encoder Distance: " +
-            Hardware.autoDrive.getLeftFrontEncoderDistance());
+    // System.out.println("Left Rear Encoder Distance: " +
+    // Hardware.autoDrive.getLeftFrontEncoderDistance());
     // Hardware.rightFrontEncoder.get());
     // System.out.println("Right Front Encoder Distance: " +
     // Hardware.autoDrive.getRightRearEncoderDistance());
@@ -519,7 +520,7 @@ public static void printStatements ()
     // Red Light/IR Sensors
     // prints the state of the sensor
     // ---------------------------------
-    System.out.println("Ball IR: " + Hardware.ballLoaderSensor.isOn());
+    // System.out.println("Ball IR: " + Hardware.ballLoaderSensor.isOn());
     // =================================
     // Pneumatics
     // =================================
@@ -541,7 +542,7 @@ public static void printStatements ()
     // =================================
 
     // GYRO
-    System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
+    // System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
 
     //
     // We don't want the print statements to flood everything and go ahhhhhhhh
@@ -552,7 +553,7 @@ public static void printStatements ()
     // System.out.println("RightUS = "
     // + Hardware.rightUS.getDistanceFromNearestBumper());
 
-    System.out.println("Delay Pot: " + Hardware.delayPot.get());
+    // System.out.println("Delay Pot: " + Hardware.delayPot.get());
     // ---------------------------------
     // pots
     // where the pot is turned to

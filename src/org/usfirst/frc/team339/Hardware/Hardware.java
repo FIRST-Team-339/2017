@@ -378,6 +378,7 @@ public static Drive autoDrive = new Drive(mecanumDrive,
         imageProcessor, rightFrontEncoder, rightRearEncoder,
         leftFrontEncoder, leftRearEncoder, rightUS);
 
+
 /**
  * are we using mecanum? set false for tank drive
  */
