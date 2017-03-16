@@ -375,18 +375,18 @@ public static void periodic ()
                         .getAlliance() == Alliance.Red)
                     {
                     isRedAlliance = true;
-                    }
-                if (Hardware.pathSelector.isOn())
+                    }// TODO remove for Kilroy XVIII
+                if (/* Hardware.pathSelector.isOn() */ false)
                     {
                     autoPath = AutoProgram.CENTER_GEAR_PLACEMENT;
                     break;
                     }
-                if (Hardware.sideGearPath.isOn() || switchOverride)
+                if (/* Hardware.sideGearPath.isOn() */ true)
                     {
                     autoPath = AutoProgram.SIDE_GEAR_PATH;
                     break;
                     }
-                if (Hardware.autoBaseLinePath.isOn())
+                if (/* Hardware.autoBaseLinePath.isOn() */ false)
                     {
                     autoPath = AutoProgram.BASELINE_PATH;
                     break;

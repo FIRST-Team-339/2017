@@ -490,10 +490,12 @@ public boolean driveStraightInches (final double inches,
         }
     // Calculate the average value of the left and right sides of the drive
     // train.
-    double averageLeft = Math.max(this.getLeftFrontEncoderDistance(),
-            this.getLeftRearEncoderDistance());
-    double averageRight = Math.max(this.getRightFrontEncoderDistance(),
-            this.getRightRearEncoderDistance());
+    double averageLeft = Math.max(
+            Math.abs(this.getLeftFrontEncoderDistance()),
+            Math.abs(this.getLeftRearEncoderDistance()));
+    double averageRight = Math.max(
+            Math.abs(this.getRightFrontEncoderDistance()),
+            Math.abs(this.getRightRearEncoderDistance()));
     // If we're printing debug info
     if (this.getDebugStatus() == true)
         {
