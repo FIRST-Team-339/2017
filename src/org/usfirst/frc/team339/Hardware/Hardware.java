@@ -149,9 +149,6 @@ public static Relay ringlightRelay = new Relay(0);
 // ------------------------------------
 // Single and double throw switches
 // ------------------------------------
-public static SingleThrowSwitch gearLimitSwitch = new SingleThrowSwitch(
-        5);
-
 public static SingleThrowSwitch backupOrFireOrHopper = new SingleThrowSwitch(
         3);
 
@@ -388,6 +385,7 @@ public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
 public static Drive autoDrive = new Drive(mecanumDrive,
         imageProcessor, rightFrontEncoder, rightRearEncoder,
         leftFrontEncoder, leftRearEncoder, ultraSonic, driveGyro);
+
 
 /**
  * are we using mecanum? set false for tank drive
