@@ -149,9 +149,6 @@ public static Relay ringlightRelay = new Relay(0);
 // ------------------------------------
 // Single and double throw switches
 // ------------------------------------
-public static SingleThrowSwitch gearLimitSwitch = new SingleThrowSwitch(
-        5);
-
 public static SingleThrowSwitch backupOrFireOrHopper = new SingleThrowSwitch(
         3);
 
