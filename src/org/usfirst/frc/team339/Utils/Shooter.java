@@ -37,7 +37,7 @@ private CANTalon flywheelController = null;
 
 private IRSensor elevatorSensor = null;
 
-private Victor elevatorController = null;
+private Spark elevatorController = null;
 
 private double acceptableError = 75;
 
@@ -47,7 +47,7 @@ private double acceptableGimbalError = .5;// in degrees
 
 private CANTalon gimbalMotor = null;
 
-private Spark agitatorMotor = null;
+private Victor agitatorMotor = null;
 
 private UltraSonic distanceSensor = null;
 
@@ -80,9 +80,9 @@ private UltraSonic distanceSensor = null;
  *            The potentiometer that reads the bearing of the turret.
  */
 public Shooter (CANTalon controller, IRSensor ballLoaderSensor,
-        Victor elevator, double acceptableFlywheelSpeedError,
+        Spark elevator, double acceptableFlywheelSpeedError,
         ImageProcessor visionTargeting, double acceptableGimbalError,
-        CANTalon gimbalMotor, Spark agitatorMotor,
+        CANTalon gimbalMotor, Victor agitatorMotor,
         UltraSonic distanceSensor)
 {
     this.flywheelController = controller;

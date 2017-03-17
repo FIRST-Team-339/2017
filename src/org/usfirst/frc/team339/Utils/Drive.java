@@ -490,9 +490,11 @@ public boolean driveStraightInches (final double inches,
         }
     // Calculate the average value of the left and right sides of the drive
     // train.
-    double averageLeft = Math.max(this.getLeftFrontEncoderDistance(),
+    double averageLeft = Math.max(
+            this.getLeftFrontEncoderDistance(),
             this.getLeftRearEncoderDistance());
-    double averageRight = Math.max(this.getRightFrontEncoderDistance(),
+    double averageRight = Math.max(
+            this.getRightFrontEncoderDistance(),
             this.getRightRearEncoderDistance());
     // If we're printing debug info
     if (this.getDebugStatus() == true)
@@ -1090,11 +1092,20 @@ public boolean accelerate (double targetSpeed,
      * spent accelerating increases, leading to a continuous in speed from 0 to
      * target speed
      */
-    this.driveNoDeadband(
-            Math.max(targetSpeed
-                    * (this.timer.get() / timeInWhichToAccelerate),
-                    ACCELERATE_MINIMUM),
-            0, 0);
+    if (targetSpeed > 0)
+        {
+        this.driveNoDeadband(
+                Math.max(targetSpeed
+                        * (this.timer.get() / timeInWhichToAccelerate),
+                        ACCELERATE_MINIMUM),
+                0, 0);
+        }
+    else
+        {
+        this.driveNoDeadband(Math.min(targetSpeed
+                * (this.timer.get() / timeInWhichToAccelerate),
+                ACCELERATE_MINIMUM), 0.0, 0.0);
+        }
     // If we've accelerated for the whole time
     if (this.timer.get() > timeInWhichToAccelerate)
         {

@@ -320,8 +320,8 @@ public static void init ()
     Hardware.rightFrontEncoder.reset();
     Hardware.rightRearEncoder.reset();
     // motors
-    Hardware.leftRearMotor.setInverted(true);
-    Hardware.intakeMotor.setInverted(true);
+    // Hardware.leftRearMotor.setInverted(true);
+    // Hardware.intakeMotor.setInverted(true);
     // mecanum drive
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     Hardware.mecanumDrive.setFirstGearPercentage(1.0);
@@ -375,18 +375,18 @@ public static void periodic ()
                         .getAlliance() == Alliance.Red)
                     {
                     isRedAlliance = true;
-                    }
-                if (Hardware.pathSelector.isOn())
+                    }// TODO remove for Kilroy XVIII
+                if (/* Hardware.pathSelector.isOn() */ false)
                     {
                     autoPath = AutoProgram.CENTER_GEAR_PLACEMENT;
                     break;
                     }
-                if (Hardware.sideGearPath.isOn() || switchOverride)
+                if (/* Hardware.sideGearPath.isOn() */ true)
                     {
                     autoPath = AutoProgram.SIDE_GEAR_PATH;
                     break;
                     }
-                if (Hardware.autoBaseLinePath.isOn())
+                if (/* Hardware.autoBaseLinePath.isOn() */ false)
                     {
                     autoPath = AutoProgram.BASELINE_PATH;
                     break;
@@ -405,12 +405,12 @@ public static void periodic ()
             break;
         // Drives towards the right gear peg and turns around to fire
         case SIDE_GEAR_PATH:
-            if (baselinePath() == true)
+            if (sideGearPath() == true)
                 autoPath = AutoProgram.DONE;
             break;
         // Drives towards the left gear peg and turns around to fire
         case BASELINE_PATH:
-            if (sideGearPath() == true)
+            if (baselinePath() == true)
                 autoPath = AutoProgram.DONE;
             break;
         // We are done with the auto program!
@@ -440,6 +440,8 @@ private static MainState currentState = MainState.INIT;
  * right paths)
  */
 private static MainState postAccelerateState = MainState.DONE;
+
+private static int accelerateDirection = 1;
 
 /**
  * A control enum for choosing which brake we are doing
@@ -730,12 +732,21 @@ private static boolean sideGearPath ()
                 // Tell the accelerate state that we want to drive to the sides
                 // after it's done.
                 postAccelerateState = MainState.DRIVE_FORWARD_TO_SIDES;
+                if (isRedAlliance == true)
+                    {
+                    accelerateDirection = 1;
+                    }
+                else
+                    {
+                    accelerateDirection = -1;
+                    }
                 }
             break;
         case ACCELERATE:
             // accelerate to our target drive speed over .4 seconds
-            if (Hardware.autoDrive.accelerate(DRIVE_SPEED,
-                    TIME_TO_ACCELERATE))
+            if (Hardware.autoDrive.accelerate(
+                    DRIVE_SPEED * accelerateDirection,
+                    TIME_TO_ACCELERATE) == true)
                 {
                 // go to the state the state that I came from told me to
                 // once I was done.
