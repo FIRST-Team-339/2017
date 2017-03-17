@@ -76,8 +76,8 @@ public static void init ()
     // ---------------------------------------
     // Servo init
     // ---------------------------------------
-    Hardware.cameraservoX.setAngle(HIGHER_CAMERASERVO_POSITIONX);
-    Hardware.cameraservoY.setAngle(HIGHER_CAMERASERVO_POSITIONY);
+    // Hardware.cameraservoX.setAngle(HIGHER_CAMERASERVO_POSITIONX);
+    // Hardware.cameraservoY.setAngle(HIGHER_CAMERASERVO_POSITIONY);
     // gimbal motors
     Hardware.gimbalMotor
             .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
@@ -289,16 +289,16 @@ public static void periodic ()
     // =================================================================
     // CAMERA CODE
     // =================================================================
-    if (Hardware.cameraServoSwitch.isOnCheckNow() == true)
-        {
-        Hardware.cameraservoX.setAngle(190);// TODO find actual value
-        Hardware.cameraservoY.setAngle(190);
-        }
-    else
-        {
-        Hardware.cameraservoX.setAngle(0);// TODO find actual value
-        Hardware.cameraservoY.setAngle(0);
-        }
+    // if (Hardware.cameraServoSwitch.isOnCheckNow() == true)
+    // {
+    // Hardware.cameraservoX.setAngle(190);// TODO find actual value
+    // Hardware.cameraservoY.setAngle(190);
+    // }
+    // else
+    // {
+    // Hardware.cameraservoX.setAngle(0);// TODO find actual value
+    // Hardware.cameraservoY.setAngle(0);
+    // }
 
     // Testing the *new* alinging to gear peg code
     // IF button 8 is pressed, start aligning.

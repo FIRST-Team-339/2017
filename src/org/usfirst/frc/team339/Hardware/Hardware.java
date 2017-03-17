@@ -19,7 +19,6 @@ import org.usfirst.frc.team339.HardwareInterfaces.DoubleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyGyro;
-import org.usfirst.frc.team339.HardwareInterfaces.KilroyServo;
 import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.RobotPotentiometer;
 import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
@@ -91,9 +90,11 @@ public static final double CAMERA_MOUNT_ANGLE = Math.toRadians(65);
 // ====================================
 // PWM classes
 // ====================================
-public static KilroyServo cameraservoY = new KilroyServo(7, 190);// up and down
-
-public static KilroyServo cameraservoX = new KilroyServo(8, 190);// side to side
+// public static KilroyServo cameraservoY = new KilroyServo(7, 190);// up and
+// down
+//
+// public static KilroyServo cameraservoX = new KilroyServo(8, 190);// side to
+// side
 // TODO find actual values
 
 // ------------------------------------
@@ -126,8 +127,6 @@ public static Victor agitatorMotor = new Victor(0); // did this to make shooter
                                                     // method happy
 
 public static Spark elevatorMotor = new Spark(6);
-
-public static Victor climberMotor = new Victor(18);
 
 public static Victor climberMotor = new Victor(18);
 

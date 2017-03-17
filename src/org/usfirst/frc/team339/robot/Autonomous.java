@@ -334,7 +334,7 @@ public static void init ()
     // Hardware.ultraSonic.setOffsetDistanceFromNearestBummper(3);
     // Hardware.ultraSonic.setNumberOfItemsToCheckBackwardForValidity(3);
 
-    Hardware.cameraservoX.setAngle(190);
+    // Hardware.cameraservoX.setAngle(190);
     // if running on kilroy XVIII use certain value and different for XVII
     // TODO WHY was this gone in git?
     if (Hardware.isRunningOnKilroyXVIII)
