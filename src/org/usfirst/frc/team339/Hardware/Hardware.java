@@ -122,10 +122,12 @@ public static TalonSRX leftFrontMotor = new TalonSRX(4);
 
 public static Victor intakeMotor = new Victor(5);
 
-public static Spark agitatorMotor = new Spark(0); // did this to make shooter
-                                                  // method happy
+public static Victor agitatorMotor = new Victor(0); // did this to make shooter
+                                                    // method happy
 
-public static Victor elevatorMotor = new Victor(6);
+public static Spark elevatorMotor = new Spark(6);
+
+public static Victor climberMotor = new Victor(18);
 
 // ====================================
 // CAN classes
@@ -149,9 +151,6 @@ public static Relay ringlightRelay = new Relay(0);
 // ------------------------------------
 // Single and double throw switches
 // ------------------------------------
-public static SingleThrowSwitch gearLimitSwitch = new SingleThrowSwitch(
-        5);
-
 public static SingleThrowSwitch backupOrFireOrHopper = new SingleThrowSwitch(
         3);
 
@@ -257,11 +256,11 @@ public static RobotPotentiometer delayPot = new RobotPotentiometer(1,
 // -------------------------------------
 public static UltraSonic ultraSonic = new UltraSonic(2);
 
-public static final double KILROY_XVIII_US_SCALING_FACTOR = .05; // old
-                                                                 // ultrasonic
-                                                                 // .13;
+
+public static final double KILROY_XVIII_US_SCALING_FACTOR = .05;// old :.13
 
 public static final double KILROY_XVII_US_SCALING_FACTOR = .05; // .0493151;
+
 
 // **********************************************************
 // roboRIO CONNECTIONS CLASSES
@@ -276,7 +275,7 @@ public static final double KILROY_XVII_US_SCALING_FACTOR = .05; // .0493151;
 public static UsbCamera camForward = CameraServer.getInstance()
         .startAutomaticCapture(0);
 
-public static KilroyCamera axisCamera = new KilroyCamera(true,
+public static KilroyCamera axisCamera = new KilroyCamera(false,
         "10.13.39.11");// TODO change
 
 public static VisionScript visionScript = new VisionScript(
@@ -391,6 +390,7 @@ public static Drive autoDrive = new Drive(mecanumDrive,
         imageProcessor, rightFrontEncoder, rightRearEncoder,
         leftFrontEncoder, leftRearEncoder, ultraSonic, driveGyro);
 
+
 /**
  * are we using mecanum? set false for tank drive
  */
@@ -406,8 +406,8 @@ public static boolean twoJoystickControl = false;
 // Assembly classes (e.g. forklift)
 // -------------------
 public static Shooter shooter = new Shooter(shooterMotor,
-        gearSensor1, elevatorMotor, 25, imageProcessor,
-        3, gimbalMotor, agitatorMotor, ultraSonic);
+        gearSensor1, elevatorMotor, 25.0, imageProcessor,
+        3.0, gimbalMotor, agitatorMotor, ultraSonic);
 
 public static BallIntake intake = new BallIntake(intakeMotor,
         agitatorMotor);

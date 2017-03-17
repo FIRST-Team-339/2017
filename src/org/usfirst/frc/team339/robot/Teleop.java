@@ -76,7 +76,6 @@ public static void init ()
     // ---------------------------------------
     // Servo init
     // ---------------------------------------
-
     Hardware.cameraservoX.setAngle(HIGHER_CAMERASERVO_POSITIONX);
     Hardware.cameraservoY.setAngle(HIGHER_CAMERASERVO_POSITIONY);
     // gimbal motors
@@ -134,8 +133,6 @@ public static void periodic ()
 {
     // print values from hardware items
     printStatements();
-
-
 
     // tune pid loop
     if (tunePIDLoop == true)
@@ -196,10 +193,6 @@ public static void periodic ()
 
     // rightOperator stuffs
 
-
-
-
-
     // TESTING SHOOTER
     if (Hardware.rightOperator.getTrigger() == true)
         {
@@ -222,9 +215,6 @@ public static void periodic ()
     // END SHOOTER TESTING
 
     // TURRET OVERRIDE
-
-
-
     if (Hardware.rightOperator.getRawButton(2) == true
             && Math.abs(Hardware.rightOperator.getX()) > .2)
         {
@@ -324,8 +314,6 @@ public static void periodic ()
         System.out.println(alignValue);
         }
 
-
-
     Hardware.axisCamera
             .takeSinglePicture(Hardware.leftOperator.getRawButton(8)
                     || Hardware.rightOperator.getRawButton(8)
@@ -345,7 +333,6 @@ public static void periodic ()
     if (isDrivingStraight == false && isBraking == false
             && isAligning == false
             && isStrafingToTarget == false)
-
     // main driving function
         {
         if (Hardware.isUsingMecanum == true)
@@ -363,7 +350,7 @@ public static void periodic ()
 
     if (isAccelerating == true)
         {
-        isAccelerating = !Hardware.autoDrive.accelerate(.6, .4);
+        isAccelerating = !Hardware.autoDrive.accelerate(-.6, .4);
         if (isAccelerating == false)
             {
             isDrivingStraight = true;
@@ -478,6 +465,16 @@ public static void printStatements ()
     // Motor controllers
     // prints value of the motors
     // =================================
+
+    // System.out.println("Delay Pot: " + Hardware.delayPot.get(0, 5));
+    // System.out.println("Right Front Motor Controller: "
+    // + Hardware.rightFrontMotor.get());
+    // System.out.println("Left Front Motor Controller: " +
+    // Hardware.leftFrontMotor.get());
+    // System.out.println("Right Rear Motor Controller: " +
+    // Hardware.rightRearMotor.get());
+    // System.out.println("Left Rear Motor Controller: " +
+    // Hardware.leftRearMotor.get());
     // System.out.println("Delay Pot: " + Hardware.delayPot.get(0, 5));
     // System.out.println("Right Front Motor Controller: "
     // + Hardware.rightFrontMotor.get());
@@ -563,7 +560,7 @@ public static void printStatements ()
     // System.out.println("Left Rear Encoder: " +
     // Hardware.leftRearEncoder.get());
     // System.out.println("Left Rear Encoder Distance: " +
-    // Hardware.autoDrive.getLeftRearEncoderDistance());
+    // Hardware.autoDrive.getLeftFrontEncoderDistance());
     // Hardware.rightFrontEncoder.get());
     // System.out.println("Right Front Encoder Distance: " +
     // Hardware.autoDrive.getRightRearEncoderDistance());
@@ -613,9 +610,8 @@ public static void printStatements ()
     // "camera servo X" + Hardware.cameraservoX.getAngle());
     // ================
     // GYRO
-    // =================
     // System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
-
+    // =================
     // System.out.println("Ultrasonic = "
     // + Hardware.ultraSonic.getValue());
     // System.out.println("Ultrasonic refined: "
@@ -732,23 +728,17 @@ private final static double CAMERA_ALIGN_CENTER = .478;  // Relative coordinates
 
 
 // ==========================================
-
 // TUNEABLES
 // ==========================================
 private final static double LOWER_CAMERASERVO_POSITION = 65;
 
 private final static double ROTATION_FACTOR = .7;
 
-
-
 private static boolean tunePIDLoop = false;
-// TODO
-// find
-// actual value
+// TODO find actual value
 
 private final static double HIGHER_CAMERASERVO_POSITIONY = 90;// TODO find
-// actual
-// actual value
+                                                              // actual value
 
 private final static double HIGHER_CAMERASERVO_POSITIONX = 90;// TODO find
                                                               // actual value

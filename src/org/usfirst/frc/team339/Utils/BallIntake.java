@@ -1,6 +1,5 @@
 package org.usfirst.frc.team339.Utils;
 
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.Victor;
 
 /**
@@ -14,20 +13,20 @@ public class BallIntake
 {
 private Victor intakeMotor = null;
 
-private Spark agitatorMotor = null;
+private Victor agitatorMotor = null;
 
 /**
  * Creates a new ball intake motor.
  * 
  * @param motor
  *            the Spark motor controller that runs the intake.
- * @param agitator
+ * @param agitatorMotor2
  *            TODO
  */
-public BallIntake (Victor motor, Spark agitator)
+public BallIntake (Victor motor, Victor agitatorMotor2)
 {
     this.intakeMotor = motor;
-    this.agitatorMotor = agitator;
+    this.agitatorMotor = agitatorMotor2;
 }
 
 /**

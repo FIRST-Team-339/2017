@@ -112,6 +112,14 @@ private static enum MainState
      */
     TURN_TO_GEAR_PEG,
     /**
+     * 
+     */
+    DRIVE_STRAIGHT_AFTER_TURN,
+    /**
+     * 
+     */
+    BRAKE_AFTER_DRIVE_STRAIGHT_AFTER_TURN,
+    /**
      * Stops our angular motion after we turn the the gear so we're at least
      * partially aligned to the gear
      */
@@ -312,8 +320,8 @@ public static void init ()
     Hardware.rightFrontEncoder.reset();
     Hardware.rightRearEncoder.reset();
     // motors
-    Hardware.leftRearMotor.setInverted(true);
-    Hardware.intakeMotor.setInverted(true);
+    // Hardware.leftRearMotor.setInverted(true);
+    // Hardware.intakeMotor.setInverted(true);
     // mecanum drive
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     Hardware.mecanumDrive.setFirstGearPercentage(1.0);
@@ -367,18 +375,18 @@ public static void periodic ()
                         .getAlliance() == Alliance.Red)
                     {
                     isRedAlliance = true;
-                    }
-                if (Hardware.pathSelector.isOn())
+                    }// TODO remove for Kilroy XVIII
+                if (/* Hardware.pathSelector.isOn() */ false)
                     {
                     autoPath = AutoProgram.CENTER_GEAR_PLACEMENT;
                     break;
                     }
-                if (Hardware.sideGearPath.isOn() || switchOverride)
+                if (/* Hardware.sideGearPath.isOn() */ true)
                     {
                     autoPath = AutoProgram.SIDE_GEAR_PATH;
                     break;
                     }
-                if (Hardware.autoBaseLinePath.isOn())
+                if (/* Hardware.autoBaseLinePath.isOn() */ false)
                     {
                     autoPath = AutoProgram.BASELINE_PATH;
                     break;
@@ -397,12 +405,12 @@ public static void periodic ()
             break;
         // Drives towards the right gear peg and turns around to fire
         case SIDE_GEAR_PATH:
-            if (baselinePath() == true)
+            if (sideGearPath() == true)
                 autoPath = AutoProgram.DONE;
             break;
         // Drives towards the left gear peg and turns around to fire
         case BASELINE_PATH:
-            if (sideGearPath() == true)
+            if (baselinePath() == true)
                 autoPath = AutoProgram.DONE;
             break;
         // We are done with the auto program!
@@ -432,6 +440,8 @@ private static MainState currentState = MainState.INIT;
  * right paths)
  */
 private static MainState postAccelerateState = MainState.DONE;
+
+private static int accelerateDirection = 1;
 
 /**
  * A control enum for choosing which brake we are doing
@@ -722,12 +732,21 @@ private static boolean sideGearPath ()
                 // Tell the accelerate state that we want to drive to the sides
                 // after it's done.
                 postAccelerateState = MainState.DRIVE_FORWARD_TO_SIDES;
+                if (isRedAlliance == true)
+                    {
+                    accelerateDirection = 1;
+                    }
+                else
+                    {
+                    accelerateDirection = -1;
+                    }
                 }
             break;
         case ACCELERATE:
             // accelerate to our target drive speed over .4 seconds
-            if (Hardware.autoDrive.accelerate(DRIVE_SPEED,
-                    TIME_TO_ACCELERATE))
+            if (Hardware.autoDrive.accelerate(
+                    DRIVE_SPEED * accelerateDirection,
+                    TIME_TO_ACCELERATE) == true)
                 {
                 // go to the state the state that I came from told me to
                 // once I was done.
@@ -737,22 +756,22 @@ private static boolean sideGearPath ()
         case DRIVE_FORWARD_TO_SIDES:
             // System.out.println("Encoders: "
             // + Hardware.autoDrive.getAveragedEncoderValues());
-            if (isRedAlliance == false)
+            if (isRedAlliance == true)// If we're the red alliance...
                 {
                 // According to Cole's numbers, we drive forward 77.9 inches as
                 // the first step in our auto program.
                 if (Hardware.autoDrive.driveStraightInches(62,// 77.9
-                        DRIVE_SPEED, .2) == false)
+                        DRIVE_SPEED, .1) == true)
                     {
                     // keep going
                     currentState = MainState.BRAKE_BEFORE_TURN_TO_GEAR_PEG;
                     }
                 }
-            else
+            else// If we're the blue alliance...
                 {
                 // if we're red we have to drive backwards.
                 if (Hardware.autoDrive.driveStraightInches(62,// 77.9
-                        -DRIVE_SPEED, .2) == false)
+                        -DRIVE_SPEED, .1) == true)
                     {
                     currentState = MainState.BRAKE_BEFORE_TURN_TO_GEAR_PEG;
                     }
@@ -768,17 +787,23 @@ private static boolean sideGearPath ()
                 }
             break;
         case TURN_TO_GEAR_PEG:
-            // If we're done turning.// turn right on both red and blue
+            // If we're red (in the face because the code isn't working)
             if (isRedAlliance == true)
                 {
-                if (Hardware.autoDrive.turnDegrees(-30, .4) == true)
+                if (Hardware.autoDrive.turnDegreesByGyro(30,
+                        .4) == true)
                     {
                     currentState = MainState.BRAKE_AFTER_TURN_TO_GEAR_PEG;
                     }
                 }
-            else if (isRedAlliance == false)
+            /*
+             * If we're blue (in the face because we've stopped breathing;
+             * it just isn't worth it anymore)
+             */
+            else
                 {
-                if (Hardware.autoDrive.turnDegrees(30, .4))
+                if (Hardware.autoDrive.turnDegreesByGyro(-30,
+                        .4) == true)
                     {
                     currentState = MainState.BRAKE_AFTER_TURN_TO_GEAR_PEG;
                     }
@@ -794,6 +819,36 @@ private static boolean sideGearPath ()
                 // TODO may be able to remove this in the future, given
                 // our new camera position
                 Hardware.imageProcessor.filterBlobsInYRange(1, .9);
+                currentState = MainState.DRIVE_STRAIGHT_AFTER_TURN;
+                }
+            break;
+        case DRIVE_STRAIGHT_AFTER_TURN:
+            if (isRedAlliance == true)// If we're red (as tomatoes)
+                {
+                // TODO completely random number, Hurry up Cole!
+                if (Hardware.autoDrive.driveStraightInches(15,
+                        DRIVE_SPEED, .1) == true)
+                    {
+                    Hardware.autoDrive.drive(0.0, 0.0, 0.0);
+                    currentState = MainState.BRAKE_AFTER_DRIVE_STRAIGHT_AFTER_TURN;
+                    }
+                }
+            else// If we're blue (as the sea)
+                {
+                if (Hardware.autoDrive.driveStraightInches(15,
+                        -DRIVE_SPEED, .1) == true)
+                    {
+                    Hardware.autoDrive.drive(0.0, 0.0, 0.0);
+                    currentState = MainState.BRAKE_AFTER_DRIVE_STRAIGHT_AFTER_TURN;
+                    }
+                }
+            break;
+        case BRAKE_AFTER_DRIVE_STRAIGHT_AFTER_TURN:
+            // If we're red (like the sunset) or blue(like kool-aid) we always
+            // brake, we don't see color here.
+            if (Hardware.autoDrive.brakeToZero(BRAKE_SPEED) == true)
+                {
+                Hardware.autoDrive.drive(0.0, 0.0, 0.0);
                 currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
                 }
             break;
@@ -813,46 +868,11 @@ private static boolean sideGearPath ()
                 if (Hardware.autoDrive.driveToGear(DRIVE_SPEED,
                         DRIVE_SPEED, 0, .05,
                         (Hardware.ultraSonic
-                                .getDistanceFromNearestBumper() <= 10),
+                                .getDistanceFromNearestBumper() <= 12),
                         .7, .15) == AlignReturnType.DONE)
                     {
                     // Stop and wait for Mr. Human player to pull out our gear.
                     Hardware.autoDrive.drive(0.0, 0.0, 0.0);
-                    currentState = MainState.WAIT_FOR_GEAR_EXODUS;
-                    }
-                }
-            break;
-        case WAIT_FOR_GEAR_EXODUS:
-            // If the gear limit switch is of (e.g. we don't have the gear
-            // anymore)
-            if (Hardware.gearLimitSwitch.isOn() == false)
-                {
-                // reset the time for the delay after this and start delaying
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                currentState = MainState.DONE;
-                }
-            break;
-        case DELAY_AFTER_GEAR_EXODUS:
-            // Stop the motors cause we're not moving and we want to avoid
-            // !!FUN!!
-            Hardware.leftRearMotor.set(0);
-            Hardware.leftFrontMotor.set(0);
-            Hardware.rightRearMotor.set(0);
-            Hardware.rightFrontMotor.set(0);
-            // If we've been waiting for more than 1.5 seconds after the human
-            // player releases the switch
-            if (Hardware.autoStateTimer.get() >= 1.5)// TODO magic number
-                {
-                // If the switches tell us to backup..
-                if (Hardware.backupOrFireOrHopper.isOn() == true)
-                    {
-                    // backup
-                    currentState = MainState.DRIVE_AWAY_FROM_PEG;
-                    }
-                else// The switches tell us to stay put
-                    {
-                    // We're done with Auto!
                     currentState = MainState.DONE;
                     }
                 }
