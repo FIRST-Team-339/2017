@@ -490,12 +490,12 @@ public boolean driveStraightInches (final double inches,
         }
     // Calculate the average value of the left and right sides of the drive
     // train.
-    double averageLeft = Math.max(
-            this.getLeftFrontEncoderDistance(),
-            this.getLeftRearEncoderDistance());
-    double averageRight = Math.max(
-            this.getRightFrontEncoderDistance(),
-            this.getRightRearEncoderDistance());
+    double averageLeft = (this.getLeftFrontEncoderDistance() +
+            this.getLeftRearEncoderDistance()) / 2;
+    double averageRight = (this.getRightFrontEncoderDistance() +
+            this.getRightRearEncoderDistance()) / 2;
+    System.out.println("Average left: " + averageLeft);
+    System.out.println("Average right: " + averageRight);
     // If we're printing debug info
     if (this.getDebugStatus() == true)
         {
@@ -517,13 +517,28 @@ public boolean driveStraightInches (final double inches,
     else if (averageLeft > averageRight)
         {
         // correct to the right
-        this.driveNoDeadband(speed, 0.0, -driveCorrection);
+        if (speed > 0)
+            {
+            this.driveNoDeadband(speed, 0.0, driveCorrection);
+            }
+        else
+            {
+            this.driveNoDeadband(speed, 0.0, -driveCorrection);
+            }
         }
     // if we're outside our error range and the right is ahead of the left.
-    else if (averageLeft < averageRight)
+    else if (averageLeft < averageRight)// TODO slows down instead of speeding
+                                        // up.
         {
         // correct to the left
-        this.driveNoDeadband(speed, 0.0, driveCorrection);
+        if (speed > 0)
+            {
+            this.driveNoDeadband(speed, 0.0, -driveCorrection);
+            }
+        else
+            {
+            this.driveNoDeadband(speed, 0.0, driveCorrection);
+            }
         }
     // Tell the caller we're not done.
     return false;
@@ -1646,6 +1661,7 @@ private double deadbandPercentageZone = 0.0;
  *            How fast we want the robot to turn
  * @return Whether or not we have finished turning yet.
  */
+// TODO is reversed
 public boolean turnDegrees (double degrees, double speed)
 {
     // first time setup

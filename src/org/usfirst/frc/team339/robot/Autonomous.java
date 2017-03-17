@@ -761,7 +761,7 @@ private static boolean sideGearPath ()
                 // According to Cole's numbers, we drive forward 77.9 inches as
                 // the first step in our auto program.
                 if (Hardware.autoDrive.driveStraightInches(62,// 77.9
-                        DRIVE_SPEED, .2) == false)
+                        DRIVE_SPEED, .1) == true)
                     {
                     // keep going
                     currentState = MainState.BRAKE_BEFORE_TURN_TO_GEAR_PEG;
@@ -771,7 +771,7 @@ private static boolean sideGearPath ()
                 {
                 // if we're red we have to drive backwards.
                 if (Hardware.autoDrive.driveStraightInches(62,// 77.9
-                        -DRIVE_SPEED, .2) == false)
+                        -DRIVE_SPEED, .1) == true)
                     {
                     currentState = MainState.BRAKE_BEFORE_TURN_TO_GEAR_PEG;
                     }
@@ -790,7 +790,8 @@ private static boolean sideGearPath ()
             // If we're red (in the face because the code isn't working)
             if (isRedAlliance == true)
                 {
-                if (Hardware.autoDrive.turnDegrees(30, .4) == true)
+                if (Hardware.autoDrive.turnDegreesByGyro(30,
+                        .4) == true)
                     {
                     currentState = MainState.BRAKE_AFTER_TURN_TO_GEAR_PEG;
                     }
@@ -801,7 +802,8 @@ private static boolean sideGearPath ()
              */
             else
                 {
-                if (Hardware.autoDrive.turnDegrees(-30, .4))
+                if (Hardware.autoDrive.turnDegreesByGyro(-30,
+                        .4) == true)
                     {
                     currentState = MainState.BRAKE_AFTER_TURN_TO_GEAR_PEG;
                     }
@@ -825,7 +827,7 @@ private static boolean sideGearPath ()
                 {
                 // TODO completely random number, Hurry up Cole!
                 if (Hardware.autoDrive.driveStraightInches(15,
-                        DRIVE_SPEED, .2) == true)
+                        DRIVE_SPEED, .1) == true)
                     {
                     Hardware.autoDrive.drive(0.0, 0.0, 0.0);
                     currentState = MainState.BRAKE_AFTER_DRIVE_STRAIGHT_AFTER_TURN;
@@ -834,7 +836,7 @@ private static boolean sideGearPath ()
             else// If we're blue (as the sea)
                 {
                 if (Hardware.autoDrive.driveStraightInches(15,
-                        -DRIVE_SPEED, .2) == true)
+                        -DRIVE_SPEED, .1) == true)
                     {
                     Hardware.autoDrive.drive(0.0, 0.0, 0.0);
                     currentState = MainState.BRAKE_AFTER_DRIVE_STRAIGHT_AFTER_TURN;

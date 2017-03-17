@@ -333,7 +333,6 @@ public static void periodic ()
     if (isDrivingStraight == false && isBraking == false
             && isAligning == false
             && isStrafingToTarget == false)
-
     // main driving function
         {
         if (Hardware.isUsingMecanum == true)
@@ -351,10 +350,10 @@ public static void periodic ()
 
     if (isAccelerating == true)
         {
-        isAccelerating = !Hardware.autoDrive.accelerate(.6, .4);
+        isAccelerating = !Hardware.autoDrive.accelerate(-.6, .4);
         if (isAccelerating == false)
             {
-        isDrivingStraight = true;
+            isDrivingStraight = true;
             }
         }
 
@@ -738,10 +737,12 @@ private final static double ROTATION_FACTOR = .7;
 private static boolean tunePIDLoop = false;
 // TODO find actual value
 
-private final static double HIGHER_CAMERASERVO_POSITIONY = 90;// TODO find actual value
+private final static double HIGHER_CAMERASERVO_POSITIONY = 90;// TODO find
+                                                              // actual value
 
 private final static double HIGHER_CAMERASERVO_POSITIONX = 90;// TODO find
-                                                           // actual value
+                                                              // actual value
+
 public static boolean changeCameraServoPosition = false;
 
 public static boolean changeGearServoPosition = false;
