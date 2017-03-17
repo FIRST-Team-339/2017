@@ -257,9 +257,11 @@ public static RobotPotentiometer delayPot = new RobotPotentiometer(1,
 // -------------------------------------
 public static UltraSonic ultraSonic = new UltraSonic(2);
 
-public static final double KILROY_XVIII_US_SCALING_FACTOR = .13;
+public static final double KILROY_XVIII_US_SCALING_FACTOR = .05; // old
+                                                                 // ultrasonic
+                                                                 // .13;
 
-public static final double KILROY_XVII_US_SCALING_FACTOR = .0493151;
+public static final double KILROY_XVII_US_SCALING_FACTOR = .05; // .0493151;
 
 // **********************************************************
 // roboRIO CONNECTIONS CLASSES
