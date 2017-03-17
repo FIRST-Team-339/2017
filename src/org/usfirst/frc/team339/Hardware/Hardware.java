@@ -127,6 +127,8 @@ public static Spark agitatorMotor = new Spark(0); // did this to make shooter
 
 public static Victor elevatorMotor = new Victor(6);
 
+public static Victor climberMotor = new Victor(18);
+
 // ====================================
 // CAN classes
 // ====================================
