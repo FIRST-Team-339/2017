@@ -855,10 +855,7 @@ private static boolean sideGearPath ()
         case DRIVE_TO_GEAR_WITH_CAMERA:
             // Make sure we have the most recent blob info
             Hardware.imageProcessor.processImage();
-            // Eliminate the gear from the blob count
-            // TODO may be able to remove this in the future, given
-            // our new camera position
-            Hardware.imageProcessor.filterBlobsInYRange(1, .9);
+
             // If at any time we lose our target blob number
             if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
                 {
@@ -866,7 +863,7 @@ private static boolean sideGearPath ()
                 // If we're close enough to the gear wall to quit...
                 // TODO find a new relative center
                 if (Hardware.autoDrive.driveToGear(DRIVE_SPEED,
-                        DRIVE_SPEED, 0, .05,
+                        DRIVE_SPEED, .2, .05,
                         (Hardware.ultraSonic
                                 .getDistanceFromNearestBumper() <= 12),
                         .7, .15) == AlignReturnType.DONE)
