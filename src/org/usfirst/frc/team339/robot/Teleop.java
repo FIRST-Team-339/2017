@@ -547,20 +547,20 @@ public static void printStatements ()
 
     // System.out.println("Right Front Encoder: " +
     // Hardware.rightFrontEncoder.get());
-    // System.out.println("Right Front Distance: " +
-    // Hardware.autoDrive.getRightFrontEncoderDistance());
+    System.out.println("Right Front Distance: " +
+            Hardware.autoDrive.getRightFrontEncoderDistance());
     // System.out.println("Right Rear Encoder: " +
     // Hardware.rightRearEncoder.get());
-    // System.out.println("Right Rear Encoder Distance: " +
-    // Hardware.autoDrive.getRightRearEncoderDistance());
+    System.out.println("Right Rear Encoder Distance: " +
+            Hardware.autoDrive.getRightRearEncoderDistance());
     // System.out.println("Left Front Encoder: " +
     // Hardware.leftFrontEncoder.get());
-    // System.out.println("Left Front Encoder Distance: " +
-    // Hardware.autoDrive.getLeftFrontEncoderDistance());
+    System.out.println("Left Front Encoder Distance: " +
+            Hardware.autoDrive.getLeftFrontEncoderDistance());
     // System.out.println("Left Rear Encoder: " +
     // Hardware.leftRearEncoder.get());
-    // System.out.println("Left Rear Encoder Distance: " +
-    // Hardware.autoDrive.getLeftFrontEncoderDistance());
+    System.out.println("Left Rear Encoder Distance: " +
+            Hardware.autoDrive.getLeftRearEncoderDistance());
     // Hardware.rightFrontEncoder.get());
     // System.out.println("Right Front Encoder Distance: " +
     // Hardware.autoDrive.getRightRearEncoderDistance());
