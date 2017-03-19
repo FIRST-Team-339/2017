@@ -28,9 +28,11 @@ import edu.wpi.first.wpilibj.ADXRS450_Gyro;
  */
 public class KilroyGyro
 {
-private final ADXRS450_Gyro gyro;
+private ADXRS450_Gyro gyro;
 
 private boolean hasGyro = true;
+
+public double initGyroVal = 0.0;
 
 /**
  * determines based on whether we have a gyro or not, whether to declare
@@ -54,6 +56,13 @@ public KilroyGyro (boolean hasGyro)
         {
         // then declare as a new gyro
         this.gyro = new ADXRS450_Gyro();
+        // If the gyro is not slightly offset, we know it is not working.
+        if (this.gyro.getAngle() == 0.0)
+            {
+            this.hasGyro = false;
+            System.out.println("Gyro Not Connected");
+            this.gyro = null;
+            }
         }
     // if we don't have a gyro, but we don't not have a gyro, return null
     else
@@ -74,7 +83,7 @@ public KilroyGyro (boolean hasGyro)
 public void calibrate ()
 {
     // if we do not have a gyro
-    if (this.hasGyro == false)
+    if (this.hasGyro == false || this.gyro == null)
         {
         // then return void
         return;
@@ -90,7 +99,7 @@ public void calibrate ()
 public void reset ()
 {
     // if we do not have a gyro
-    if (this.hasGyro == false)
+    if (this.gyro == null || this.hasGyro == false)
         {
         // return void
         return;
@@ -109,7 +118,7 @@ public void reset ()
 public double getAngle ()
 {
     // if we don't have a gyro
-    if (this.hasGyro == false)
+    if (this.hasGyro == false || this.gyro == null)
         {
         // return 339339
         return 339339;
@@ -129,7 +138,7 @@ public double getAngle ()
 public double getRate ()
 {
     // if we don't have a gyro
-    if (this.hasGyro == false)
+    if (this.gyro == null || this.hasGyro == false)
         {
         // return the random value 339339
         return 339339;
@@ -148,11 +157,4 @@ public boolean isConnected ()
     return this.hasGyro;
 }
 
-/**
- * @return whether or not the gyro is null
- */
-public boolean isNull ()
-{
-    return (this.gyro == null);
-}
 }

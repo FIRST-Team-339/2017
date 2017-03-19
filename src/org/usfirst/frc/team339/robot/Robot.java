@@ -386,7 +386,7 @@ public void robotInit ()
     // Hardware.gimbalMotor
     // .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
     // Hardware.gimbalMotor.setEncPosition(0);
-    // Hardware.driveGyro.calibrate();//@AHK
+    Hardware.driveGyro.calibrate();// @AHK
     // =========================================================
     // User code goes above here
     // =========================================================

@@ -361,18 +361,19 @@ public static void periodic ()
 
     // ----------------------TESTING DRIVE FUNCTIONS--------------------
 
-    if (Hardware.leftOperator.getRawButton(9) == true
-            && isTestingDrive == false)
+    if (Hardware.leftDriver.getRawButton(9) == true)
         {
         isTestingDrive = true;
         }
 
     if (isTestingDrive == true)
         {
-        isTestingDrive = Hardware.autoDrive.turnDegrees(90,
-                .4) == false
-                || Hardware.leftOperator.getRawButton(6) == false
-                || Hardware.leftOperator.getRawButton(7) == false;
+        if (Hardware.leftOperator.getRawButton(6) == true
+                || Hardware.leftOperator.getRawButton(7) == true
+                || Hardware.autoDrive.turnDegrees(90, .4) == true)
+            {
+            isTestingDrive = false;
+            }
         }
 
 } // end
@@ -562,7 +563,9 @@ public static void printStatements ()
     // "camera servo X" + Hardware.cameraservoX.getAngle());
     // ================
     // GYRO
-    // System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
+    System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
+    System.out.println(
+            "Init Gyro Val: " + Hardware.driveGyro.initGyroVal);
     // =================
     // System.out.println("Ultrasonic = "
     // + Hardware.ultraSonic.getValue());

@@ -358,7 +358,7 @@ public static void init ()
         robotSpeedScalar = KILROY_XVII_DEFAULT_SPEED;
         }
 
-    isUsingGyro = (Hardware.driveGyro.isNull() == false);
+    isUsingGyro = Hardware.driveGyro.isConnected();
 } // end Init
 
 /**
