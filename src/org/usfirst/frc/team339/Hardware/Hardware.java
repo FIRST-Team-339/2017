@@ -31,6 +31,7 @@ import org.usfirst.frc.team339.Vision.ImageProcessor;
 import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
+import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -284,8 +285,9 @@ public static VisionScript visionScript = new VisionScript(
                                                                     * 255)
                                                                     */// (76,
                                                                      // 200,
-                                                                     // 71,
-        // new RemoveSmallObjectsOperator(1, true), // // 255, 50,255),
+        // 71,
+        new RemoveSmallObjectsOperator(1, true), // TODO fix this for normal use
+                                                 // // 255, 50,255),
         new ConvexHullOperator(false));
 
 

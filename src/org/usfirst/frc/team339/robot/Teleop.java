@@ -33,7 +33,6 @@ package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
-import org.usfirst.frc.team339.Utils.Drive.AlignReturnType;
 import org.usfirst.frc.team339.Utils.Shooter;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -303,29 +302,24 @@ public static void periodic ()
         Hardware.cameraservoY.setAngle(0);
         }
 
-    // Testing the *new* alinging to gear peg code
-    // IF button 8 is pressed, start aligning.
+    // -----------------------Testing Camera Code-----------------------
+
     if (Hardware.leftOperator.getRawButton(8))
         {
-        isAligning = true;
+        isTestingCamera = true;
         }
 
-    // IF we are still aligning,
-    if (isAligning == true)
+    if (isTestingCamera == true)
         {
-        alignValue = Hardware.autoDrive.driveToGear(.5, .5, .121875,
-                .03,
-                ((Hardware.gearSensor1.isOn()
-                        && Hardware.gearSensor2.isOn())
-                        || Hardware.leftOperator.getRawButton(6) == true
-                        || Hardware.leftOperator.getRawButton(7)),
-                .7, .15);
-        if (alignValue == AlignReturnType.DONE)
-            {
-            Hardware.autoDrive.resetDriveToGearStatus();
-            isAligning = false;
-            }
+        alignValue = Hardware.autoDrive.driveToGear(.4, .4, .1212, .05,
+                Hardware.leftOperator.getRawButton(6)
+                        || Hardware.leftOperator.getRawButton(7),
+                .15, .1);
         System.out.println(alignValue);
+        if (alignValue == Drive.AlignReturnType.DONE)
+            {
+            isTestingCamera = false;
+            }
         }
 
     Hardware.axisCamera
@@ -344,7 +338,7 @@ public static void periodic ()
     else
         rotationValue = 0.0;
 
-    if (isTestingDrive == false)
+    if (isTestingDrive == false && isTestingCamera == false)
     // main driving function
         {
         if (Hardware.isUsingMecanum == true)
@@ -368,9 +362,9 @@ public static void periodic ()
 
     if (isTestingDrive == true)
         {
+
         if (Hardware.leftOperator.getRawButton(6) == true
-                || Hardware.leftOperator.getRawButton(7) == true
-                || Hardware.autoDrive.turnDegrees(90, .4) == true)
+                || Hardware.leftOperator.getRawButton(7) == true)
             {
             isTestingDrive = false;
             }
@@ -389,7 +383,7 @@ private static double rotationValue = 0.0;
 
 private static boolean isTurningGimbal = false;
 
-private static boolean isAligning = false;
+private static boolean isTestingCamera = false;
 
 private static boolean isTestingDrive = false;
 
@@ -563,9 +557,9 @@ public static void printStatements ()
     // "camera servo X" + Hardware.cameraservoX.getAngle());
     // ================
     // GYRO
-    System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
-    System.out.println(
-            "Init Gyro Val: " + Hardware.driveGyro.initGyroVal);
+    // System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
+    // System.out.println(
+    // "Init Gyro Val: " + Hardware.driveGyro.initGyroVal);
     // =================
     // System.out.println("Ultrasonic = "
     // + Hardware.ultraSonic.getValue());
