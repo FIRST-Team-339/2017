@@ -59,8 +59,6 @@
 // ====================================================================
 package org.usfirst.frc.team339.robot;
 
-import com.ctre.CANTalon.FeedbackDevice;
-import com.ctre.CANTalon.TalonControlMode;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -285,7 +283,7 @@ public void robotInit ()
         // mecanum
         Hardware.mecanumDrive
                 .setDeadbandPercentageZone(Hardware.joystickDeadzone);
-        Hardware.mecanumDrive.setDirectionalDeadzone(10.0);
+        Hardware.mecanumDrive.setDirectionalDeadzone(20.0);
         Hardware.mecanumDrive.setMecanumJoystickReversed(false);
         // motor safty
         // Hardware.rightFrontMotorSafety.setExpiration(.5);
@@ -348,16 +346,16 @@ public void robotInit ()
     // initialize PID values and set the motor to 0.0 because it isn't safe
     // if
     // we don't.
-    Hardware.shooterMotor.changeControlMode(TalonControlMode.Speed);
-    // put back in once finished testing!!!
-    Hardware.shooterMotor.configPeakOutputVoltage(12f, 0f);
-    Hardware.shooterMotor.configNominalOutputVoltage(0f, 0f);
-    Hardware.shooterMotor
-            .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-    Hardware.shooterMotor.configEncoderCodesPerRev(1024);
-    Hardware.shooterMotor.setPID(shooterP, shooterI, shooterD);
-    Hardware.shooterMotor.setSetpoint(0.0);
-    Hardware.shooterMotor.reverseSensor(true);
+    // Hardware.shooterMotor.changeControlMode(TalonControlMode.Speed);
+    // // put back in once finished testing!!!
+    // Hardware.shooterMotor.configPeakOutputVoltage(12f, 0f);
+    // Hardware.shooterMotor.configNominalOutputVoltage(0f, 0f);
+    // Hardware.shooterMotor
+    // .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+    // Hardware.shooterMotor.configEncoderCodesPerRev(1024);
+    // Hardware.shooterMotor.setPID(shooterP, shooterI, shooterD);
+    // Hardware.shooterMotor.setSetpoint(0.0);
+    // Hardware.shooterMotor.reverseSensor(true);
     // -------------------------------------
     // AXIS Camera initialization
     // NOTE: The AXIS Camera getInstance() MUST
@@ -372,8 +370,8 @@ public void robotInit ()
         CameraServer.getInstance().addAxisCamera("10.13.39.11");
         }
 
-    Hardware.axisCamera.writeColorLevel(60);
-    Hardware.axisCamera.writeBrightness(4);
+    Hardware.axisCamera.writeColorLevel(50);
+    Hardware.axisCamera.writeBrightness(0);
     Hardware.axisCamera.writeResolution(Resolution.k320x240);
     Hardware.axisCamera.writeWhiteBalance(WhiteBalance.kFixedOutdoor2);
     // -------------------------------------
@@ -385,9 +383,10 @@ public void robotInit ()
     Hardware.ultraSonic.setOffsetDistanceFromNearestBummper(3);
     Hardware.ultraSonic.setNumberOfItemsToCheckBackwardForValidity(3);
     // gimbal motors
-    Hardware.gimbalMotor
-            .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-    Hardware.gimbalMotor.setEncPosition(0);
+    // Hardware.gimbalMotor
+    // .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+    // Hardware.gimbalMotor.setEncPosition(0);
+    // Hardware.driveGyro.calibrate();//@AHK
     // =========================================================
     // User code goes above here
     // =========================================================

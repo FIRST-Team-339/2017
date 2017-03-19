@@ -31,12 +31,10 @@
 // ====================================================================
 package org.usfirst.frc.team339.robot;
 
-import com.ctre.CANTalon.FeedbackDevice;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Drive.AlignReturnType;
 import org.usfirst.frc.team339.Utils.Shooter;
-import org.usfirst.frc.team339.Utils.Shooter.turnToGoalReturn;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -79,9 +77,9 @@ public static void init ()
     Hardware.cameraservoX.setAngle(HIGHER_CAMERASERVO_POSITIONX);
     Hardware.cameraservoY.setAngle(HIGHER_CAMERASERVO_POSITIONY);
     // gimbal motors
-    Hardware.gimbalMotor
-            .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-    Hardware.gimbalMotor.setEncPosition(0);
+    // Hardware.gimbalMotor
+    // .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+    // Hardware.gimbalMotor.setEncPosition(0);
     // mecanum
     Hardware.mecanumDrive
             .setFirstGearPercentage(
@@ -114,8 +112,8 @@ public static void init ()
         SmartDashboard.putNumber("I", Robot.shooterI);
         SmartDashboard.putNumber("D", Robot.shooterD);
         SmartDashboard.putNumber("Setpoint", tempSetpoint);
-        SmartDashboard.putNumber("Err",
-                Hardware.shooterMotor.getError());
+        // SmartDashboard.putNumber("Err",
+        // Hardware.shooterMotor.getError());
         }
 } // end Init
 
@@ -142,12 +140,12 @@ public static void periodic ()
         Robot.shooterD = SmartDashboard.getNumber("D", Robot.shooterD);
         tempSetpoint = SmartDashboard.getNumber("Setpoint",
                 tempSetpoint);
-        SmartDashboard.putNumber("Err",
-                Hardware.shooterMotor.getError());
-        Hardware.shooterMotor.setPID(Robot.shooterP, Robot.shooterI,
-                Robot.shooterD);
-        Hardware.shooterMotor
-                .set(tempSetpoint);
+        // SmartDashboard.putNumber("Err",
+        // Hardware.shooterMotor.getError());
+        // Hardware.shooterMotor.setPID(Robot.shooterP, Robot.shooterI,
+        // Robot.shooterD);
+        // Hardware.shooterMotor
+        // .set(tempSetpoint);
         }
 
     // Hardware.shooterMotor
@@ -192,24 +190,39 @@ public static void periodic ()
     // =================================================================
 
     // rightOperator stuffs
+    // If the operator is pressing right button 10
+    if (Hardware.rightOperator.getRawButton(10))
+        {
+        // Climb climb climb!
+        Hardware.climberMotor.set(-1);
+        }
+    else if (Hardware.rightOperator.getRawButton(6) == true
+            && Hardware.rightOperator.getRawButton(7) == true)
+        {
+        Hardware.climberMotor.set(1);
+        }
+    else// They're not pressing it
+        {
+        Hardware.climberMotor.set(0.0);// STOP THE MOTOR
+        }
 
     // TESTING SHOOTER
     if (Hardware.rightOperator.getTrigger() == true)
         {
-        Hardware.shooter.turnToGoalRaw();
-        Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
+        // Hardware.shooter.turnToGoalRaw();
+        // Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
         // System.out.println(
         // Hardware.shooterMotor.set(
         // Hardware.shooter.calculateRPMToMakeGoal(12.25) / 2.0);
         }
     else if (Hardware.leftOperator.getTrigger() == true)
         {
-        Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
-        Hardware.shooter.loadBalls();
+        // Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
+        // Hardware.shooter.loadBalls();
         }
     else
         {
-        Hardware.shooter.stopFlywheelMotor();
+        // Hardware.shooter.stopFlywheelMotor();
         }
 
     // END SHOOTER TESTING
@@ -220,17 +233,17 @@ public static void periodic ()
         {
         if (Hardware.rightOperator.getX() > 0)
             {
-            Hardware.shooter.turnGimbalSlow(1);
+            // Hardware.shooter.turnGimbalSlow(1);
             }
         else
             {
-            Hardware.shooter
-                    .turnGimbalSlow(-1);
+            // Hardware.shooter
+            // .turnGimbalSlow(-1);
             }
         }
     else if (isTurningGimbal == false && isTurningToGoal == false)
         {
-        Hardware.shooter.stopGimbal();
+        // Hardware.shooter.stopGimbal();
         }
     // END TURRET OVERRIDE
 
@@ -241,18 +254,18 @@ public static void periodic ()
     if (isTurningGimbal == true
             || turnValue == Shooter.turnReturn.WORKING)
         {
-        turnValue = Hardware.shooter.turnToBearing(0);
+        // turnValue = Hardware.shooter.turnToBearing(0);
         isTurningGimbal = false;
         }
     // END SET TURRET TO 0
 
     // ELEVATOR OVERRIDE
-    if (Hardware.rightOperator.getRawButton(3) == true)
-        Hardware.shooter.loadBalls();
-    else if (Hardware.rightOperator.getRawButton(4) == true)
-        Hardware.shooter.reverseLoader();
-    else
-        Hardware.shooter.stopLoader();
+    // if (Hardware.rightOperator.getRawButton(3) == true)
+    // Hardware.shooter.loadBalls();
+    // else if (Hardware.rightOperator.getRawButton(4) == true)
+    // Hardware.shooter.reverseLoader();
+    // else if (Hardware.leftOperator.getRawButton(3) == false)
+    // Hardware.shooter.stopLoader();
     // END ELEVATOR OVERRIDE
 
     // leftOperator stuffs
@@ -264,7 +277,7 @@ public static void periodic ()
     if (isTurningToGoal == true)
         {
         // turnToGoalValue = Hardware.shooter.turnToGoal();
-        isTurningToGoal = !Hardware.shooter.turnToGoalRaw();
+        // isTurningToGoal = !Hardware.shooter.turnToGoalRaw();
         }
 
     // INTAKE CONTROLS
@@ -272,7 +285,7 @@ public static void periodic ()
         Hardware.intake.startIntake();
     else if (Hardware.leftOperator.getRawButton(3) == true)
         Hardware.intake.reverseIntake();
-    else
+    else if (Hardware.rightOperator.getRawButton(3) == false)
         Hardware.intake.stopIntake();
     // END INTAKE CONTROLS
 
@@ -300,7 +313,8 @@ public static void periodic ()
     // IF we are still aligning,
     if (isAligning == true)
         {
-        alignValue = Hardware.autoDrive.driveToGear(.5, .5, .2, .03,
+        alignValue = Hardware.autoDrive.driveToGear(.5, .5, .121875,
+                .03,
                 ((Hardware.gearSensor1.isOn()
                         && Hardware.gearSensor2.isOn())
                         || Hardware.leftOperator.getRawButton(6) == true
@@ -330,9 +344,7 @@ public static void periodic ()
     else
         rotationValue = 0.0;
 
-    if (isDrivingStraight == false && isBraking == false
-            && isAligning == false
-            && isStrafingToTarget == false)
+    if (isTestingDrive == false)
     // main driving function
         {
         if (Hardware.isUsingMecanum == true)
@@ -344,79 +356,27 @@ public static void periodic ()
             Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
                     Hardware.leftDriver.getY());
         }
-    // Test code for brake
-    if (Hardware.leftDriver.getRawButton(9) == true)
-        isAccelerating = true;
 
-    if (isAccelerating == true)
+
+
+    // ----------------------TESTING DRIVE FUNCTIONS--------------------
+
+    if (Hardware.leftOperator.getRawButton(9) == true
+            && isTestingDrive == false)
         {
-        isAccelerating = !Hardware.autoDrive.accelerate(-.6, .4);
-        if (isAccelerating == false)
-            {
-            isDrivingStraight = true;
-            }
+        isTestingDrive = true;
         }
 
-    if (isDrivingStraight == true)
+    if (isTestingDrive == true)
         {
-        // System.out.println("We are driving straight inches");
-        isDrivingStraight = !Hardware.autoDrive.driveStraightInches(
-                77.9,
-                .6, .2);
-        if (isDrivingStraight == false)
-            {
-            isTurningToGoal = true;
-            }
+        isTestingDrive = Hardware.autoDrive.turnDegrees(90,
+                .4) == false
+                || Hardware.leftOperator.getRawButton(6) == false
+                || Hardware.leftOperator.getRawButton(7) == false;
         }
-
-    if (isBraking == true)
-        {
-        isBraking = !Hardware.autoDrive.brakeToZero(.4);
-        // isBraking = !Hardware.autoDrive.timeBrake(-.1, .5);
-        if (isBraking == false)
-            {
-            isTurningToGoal = true;
-            }
-        System.out.println("We are braking");
-        }
-
-    if (isTurningToGoal == true)
-        {
-        System.out.println("We Are turning");
-        isTurningToGoal = !Hardware.autoDrive.turnDegreesByGyro(-30.0,
-                .4);
-        if (isTurningToGoal == false)
-            {
-            isDrivingStraightSecond = true;
-            }
-        }
-
-    if (isDrivingStraightSecond == true)
-        {
-        isDrivingStraightSecond = !Hardware.autoDrive
-                .driveStraightInches(
-                        24.2, .6, .2);
-        }
-    // if (Hardware.brake.get())
-    // {
-    //
-    // }
-    // if (Hardware.setMotorsZero.get())
-    // {
-    // Hardware.autoDrive.drive(0, 0, 0);
-    // System.out.println("We zeroed now");
-    // }
 
 } // end
   // Periodic
-
-private static boolean isDrivingStraight = false;
-
-private static boolean isDrivingStraightSecond = false;
-
-private static boolean isAccelerating = false;
-
-private static boolean isBraking = false;
 
 private static Drive.AlignReturnType alignValue = Drive.AlignReturnType.MISALIGNED;
 
@@ -424,25 +384,13 @@ private static Shooter.turnReturn turnValue = Shooter.turnReturn.SUCCESS;
 
 private static boolean isTurningToGoal = false;
 
-private static turnToGoalReturn turnToGoalValue = Shooter.turnToGoalReturn.SUCCESS;
-
 private static double rotationValue = 0.0;
 
 private static boolean isTurningGimbal = false;
 
 private static boolean isAligning = false;
 
-private static boolean previousFireButton = false;
-
-private static boolean isStrafingToTarget = false;
-
-private static boolean preparingToFire = false;
-
-private static double movementSpeed = 0.3;
-
-private static boolean firing = false;
-
-private static boolean hasPressedFour = false;
+private static boolean isTestingDrive = false;
 
 /**
  * stores print statements for future use in the print "bank", statements
@@ -461,29 +409,26 @@ private static boolean hasPressedFour = false;
  */
 public static void printStatements ()
 {
+    // Hardware.imageProcessor.processImage();
+    //
+    // if (Hardware.imageProcessor.getLargestBlob() != null)
+    // System.out.println("Camera: " + Hardware.imageProcessor
+    // .getLargestBlob().center_mass_x);
+
     // =================================
     // Motor controllers
     // prints value of the motors
     // =================================
 
     // System.out.println("Delay Pot: " + Hardware.delayPot.get(0, 5));
-    // System.out.println("Right Front Motor Controller: "
-    // + Hardware.rightFrontMotor.get());
     // System.out.println("Left Front Motor Controller: " +
     // Hardware.leftFrontMotor.get());
     // System.out.println("Right Rear Motor Controller: " +
     // Hardware.rightRearMotor.get());
     // System.out.println("Left Rear Motor Controller: " +
     // Hardware.leftRearMotor.get());
-    // System.out.println("Delay Pot: " + Hardware.delayPot.get(0, 5));
     // System.out.println("Right Front Motor Controller: "
     // + Hardware.rightFrontMotor.get());
-    // System.out.println("Left Front Motor Controller: " +
-    // Hardware.leftFrontMotor.get());
-    // System.out.println("Right Rear Motor Controller: " +
-    // Hardware.rightRearMotor.get());
-    // System.out.println("Left Rear Motor Controller: " +
-    // Hardware.leftRearMotor.get());
     // System.out.println("Flywheel thingy thing: "
     // + Hardware.shooter.calculateRPMToMakeGoal(9.25) * .5);
     // System.out.println("Flywheel thingy thing speed really: "
@@ -528,18 +473,25 @@ public static void printStatements ()
     // System.out.println("Gear Limit Switch: "
     // + Hardware.gearLimitSwitch.isOn());
     // System.out.println("Backup or fire: " +
-    // Hardware.backupOrFire.isOn());
+    // Hardware.backupOrFireOrHopper.isOn());
     // System.out.println("Enable Auto: " +
     // Hardware.enableAutonomous.isOn());
     // System.out.println(
     // "Path Selector: " + Hardware.pathSelector.getPosition());
+    //
+    // System.out.println(
+    // "Base Line Path: " + Hardware.autoBaseLinePath.isOn());
+    // System.out
+    // .println("Side Gear Path: " + Hardware.sideGearPath.isOn());
 
-    System.out.println("Right UltraSonic distance from bumper: "
-            + Hardware.ultraSonic.getDistanceFromNearestBumper());
+    // System.out.println("UltraSonic distance from bumper: "
+    // + Hardware.ultraSonic.getDistanceFromNearestBumper());
     // System.out.println("Right UltraSonic refined distance: "
     // + Hardware.ultraSonic.getRefinedDistanceValue());
     // System.out.println("Right UltraSonic raw distance: "
     // + Hardware.ultraSonic.getValue());
+    // System.out.println("IR 1: " + Hardware.gearSensor1.isOn());
+    // System.out.println("IR 2: " + Hardware.gearSensor2.isOn());
     // ---------------------------------
     // Encoders
     // prints the distance from the encoders
@@ -547,20 +499,20 @@ public static void printStatements ()
 
     // System.out.println("Right Front Encoder: " +
     // Hardware.rightFrontEncoder.get());
-    System.out.println("Right Front Distance: " +
-            Hardware.autoDrive.getRightFrontEncoderDistance());
+    // System.out.println("Right Front Distance: " +
+    // Hardware.autoDrive.getRightFrontEncoderDistance());
     // System.out.println("Right Rear Encoder: " +
     // Hardware.rightRearEncoder.get());
-    System.out.println("Right Rear Encoder Distance: " +
-            Hardware.autoDrive.getRightRearEncoderDistance());
+    // System.out.println("Right Rear Encoder Distance: " +
+    // Hardware.autoDrive.getRightRearEncoderDistance());
     // System.out.println("Left Front Encoder: " +
     // Hardware.leftFrontEncoder.get());
-    System.out.println("Left Front Encoder Distance: " +
-            Hardware.autoDrive.getLeftFrontEncoderDistance());
+    // System.out.println("Left Front Encoder Distance: " +
+    // Hardware.autoDrive.getLeftFrontEncoderDistance());
     // System.out.println("Left Rear Encoder: " +
     // Hardware.leftRearEncoder.get());
-    System.out.println("Left Rear Encoder Distance: " +
-            Hardware.autoDrive.getLeftRearEncoderDistance());
+    // System.out.println("Left Rear Encoder Distance: " +
+    // Hardware.autoDrive.getLeftRearEncoderDistance());
     // Hardware.rightFrontEncoder.get());
     // System.out.println("Right Front Encoder Distance: " +
     // Hardware.autoDrive.getRightRearEncoderDistance());
@@ -718,21 +670,9 @@ public static void printStatements ()
 private static double LFVal = Hardware.autoDrive
         .getLeftFrontEncoderDistance();
 
-private final static double CAMERA_ALIGN_SPEED = .5;
-
 //// The dead zone for the aligning TODO
 private final static double CAMERA_ALIGN_DEADBAND = 10.0 // +/- Pixels
         / Hardware.axisCamera.getHorizontalResolution();
-
-private final static double CAMERA_ALIGN_CENTER = .478;  // Relative coordinates
-
-
-// ==========================================
-// TUNEABLES
-// ==========================================
-private final static double LOWER_CAMERASERVO_POSITION = 65;
-
-private final static double ROTATION_FACTOR = .7;
 
 private static boolean tunePIDLoop = false;
 // TODO find actual value
@@ -752,9 +692,5 @@ public static boolean cameraPositionHasChanged = false;
 public static boolean cancelAgitator = false;
 
 public static boolean hasCanceledAgitator = false;
-
-private static boolean isTestingDriveCode = false;
-
-private static boolean prevState = false;
 
 } // end class

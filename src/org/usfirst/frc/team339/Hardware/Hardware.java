@@ -14,7 +14,6 @@
 // ====================================================================
 package org.usfirst.frc.team339.Hardware;
 
-import com.ctre.CANTalon;
 import org.usfirst.frc.team339.HardwareInterfaces.DoubleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
@@ -28,7 +27,6 @@ import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourW
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import org.usfirst.frc.team339.Utils.BallIntake;
 import org.usfirst.frc.team339.Utils.Drive;
-import org.usfirst.frc.team339.Utils.Shooter;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
 import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
@@ -74,7 +72,7 @@ public static double KILROY_XVII_JOYSTICK_DIRECTIONAL_DEADZONE = 10.0;
  */
 public static boolean runningInLab = false;
 
-public static boolean isRunningOnKilroyXVIII = false; // 18
+public static boolean isRunningOnKilroyXVIII = true; // 18
 // -------------------------------------
 // Private Constants
 // -------------------------------------
@@ -135,9 +133,9 @@ public static Victor climberMotor = new Victor(18);
 public static PowerDistributionPanel pdp = new PowerDistributionPanel(
         0);
 
-public static CANTalon gimbalMotor = new CANTalon(11);
+// public static CANTalon gimbalMotor = new CANTalon(11);
 
-public static CANTalon shooterMotor = new CANTalon(10);
+// public static CANTalon shooterMotor = new CANTalon(10);
 
 // ====================================
 // Relay classes
@@ -405,9 +403,9 @@ public static boolean twoJoystickControl = false;
 // -------------------
 // Assembly classes (e.g. forklift)
 // -------------------
-public static Shooter shooter = new Shooter(shooterMotor,
-        gearSensor1, elevatorMotor, 25.0, imageProcessor,
-        3.0, gimbalMotor, agitatorMotor, ultraSonic);
+// public static Shooter shooter = new Shooter(shooterMotor,
+// gearSensor1, elevatorMotor, 25.0, imageProcessor,
+// 3.0, gimbalMotor, agitatorMotor, ultraSonic);
 
 public static BallIntake intake = new BallIntake(intakeMotor,
         agitatorMotor);

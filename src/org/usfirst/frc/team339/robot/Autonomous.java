@@ -128,7 +128,11 @@ private static enum MainState
      * Align with the vision strips to deposit gear
      */
     DRIVE_TO_GEAR_WITH_CAMERA,
-
+    /**
+     * If we don't see any blobs we strafe in without trying to use the camera,
+     * and hope for the best.
+     */
+    STRAFE_TO_GEAR_WITHOUT_CAMERA,
     /**
      * Drive up to the gear peg when we don't see any blobs.
      */
@@ -252,6 +256,12 @@ private static Drive.AlignReturnType cameraState = Drive.AlignReturnType.NO_BLOB
 // ==========================================
 
 /**
+ * Determines whether or not we use the gyro to turn to the gear peg. If we are
+ * not using the gyro, use the encoders to turn the robot.
+ */
+private static boolean isUsingGyro = true;
+
+/**
  * If we are using mecanum, this is the number of DEGREES the robot will offset
  * while using StrafeToGear.
  * 
@@ -264,6 +274,8 @@ private static final double ALIGN_CORRECT_VAR = 30;// 45
  * How fast we will be driving during all of auto, in percent.
  */
 private static final double DRIVE_SPEED = .6;// .45
+
+private static final double ALIGN_SPEED = .4;
 
 /**
  * Determines what value we set the motors backwards to in order to brake, in
@@ -345,6 +357,8 @@ public static void init ()
         {
         robotSpeedScalar = KILROY_XVII_DEFAULT_SPEED;
         }
+
+    isUsingGyro = (Hardware.driveGyro.isNull() == false);
 } // end Init
 
 /**
@@ -376,17 +390,17 @@ public static void periodic ()
                     {
                     isRedAlliance = true;
                     }// TODO remove for Kilroy XVIII
-                if (/* Hardware.pathSelector.isOn() */ false)
+                if (Hardware.pathSelector.isOn())
                     {
                     autoPath = AutoProgram.CENTER_GEAR_PLACEMENT;
                     break;
                     }
-                if (/* Hardware.sideGearPath.isOn() */ true)
+                if (Hardware.sideGearPath.isOn())
                     {
                     autoPath = AutoProgram.SIDE_GEAR_PATH;
                     break;
                     }
-                if (/* Hardware.autoBaseLinePath.isOn() */ false)
+                if (Hardware.autoBaseLinePath.isOn())
                     {
                     autoPath = AutoProgram.BASELINE_PATH;
                     break;
@@ -572,7 +586,7 @@ private static boolean placeCenterGearPath ()
             // we will strafe. If it uses a four wheel transmission, it will
             // wiggle wiggle on it's way to the peg
             cameraState = Hardware.autoDrive.driveToGear(DRIVE_SPEED,
-                    .4, .2, .03, Hardware.gearSensor1.isOn()
+                    .4, .121875, .03, Hardware.gearSensor1.isOn()
                             || Hardware.gearSensor2.isOn(),
                     .5, .05);
 
@@ -698,6 +712,7 @@ private static int fireCount = 0;
 private static boolean sideGearPath ()
 {
     System.out.println("Current State = " + currentState);
+    System.out.println("Delay: " + delayBeforeAuto);
     switch (currentState)
         {
         case INIT:
@@ -760,21 +775,37 @@ private static boolean sideGearPath ()
                 {
                 // According to Cole's numbers, we drive forward 77.9 inches as
                 // the first step in our auto program.
-                if (Hardware.autoDrive.driveStraightInches(62,// 77.9
+                if (Hardware.autoDrive.driveStraightInches(91,// 77.9
                         DRIVE_SPEED, .1) == true)
                     {
                     // keep going
                     currentState = MainState.BRAKE_BEFORE_TURN_TO_GEAR_PEG;
                     }
+                // System.out.println("Left Front: "
+                // + Hardware.leftFrontEncoder.getDistance());
+                // System.out.println("Left Rear: "
+                // + Hardware.leftRearEncoder.getDistance());
+                // System.out.println("Right Front: "
+                // + Hardware.rightFrontEncoder.getDistance());
+                // System.out.println("Right Rear"
+                // + Hardware.rightRearEncoder.getDistance());
                 }
             else// If we're the blue alliance...
                 {
                 // if we're red we have to drive backwards.
-                if (Hardware.autoDrive.driveStraightInches(62,// 77.9
+                if (Hardware.autoDrive.driveStraightInches(91,// 77.9
                         -DRIVE_SPEED, .1) == true)
                     {
                     currentState = MainState.BRAKE_BEFORE_TURN_TO_GEAR_PEG;
                     }
+                // System.out.println("Left Front: "
+                // + Hardware.leftFrontEncoder.getDistance());
+                // System.out.println("Left Rear: "
+                // + Hardware.leftRearEncoder.getDistance());
+                // System.out.println("Right Front: "
+                // + Hardware.rightFrontEncoder.getDistance());
+                // System.out.println("Right Rear"
+                // + Hardware.rightRearEncoder.getDistance());
                 }
             break;
         case BRAKE_BEFORE_TURN_TO_GEAR_PEG:
@@ -790,8 +821,15 @@ private static boolean sideGearPath ()
             // If we're red (in the face because the code isn't working)
             if (isRedAlliance == true)
                 {
-                if (Hardware.autoDrive.turnDegreesByGyro(30,
-                        .4) == true)
+                if (isUsingGyro == true)
+                    {
+                    if (Hardware.autoDrive.turnDegreesByGyro(28,
+                            .4) == true)
+                        {
+                        currentState = MainState.BRAKE_AFTER_TURN_TO_GEAR_PEG;
+                        }
+                    }
+                else if (Hardware.autoDrive.turnDegrees(28, .4) == true)
                     {
                     currentState = MainState.BRAKE_AFTER_TURN_TO_GEAR_PEG;
                     }
@@ -802,10 +840,20 @@ private static boolean sideGearPath ()
              */
             else
                 {
-                if (Hardware.autoDrive.turnDegreesByGyro(-30,
-                        .4) == true)
+                if (isUsingGyro == true)
                     {
-                    currentState = MainState.BRAKE_AFTER_TURN_TO_GEAR_PEG;
+                    if (Hardware.autoDrive.turnDegreesByGyro(-28,
+                            .4) == true)
+                        {
+                        currentState = MainState.BRAKE_AFTER_TURN_TO_GEAR_PEG;
+                        }
+                    }
+                else
+                    {
+                    if (Hardware.autoDrive.turnDegrees(-28, .4) == true)
+                        {
+                        currentState = MainState.BRAKE_AFTER_TURN_TO_GEAR_PEG;
+                        }
                     }
                 }
             break;
@@ -818,15 +866,19 @@ private static boolean sideGearPath ()
                 Hardware.imageProcessor.processImage();
                 // TODO may be able to remove this in the future, given
                 // our new camera position
+                Hardware.axisCamera.saveImagesSafely();
                 Hardware.imageProcessor.filterBlobsInYRange(1, .9);
-                currentState = MainState.DRIVE_STRAIGHT_AFTER_TURN;
+                currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;// BYPASSING
+                                                                   // DRIVE
+                                                                   // STRAIGHT
+                                                                   // AFTER TURN
                 }
             break;
         case DRIVE_STRAIGHT_AFTER_TURN:
             if (isRedAlliance == true)// If we're red (as tomatoes)
                 {
                 // TODO completely random number, Hurry up Cole!
-                if (Hardware.autoDrive.driveStraightInches(15,
+                if (Hardware.autoDrive.driveStraightInches(16,
                         DRIVE_SPEED, .1) == true)
                     {
                     Hardware.autoDrive.drive(0.0, 0.0, 0.0);
@@ -835,7 +887,7 @@ private static boolean sideGearPath ()
                 }
             else// If we're blue (as the sea)
                 {
-                if (Hardware.autoDrive.driveStraightInches(15,
+                if (Hardware.autoDrive.driveStraightInches(16,
                         -DRIVE_SPEED, .1) == true)
                     {
                     Hardware.autoDrive.drive(0.0, 0.0, 0.0);
@@ -855,23 +907,47 @@ private static boolean sideGearPath ()
         case DRIVE_TO_GEAR_WITH_CAMERA:
             // Make sure we have the most recent blob info
             Hardware.imageProcessor.processImage();
-
             // If at any time we lose our target blob number
             if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
                 {
                 // TODO magic numbers and need to be tuned.
                 // If we're close enough to the gear wall to quit...
                 // TODO find a new relative center
-                if (Hardware.autoDrive.driveToGear(DRIVE_SPEED,
-                        DRIVE_SPEED, .2, .05,
+                cameraState = Hardware.autoDrive.driveToGear(
+                        ALIGN_SPEED,
+                        ALIGN_SPEED, .121875, .07,
                         (Hardware.ultraSonic
                                 .getDistanceFromNearestBumper() <= 12),
-                        .7, .15) == AlignReturnType.DONE)
+                        .7, .15);
+                if (cameraState == AlignReturnType.DONE)
                     {
                     // Stop and wait for Mr. Human player to pull out our gear.
                     Hardware.autoDrive.drive(0.0, 0.0, 0.0);
+                    Hardware.axisCamera.saveImagesSafely();
                     currentState = MainState.DONE;
                     }
+                else if (cameraState == AlignReturnType.ALIGNED)
+                    {
+                    Hardware.axisCamera.saveImagesSafely();
+                    }
+                }
+            else
+                {
+                Hardware.autoDrive.drive(0.0, 0.0, 0.0);
+                currentState = MainState.STRAFE_TO_GEAR_WITHOUT_CAMERA;
+                Hardware.axisCamera.saveImagesSafely();
+                }
+            break;
+        case STRAFE_TO_GEAR_WITHOUT_CAMERA:
+            if (Hardware.ultraSonic.getDistanceFromNearestBumper() > 12)
+                {
+                Hardware.autoDrive.strafeStraight(
+                        Direction.LEFT, .7, DRIVE_SPEED, .15);
+                }
+            else
+                {
+                currentState = MainState.DONE;
+                Hardware.axisCamera.saveImagesSafely();
                 }
             break;
         default:
@@ -889,8 +965,12 @@ private static void initializeDriveProgram ()
 {
     Hardware.autoStateTimer.stop();
     Hardware.autoStateTimer.reset();
-    Hardware.driveGyro.calibrate();
-    Hardware.driveGyro.reset();
+    // Hardware.driveGyro.calibrate();
+    // If we throw an exception while resetting the gyro, then don't use it.s
+    if (isUsingGyro == true)
+        {
+        Hardware.driveGyro.reset();
+        }
     Hardware.autoDrive.resetEncoders();
     Hardware.mecanumDrive.drive(0, 0, 0);
 }

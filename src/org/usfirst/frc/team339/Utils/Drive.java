@@ -490,12 +490,23 @@ public boolean driveStraightInches (final double inches,
         }
     // Calculate the average value of the left and right sides of the drive
     // train.
-    double averageLeft = (this.getLeftFrontEncoderDistance() +
-            this.getLeftRearEncoderDistance()) / 2;
-    double averageRight = (this.getRightFrontEncoderDistance() +
-            this.getRightRearEncoderDistance()) / 2;
-    System.out.println("Average left: " + averageLeft);
-    System.out.println("Average right: " + averageRight);
+    double averageLeft = (Math.abs(this.getLeftFrontEncoderDistance()) +
+            Math.abs(this.getLeftRearEncoderDistance())) / 2.0;
+    double averageRight = (Math
+            .abs(this.getRightFrontEncoderDistance()) +
+            Math.abs(this.getRightRearEncoderDistance()))
+            / 2.0;
+    // System.out.println("Average left: " + averageLeft);
+    // System.out.println("Average right: " + averageRight);
+    // System.out.println("Right Rear Encoder Distance: " +
+    // this.getRightRearEncoderDistance());
+    // System.out.println("Right Front Encoder Distance: " +
+    // this.getRightFrontEncoderDistance());
+    // System.out.println("left Rear Encoder Distance: " +
+    // this.getLeftRearEncoderDistance());
+    // System.out.println("Left front Encoder Distance: " +
+    // this.getLeftFrontEncoderDistance());
+
     // If we're printing debug info
     if (this.getDebugStatus() == true)
         {
@@ -519,29 +530,53 @@ public boolean driveStraightInches (final double inches,
         // correct to the right
         if (speed > 0)
             {
-            this.driveNoDeadband(speed, 0.0, driveCorrection);
+            // this.driveNoDeadband(speed, 0.0, -driveCorrection);// THIS WORKS
+            // GOING FORWARDS!
+            this.driveLeftSideMotors(speed - driveCorrection);
+            this.driveRightSideMotors(speed + driveCorrection);
             }
         else
             {
-            this.driveNoDeadband(speed, 0.0, -driveCorrection);
+            // this.driveNoDeadband(speed, 0.0, driveCorrection);
+            this.driveLeftSideMotors(speed + driveCorrection);
+            this.driveRightSideMotors(speed - driveCorrection);
             }
         }
     // if we're outside our error range and the right is ahead of the left.
-    else if (averageLeft < averageRight)// TODO slows down instead of speeding
-                                        // up.
+    else if (averageLeft < averageRight)
         {
         // correct to the left
         if (speed > 0)
             {
-            this.driveNoDeadband(speed, 0.0, -driveCorrection);
+            // this.driveNoDeadband(speed, 0.0, driveCorrection);// THIS WORKS
+            // GOING FORWARDS!
+            this.driveLeftSideMotors(speed + driveCorrection);
+            this.driveRightSideMotors(speed - driveCorrection);
             }
         else
             {
-            this.driveNoDeadband(speed, 0.0, driveCorrection);
+            // this.driveNoDeadband(speed, 0.0, -driveCorrection);
+            this.driveLeftSideMotors(speed - driveCorrection);
+            this.driveRightSideMotors(speed + driveCorrection);
             }
+        // TODO We need to test this weird thingy with drive correction w/
+        // mecanum.
         }
     // Tell the caller we're not done.
     return false;
+}
+
+public void driveLeftSideMotors (double speed)
+{
+    this.transmissionMecanum.leftSpeedController.set(speed);
+    this.transmissionMecanum.leftRearSpeedController.set(speed);
+}
+
+public void driveRightSideMotors (double speed)
+{
+    this.transmissionMecanum.rightSpeedController.set(speed);
+    this.transmissionMecanum.rightRearSpeedController.set(-speed);
+    // TODO This will only work in kilroy 18!!!!!!
 }
 
 /**
@@ -895,6 +930,14 @@ public AlignReturnType driveToGear (final double driveSpeed,
         {
         this.strafeStraight(Direction.LEFT, strafeStraightDeadband,
                 driveSpeed, strafeStraightCorrection);
+        // System.out.println("Left Front: "
+        // + Hardware.leftFrontEncoder.getDistance());
+        // System.out.println("Left Rear: "
+        // + Hardware.leftRearEncoder.getDistance());
+        // System.out.println("Right Front: "
+        // + Hardware.rightFrontEncoder.getDistance());
+        // System.out.println("Right Rear"
+        // + Hardware.rightRearEncoder.getDistance());
         return this.driveToGearStatus;
         }
 

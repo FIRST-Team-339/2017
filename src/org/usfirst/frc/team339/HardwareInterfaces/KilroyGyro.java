@@ -59,6 +59,13 @@ public KilroyGyro (boolean hasGyro)
     else
         // if neither then return null
         this.gyro = null;
+
+    // IF for some reason the gyro is not created, THEN tell the class that we
+    // do not have a gyro.
+    if (this.gyro == null)
+        {
+        this.hasGyro = false;
+        }
 }
 
 /**
@@ -139,5 +146,13 @@ public double getRate ()
 public boolean isConnected ()
 {
     return this.hasGyro;
+}
+
+/**
+ * @return whether or not the gyro is null
+ */
+public boolean isNull ()
+{
+    return (this.gyro == null);
 }
 }
