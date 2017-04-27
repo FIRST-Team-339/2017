@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author Alex Kneipp
  * @written 1/21/17
  */
-public class CANPIDTuner
+public class CanTalonPIDTuner
 {
 private CANTalon tunedMotorController = null;
 
@@ -42,7 +42,7 @@ private double errorThresh = 20;
  *            The maximum error we find it acceptable to have (always positive,
  *            we use absolute value of the actual error).
  */
-public CANPIDTuner (CANTalon talon, double errorThreshold)
+public CanTalonPIDTuner (CANTalon talon, double errorThreshold)
 {
     this.tunedMotorController = talon;
     this.P = 0;
