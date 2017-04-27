@@ -27,11 +27,11 @@ import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourW
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import org.usfirst.frc.team339.Utils.BallIntake;
 import org.usfirst.frc.team339.Utils.Drive;
-import org.usfirst.frc.team339.Utils.Shooter;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
 import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
+import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -136,9 +136,9 @@ public static Victor climberMotor = new Victor(18);
 public static PowerDistributionPanel pdp = new PowerDistributionPanel(
         0);
 
-public static CANTalon gimbalMotor = new CANTalon(11);
+// public static CANTalon gimbalMotor = new CANTalon(11);
 
-public static CANTalon shooterMotor = new CANTalon(10);
+// public static CANTalon shooterMotor = new CANTalon(10);
 
 // ====================================
 // Relay classes
@@ -274,8 +274,8 @@ public static final double KILROY_XVII_US_SCALING_FACTOR = .05;// .0493151;
 public static UsbCamera camForward = CameraServer.getInstance()
         .startAutomaticCapture(0);
 
-public static KilroyCamera axisCamera = new KilroyCamera(false,
-        "10.13.39.11");// TODO change
+public static KilroyCamera axisCamera = new KilroyCamera(true);
+// "10.13.39.11");// TODO change
 
 public static VisionScript visionScript = new VisionScript(
         new HSLColorThresholdOperator(57, 157, 164, 255, 21, 136), /*
@@ -286,7 +286,8 @@ public static VisionScript visionScript = new VisionScript(
                                                                     */// (76,
                                                                      // 200,
                                                                      // 71,
-        // new RemoveSmallObjectsOperator(1, true), // // 255, 50,255),
+        new RemoveSmallObjectsOperator(1, true), // TODO fix this for normal use
+                                                 // // 255, 50,255),
         new ConvexHullOperator(false));
 
 
@@ -404,9 +405,9 @@ public static boolean twoJoystickControl = false;
 // -------------------
 // Assembly classes (e.g. forklift)
 // -------------------
-public static Shooter shooter = new Shooter(shooterMotor,
-        gearSensor1, elevatorMotor, 25.0, imageProcessor,
-        3.0, gimbalMotor, agitatorMotor, ultraSonic);
+// public static Shooter shooter = new Shooter(shooterMotor,
+// gearSensor1, elevatorMotor, 25.0, imageProcessor,
+// 3.0, gimbalMotor, agitatorMotor, ultraSonic);
 
 public static BallIntake intake = new BallIntake(intakeMotor,
         agitatorMotor);

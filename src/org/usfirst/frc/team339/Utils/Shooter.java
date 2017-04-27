@@ -420,6 +420,9 @@ public turnReturn turnGimbalFast (int direction)
  */
 private turnReturn turnGimbal (double speed)
 {
+    speed = -speed;
+    // ^^ Turret is reversed ^^
+
     // if the bearing is greater than or equal to the max gimbaling angle
     // and the speed is greater than 0
     // OR if the bearing is less than or equal the max gimbaling angle

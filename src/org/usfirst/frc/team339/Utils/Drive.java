@@ -490,12 +490,23 @@ public boolean driveStraightInches (final double inches,
         }
     // Calculate the average value of the left and right sides of the drive
     // train.
-    double averageLeft = Math.max(
-            this.getLeftFrontEncoderDistance(),
-            this.getLeftRearEncoderDistance());
-    double averageRight = Math.max(
-            this.getRightFrontEncoderDistance(),
-            this.getRightRearEncoderDistance());
+    double averageLeft = (Math.abs(this.getLeftFrontEncoderDistance()) +
+            Math.abs(this.getLeftRearEncoderDistance())) / 2.0;
+    double averageRight = (Math
+            .abs(this.getRightFrontEncoderDistance()) +
+            Math.abs(this.getRightRearEncoderDistance()))
+            / 2.0;
+    // System.out.println("Average left: " + averageLeft);
+    // System.out.println("Average right: " + averageRight);
+    // System.out.println("Right Rear Encoder Distance: " +
+    // this.getRightRearEncoderDistance());
+    // System.out.println("Right Front Encoder Distance: " +
+    // this.getRightFrontEncoderDistance());
+    // System.out.println("left Rear Encoder Distance: " +
+    // this.getLeftRearEncoderDistance());
+    // System.out.println("Left front Encoder Distance: " +
+    // this.getLeftFrontEncoderDistance());
+
     // If we're printing debug info
     if (this.getDebugStatus() == true)
         {
@@ -517,16 +528,55 @@ public boolean driveStraightInches (final double inches,
     else if (averageLeft > averageRight)
         {
         // correct to the right
-        this.driveNoDeadband(speed, 0.0, -driveCorrection);
+        if (speed > 0)
+            {
+            // this.driveNoDeadband(speed, 0.0, -driveCorrection);// THIS WORKS
+            // GOING FORWARDS!
+            this.driveLeftSideMotors(speed - driveCorrection);
+            this.driveRightSideMotors(speed + driveCorrection);
+            }
+        else
+            {
+            // this.driveNoDeadband(speed, 0.0, driveCorrection);
+            this.driveLeftSideMotors(speed + driveCorrection);
+            this.driveRightSideMotors(speed - driveCorrection);
+            }
         }
     // if we're outside our error range and the right is ahead of the left.
     else if (averageLeft < averageRight)
         {
         // correct to the left
-        this.driveNoDeadband(speed, 0.0, driveCorrection);
+        if (speed > 0)
+            {
+            // this.driveNoDeadband(speed, 0.0, driveCorrection);// THIS WORKS
+            // GOING FORWARDS!
+            this.driveLeftSideMotors(speed + driveCorrection);
+            this.driveRightSideMotors(speed - driveCorrection);
+            }
+        else
+            {
+            // this.driveNoDeadband(speed, 0.0, -driveCorrection);
+            this.driveLeftSideMotors(speed - driveCorrection);
+            this.driveRightSideMotors(speed + driveCorrection);
+            }
+        // TODO We need to test this weird thingy with drive correction w/
+        // mecanum.
         }
     // Tell the caller we're not done.
     return false;
+}
+
+public void driveLeftSideMotors (double speed)
+{
+    this.transmissionMecanum.leftSpeedController.set(speed);
+    this.transmissionMecanum.leftRearSpeedController.set(speed);
+}
+
+public void driveRightSideMotors (double speed)
+{
+    this.transmissionMecanum.rightSpeedController.set(speed);
+    this.transmissionMecanum.rightRearSpeedController.set(-speed);
+    // TODO This will only work in kilroy 18!!!!!!
 }
 
 /**
@@ -579,14 +629,36 @@ public AlignReturnType alignToGear (final double relativeCenter,
     // {
     // Process the an image from the camera so we know where we are.
     this.imageProcessor.processImage();
-    // If we don't have two blobs...
-    if (this.imageProcessor.getNthSizeBlob(1) == null)
+    // If we don't have any blobs
+    if (this.imageProcessor.getLargestBlob() == null)
         {
         // Stop
-        this.drive(0.0, 0.0, 0.0);
-        // Tell the caller we lost at least one of our blobs.
+        this.driveNoDeadband(0.0, 0.0, 0.0);
+        // Tell the caller we lost all of our blobs.
         return AlignReturnType.NO_BLOBS;
         }
+    // IF we only see ONE blob, AND it is left of center, drive backwards
+    // till we see the other.
+    else if (this.imageProcessor.getNthSizeBlob(1) == null
+            && this.imageProcessor.getLargestBlob().center_mass_x
+                    / this.imageProcessor.camera
+                            .getHorizontalResolution() < .5)
+        {
+        this.driveNoDeadband(-movementSpeed, 0.0, 0.0);
+        return AlignReturnType.ONE_BLOB;
+        }
+    // IF we only see ONE blob, AND it is RIGHT of center, drive forwards
+    // till we see the other.
+    else if (this.imageProcessor.getNthSizeBlob(1) == null
+            && this.imageProcessor.getLargestBlob().center_mass_x
+                    / this.imageProcessor.camera
+                            .getHorizontalResolution() > .5)
+        {
+        this.driveNoDeadband(movementSpeed, 0.0, 0.0);
+        return AlignReturnType.ONE_BLOB;
+        }
+
+
     // Find the distance from the center of the image of a combination of
     // the blobs.
     double distanceToCenter = imageProcessor
@@ -849,10 +921,11 @@ public AlignReturnType driveToGear (final double driveSpeed,
         return AlignReturnType.DONE;
         }
 
-    // IF the last stored value was NOT driving towards the wall, align to the
-    // target.
+    // IF the last stored value was anything to do with the initial align, keep
+    // doing that.
     if (this.driveToGearStatus == AlignReturnType.MISALIGNED
-            || this.driveToGearStatus == AlignReturnType.NO_BLOBS)
+            || this.driveToGearStatus == AlignReturnType.NO_BLOBS
+            || this.driveToGearStatus == AlignReturnType.ONE_BLOB)
         {
         this.driveToGearStatus = this.alignToGear(relativeCenter,
                 alignSpeed, deadband);
@@ -880,6 +953,14 @@ public AlignReturnType driveToGear (final double driveSpeed,
         {
         this.strafeStraight(Direction.LEFT, strafeStraightDeadband,
                 driveSpeed, strafeStraightCorrection);
+        // System.out.println("Left Front: "
+        // + Hardware.leftFrontEncoder.getDistance());
+        // System.out.println("Left Rear: "
+        // + Hardware.leftRearEncoder.getDistance());
+        // System.out.println("Right Front: "
+        // + Hardware.rightFrontEncoder.getDistance());
+        // System.out.println("Right Rear"
+        // + Hardware.rightRearEncoder.getDistance());
         return this.driveToGearStatus;
         }
 
@@ -914,6 +995,10 @@ public static enum AlignReturnType
      * No blobs are present
      */
     NO_BLOBS,
+    /**
+     * We can only see one target
+     */
+    ONE_BLOB,
     /**
      * We are now aligned with the target
      */
@@ -1646,6 +1731,7 @@ private double deadbandPercentageZone = 0.0;
  *            How fast we want the robot to turn
  * @return Whether or not we have finished turning yet.
  */
+// TODO is reversed
 public boolean turnDegrees (double degrees, double speed)
 {
     // first time setup
