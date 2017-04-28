@@ -15,6 +15,7 @@
 package org.usfirst.frc.team339.Hardware;
 
 import org.usfirst.frc.team339.HardwareInterfaces.DoubleThrowSwitch;
+import org.usfirst.frc.team339.HardwareInterfaces.HRLVMaxSonarEZ;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyGyro;
@@ -253,7 +254,7 @@ public static RobotPotentiometer delayPot = new RobotPotentiometer(1,
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------
-public static UltraSonic ultraSonic = new UltraSonic(2);
+public static UltraSonic ultraSonic = new HRLVMaxSonarEZ(2);
 
 
 public static final double KILROY_XVIII_US_SCALING_FACTOR = .05;// old :.13

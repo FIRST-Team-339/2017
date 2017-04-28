@@ -562,7 +562,9 @@ public static void printStatements ()
     // "Init Gyro Val: " + Hardware.driveGyro.initGyroVal);
     // =================
     // System.out.println("Ultrasonic = "
-    // + Hardware.ultraSonic.getValue());
+    // + Hardware.ultraSonic.getRefinedDistanceValue());
+    // System.out.println("Ultrasonic = "
+    // + Hardware.ultraSonic2.getRefinedDistanceValue());
     // System.out.println("Ultrasonic refined: "
     // + Hardware.ultraSonic.getRefinedDistanceValue());
 
