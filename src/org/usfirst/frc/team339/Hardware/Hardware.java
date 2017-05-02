@@ -14,7 +14,6 @@
 // ====================================================================
 package org.usfirst.frc.team339.Hardware;
 
-import com.ctre.CANTalon;
 import org.usfirst.frc.team339.HardwareInterfaces.DoubleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
@@ -27,6 +26,7 @@ import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourW
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import org.usfirst.frc.team339.Utils.BallIntake;
 import org.usfirst.frc.team339.Utils.Drive;
+import org.usfirst.frc.team339.Utils.SpeedTester;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
 import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
@@ -183,6 +183,8 @@ public static Encoder rightFrontEncoder = new Encoder(16, 17);
 
 
 
+
+
 // -----------------------
 // Wiring diagram
 // -----------------------
@@ -274,7 +276,7 @@ public static final double KILROY_XVII_US_SCALING_FACTOR = .05;// .0493151;
 public static UsbCamera camForward = CameraServer.getInstance()
         .startAutomaticCapture(0);
 
-public static KilroyCamera axisCamera = new KilroyCamera(true);
+public static KilroyCamera axisCamera = new KilroyCamera(false);
 // "10.13.39.11");// TODO change
 
 public static VisionScript visionScript = new VisionScript(
@@ -394,7 +396,7 @@ public static Drive autoDrive = new Drive(mecanumDrive,
 /**
  * are we using mecanum? set false for tank drive
  */
-public static boolean isUsingMecanum = true;
+public static boolean isUsingMecanum = false;
 
 /**
  * are we using 2 joysticks?
@@ -420,9 +422,23 @@ public static BallIntake intake = new BallIntake(intakeMotor,
  */
 public static final Timer kilroyTimer = new Timer();
 
+public static final Timer speedTimer = new Timer();
+
 public static final Timer autoStateTimer = new Timer();
 
+public static SpeedTester leftRearTest = new SpeedTester(
+        leftRearEncoder, speedTimer);
 
+public static SpeedTester leftFrontTest = new SpeedTester(
+        leftFrontEncoder, speedTimer);
+
+public static SpeedTester rightRearTest = new SpeedTester(
+        rightRearEncoder, speedTimer);
+
+public static SpeedTester rightFrontTest = new SpeedTester(
+        rightFrontEncoder, speedTimer);
+
+// public static PowerDistributionPanel pdp = new PowerDistributionPanel();
 /**
  * Default motor safety
  * 

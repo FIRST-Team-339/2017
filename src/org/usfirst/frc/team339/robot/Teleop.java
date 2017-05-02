@@ -83,6 +83,9 @@ public static void init ()
     Hardware.mecanumDrive
             .setFirstGearPercentage(
                     Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
+    Hardware.tankDrive
+            .setGearPercentage(1,
+                    Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
 
     if (Hardware.isRunningOnKilroyXVIII == true)
         {
@@ -183,7 +186,32 @@ public static void periodic ()
     // Hardware.gearServo.getAngle();
 
 
+    // TODO delete this shortcut
 
+    // Hardware.leftRearTest.watchJoystick(Hardware.leftOperator.getY());
+    // Hardware.leftFrontTest.watchJoystick(Hardware.leftOperator.getY());
+    // Hardware.rightRearTest.watchJoystick(Hardware.rightOperator.getY());
+    // Hardware.rightFrontTest
+    // .watchJoystick(Hardware.rightOperator.getY());
+
+    System.out.println("Left Rear Speed: " + Hardware.leftRearTest
+            .watchJoystick(Hardware.leftDriver.getY()));
+    System.out.println("Left Front Speed: " + Hardware.leftFrontTest
+            .watchJoystick(Hardware.leftDriver.getY()));
+    System.out.println("Right Rear Speed: " + Hardware.rightRearTest
+            .watchJoystick(Hardware.rightDriver.getY()));
+    System.out.println("Right Front Speed: " + Hardware.rightFrontTest
+            .watchJoystick(Hardware.rightDriver.getY()));
+
+
+    // System.out.println("Left Rear Amps: " +
+    // Hardware.pdp.getCurrent(14));
+    // System.out.println("Left Front Amps: " +
+    // Hardware.pdp.getCurrent(12));
+    // System.out.println("Right Rear Amps: " +
+    // Hardware.pdp.getCurrent(15));
+    // System.out.println("Right Front Amps: " +
+    // Hardware.pdp.getCurrent(13));
     // =================================================================
     // OPERATOR CONTROLS
     // =================================================================
@@ -289,7 +317,7 @@ public static void periodic ()
     // END INTAKE CONTROLS
 
     // CLIMBER CODE
-    if (Hardware.rightOperator.getRawButton(18))
+    if (Hardware.rightOperator.getRawButton(10))
         {
         Hardware.climberMotor.set(-1);
         }
@@ -348,6 +376,8 @@ public static void periodic ()
     else
         rotationValue = 0.0;
 
+
+    // TODO Temporarily Commented out for speed testing; uncomment later
     if (isTestingDrive == false && isTestingCamera == false)
     // main driving function
         {
@@ -371,11 +401,11 @@ public static void periodic ()
         }
 
     if (isTestingDrive == true)
-            {
+        {
 
         if (Hardware.leftOperator.getRawButton(6) == true
                 || Hardware.leftOperator.getRawButton(7) == true)
-        {
+            {
             isTestingDrive = false;
             }
         }

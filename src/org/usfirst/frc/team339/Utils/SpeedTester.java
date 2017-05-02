@@ -59,6 +59,7 @@ private boolean startedDistanceCheck = false;
  *          -------------------------------------------------------
  */
 private boolean distanceCounting = false;
+
 /**
  * -------------------------------------------------------
  *
@@ -68,6 +69,7 @@ private boolean distanceCounting = false;
  *          -------------------------------------------------------
  */
 private Encoder encoderToMeasure = null;
+
 /**
  * -------------------------------------------------------
  *
@@ -110,7 +112,7 @@ public SpeedTester (final Encoder encoderToMeasure,
  *            - Y axis value to be used to measure
  *            whether or not we are measuring speed
  * @return double - speed that the motors traveled at
- *         feet per sec
+ *         in inches per sec
  * @author Bob Brown
  * @written Jun 18, 2011
  *          -------------------------------------------------------
@@ -145,19 +147,22 @@ public double watchJoystick (double joystickYvalue)
         int ftTraveled;
         double traveled;
         double traveledPerSec;
-        int inchesTraveled;
+        int inchesFurtherTraveled;
 
         this.distanceCounting = false;
         this.startedDistanceCheck = false;
         this.speedTesterTimer.stop();
         traveled = this.encoderToMeasure.getDistance();
-        System.out.println("Total Dist = " + traveled);
-        System.out.println("Time = " + this.speedTesterTimer.get());
+        // System.out.println(
+        // "Total Dist = "
+        // + traveled);
+        // System.out.println("Time = " + this.speedTesterTimer.get());
         traveledPerSec = traveled / this.speedTesterTimer.get();
         ftTraveled = (int) (traveledPerSec / 12);
-        inchesTraveled = (int) (traveledPerSec - (ftTraveled * 12));
-        System.out.println("ft'inches\"/sec = " + ftTraveled + "'"
-                + inchesTraveled + "\"");
+        inchesFurtherTraveled = (int) (traveledPerSec
+                - (ftTraveled * 12));
+        // System.out.println("ft'inches\"/sec = " + ftTraveled + "'"
+        // + inchesFurtherTraveled + "\"");
         this.speedTesterTimer.reset();
 
         return traveledPerSec;
