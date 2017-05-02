@@ -20,13 +20,13 @@ private CANTalon tunedMotorController = null;
 
 private double F;
 
-private double P;
+private double P = Double.MIN_VALUE;
 
-private double I;
+private double I = Double.MIN_VALUE;
 
-private double D;
+private double D = Double.MIN_VALUE;
 
-private double setpoint;
+private double setpoint = Double.MIN_VALUE;
 
 private boolean smartDashboard;
 
@@ -223,6 +223,16 @@ public double setD (double D)
 
 /**
  * 
+ * @return
+ *         the feed-forward value of the FPID loop.
+ */
+public double getF ()
+{
+    return this.F;
+}
+
+/**
+ * 
  * @param P
  *            The proportional constant for the PID loop.
  * @param I
@@ -258,16 +268,6 @@ public void setFPID (double f, double p, double i, double d)
 {
     this.setPID(p, i, d);
     this.F = f;
-}
-
-/**
- * 
- * @return
- *         the feed-forward value of the FPID loop.
- */
-public double getF ()
-{
-    return this.F;
 }
 
 /**

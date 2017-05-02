@@ -114,6 +114,11 @@ public static void init ()
         // SmartDashboard.putNumber("Err",
         // Hardware.shooterMotor.getError());
         }
+
+    // put stuff on smartdashboard
+    SmartDashboard.putNumber("DB/Slider 0", 1);
+    SmartDashboard.putNumber("DB/Slider 1", 1);
+
 } // end Init
 
 static double tempSetpoint = 0.0;
@@ -128,6 +133,13 @@ static double tempSetpoint = 0.0;
 
 public static void periodic ()
 {
+
+    double testDashboard = 0.0;
+    double testDashboard2 = 0.0;
+
+    testDashboard = SmartDashboard.getNumber("DB/Slider 0", 0.0);
+    testDashboard2 = SmartDashboard.getNumber("DB/Slider 1", 0.0);
+    System.out.println(testDashboard);
     // print values from hardware items
     printStatements();
 
@@ -289,7 +301,7 @@ public static void periodic ()
     // END INTAKE CONTROLS
 
     // CLIMBER CODE
-    if (Hardware.rightOperator.getRawButton(18))
+    if (Hardware.rightOperator.getRawButton(10))
         {
         Hardware.climberMotor.set(-1);
         }
@@ -371,11 +383,11 @@ public static void periodic ()
         }
 
     if (isTestingDrive == true)
-            {
+        {
 
         if (Hardware.leftOperator.getRawButton(6) == true
                 || Hardware.leftOperator.getRawButton(7) == true)
-        {
+            {
             isTestingDrive = false;
             }
         }
