@@ -396,7 +396,7 @@ public static Drive autoDrive = new Drive(mecanumDrive,
 /**
  * are we using mecanum? set false for tank drive
  */
-public static boolean isUsingMecanum = false;
+public static boolean isUsingMecanum = true;
 
 /**
  * are we using 2 joysticks?
