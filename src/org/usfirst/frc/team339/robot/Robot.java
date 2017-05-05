@@ -503,7 +503,7 @@ public void testPeriodic ()
 /**
  * The percentage we want the motors to run at while we are in first gear
  */
-public static final double KILROY_XVIII_FIRST_GEAR_PERCENTAGE = .9;
+public static final double KILROY_XVIII_FIRST_GEAR_PERCENTAGE = .5;
 
 /**
  * The percentage we want the motors to run at while we are in second gear
