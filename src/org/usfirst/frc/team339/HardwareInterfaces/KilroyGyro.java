@@ -32,7 +32,6 @@ private ADXRS450_Gyro gyro;
 
 private boolean hasGyro = true;
 
-public double initGyroVal = 0.0;
 
 /**
  * determines based on whether we have a gyro or not, whether to declare

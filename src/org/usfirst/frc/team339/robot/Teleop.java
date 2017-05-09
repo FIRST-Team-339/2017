@@ -122,6 +122,9 @@ public static void init ()
     SmartDashboard.putNumber("DB/Slider 0", 1);
     SmartDashboard.putNumber("DB/Slider 1", 1);
 
+    // Hardware.driveGyro.calibrate();
+    // Hardware.driveGyro.reset();
+
 } // end Init
 
 static double tempSetpoint = 0.0;
@@ -611,7 +614,9 @@ public static void printStatements ()
     // GYRO
     // System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
     // System.out.println(
-    // "Init Gyro Val: " + Hardware.driveGyro.initGyroVal);
+    // "Init Gyro Val: " + Hardware.driveGyro.getRate());
+    // System.out.println(
+    // "Gyro Is Connected: " + Hardware.driveGyro.isConnected());
     // =================
     // System.out.println("Ultrasonic = "
     // + Hardware.ultraSonic.getRefinedDistanceValue());
