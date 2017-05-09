@@ -32,7 +32,6 @@ private ADXRS450_Gyro gyro;
 
 private boolean hasGyro = true;
 
-public double initGyroVal = 0.0;
 
 /**
  * determines based on whether we have a gyro or not, whether to declare
@@ -57,7 +56,7 @@ public KilroyGyro (boolean hasGyro)
         // then declare as a new gyro
         this.gyro = new ADXRS450_Gyro();
         // If the gyro is not slightly offset, we know it is not working.
-        if (this.gyro.getAngle() == 0.0)
+        if (this.isConnected())
             {
             this.hasGyro = false;
             System.out.println("Gyro Not Connected");
@@ -83,7 +82,7 @@ public KilroyGyro (boolean hasGyro)
 public void calibrate ()
 {
     // if we do not have a gyro
-    if (this.hasGyro == false || this.gyro == null)
+    if (this.isConnected() == false)
         {
         // then return void
         return;
@@ -99,7 +98,7 @@ public void calibrate ()
 public void reset ()
 {
     // if we do not have a gyro
-    if (this.gyro == null || this.hasGyro == false)
+    if (this.isConnected() == false)
         {
         // return void
         return;
@@ -118,7 +117,7 @@ public void reset ()
 public double getAngle ()
 {
     // if we don't have a gyro
-    if (this.hasGyro == false || this.gyro == null)
+    if (this.isConnected() == false)
         {
         // return 339339
         return 339339;
@@ -138,7 +137,7 @@ public double getAngle ()
 public double getRate ()
 {
     // if we don't have a gyro
-    if (this.gyro == null || this.hasGyro == false)
+    if (this.isConnected() == false)
         {
         // return the random value 339339
         return 339339;
@@ -149,12 +148,14 @@ public double getRate ()
 
 /**
  * 
- * @return Whether or not the gyro boolean statement is true or false in the
+ * @return Whether or not the gyro's angle is 0.0, which is returned
+ *         if the SPI bus is null (in wpi's Gyro class)
  *         constructor.
  */
 public boolean isConnected ()
 {
-    return this.hasGyro;
+    return (this.gyro.getAngle() == 0.0) == false
+            && this.hasGyro == true && this.gyro != null;
 }
 
 }
