@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author Alex Kneipp
  * @written 1/21/17
  */
-public class CanTalonPIDTuner implements PIDTunable
+public class CanTalonPIDTuner implements PIDTuner
 {
 private CANTalon tunedMotorController = null;
 
