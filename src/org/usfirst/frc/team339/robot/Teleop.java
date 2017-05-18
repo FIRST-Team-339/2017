@@ -350,7 +350,20 @@ public static void periodic ()
             Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
                     Hardware.leftDriver.getY());
         }
-
+    System.out.println(
+            "speedTesterButton = "
+                    + Hardware.speedTesterButton.isOnCheckNow());
+    if (Hardware.speedTesterButton.get() == true)
+        {
+        Hardware.LFSpeedTester
+                .watchJoystick(Hardware.leftDriver.getY());
+        // Hardware.RRSpeedTester
+        // .watchJoystick(Hardware.rightDriver.getY());
+        // Hardware.RFSpeedTester
+        // .watchJoystick(Hardware.rightOperator.getY());
+        // Hardware.LRSpeedTester
+        // .watchJoystick(Hardware.leftOperator.getY());
+        }
 
 
     // ----------------------TESTING DRIVE FUNCTIONS--------------------

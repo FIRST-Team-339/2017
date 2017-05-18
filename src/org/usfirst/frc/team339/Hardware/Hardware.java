@@ -27,6 +27,7 @@ import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourW
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
 import org.usfirst.frc.team339.Utils.BallIntake;
 import org.usfirst.frc.team339.Utils.Drive;
+import org.usfirst.frc.team339.Utils.SpeedTester;
 import org.usfirst.frc.team339.Vision.ImageProcessor;
 import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
@@ -349,6 +350,8 @@ public static MomentarySwitch setMotorsZero = new MomentarySwitch(
 public static MomentarySwitch brake = new MomentarySwitch(
         leftDriver, 11, false);
 
+public static MomentarySwitch speedTesterButton = new MomentarySwitch(
+        leftDriver, 2, false);
 
 
 // **********************************************************
@@ -401,6 +404,17 @@ public static boolean isUsingMecanum = true;
  */
 public static boolean twoJoystickControl = false;
 
+public static SpeedTester LFSpeedTester = new SpeedTester(
+        Hardware.leftFrontEncoder, Hardware.speedTesterTimer);
+
+public static SpeedTester LRSpeedTester = new SpeedTester(
+        Hardware.leftRearEncoder, Hardware.speedTesterTimer);
+
+public static SpeedTester RFSpeedTester = new SpeedTester(
+        Hardware.rightFrontEncoder, Hardware.speedTesterTimer);
+
+public static SpeedTester RRSpeedTester = new SpeedTester(
+        Hardware.rightRearEncoder, Hardware.speedTesterTimer);
 
 // -------------------
 // Assembly classes (e.g. forklift)
@@ -422,7 +436,7 @@ public static final Timer kilroyTimer = new Timer();
 
 public static final Timer autoStateTimer = new Timer();
 
-
+public static final Timer speedTesterTimer = new Timer();
 /**
  * Default motor safety
  * 
