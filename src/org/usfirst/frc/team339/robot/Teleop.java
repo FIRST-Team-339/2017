@@ -73,8 +73,8 @@ public static void init ()
     // ---------------------------------------
     // Servo init
     // ---------------------------------------
-    Hardware.cameraservoX.setAngle(HIGHER_CAMERASERVO_POSITIONX);
-    Hardware.cameraservoY.setAngle(HIGHER_CAMERASERVO_POSITIONY);
+    // Hardware.cameraservoX.setAngle(HIGHER_CAMERASERVO_POSITIONX);
+    // Hardware.cameraservoY.setAngle(HIGHER_CAMERASERVO_POSITIONY);
     // gimbal motors
     // Hardware.gimbalMotor
     // .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
@@ -82,6 +82,9 @@ public static void init ()
     // mecanum
     Hardware.mecanumDrive
             .setFirstGearPercentage(
+                    Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
+    Hardware.tankDrive
+            .setGearPercentage(1,
                     Robot.KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
 
     if (Hardware.isRunningOnKilroyXVIII == true)
@@ -114,6 +117,14 @@ public static void init ()
         // SmartDashboard.putNumber("Err",
         // Hardware.shooterMotor.getError());
         }
+
+    // put stuff on smartdashboard
+    SmartDashboard.putNumber("DB/Slider 0", 1);
+    SmartDashboard.putNumber("DB/Slider 1", 1);
+
+    // Hardware.driveGyro.calibrate();
+    // Hardware.driveGyro.reset();
+
 } // end Init
 
 static double tempSetpoint = 0.0;
@@ -128,6 +139,13 @@ static double tempSetpoint = 0.0;
 
 public static void periodic ()
 {
+
+    double testDashboard = 0.0;
+    double testDashboard2 = 0.0;
+
+    testDashboard = SmartDashboard.getNumber("DB/Slider 0", 0.0);
+    testDashboard2 = SmartDashboard.getNumber("DB/Slider 1", 0.0);
+    System.out.println(testDashboard);
     // print values from hardware items
     printStatements();
 
@@ -183,7 +201,32 @@ public static void periodic ()
     // Hardware.gearServo.getAngle();
 
 
+    // TODO delete this shortcut
 
+    // Hardware.leftRearTest.watchJoystick(Hardware.leftOperator.getY());
+    // Hardware.leftFrontTest.watchJoystick(Hardware.leftOperator.getY());
+    // Hardware.rightRearTest.watchJoystick(Hardware.rightOperator.getY());
+    // Hardware.rightFrontTest
+    // .watchJoystick(Hardware.rightOperator.getY());
+
+    System.out.println("Left Rear Speed: " + Hardware.leftRearTest
+            .watchJoystick(Hardware.leftDriver.getY()));
+    System.out.println("Left Front Speed: " + Hardware.leftFrontTest
+            .watchJoystick(Hardware.leftDriver.getY()));
+    System.out.println("Right Rear Speed: " + Hardware.rightRearTest
+            .watchJoystick(Hardware.rightDriver.getY()));
+    System.out.println("Right Front Speed: " + Hardware.rightFrontTest
+            .watchJoystick(Hardware.rightDriver.getY()));
+
+
+    // System.out.println("Left Rear Amps: " +
+    // Hardware.pdp.getCurrent(14));
+    // System.out.println("Left Front Amps: " +
+    // Hardware.pdp.getCurrent(12));
+    // System.out.println("Right Rear Amps: " +
+    // Hardware.pdp.getCurrent(15));
+    // System.out.println("Right Front Amps: " +
+    // Hardware.pdp.getCurrent(13));
     // =================================================================
     // OPERATOR CONTROLS
     // =================================================================
@@ -288,19 +331,29 @@ public static void periodic ()
         Hardware.intake.stopIntake();
     // END INTAKE CONTROLS
 
-    // =================================================================
-    // CAMERA CODE
-    // =================================================================
-    if (Hardware.cameraServoSwitch.isOnCheckNow() == true)
+    // CLIMBER CODE
+    if (Hardware.rightOperator.getRawButton(10))
         {
-        Hardware.cameraservoX.setAngle(190);// TODO find actual value
-        Hardware.cameraservoY.setAngle(190);
+        Hardware.climberMotor.set(-1);
         }
     else
         {
-        Hardware.cameraservoX.setAngle(0);// TODO find actual value
-        Hardware.cameraservoY.setAngle(0);
+        Hardware.climberMotor.set(0);
         }
+    // END CLIMBER
+    // =================================================================
+    // CAMERA CODE
+    // =================================================================
+    // if (Hardware.cameraServoSwitch.isOnCheckNow() == true)
+    // {
+    // Hardware.cameraservoX.setAngle(190);// TODO find actual value
+    // Hardware.cameraservoY.setAngle(190);
+    // }
+    // else
+    // {
+    // Hardware.cameraservoX.setAngle(0);// TODO find actual value
+    // Hardware.cameraservoY.setAngle(0);
+    // }
 
     // -----------------------Testing Camera Code-----------------------
 
@@ -338,6 +391,8 @@ public static void periodic ()
     else
         rotationValue = 0.0;
 
+
+    // TODO Temporarily Commented out for speed testing; uncomment later
     if (isTestingDrive == false && isTestingCamera == false)
     // main driving function
         {
@@ -572,10 +627,14 @@ public static void printStatements ()
     // GYRO
     // System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
     // System.out.println(
-    // "Init Gyro Val: " + Hardware.driveGyro.initGyroVal);
+    // "Init Gyro Val: " + Hardware.driveGyro.getRate());
+    // System.out.println(
+    // "Gyro Is Connected: " + Hardware.driveGyro.isConnected());
     // =================
     // System.out.println("Ultrasonic = "
-    // + Hardware.ultraSonic.getValue());
+    // + Hardware.ultraSonic.getRefinedDistanceValue());
+    // System.out.println("Ultrasonic = "
+    // + Hardware.ultraSonic2.getRefinedDistanceValue());
     // System.out.println("Ultrasonic refined: "
     // + Hardware.ultraSonic.getRefinedDistanceValue());
 

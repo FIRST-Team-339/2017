@@ -15,10 +15,10 @@
 package org.usfirst.frc.team339.Hardware;
 
 import org.usfirst.frc.team339.HardwareInterfaces.DoubleThrowSwitch;
+import org.usfirst.frc.team339.HardwareInterfaces.HRLVMaxSonarEZ;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyGyro;
-import org.usfirst.frc.team339.HardwareInterfaces.KilroyServo;
 import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.RobotPotentiometer;
 import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
@@ -91,9 +91,11 @@ public static final double CAMERA_MOUNT_ANGLE = Math.toRadians(65);
 // ====================================
 // PWM classes
 // ====================================
-public static KilroyServo cameraservoY = new KilroyServo(7, 190);// up and down
-
-public static KilroyServo cameraservoX = new KilroyServo(8, 190);// side to side
+// public static KilroyServo cameraservoY = new KilroyServo(7, 190);// up and
+// down
+//
+// public static KilroyServo cameraservoX = new KilroyServo(8, 190);// side to
+// side
 // TODO find actual values
 
 // ------------------------------------
@@ -182,6 +184,8 @@ public static Encoder rightFrontEncoder = new Encoder(16, 17);
 
 
 
+
+
 // -----------------------
 // Wiring diagram
 // -----------------------
@@ -254,13 +258,11 @@ public static RobotPotentiometer delayPot = new RobotPotentiometer(1,
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------
-public static UltraSonic ultraSonic = new UltraSonic(2);
-
+public static UltraSonic ultraSonic = new HRLVMaxSonarEZ(2);
 
 public static final double KILROY_XVIII_US_SCALING_FACTOR = .05;// old :.13
 
-public static final double KILROY_XVII_US_SCALING_FACTOR = .05; // .0493151;
-
+public static final double KILROY_XVII_US_SCALING_FACTOR = .05;// .0493151;
 
 // **********************************************************
 // roboRIO CONNECTIONS CLASSES
@@ -275,7 +277,7 @@ public static final double KILROY_XVII_US_SCALING_FACTOR = .05; // .0493151;
 public static UsbCamera camForward = CameraServer.getInstance()
         .startAutomaticCapture(0);
 
-public static KilroyCamera axisCamera = new KilroyCamera(true);
+public static KilroyCamera axisCamera = new KilroyCamera(false);
 // "10.13.39.11");// TODO change
 
 public static VisionScript visionScript = new VisionScript(
@@ -286,7 +288,7 @@ public static VisionScript visionScript = new VisionScript(
                                                                     * 255)
                                                                     */// (76,
                                                                      // 200,
-        // 71,
+                                                                     // 71,
         new RemoveSmallObjectsOperator(1, true), // TODO fix this for normal use
                                                  // // 255, 50,255),
         new ConvexHullOperator(false));
@@ -434,9 +436,25 @@ public static BallIntake intake = new BallIntake(intakeMotor,
  */
 public static final Timer kilroyTimer = new Timer();
 
+public static final Timer speedTimer = new Timer();
+
 public static final Timer autoStateTimer = new Timer();
 
 public static final Timer speedTesterTimer = new Timer();
+
+public static SpeedTester leftRearTest = new SpeedTester(
+        leftRearEncoder, speedTimer);
+
+public static SpeedTester leftFrontTest = new SpeedTester(
+        leftFrontEncoder, speedTimer);
+
+public static SpeedTester rightRearTest = new SpeedTester(
+        rightRearEncoder, speedTimer);
+
+public static SpeedTester rightFrontTest = new SpeedTester(
+        rightFrontEncoder, speedTimer);
+
+// public static PowerDistributionPanel pdp = new PowerDistributionPanel();
 /**
  * Default motor safety
  * 

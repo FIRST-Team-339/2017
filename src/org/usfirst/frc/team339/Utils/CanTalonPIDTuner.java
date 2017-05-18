@@ -14,19 +14,19 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * @author Alex Kneipp
  * @written 1/21/17
  */
-public class CANPIDTuner
+public class CanTalonPIDTuner implements PIDTuner
 {
 private CANTalon tunedMotorController = null;
 
 private double F;
 
-private double P;
+private double P = Double.MIN_VALUE;
 
-private double I;
+private double I = Double.MIN_VALUE;
 
-private double D;
+private double D = Double.MIN_VALUE;
 
-private double setpoint;
+private double setpoint = Double.MIN_VALUE;
 
 private boolean smartDashboard;
 
@@ -42,7 +42,7 @@ private double errorThresh = 20;
  *            The maximum error we find it acceptable to have (always positive,
  *            we use absolute value of the actual error).
  */
-public CANPIDTuner (CANTalon talon, double errorThreshold)
+public CanTalonPIDTuner (CANTalon talon, double errorThreshold)
 {
     this.tunedMotorController = talon;
     this.P = 0;
@@ -190,9 +190,11 @@ public void setF (double F)
  * @param P
  *            The proportional constant for the PID loop.
  */
-public void setP (double P)
+@Override
+public double setP (double P)
 {
     this.P = P;
+    return this.getP();// TODO incorrect implementation
 }
 
 /**
@@ -200,9 +202,11 @@ public void setP (double P)
  * @param I
  *            The integral constant for the PID loop.
  */
-public void setI (double I)
+@Override
+public double setI (double I)
 {
     this.I = I;
+    return this.getI();
 }
 
 /**
@@ -210,9 +214,21 @@ public void setI (double I)
  * @param D
  *            The derivative constant for the PID loop.
  */
-public void setD (double D)
+@Override
+public double setD (double D)
 {
     this.D = D;
+    return this.getD();
+}
+
+/**
+ * 
+ * @return
+ *         the feed-forward value of the FPID loop.
+ */
+public double getF ()
+{
+    return this.F;
 }
 
 /**
@@ -227,11 +243,14 @@ public void setD (double D)
  *             instead.
  */
 @Deprecated
-public void setPID (double p, double i, double d)
+@Override
+public double setPID (double p, double i, double d)
 {
     this.P = p;
     this.I = i;
     this.D = d;
+    // TODO does not return correctly on failed set
+    return this.getP() + this.getI() + this.getD();
 }
 
 /**
@@ -254,18 +273,9 @@ public void setFPID (double f, double p, double i, double d)
 /**
  * 
  * @return
- *         the feed-forward value of the FPID loop.
- */
-public double getF ()
-{
-    return this.F;
-}
-
-/**
- * 
- * @return
  *         The current proportional constant for the PID loop
  */
+@Override
 public double getP ()
 {
     return this.P;
@@ -276,6 +286,7 @@ public double getP ()
  * @return
  *         The current integral constant for the PID loop
  */
+@Override
 public double getI ()
 {
     return this.I;
@@ -286,6 +297,7 @@ public double getI ()
  * @return
  *         The current derivative constant for the PID loop
  */
+@Override
 public double getD ()
 {
     return this.D;
@@ -296,9 +308,13 @@ public double getD ()
  * @param errThresh
  *            Sets the error threshold that we find acceptable. Always positive.
  */
-public void setErrorThreshold (double errThresh)
+@Override
+public double setErrorThreshold (double threshold)
 {
-    this.errorThresh = errThresh;
+    this.errorThresh = threshold;
+    // TODO incorrect implementation of error return, but should never fail to
+    // write?
+    return this.getErrorThreshold();
 }
 
 /**
@@ -306,20 +322,22 @@ public void setErrorThreshold (double errThresh)
  * @return
  *         The current error threshold.
  */
+@Override
 public double getErrorThreshold ()
 {
     return this.errorThresh;
 }
 
 /**
- * 
  * @param setpoint
  *            The target velocity or position of the motor being tuned.
  *            in revolutions or rpm depending on PID type.
  */
-public void setSetpoint (double setpoint)
+@Override
+public double setSetpoint (double setpoint)
 {
     this.setpoint = setpoint;
+    return this.getSetpoint();
 }
 
 /**
@@ -327,9 +345,16 @@ public void setSetpoint (double setpoint)
  * @return
  *         The current setpoint.
  */
+@Override
 public double getSetpoint ()
 {
     return this.setpoint;
 }
 
+@Override
+public boolean getIsInAcceptableErrorZone ()
+{
+    return Math.abs(this.tunedMotorController.getError()) < this
+            .getErrorThreshold();
+}
 }
