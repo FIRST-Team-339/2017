@@ -145,7 +145,7 @@ public static void periodic ()
 
     testDashboard = SmartDashboard.getNumber("DB/Slider 0", 0.0);
     testDashboard2 = SmartDashboard.getNumber("DB/Slider 1", 0.0);
-    System.out.println(testDashboard);
+    // System.out.println(testDashboard);
     // print values from hardware items
     printStatements();
 
@@ -209,14 +209,14 @@ public static void periodic ()
     // Hardware.rightFrontTest
     // .watchJoystick(Hardware.rightOperator.getY());
 
-    System.out.println("Left Rear Speed: " + Hardware.leftRearTest
-            .watchJoystick(Hardware.leftDriver.getY()));
-    System.out.println("Left Front Speed: " + Hardware.leftFrontTest
-            .watchJoystick(Hardware.leftDriver.getY()));
-    System.out.println("Right Rear Speed: " + Hardware.rightRearTest
-            .watchJoystick(Hardware.rightDriver.getY()));
-    System.out.println("Right Front Speed: " + Hardware.rightFrontTest
-            .watchJoystick(Hardware.rightDriver.getY()));
+    // System.out.println("Left Rear Speed: " + Hardware.leftRearTest
+    // .watchJoystick(Hardware.leftDriver.getY()));
+    // System.out.println("Left Front Speed: " + Hardware.leftFrontTest
+    // .watchJoystick(Hardware.leftDriver.getY()));
+    // System.out.println("Right Rear Speed: " + Hardware.rightRearTest
+    // .watchJoystick(Hardware.rightDriver.getY()));
+    // System.out.println("Right Front Speed: " + Hardware.rightFrontTest
+    // .watchJoystick(Hardware.rightDriver.getY()));
 
 
     // System.out.println("Left Rear Amps: " +
@@ -368,7 +368,7 @@ public static void periodic ()
                 Hardware.leftOperator.getRawButton(6)
                         || Hardware.leftOperator.getRawButton(7),
                 .15, .1);
-        System.out.println(alignValue);
+        // System.out.println(alignValue);
         if (alignValue == Drive.AlignReturnType.DONE)
             {
             isTestingCamera = false;
@@ -405,9 +405,9 @@ public static void periodic ()
             Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
                     Hardware.leftDriver.getY());
         }
-    System.out.println(
-            "speedTesterButton = "
-                    + Hardware.speedTesterButton.isOnCheckNow());
+    // System.out.println(
+    // "speedTesterButton = "
+    // + Hardware.speedTesterButton.isOnCheckNow());
     if (Hardware.speedTesterButton.get() == true)
         {
         Hardware.LFSpeedTester
@@ -655,7 +655,9 @@ public static void printStatements ()
     //
     // System.out.println("USB Cam Brightness: "
     // + "Hardware.camForward.getBrightness()");
-    // Hardware.imageProcessor.processImage();
+    Hardware.imageProcessor.processImage();
+    System.out.println("Num of blobs: " + Hardware.imageProcessor
+            .getParticleAnalysisReports().length);
     // Hardware.imageProcessor.filterBlobsInYRange(1, .9);
     // if (Hardware.imageProcessor.getLargestBlob() != null)
     // {

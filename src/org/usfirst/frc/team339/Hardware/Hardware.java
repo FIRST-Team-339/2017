@@ -14,6 +14,7 @@
 // ====================================================================
 package org.usfirst.frc.team339.Hardware;
 
+import com.ni.vision.NIVision.MeasurementType;
 import org.usfirst.frc.team339.HardwareInterfaces.DoubleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.HRLVMaxSonarEZ;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
@@ -32,6 +33,7 @@ import org.usfirst.frc.team339.Vision.ImageProcessor;
 import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
+import org.usfirst.frc.team339.Vision.operators.ParticleFilter;
 import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
@@ -289,8 +291,14 @@ public static VisionScript visionScript = new VisionScript(
                                                                     */// (76,
                                                                      // 200,
                                                                      // 71,
-        new RemoveSmallObjectsOperator(1, true), // TODO fix this for normal use
-                                                 // // 255, 50,255),
+        new RemoveSmallObjectsOperator(1, true),// TODO fix this for normal use
+        (new ParticleFilter())
+                .addCriteria(MeasurementType.MT_CENTER_OF_MASS_X, 0,
+                        160, 1, 0)
+                .addCriteria(MeasurementType.MT_CENTER_OF_MASS_Y, 0,
+                        120, 1, 0),                                     // //
+        // 255,
+        // 50,255),
         new ConvexHullOperator(false));
 
 
