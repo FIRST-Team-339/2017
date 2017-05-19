@@ -117,7 +117,8 @@ public SpeedTester (final Encoder encoderToMeasure,
  * @written Jun 18, 2011
  *          -------------------------------------------------------
  */
-public double watchJoystick (double joystickYvalue)
+public double watchJoystick (double joystickYvalue,
+        double secondJoystickYvalue)
 {
     // -------------------------------------
     // if we haven't started the speed check before
@@ -126,7 +127,7 @@ public double watchJoystick (double joystickYvalue)
     // -------------------------------------
     if (this.startedDistanceCheck == false)
         {
-        if (joystickYvalue < -0.9)
+        if (joystickYvalue < -0.9 || secondJoystickYvalue < -0.9)
             {
             this.startedDistanceCheck = true;
             this.speedTesterTimer.reset();
@@ -142,7 +143,7 @@ public double watchJoystick (double joystickYvalue)
             this.distanceCounting = true;
             } // if
         } // if
-    else if (joystickYvalue > -0.9)
+    else if (joystickYvalue > -0.9 || secondJoystickYvalue > -0.9)
         {
         int ftTraveled;
         double traveled;
@@ -161,8 +162,8 @@ public double watchJoystick (double joystickYvalue)
         ftTraveled = (int) (traveledPerSec / 12);
         inchesFurtherTraveled = (int) (traveledPerSec
                 - (ftTraveled * 12));
-        // System.out.println("ft'inches\"/sec = " + ftTraveled + "'"
-        // + inchesFurtherTraveled + "\"");
+        System.out.println("ft'inches\"/sec = " + ftTraveled + "'"
+                + inchesFurtherTraveled + "\"");
         this.speedTesterTimer.reset();
 
         return traveledPerSec;

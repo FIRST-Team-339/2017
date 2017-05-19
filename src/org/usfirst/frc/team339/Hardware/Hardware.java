@@ -427,17 +427,19 @@ public static final Timer speedTimer = new Timer();
 
 public static final Timer autoStateTimer = new Timer();
 
+public static final Timer speedTestingTimer = new Timer();
+
 public static SpeedTester leftRearTest = new SpeedTester(
-        leftRearEncoder, speedTimer);
+        leftRearEncoder, speedTestingTimer);
 
-public static SpeedTester leftFrontTest = new SpeedTester(
-        leftFrontEncoder, speedTimer);
-
-public static SpeedTester rightRearTest = new SpeedTester(
-        rightRearEncoder, speedTimer);
-
-public static SpeedTester rightFrontTest = new SpeedTester(
-        rightFrontEncoder, speedTimer);
+// public static SpeedTester leftFrontTest = new SpeedTester(
+// leftFrontEncoder, speedTestingTimer);
+//
+// public static SpeedTester rightRearTest = new SpeedTester(
+// rightRearEncoder, speedTestingTimer);
+//
+// public static SpeedTester rightFrontTest = new SpeedTester(
+// rightFrontEncoder, speedTestingTimer);
 
 // public static PowerDistributionPanel pdp = new PowerDistributionPanel();
 /**

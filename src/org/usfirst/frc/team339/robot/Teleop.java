@@ -145,7 +145,8 @@ public static void periodic ()
 
     testDashboard = SmartDashboard.getNumber("DB/Slider 0", 0.0);
     testDashboard2 = SmartDashboard.getNumber("DB/Slider 1", 0.0);
-    System.out.println(testDashboard);
+    // ADD IN???
+    // System.out.println(testDashboard);
     // print values from hardware items
     printStatements();
 
@@ -209,14 +210,7 @@ public static void periodic ()
     // Hardware.rightFrontTest
     // .watchJoystick(Hardware.rightOperator.getY());
 
-    System.out.println("Left Rear Speed: " + Hardware.leftRearTest
-            .watchJoystick(Hardware.leftDriver.getY()));
-    System.out.println("Left Front Speed: " + Hardware.leftFrontTest
-            .watchJoystick(Hardware.leftDriver.getY()));
-    System.out.println("Right Rear Speed: " + Hardware.rightRearTest
-            .watchJoystick(Hardware.rightDriver.getY()));
-    System.out.println("Right Front Speed: " + Hardware.rightFrontTest
-            .watchJoystick(Hardware.rightDriver.getY()));
+
 
 
     // System.out.println("Left Rear Amps: " +
@@ -397,31 +391,79 @@ public static void periodic ()
     // main driving function
         {
         if (Hardware.isUsingMecanum == true)
-            Hardware.mecanumDrive.drive(
-                    Hardware.leftDriver.getMagnitude(),
-                    Hardware.leftDriver.getDirectionDegrees(),
-                    rotationValue);
+            {
+            // ADD BACK IN AFTER
+            Hardware.leftFrontMotor.set(Hardware.leftDriver.getY());
+            Hardware.leftRearMotor.set(Hardware.leftDriver.getY());
+            Hardware.rightFrontMotor.set(Hardware.leftDriver.getY());
+            Hardware.rightRearMotor.set(-Hardware.leftDriver.getY());
+
+            // System.out.println(
+            // "Timer: " + Hardware.speedTestingTimer.get());
+
+            // Hardware.mecanumDrive.drive(
+            // Hardware.leftDriver.getMagnitude(),
+            // Hardware.leftDriver.getDirectionDegrees(),
+            // rotationValue);
+            // speed tester code
+
+            // System.out
+            // .println("Left Rear Speed: "
+            // + Hardware.leftRearMotor.getSpeed());
+            // System.out.println("Left Front Speed: "
+            // + Hardware.leftFrontMotor.getSpeed());
+            // System.out.println("Right Rear Speed: "
+            // + Hardware.rightRearMotor.getSpeed());
+            // System.out
+            // .println("Right Front Speed: "
+            // + Hardware.rightFrontMotor.getSpeed());
+
+            // System.out.println(
+            // "Left DRIVER " + Hardware.leftDriver.getY());
+            // speed tester
+            System.out.println(
+                    "Left rear speed tester " + Hardware.leftRearTest
+                            .watchJoystick(.7,
+                                    .7));
+            // System.out.println(
+            // "Right rear speed tester " + Hardware.rightRearTest
+            // .watchJoystick(Hardware.leftDriver.getY(),
+            // Hardware.rightDriver.getY()));
+            // System.out.println(
+            // "Left rear speed tester " + Hardware.leftFrontTest
+            // .watchJoystick(Hardware.leftDriver.getY(),
+            // Hardware.rightDriver.getY()));
+            // System.out.println(
+            // "Right front speed tester "
+            // + Hardware.rightFrontTest
+            // .watchJoystick(
+            // Hardware.leftDriver.getY(),
+            // Hardware.rightDriver
+            // .getY()));
+            }
         else
+            {
             Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
                     Hardware.leftDriver.getY());
-        }
+            }
 
 
 
-    // ----------------------TESTING DRIVE FUNCTIONS--------------------
+        // ----------------------TESTING DRIVE FUNCTIONS--------------------
 
-    if (Hardware.leftDriver.getRawButton(9) == true)
-        {
-        isTestingDrive = true;
-        }
-
-    if (isTestingDrive == true)
-        {
-
-        if (Hardware.leftOperator.getRawButton(6) == true
-                || Hardware.leftOperator.getRawButton(7) == true)
+        if (Hardware.leftDriver.getRawButton(9) == true)
             {
-            isTestingDrive = false;
+            isTestingDrive = true;
+            }
+
+        if (isTestingDrive == true)
+            {
+
+            if (Hardware.leftOperator.getRawButton(6) == true
+                    || Hardware.leftOperator.getRawButton(7) == true)
+                {
+                isTestingDrive = false;
+                }
             }
         }
 
