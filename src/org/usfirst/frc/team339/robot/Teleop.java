@@ -122,6 +122,9 @@ public static void init ()
     SmartDashboard.putNumber("DB/Slider 0", 1);
     SmartDashboard.putNumber("DB/Slider 1", 1);
 
+    // Hardware.driveGyro.calibrate();
+    // Hardware.driveGyro.reset();
+
 } // end Init
 
 static double tempSetpoint = 0.0;
@@ -142,7 +145,7 @@ public static void periodic ()
 
     testDashboard = SmartDashboard.getNumber("DB/Slider 0", 0.0);
     testDashboard2 = SmartDashboard.getNumber("DB/Slider 1", 0.0);
-    System.out.println(testDashboard);
+    // System.out.println(testDashboard);
     // print values from hardware items
     printStatements();
 
@@ -210,8 +213,8 @@ public static void periodic ()
 
 
 
-    System.out.println("Left Rear Speed: " + Hardware.leftRearTest
-            .watchJoystick(Hardware.leftDriver.getY()));
+    //System.out.println("Left Rear Speed: " + Hardware.leftRearTest
+    // .watchJoystick(Hardware.leftDriver.getY()));
     // System.out.println("Left Front Speed: " + Hardware.leftFrontTest
     // .watchJoystick(Hardware.leftDriver.getY()));
     // System.out.println("Right Rear Speed: " + Hardware.rightRearTest
@@ -369,7 +372,7 @@ public static void periodic ()
                 Hardware.leftOperator.getRawButton(6)
                         || Hardware.leftOperator.getRawButton(7),
                 .15, .1);
-        System.out.println(alignValue);
+        // System.out.println(alignValue);
         if (alignValue == Drive.AlignReturnType.DONE)
             {
             isTestingCamera = false;
@@ -405,6 +408,20 @@ public static void periodic ()
         else
             Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
                     Hardware.leftDriver.getY());
+        }
+    // System.out.println(
+    // "speedTesterButton = "
+    // + Hardware.speedTesterButton.isOnCheckNow());
+    if (Hardware.speedTesterButton.get() == true)
+        {
+        Hardware.LFSpeedTester
+                .watchJoystick(Hardware.leftDriver.getY());
+        // Hardware.RRSpeedTester
+        // .watchJoystick(Hardware.rightDriver.getY());
+        // Hardware.RFSpeedTester
+        // .watchJoystick(Hardware.rightOperator.getY());
+        // Hardware.LRSpeedTester
+        // .watchJoystick(Hardware.leftOperator.getY());
         }
 
 
@@ -615,10 +632,14 @@ public static void printStatements ()
     // GYRO
     // System.out.println("Gyro: " + Hardware.driveGyro.getAngle());
     // System.out.println(
-    // "Init Gyro Val: " + Hardware.driveGyro.initGyroVal);
+    // "Init Gyro Val: " + Hardware.driveGyro.getRate());
+    // System.out.println(
+    // "Gyro Is Connected: " + Hardware.driveGyro.isConnected());
     // =================
     // System.out.println("Ultrasonic = "
-    // + Hardware.ultraSonic.getValue());
+    // + Hardware.ultraSonic.getRefinedDistanceValue());
+    // System.out.println("Ultrasonic = "
+    // + Hardware.ultraSonic2.getRefinedDistanceValue());
     // System.out.println("Ultrasonic refined: "
     // + Hardware.ultraSonic.getRefinedDistanceValue());
 
@@ -639,7 +660,9 @@ public static void printStatements ()
     //
     // System.out.println("USB Cam Brightness: "
     // + "Hardware.camForward.getBrightness()");
-    // Hardware.imageProcessor.processImage();
+    Hardware.imageProcessor.processImage();
+    System.out.println("Num of blobs: " + Hardware.imageProcessor
+            .getParticleAnalysisReports().length);
     // Hardware.imageProcessor.filterBlobsInYRange(1, .9);
     // if (Hardware.imageProcessor.getLargestBlob() != null)
     // {

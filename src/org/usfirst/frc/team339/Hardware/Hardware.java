@@ -14,7 +14,9 @@
 // ====================================================================
 package org.usfirst.frc.team339.Hardware;
 
+import com.ni.vision.NIVision.MeasurementType;
 import org.usfirst.frc.team339.HardwareInterfaces.DoubleThrowSwitch;
+import org.usfirst.frc.team339.HardwareInterfaces.HRLVMaxSonarEZ;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyGyro;
@@ -31,6 +33,7 @@ import org.usfirst.frc.team339.Vision.ImageProcessor;
 import org.usfirst.frc.team339.Vision.VisionScript;
 import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
+import org.usfirst.frc.team339.Vision.operators.ParticleFilter;
 import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
@@ -257,7 +260,7 @@ public static RobotPotentiometer delayPot = new RobotPotentiometer(1,
 // -------------------------------------
 // Sonar/Ultrasonic
 // -------------------------------------
-public static UltraSonic ultraSonic = new UltraSonic(2);
+public static UltraSonic ultraSonic = new HRLVMaxSonarEZ(2);
 
 public static final double KILROY_XVIII_US_SCALING_FACTOR = .05;// old :.13
 
@@ -288,8 +291,14 @@ public static VisionScript visionScript = new VisionScript(
                                                                     */// (76,
                                                                      // 200,
                                                                      // 71,
-        new RemoveSmallObjectsOperator(1, true), // TODO fix this for normal use
-                                                 // // 255, 50,255),
+        new RemoveSmallObjectsOperator(1, true),// TODO fix this for normal use
+        (new ParticleFilter())
+                .addCriteria(MeasurementType.MT_CENTER_OF_MASS_X, 0,
+                        160, 1, 0)
+                .addCriteria(MeasurementType.MT_CENTER_OF_MASS_Y, 0,
+                        120, 1, 0),                                     // //
+        // 255,
+        // 50,255),
         new ConvexHullOperator(false));
 
 
@@ -351,6 +360,8 @@ public static MomentarySwitch setMotorsZero = new MomentarySwitch(
 public static MomentarySwitch brake = new MomentarySwitch(
         leftDriver, 11, false);
 
+public static MomentarySwitch speedTesterButton = new MomentarySwitch(
+        leftDriver, 2, false);
 
 
 // **********************************************************
@@ -403,6 +414,17 @@ public static boolean isUsingMecanum = true;
  */
 public static boolean twoJoystickControl = false;
 
+public static SpeedTester LFSpeedTester = new SpeedTester(
+        Hardware.leftFrontEncoder, Hardware.speedTesterTimer);
+
+public static SpeedTester LRSpeedTester = new SpeedTester(
+        Hardware.leftRearEncoder, Hardware.speedTesterTimer);
+
+public static SpeedTester RFSpeedTester = new SpeedTester(
+        Hardware.rightFrontEncoder, Hardware.speedTesterTimer);
+
+public static SpeedTester RRSpeedTester = new SpeedTester(
+        Hardware.rightRearEncoder, Hardware.speedTesterTimer);
 
 // -------------------
 // Assembly classes (e.g. forklift)
@@ -425,6 +447,8 @@ public static final Timer kilroyTimer = new Timer();
 public static final Timer speedTimer = new Timer();
 
 public static final Timer autoStateTimer = new Timer();
+
+public static final Timer speedTesterTimer = new Timer();
 
 public static SpeedTester leftRearTest = new SpeedTester(
         leftRearEncoder, speedTimer);
