@@ -206,14 +206,18 @@ public static void periodic ()
     // Hardware.rightFrontTest
     // .watchJoystick(Hardware.rightOperator.getY());
 
+
+
+
+
     System.out.println("Left Rear Speed: " + Hardware.leftRearTest
             .watchJoystick(Hardware.leftDriver.getY()));
-    System.out.println("Left Front Speed: " + Hardware.leftFrontTest
-            .watchJoystick(Hardware.leftDriver.getY()));
-    System.out.println("Right Rear Speed: " + Hardware.rightRearTest
-            .watchJoystick(Hardware.rightDriver.getY()));
-    System.out.println("Right Front Speed: " + Hardware.rightFrontTest
-            .watchJoystick(Hardware.rightDriver.getY()));
+    // System.out.println("Left Front Speed: " + Hardware.leftFrontTest
+    // .watchJoystick(Hardware.leftDriver.getY()));
+    // System.out.println("Right Rear Speed: " + Hardware.rightRearTest
+    // .watchJoystick(Hardware.rightDriver.getY()));
+    // System.out.println("Right Front Speed: " + Hardware.rightFrontTest
+    // .watchJoystick(Hardware.rightDriver.getY()));
 
 
     // System.out.println("Left Rear Amps: " +
