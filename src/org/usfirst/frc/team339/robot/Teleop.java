@@ -118,6 +118,8 @@ public static void init ()
         // Hardware.shooterMotor.getError());
         }
 
+
+
     // put stuff on smartdashboard
     SmartDashboard.putNumber("DB/Slider 0", 1);
     SmartDashboard.putNumber("DB/Slider 1", 1);
@@ -150,6 +152,7 @@ public static void periodic ()
     printStatements();
 
     // tune pid loop
+
     if (tunePIDLoop == true)
         {
         Robot.shooterP = SmartDashboard.getNumber("P", Robot.shooterP);
@@ -163,7 +166,11 @@ public static void periodic ()
         // Robot.shooterD);
         // Hardware.shooterMotor
         // .set(tempSetpoint);
+
+
         }
+
+
 
     // Hardware.shooterMotor
     // .set(tempSetpoint);

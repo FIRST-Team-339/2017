@@ -538,6 +538,9 @@ public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVII = .018605;
 // pid stuff
 public static double shooterP = .3;
 
+// testing the smartdashboard ability to set values on Dashboard
+public static double testShooterP = .6;
+
 public static double shooterI = .0000084;
 
 public static double shooterD = 2.0;
