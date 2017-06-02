@@ -279,7 +279,7 @@ public static final double KILROY_XVII_US_SCALING_FACTOR = .05;// .0493151;
 public static UsbCamera camForward = CameraServer.getInstance()
         .startAutomaticCapture(0);
 
-public static KilroyCamera axisCamera = new KilroyCamera(false);
+public static KilroyCamera axisCamera = new KilroyCamera(true);
 // "10.13.39.11");// TODO change
 
 public static VisionScript visionScript = new VisionScript(
@@ -293,10 +293,8 @@ public static VisionScript visionScript = new VisionScript(
                                                                      // 71,
         new RemoveSmallObjectsOperator(1, true),// TODO fix this for normal use
         (new ParticleFilter())
-                .addCriteria(MeasurementType.MT_CENTER_OF_MASS_X, 0,
-                        160, 1, 0)
                 .addCriteria(MeasurementType.MT_CENTER_OF_MASS_Y, 0,
-                        120, 1, 0),                                     // //
+                        120, 0, 0),
         // 255,
         // 50,255),
         new ConvexHullOperator(false));
