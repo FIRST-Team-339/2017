@@ -89,6 +89,14 @@ public void setupMotorController (FeedbackDevice feedbackType,
     time.reset();
 }
 
+
+public void update ()
+{
+    this.tunedMotorController.setPID(this.P, this.I, this.D);
+    this.tunedMotorController.setF(this.F);
+    this.tunedMotorController.setSetpoint(this.setpoint);
+}
+
 /**
  * 
  * @param F
@@ -97,6 +105,7 @@ public void setupMotorController (FeedbackDevice feedbackType,
 public void setF (double F)
 {
     this.F = F;
+    this.update();
 }
 
 /**
@@ -108,6 +117,7 @@ public void setF (double F)
 public double setP (double P)
 {
     this.P = P;
+    this.update();
     return this.getP();// TODO incorrect implementation
 }
 
@@ -120,6 +130,7 @@ public double setP (double P)
 public double setI (double I)
 {
     this.I = I;
+    this.update();
     return this.getI();
 }
 
@@ -132,6 +143,7 @@ public double setI (double I)
 public double setD (double D)
 {
     this.D = D;
+    this.update();
     return this.getD();
 }
 
@@ -163,6 +175,7 @@ public double setPID (double p, double i, double d)
     this.P = p;
     this.I = i;
     this.D = d;
+    this.update();
     // TODO does not return correctly on failed set
     return this.getP() + this.getI() + this.getD();
 }
@@ -182,6 +195,7 @@ public void setFPID (double f, double p, double i, double d)
 {
     this.setPID(p, i, d);
     this.F = f;
+    this.update();
 }
 
 /**
@@ -251,6 +265,7 @@ public double getErrorThreshold ()
 public double setSetpoint (double setpoint)
 {
     this.setpoint = setpoint;
+    this.update();
     return this.getSetpoint();
 }
 

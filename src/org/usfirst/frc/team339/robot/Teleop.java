@@ -31,9 +31,12 @@
 // ====================================================================
 package org.usfirst.frc.team339.robot;
 
+import com.ctre.CANTalon;
 import org.usfirst.frc.team339.Hardware.Hardware;
+import org.usfirst.frc.team339.Utils.CanTalonPIDTuner;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Shooter;
+import org.usfirst.frc.team339.Utils.SmartDashboardPIDTunerDevice;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -108,21 +111,23 @@ public static void init ()
         Hardware.autoDrive.setEncoderSlack(1);
         }
     // PID smartdashboard
-    if (tunePIDLoop == true)
-        {
-        SmartDashboard.putNumber("P", Robot.shooterP);
-        SmartDashboard.putNumber("I", Robot.shooterI);
-        SmartDashboard.putNumber("D", Robot.shooterD);
-        SmartDashboard.putNumber("Setpoint", tempSetpoint);
-        // SmartDashboard.putNumber("Err",
-        // Hardware.shooterMotor.getError());
-        }
+    // if (tunePIDLoop == true)
+    // {
+    // SmartDashboard.putNumber("P", Robot.shooterP);
+    // SmartDashboard.putNumber("I", Robot.shooterI);
+    // SmartDashboard.putNumber("D", Robot.shooterD);
+    // SmartDashboard.putNumber("Setpoint", tempSetpoint);
+    // // SmartDashboard.putNumber("Err",
+    // // Hardware.shooterMotor.getError());
+    // }
 
 
 
     // put stuff on smartdashboard
-    SmartDashboard.putNumber("DB/Slider 0", 1);
-    SmartDashboard.putNumber("DB/Slider 1", 1);
+    SmartDashboard.putNumber("DB/Slider 0", 0);
+    SmartDashboard.putNumber("DB/Slider 1", 0);
+    SmartDashboard.putNumber("DB/Slider 2", 0);
+    SmartDashboard.putNumber("DB/Slider 3", 0);
 
     // Hardware.driveGyro.calibrate();
     // Hardware.driveGyro.reset();
@@ -130,6 +135,10 @@ public static void init ()
 } // end Init
 
 static double tempSetpoint = 0.0;
+
+private static SmartDashboardPIDTunerDevice PIDTuner = new SmartDashboardPIDTunerDevice(
+        new CanTalonPIDTuner(new CANTalon(12),
+                10 /* Motor controller */));
 
 /**
  * User Periodic code for teleop mode should go here. Will be called
@@ -141,12 +150,6 @@ static double tempSetpoint = 0.0;
 
 public static void periodic ()
 {
-
-    double testDashboard = 0.0;
-    double testDashboard2 = 0.0;
-
-    testDashboard = SmartDashboard.getNumber("DB/Slider 0", 0.0);
-    testDashboard2 = SmartDashboard.getNumber("DB/Slider 1", 0.0);
     // System.out.println(testDashboard);
     // print values from hardware items
     printStatements();
@@ -155,23 +158,8 @@ public static void periodic ()
 
     if (tunePIDLoop == true)
         {
-        Robot.shooterP = SmartDashboard.getNumber("P", Robot.shooterP);
-        Robot.shooterI = SmartDashboard.getNumber("I", Robot.shooterI);
-        Robot.shooterD = SmartDashboard.getNumber("D", Robot.shooterD);
-        tempSetpoint = SmartDashboard.getNumber("Setpoint",
-                tempSetpoint);
-        // SmartDashboard.putNumber("Err",
-        // Hardware.shooterMotor.getError());
-        // Hardware.shooterMotor.setPID(Robot.shooterP, Robot.shooterI,
-        // Robot.shooterD);
-        // Hardware.shooterMotor
-        // .set(tempSetpoint);
-
-
+        PIDTuner.update();
         }
-
-
-
     // Hardware.shooterMotor
     // .set(tempSetpoint);
 
@@ -220,7 +208,7 @@ public static void periodic ()
 
 
 
-    //System.out.println("Left Rear Speed: " + Hardware.leftRearTest
+    // System.out.println("Left Rear Speed: " + Hardware.leftRearTest
     // .watchJoystick(Hardware.leftDriver.getY()));
     // System.out.println("Left Front Speed: " + Hardware.leftFrontTest
     // .watchJoystick(Hardware.leftDriver.getY()));
@@ -757,7 +745,7 @@ private static double LFVal = Hardware.autoDrive
 private final static double CAMERA_ALIGN_DEADBAND = 10.0 // +/- Pixels
         / Hardware.axisCamera.getHorizontalResolution();
 
-private static boolean tunePIDLoop = false;
+private static boolean tunePIDLoop = true;
 // TODO find actual value
 
 private final static double HIGHER_CAMERASERVO_POSITIONY = 90;// TODO find
