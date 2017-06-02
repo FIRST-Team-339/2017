@@ -2,6 +2,7 @@ package org.usfirst.frc.team339.Vision.operators;
 
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
+import com.ni.vision.NIVision.ImageType;
 import com.ni.vision.NIVision.MeasurementType;
 import com.ni.vision.NIVision.ParticleFilterCriteria2;
 import com.ni.vision.NIVision.ParticleFilterOptions2;
@@ -24,7 +25,10 @@ public class ParticleFilter implements VisionOperatorInterface
 private ParticleFilterCriteria2[] allCriteria = new ParticleFilterCriteria2[0];
 
 /**
- * Adds a filter to the current list.
+ * Adds a filter to the current list. You can chain criteria by
+ * using the form: new
+ * ParticleFilter().addCriteria(a,b,x,y,z).addCriteria(a,b,x,y,z)
+ * to set multiple filters on the image.
  * 
  * @param type
  *            the information that is referenced when filtering out blobs.
@@ -68,7 +72,8 @@ public Image operate (Image Source)
     // original image.
     if (allCriteria.length > 0)
         {
-        Image out = null;
+        Image out = NIVision
+                .imaqCreateImage(ImageType.IMAGE_U8, 0);
         NIVision.imaqParticleFilter4(out, Source, allCriteria,
                 new ParticleFilterOptions2(0, 0, 0, 0), null);
         Source.free();
