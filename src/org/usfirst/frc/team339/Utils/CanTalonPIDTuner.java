@@ -4,7 +4,6 @@ import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Class to make tuning PID loops easier, either by the smartdashboard, or in
@@ -88,91 +87,6 @@ public void setupMotorController (FeedbackDevice feedbackType,
     wasIncorrect = false;
     time.stop();
     time.reset();
-}
-
-/**
- * Initializes everything on the smartDashboard if we have one. If not, does
- * nothing.
- * Puts P, I, D, Setpoint, Error, and Speed.
- * P, I, D, and Setpoint are all editable and affect the function of the code.
- * Setpoint is in units of RPM or revolutions if you provided a number other
- * than 1 for the codesPerRev argument to setupMotorController.
- */
-public void setupDashboard ()
-{
-    this.setpoint = 0;
-    if (this.smartDashboard)
-        {
-        SmartDashboard.putNumber("P", this.P);
-        SmartDashboard.putNumber("I", this.I);
-        SmartDashboard.putNumber("D", this.D);
-        SmartDashboard.putNumber("Setpoint", this.setpoint);
-        SmartDashboard.putNumber("Error",
-                this.setpoint - this.tunedMotorController.getSpeed());
-        SmartDashboard.putNumber("Speed",
-                this.tunedMotorController.getSpeed());
-        System.out.println(
-                "PID: " + this.P + ", " + this.I + ", " + this.D);
-        System.out.println("Setpoint, error: " + this.setpoint + ", "
-                + this.tunedMotorController.getClosedLoopError());
-        System.out.println(
-                "Speed: " + this.tunedMotorController.getSpeed());
-        }
-}
-
-/**
- * Gets information from the smartDashboard, puts more info back onto the
- * smartDashboard, and updates the values on the tuned motor controller.
- * Prints out when an error beyond the provided threshold is detected, and the
- * time for the PID loop to correct for it.
- */
-public void update ()
-{
-    P = SmartDashboard.getNumber("P", this.P);
-    I = SmartDashboard.getNumber("I", this.I);
-    D = SmartDashboard.getNumber("D", this.D);
-    this.setpoint = SmartDashboard.getNumber("Setpoint", this.setpoint);
-    SmartDashboard.putNumber("Error",
-            this.setpoint - this.tunedMotorController.getSpeed());
-    SmartDashboard.putNumber("Speed",
-            this.tunedMotorController.getSpeed());
-    this.tunedMotorController.set(this.setpoint);
-    this.tunedMotorController.setPID(this.P, this.I, this.D);
-    /*
-     * if the absolute value of the error (/4 if it's some form of quadrature)
-     * is greater than our threshold, tell the RIOlog and time how long it takes
-     * to return.
-     */
-    double tempError = 0;
-    if (this.feedbackType == FeedbackDevice.CtreMagEncoder_Relative
-            || this.feedbackType == FeedbackDevice.CtreMagEncoder_Absolute
-            || this.feedbackType == FeedbackDevice.QuadEncoder)
-        {
-        tempError = Math.abs(
-                this.tunedMotorController.getClosedLoopError() / 4.0);
-        }
-    else
-        {
-        tempError = Math
-                .abs(this.tunedMotorController.getClosedLoopError());
-        }
-    if (tempError >= this.errorThresh
-            && this.wasIncorrect == false)
-        {
-        this.wasIncorrect = true;
-        this.time.reset();
-        this.time.start();
-        System.out.println("Error detected, timing...");
-        }
-    if (Math.abs(
-            this.tunedMotorController
-                    .getClosedLoopError()) <= this.errorThresh
-            && this.wasIncorrect == true)
-        {
-        this.wasIncorrect = false;
-        this.time.stop();
-        System.out.println("Time to correct error: " + this.time.get());
-        }
 }
 
 /**

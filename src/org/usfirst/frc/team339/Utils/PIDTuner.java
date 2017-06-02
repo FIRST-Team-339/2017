@@ -1,7 +1,12 @@
 package org.usfirst.frc.team339.Utils;
 
 // TODO modify thing so it has a difference from PIDTunable.
-
+/**
+ * Describes a class which tunes a PID device
+ * 
+ * @author Alexander Kneipp
+ * @written 4/27/17
+ */
 public interface PIDTuner
 {
 /**

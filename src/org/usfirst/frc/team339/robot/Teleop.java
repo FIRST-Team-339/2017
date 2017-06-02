@@ -209,7 +209,11 @@ public static void periodic ()
     // Hardware.rightFrontTest
     // .watchJoystick(Hardware.rightOperator.getY());
 
-    // System.out.println("Left Rear Speed: " + Hardware.leftRearTest
+
+
+
+
+    //System.out.println("Left Rear Speed: " + Hardware.leftRearTest
     // .watchJoystick(Hardware.leftDriver.getY()));
     // System.out.println("Left Front Speed: " + Hardware.leftFrontTest
     // .watchJoystick(Hardware.leftDriver.getY()));
@@ -419,6 +423,7 @@ public static void periodic ()
         // Hardware.LRSpeedTester
         // .watchJoystick(Hardware.leftOperator.getY());
         }
+
 
 
     // ----------------------TESTING DRIVE FUNCTIONS--------------------

@@ -76,7 +76,7 @@ public static double KILROY_XVII_JOYSTICK_DIRECTIONAL_DEADZONE = 10.0;
  */
 public static boolean runningInLab = false;
 
-public static boolean isRunningOnKilroyXVIII = true; // 18
+public static boolean isRunningOnKilroyXVIII = false; // 18
 // -------------------------------------
 // Private Constants
 // -------------------------------------
