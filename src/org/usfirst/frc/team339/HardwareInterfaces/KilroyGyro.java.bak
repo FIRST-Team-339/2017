@@ -32,6 +32,7 @@ private ADXRS450_Gyro gyro;
 
 private boolean hasGyro = true;
 
+
 /**
  * determines based on whether we have a gyro or not, whether to declare
  * the gyro(if we have one), print that we dont have a gyro(if we

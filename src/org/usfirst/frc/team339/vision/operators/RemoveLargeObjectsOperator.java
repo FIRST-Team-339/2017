@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.usfirst.frc.team339.Vision.operators;
+package org.usfirst.frc.team339.vision.operators;
 
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;

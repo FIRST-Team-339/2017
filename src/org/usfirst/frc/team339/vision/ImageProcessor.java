@@ -1,4 +1,4 @@
-package org.usfirst.frc.team339.Vision;
+package org.usfirst.frc.team339.vision;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -6,12 +6,12 @@ import java.util.Vector;
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
-import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
-import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
-import org.usfirst.frc.team339.Vision.operators.LoadColorImageJPEGOperator;
-import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
-import org.usfirst.frc.team339.Vision.operators.SaveBinaryImagePNGOperator;
-import org.usfirst.frc.team339.Vision.operators.VisionOperatorInterface;
+import org.usfirst.frc.team339.vision.operators.ConvexHullOperator;
+import org.usfirst.frc.team339.vision.operators.HSLColorThresholdOperator;
+import org.usfirst.frc.team339.vision.operators.LoadColorImageJPEGOperator;
+import org.usfirst.frc.team339.vision.operators.RemoveSmallObjectsOperator;
+import org.usfirst.frc.team339.vision.operators.SaveBinaryImagePNGOperator;
+import org.usfirst.frc.team339.vision.operators.VisionOperatorInterface;
 import edu.wpi.first.wpilibj.image.NIVisionException;
 
 

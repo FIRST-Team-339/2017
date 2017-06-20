@@ -1,7 +1,7 @@
 /**
  *
  */
-package org.usfirst.frc.team339.Vision.operators;
+package org.usfirst.frc.team339.vision.operators;
 
 import com.ni.vision.NIVision;
 import com.ni.vision.NIVision.Image;
@@ -34,7 +34,7 @@ public SaveBinaryImagePNGOperator (String fileName, int compressionSpeed)
 /* (non-Javadoc)
      * 
      * @see
-     * org.usfirst.frc.team339.Vision.VisionOperatorInterface#operate(com.ni
+     * org.usfirst.frc.team339.vision.VisionOperatorInterface#operate(com.ni
      * .vision.NIVision.Image) */
 @Override
 public Image operate (Image Source)

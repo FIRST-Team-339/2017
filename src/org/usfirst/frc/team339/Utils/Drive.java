@@ -4,7 +4,7 @@ import org.usfirst.frc.team339.HardwareInterfaces.KilroyGyro;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
-import org.usfirst.frc.team339.Vision.ImageProcessor;
+import org.usfirst.frc.team339.vision.ImageProcessor;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 
