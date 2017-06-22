@@ -32,13 +32,14 @@
 			<attribute name="javadoc_location" value="file:/C:/Users/Kilroy%20Programming/wpilib/java/current/lib/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="var" path="USERLIBS_DIR/niVisionWPI.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Users/Kilroy%20Programming/wpilib/user/java/lib/"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/Kilroy/wpilib/user/java/lib/CTRLib.jar"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/CTRLib.jar"/>
 	<classpathentry kind="var" path="USERLIBS_DIR/TalonSRXLibJava.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Kilroy/wpilib/user/java/lib/niVisionWPI.jar" sourcepath="C:/Users/Kilroy/wpilib/user/java/src/niVisionWPI-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/C:/Users/Kilroy/wpilib/user/java/src/niVisionWPI-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="var" path="USERLIBS_DIR/niVisionWPI.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

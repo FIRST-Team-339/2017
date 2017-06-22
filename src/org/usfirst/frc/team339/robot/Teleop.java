@@ -122,6 +122,24 @@ public static void init ()
     SmartDashboard.putNumber("DB/Slider 0", 1);
     SmartDashboard.putNumber("DB/Slider 1", 1);
 
+
+    // thread1.start();
+    //
+    // System.out.println("Got here 1");
+    //
+    // System.out.println("Thread 1 'return' : " + thread1.valueForTeleop);
+    //
+    // System.out
+    // .println("Thread 1 State Pre Join: " + thread1.getState());
+
+
+
+    // thread1.join();
+
+    // System.out
+    // .println("Thread 1 State Post Join: " + thread1.getState());
+
+    // thread2.start();
     // Hardware.driveGyro.calibrate();
     // Hardware.driveGyro.reset();
 
@@ -166,6 +184,9 @@ public static void periodic ()
         // .set(tempSetpoint);
         }
 
+
+
+
     // Hardware.shooterMotor
     // .set(tempSetpoint);
 
@@ -202,7 +223,7 @@ public static void periodic ()
     // Hardware.gearServo.getAngle();
 
 
-    // TODO delete this shortcut
+
 
     // Hardware.leftRearTest.watchJoystick(Hardware.leftOperator.getY());
     // Hardware.leftFrontTest.watchJoystick(Hardware.leftOperator.getY());
@@ -392,20 +413,48 @@ public static void periodic ()
         {
         if (Hardware.isUsingMecanum == true)
             {
-            // ADD BACK IN AFTER
-            Hardware.leftFrontMotor.set(Hardware.leftDriver.getY());
-            Hardware.leftRearMotor.set(Hardware.leftDriver.getY());
-            Hardware.rightFrontMotor.set(Hardware.leftDriver.getY());
-            Hardware.rightRearMotor.set(-Hardware.leftDriver.getY());
+            if (Hardware.leftDriver.getY() > -.5
+                    && Hardware.leftDriver.getY() < -0.15)
+                {
+                Hardware.leftFrontMotor.set(Hardware.leftDriver.getY());
+                Hardware.leftRearMotor.set(Hardware.leftDriver.getY());
+                Hardware.rightFrontMotor
+                        .set(Hardware.leftDriver.getY());
+                Hardware.rightRearMotor
+                        .set(-Hardware.leftDriver.getY());
+                }
+            if (Hardware.leftDriver.getY() <= -0.5)
+                {
+                testingSpeed = .85;
 
-            // System.out.println(
-            // "Timer: " + Hardware.speedTestingTimer.get());
+                Hardware.leftFrontMotor.set(testingSpeed);
+                Hardware.leftRearMotor.set(testingSpeed);
+                Hardware.rightFrontMotor.set(testingSpeed);
+                Hardware.rightRearMotor.set(-testingSpeed);
+                // System.out.println("Right Front draw = "
+                // + Hardware.pdp.getCurrent(1));
+                // System.out.println("Right Rear draw = "
+                // + Hardware.pdp.getCurrent(2));
+                // System.out.println("Left Front draw = "
+                // + Hardware.pdp.getCurrent(4));
+                // System.out.println("Left Rear draw = "
+                // + Hardware.pdp.getCurrent(3));
+                }
+            else
+                {
+                Hardware.leftFrontMotor.set(0.0);
+                Hardware.leftRearMotor.set(0.0);
+                Hardware.rightFrontMotor.set(0.0);
+                Hardware.rightRearMotor.set(0.0);
+                }
+            // ADD BACK IN AFTER TESTING IS DONE
 
             // Hardware.mecanumDrive.drive(
             // Hardware.leftDriver.getMagnitude(),
             // Hardware.leftDriver.getDirectionDegrees(),
             // rotationValue);
-            // speed tester code
+
+            // get speed code
 
             // System.out
             // .println("Left Rear Speed: "
@@ -418,28 +467,29 @@ public static void periodic ()
             // .println("Right Front Speed: "
             // + Hardware.rightFrontMotor.getSpeed());
 
+            // get speed tester code
+
             // System.out.println(
             // "Left DRIVER " + Hardware.leftDriver.getY());
-            // speed tester
-            System.out.println(
-                    "Left rear speed tester " + Hardware.leftRearTest
-                            .watchJoystick(.7,
-                                    .7));
+            // System.out.println(
+            // "Left rear speed tester " + Hardware.leftRearTest
+            // .watchJoystick(Hardware.leftDriver.getY(),
+            // Hardware.rightDriver.getY()));
             // System.out.println(
             // "Right rear speed tester " + Hardware.rightRearTest
             // .watchJoystick(Hardware.leftDriver.getY(),
             // Hardware.rightDriver.getY()));
-            // System.out.println(
+            // System.out.prinftln(
             // "Left rear speed tester " + Hardware.leftFrontTest
             // .watchJoystick(Hardware.leftDriver.getY(),
             // Hardware.rightDriver.getY()));
-            // System.out.println(
-            // "Right front speed tester "
-            // + Hardware.rightFrontTest
-            // .watchJoystick(
-            // Hardware.leftDriver.getY(),
-            // Hardware.rightDriver
-            // .getY()));
+            System.out.println(
+                    "Right front speed tester "
+                            + Hardware.rightFrontTest
+                                    .watchJoystick(
+                                            Hardware.leftDriver.getY(),
+                                            Hardware.rightDriver
+                                                    .getY()));
             }
         else
             {
@@ -790,5 +840,11 @@ public static boolean cameraPositionHasChanged = false;
 public static boolean cancelAgitator = false;
 
 public static boolean hasCanceledAgitator = false;
+
+public static double testingSpeed;
+
+// temporary variable to test the ability to send information from a
+// separate thread to teleop
+public static int valueFromThread;
 
 } // end class

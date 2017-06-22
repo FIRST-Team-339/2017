@@ -397,6 +397,10 @@ public void robotInit ()
     System.out.println(
             "Kilroy XVIII is started.  All hardware items created.");
 
+    // ----------------------------------------
+
+
+
 } // end
   // robotInit
 
