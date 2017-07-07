@@ -153,8 +153,9 @@ public double getRate ()
  */
 public boolean isConnected ()
 {
-    return (this.gyro.getAngle() == 0.0) == false
-            && this.hasGyro == true && this.gyro != null;
+    return this.hasGyro == true && this.gyro != null &&
+            this.gyro.getAngle() != 0.0;
+
 }
 
 }

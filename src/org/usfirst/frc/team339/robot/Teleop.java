@@ -655,9 +655,11 @@ public static void printStatements ()
     //
     // System.out.println("USB Cam Brightness: "
     // + "Hardware.camForward.getBrightness()");
-    Hardware.imageProcessor.processImage();
-    System.out.println("Num of blobs: " + Hardware.imageProcessor
-            .getParticleAnalysisReports().length);
+    Hardware.testingProcessor.processImage();
+
+    if (Hardware.testingProcessor.getParticleReports().length > 0)
+        System.out.println("X Coordinate: "
+                + Hardware.testingProcessor.getNthSizeBlob(0).center.x);
     // Hardware.imageProcessor.filterBlobsInYRange(1, .9);
     // if (Hardware.imageProcessor.getLargestBlob() != null)
     // {

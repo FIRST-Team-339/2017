@@ -39,11 +39,20 @@ public class VisionProcessor extends AutoGenVision
 public class ParticleReport implements Comparator<ParticleReport>,
         Comparable<ParticleReport>
 {
-public double area;
+/**
+ * The area of the bounding rectangle around the blob
+ */
+public double area = 0;
 
-public Rect boundingRect;
+/**
+ * The rectangle around the blob
+ */
+public Rect boundingRect = new Rect(new Point(0, 0), new Point(0, 0));
 
-public Point center;
+/**
+ * the center of the bounding rectangle around the blob
+ */
+public Point center = new Point(0, 0);
 
 
 @Override
@@ -59,9 +68,23 @@ public int compareTo (ParticleReport r)
 }
 }
 
+/**
+ * The type of source for the input pictures.
+ * 
+ * @author Ryan McGee
+ *
+ */
 public enum ImageSource
     {
-    IPCAM, USBCAM
+    /**
+     * The IP for the axis camera; must include the final .mpeg
+     * extension
+     */
+    IPCAM,
+    /**
+     * The port for the USB camera. 0 is the default, and 1 is the alternate.
+     */
+    USBCAM
     }
 
 private final ImageSource sourceType;
@@ -74,11 +97,8 @@ private volatile VideoCapture source = null;
 
 private volatile Mat image = new Mat();
 
-private volatile ParticleReport[] particleReports = null;
+private volatile ParticleReport[] particleReports = new ParticleReport[0];
 
-private volatile boolean pauseThread = true;
-
-private volatile boolean endThread = false;
 
 /**
  * Creates the object and sets the IP
@@ -90,7 +110,7 @@ public VisionProcessor (String ip)
 {
     this.sourceType = ImageSource.IPCAM;
     this.ip = ip;
-    init();
+    initCamera();
 }
 
 /**
@@ -104,34 +124,7 @@ public VisionProcessor (int port)
 {
     this.sourceType = ImageSource.USBCAM;
     this.usbPort = port;
-    init();
-}
-
-/**
- * Upon construction, the separate thread will start.
- */
-private void init ()
-{
-    // The new thread made will run the method runThread over and over.
-    (new Thread(new Runnable()
-    {
-    public void run ()
-    {
-        // wait for the camera to initialize...
-        while (initCamera() == false)
-            ;
-
-        // While loop will run independently from the rest of the code.
-        while (endThread == false)
-            {// If the user has chosen to stop processing, then just skip the
-             // code.
-            if (pauseThread == false)
-                {
-                runThread();
-                }
-            }
-    }
-    })).start();
+    initCamera();
 }
 
 /**
@@ -163,14 +156,14 @@ private boolean initCamera ()
 
 
 /**
- * The method that is run over and over in the separate thread
+ * The method that processes the image and inputs it into the particle reports
  */
-private void runThread ()
+public void processImage ()
 {
     source.read(image);
     super.process(image);
     createParticleReports(super.filterContoursOutput());
-
+    sortParticleReportsBySize();
 }
 
 /**
@@ -203,10 +196,51 @@ private void
  */
 private void sortParticleReportsBySize ()
 {
+    if (particleReports.length == 0)
+        return;
 
+    ParticleReport[] newReports = new ParticleReport[particleReports.length];
+    // goes through the newly created reports array and populates it.
+    for (int i = 0; i < newReports.length; i++)
+        {
+        int largestIndex = 0;
+
+        // Finds the next largest particle and assigns it to the next
+        // position in the new array, and sets the old one to null.
+        for (int k = 1; k < newReports.length; k++)
+            {
+            if (particleReports[k] != null
+                    && particleReports[k].area > particleReports[largestIndex].area)
+                {
+                largestIndex = k;
+                }
+            }
+        newReports[i] = particleReports[largestIndex];
+        particleReports[largestIndex] = null;
+        }
+    particleReports = newReports;
 }
 
-// ==================END THREAD MANAGMENT===============================
+// S=====================USER ACCESSABLE METHODS========================
+/**
+ * 
+ * @return the list of blobs generated after processing the image
+ */
+public ParticleReport[] getParticleReports ()
+{
+    return particleReports;
+}
+
+/**
+ * @param n
+ *            The index of the size requested. 0 is the largest, and
+ *            gradually gets smaller until the end of the array is reached.
+ * @return The blob thats the Nth largest in the particleReports array.
+ */
+public ParticleReport getNthSizeBlob (int n)
+{
+    return particleReports[n];
+}
 
 
 
