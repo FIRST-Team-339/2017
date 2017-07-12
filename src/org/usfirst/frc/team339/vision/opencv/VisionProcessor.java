@@ -88,6 +88,18 @@ public enum ImageSource
     USBCAM
     }
 
+/**
+ * The user must set which camera is connected for correct field of views and
+ * focal lengths.
+ * 
+ * @author Ryan McGee
+ *
+ */
+public enum CameraType
+    {
+    LIFECAM, AXIS_M1011, AXIS_M1013
+    }
+
 private final ImageSource sourceType;
 
 private int usbPort = 0;
@@ -99,6 +111,11 @@ private volatile VideoCapture source = null;
 private volatile Mat image = new Mat();
 
 private volatile ParticleReport[] particleReports = new ParticleReport[0];
+
+
+private int horizontalFieldOfView;
+
+private int verticalFieldOfView;
 
 
 /**
