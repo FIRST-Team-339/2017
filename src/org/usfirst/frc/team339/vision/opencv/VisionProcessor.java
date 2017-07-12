@@ -1,5 +1,6 @@
 package org.usfirst.frc.team339.vision.opencv;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import org.opencv.core.Mat;
@@ -137,18 +138,17 @@ private boolean initCamera ()
     // IF the source has not been initialized, do so and open the port.
     if (source == null)
         {
-        // When the source is initialized with a parameter, it will
-        // automatically try to open it.
-        if (sourceType == ImageSource.IPCAM)
-            {
-            source = new VideoCapture(ip);
-            }
-        else if (sourceType == ImageSource.USBCAM)
-            {
-            source = new VideoCapture(usbPort);
-            }
+        source = new VideoCapture();
         }
 
+    if (sourceType == ImageSource.IPCAM)
+        {
+        source.open(ip);
+        }
+    else if (sourceType == ImageSource.USBCAM)
+        {
+        source.open(usbPort);
+        }
     return source.isOpened();
 }
 
@@ -160,10 +160,20 @@ private boolean initCamera ()
  */
 public void processImage ()
 {
+    // If the camera suddenly dies or is not connected, then just don't.
+    if (source.isOpened() == false)
+        {
+        System.out.println(
+                "Unable to process image: camera is disabled/unplugged. Attempting to reconnect.");
+        initCamera();
+        return;
+
+        }
+
     source.read(image);
     super.process(image);
     createParticleReports(super.filterContoursOutput());
-    sortParticleReportsBySize();
+    Arrays.sort(particleReports, Comparator.reverseOrder());
 }
 
 /**
@@ -191,35 +201,6 @@ private void
     this.particleReports = reports;
 }
 
-/**
- * Sorts the particle analysis reports by their area in descending order
- */
-private void sortParticleReportsBySize ()
-{
-    if (particleReports.length == 0)
-        return;
-
-    ParticleReport[] newReports = new ParticleReport[particleReports.length];
-    // goes through the newly created reports array and populates it.
-    for (int i = 0; i < newReports.length; i++)
-        {
-        int largestIndex = 0;
-
-        // Finds the next largest particle and assigns it to the next
-        // position in the new array, and sets the old one to null.
-        for (int k = 1; k < newReports.length; k++)
-            {
-            if (particleReports[k] != null
-                    && particleReports[k].area > particleReports[largestIndex].area)
-                {
-                largestIndex = k;
-                }
-            }
-        newReports[i] = particleReports[largestIndex];
-        particleReports[largestIndex] = null;
-        }
-    particleReports = newReports;
-}
 
 // S=====================USER ACCESSABLE METHODS========================
 /**
