@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.Timer;
  */
 public class CanTalonPIDTuner implements PIDTuner
 {
-private CANTalon tunedMotorController = null;
+public CANTalon tunedMotorController = null;
 
 private double F;
 
@@ -94,7 +94,7 @@ public void update ()
 {
     this.tunedMotorController.setPID(this.P, this.I, this.D);
     this.tunedMotorController.setF(this.F);
-    this.tunedMotorController.setSetpoint(this.setpoint);
+    this.tunedMotorController.set(this.setpoint);
 }
 
 /**

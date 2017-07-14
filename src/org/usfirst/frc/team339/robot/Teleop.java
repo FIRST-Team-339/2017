@@ -32,6 +32,8 @@
 package org.usfirst.frc.team339.robot;
 
 import com.ctre.CANTalon;
+import com.ctre.CANTalon.FeedbackDevice;
+import com.ctre.CANTalon.TalonControlMode;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.CanTalonPIDTuner;
 import org.usfirst.frc.team339.Utils.Drive;
@@ -129,6 +131,14 @@ public static void init ()
     SmartDashboard.putNumber("DB/Slider 2", 0);
     SmartDashboard.putNumber("DB/Slider 3", 0);
 
+    testingTalon.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+    testingTalon.changeControlMode(TalonControlMode.Speed);
+    // testingTalon.setProfile(0);
+    testingTalon.configEncoderCodesPerRev(1024);
+    testingTalon.configPeakOutputVoltage(-12f, 12f);
+    testingTalon.configNominalOutputVoltage(0f, 0f);
+    testingTalon.setPID(0.0, 0.0, 0.0);
+    testingTalon.reverseSensor(false);
     // Hardware.driveGyro.calibrate();
     // Hardware.driveGyro.reset();
 
@@ -136,9 +146,11 @@ public static void init ()
 
 static double tempSetpoint = 0.0;
 
+static CANTalon testingTalon = new CANTalon(12);
+
 private static SmartDashboardPIDTunerDevice PIDTuner = new SmartDashboardPIDTunerDevice(
-        new CanTalonPIDTuner(new CANTalon(12),
-                10 /* Motor controller */));
+        new CanTalonPIDTuner(testingTalon,
+                0 /* Motor controller */));
 
 /**
  * User Periodic code for teleop mode should go here. Will be called
@@ -152,13 +164,17 @@ public static void periodic ()
 {
     // System.out.println(testDashboard);
     // print values from hardware items
-    printStatements();
+    // printStatements();
 
     // tune pid loop
 
     if (tunePIDLoop == true)
         {
         PIDTuner.update();
+        System.out.println("Error: " + testingTalon.getError());
+        System.out.println("Setpoint: " + testingTalon.getSetpoint());
+        System.out.println("Velocity: " + testingTalon.getSpeed());
+        System.out.println("P, I, D: " + testingTalon.getP() + ", " + testingTalon.getI() + ", " + testingTalon.getD());
         }
     // Hardware.shooterMotor
     // .set(tempSetpoint);
