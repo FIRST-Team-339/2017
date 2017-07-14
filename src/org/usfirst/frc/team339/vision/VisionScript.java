@@ -1,8 +1,8 @@
-package org.usfirst.frc.team339.Vision;
+package org.usfirst.frc.team339.vision;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import org.usfirst.frc.team339.Vision.operators.VisionOperatorInterface;
+import org.usfirst.frc.team339.vision.operators.VisionOperatorInterface;
 
 public class VisionScript implements Iterable// extends
                                              // ArrayList<VisionOperatorInterface>
@@ -22,7 +22,7 @@ public VisionScript (VisionOperatorInterface... operators)
 {
     for (VisionOperatorInterface o : operators)
         {
-            this.add(o);
+        this.add(o);
         }
     this.getPosition = 0;
     this.putPosition = 0;
@@ -30,7 +30,7 @@ public VisionScript (VisionOperatorInterface... operators)
 
 public VisionScript ()
 {
-    this(new org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator(
+    this(new org.usfirst.frc.team339.vision.operators.HSLColorThresholdOperator(
             0, 0, 0, 0, 0, 0));
 }
 

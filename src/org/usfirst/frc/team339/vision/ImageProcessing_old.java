@@ -1,4 +1,4 @@
-package org.usfirst.frc.team339.Vision;
+package org.usfirst.frc.team339.vision;
 
 import java.util.Comparator;
 import java.util.Vector;

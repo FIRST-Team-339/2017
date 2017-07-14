@@ -29,14 +29,13 @@ import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecan
 import org.usfirst.frc.team339.Utils.BallIntake;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.SpeedTester;
-import org.usfirst.frc.team339.Vision.ImageProcessor;
-import org.usfirst.frc.team339.Vision.VisionScript;
-import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
-import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
-import org.usfirst.frc.team339.Vision.operators.ParticleFilter;
-import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.wpilibj.CameraServer;
+import org.usfirst.frc.team339.vision.ImageProcessor;
+import org.usfirst.frc.team339.vision.VisionScript;
+import org.usfirst.frc.team339.vision.opencv.VisionProcessor;
+import org.usfirst.frc.team339.vision.operators.ConvexHullOperator;
+import org.usfirst.frc.team339.vision.operators.HSLColorThresholdOperator;
+import org.usfirst.frc.team339.vision.operators.ParticleFilter;
+import org.usfirst.frc.team339.vision.operators.RemoveSmallObjectsOperator;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
@@ -246,7 +245,7 @@ public static IRSensor gearSensor2 = new IRSensor(0);
 // ------------------------------------
 // Gyro class
 // ------------------------------------
-public static KilroyGyro driveGyro = new KilroyGyro(true);
+public static KilroyGyro driveGyro = new KilroyGyro(false);
 
 // -------------------------------------
 // Potentiometers
@@ -276,10 +275,10 @@ public static final double KILROY_XVII_US_SCALING_FACTOR = .05;// .0493151;
 // Note: If causing problems, replace "USB_Camera_0" w/ "cam0", and
 // "USB_Camera_1" w/ "cam1"
 
-public static UsbCamera camForward = CameraServer.getInstance()
-        .startAutomaticCapture(0);
+// public static UsbCamera camForward = CameraServer.getInstance()
+// .startAutomaticCapture(0);
 
-public static KilroyCamera axisCamera = new KilroyCamera(true);
+public static KilroyCamera axisCamera = new KilroyCamera(false);
 // "10.13.39.11");// TODO change
 
 public static VisionScript visionScript = new VisionScript(
@@ -304,6 +303,8 @@ public static VisionScript visionScript = new VisionScript(
 
 public static ImageProcessor imageProcessor = new ImageProcessor(
         axisCamera, visionScript);
+
+public static VisionProcessor testingProcessor = new VisionProcessor(0);
 // -------------------------------------
 // declare the USB camera server and the
 // USB camera it serves
