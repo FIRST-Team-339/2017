@@ -225,11 +225,10 @@ public void processImage ()
     // If the camera suddenly dies or is not connected, then just don't.
     if (source.isOpened() == false)
         {
-        // System.out.println(
-        // "Unable to process image: camera is disabled/unplugged. Attempting to
-        // reconnect.");
-        // initCamera();
-        // return;
+        System.out.println(
+                "Unable to process image: camera is disabled/unplugged. Attempting to reconnect.");
+        initCamera();
+        return;
 
         }
 
