@@ -32,6 +32,7 @@ import org.usfirst.frc.team339.Utils.SpeedTester;
 import org.usfirst.frc.team339.vision.ImageProcessor;
 import org.usfirst.frc.team339.vision.VisionScript;
 import org.usfirst.frc.team339.vision.opencv.VisionProcessor;
+import org.usfirst.frc.team339.vision.opencv.VisionProcessor.CameraType;
 import org.usfirst.frc.team339.vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.vision.operators.ParticleFilter;
@@ -278,7 +279,7 @@ public static final double KILROY_XVII_US_SCALING_FACTOR = .05;// .0493151;
 // public static UsbCamera camForward = CameraServer.getInstance()
 // .startAutomaticCapture(0);
 
-public static KilroyCamera axisCamera = new KilroyCamera(false);
+public static KilroyCamera axisCamera = new KilroyCamera(true);
 // "10.13.39.11");// TODO change
 
 public static VisionScript visionScript = new VisionScript(
@@ -304,7 +305,9 @@ public static VisionScript visionScript = new VisionScript(
 public static ImageProcessor imageProcessor = new ImageProcessor(
         axisCamera, visionScript);
 
-public static VisionProcessor testingProcessor = new VisionProcessor(0);
+public static VisionProcessor testingProcessor = new VisionProcessor(
+        "http://10.3.39.11/mjpg/video.mjpg",
+        CameraType.AXIS_M1013);
 // -------------------------------------
 // declare the USB camera server and the
 // USB camera it serves

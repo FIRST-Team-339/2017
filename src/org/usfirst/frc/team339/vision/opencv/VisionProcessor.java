@@ -113,9 +113,14 @@ private volatile Mat image = new Mat();
 private volatile ParticleReport[] particleReports = new ParticleReport[0];
 
 
-private int horizontalFieldOfView;
+private final int horizontalFieldOfView;
 
-private int verticalFieldOfView;
+private final int verticalFieldOfView;
+
+private final int focalLength;
+
+
+private final CameraType camera;
 
 
 /**
@@ -124,10 +129,33 @@ private int verticalFieldOfView;
  * @param ip
  *            the IP of the .mjpg the axis camera outputs
  */
-public VisionProcessor (String ip)
+public VisionProcessor (String ip, CameraType camera)
 {
     this.sourceType = ImageSource.IPCAM;
     this.ip = ip;
+
+    // Based on the selected camera type, set the field of views and focal
+    // length.
+    this.camera = camera;
+    switch (this.camera)
+        {
+        case AXIS_M1011:
+            this.horizontalFieldOfView = 0;
+            this.verticalFieldOfView = 0;
+            this.focalLength = 0;
+            break;
+        case AXIS_M1013:
+            this.horizontalFieldOfView = 0;
+            this.verticalFieldOfView = 0;
+            this.focalLength = 0;
+            break;
+
+        default:
+            this.horizontalFieldOfView = 0;
+            this.verticalFieldOfView = 0;
+            this.focalLength = 0;
+        }
+
     initCamera();
 }
 
@@ -138,10 +166,27 @@ public VisionProcessor (String ip)
  *            the port number that the USB camera is on. The default is 0 and
  *            increments for each camera added.
  */
-public VisionProcessor (int port)
+public VisionProcessor (int port, CameraType camera)
 {
     this.sourceType = ImageSource.USBCAM;
     this.usbPort = port;
+
+    // Based on the selected camera type, set the field of views and focal
+    // length.
+    this.camera = camera;
+    switch (this.camera)
+        {
+        case LIFECAM:
+            this.horizontalFieldOfView = 0;
+            this.verticalFieldOfView = 0;
+            this.focalLength = 0;
+            break;
+        default:
+            this.horizontalFieldOfView = 0;
+            this.verticalFieldOfView = 0;
+            this.focalLength = 0;
+        }
+
     initCamera();
 }
 
@@ -180,10 +225,11 @@ public void processImage ()
     // If the camera suddenly dies or is not connected, then just don't.
     if (source.isOpened() == false)
         {
-        System.out.println(
-                "Unable to process image: camera is disabled/unplugged. Attempting to reconnect.");
-        initCamera();
-        return;
+        // System.out.println(
+        // "Unable to process image: camera is disabled/unplugged. Attempting to
+        // reconnect.");
+        // initCamera();
+        // return;
 
         }
 
