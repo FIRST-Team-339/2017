@@ -3,6 +3,7 @@ package org.usfirst.frc.team339.vision.opencv;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
@@ -26,267 +27,291 @@ import org.opencv.videoio.VideoCapture;
 public class VisionProcessor extends AutoGenVision
 {
 
-/**
- * A class that holds several statistics about particles.
- * 
- * The measures include:
- * area: The area, in pixels of the blob
- * boundingRect: The rectangle around the blob
- * center: the point of the center of the blob
- * 
- * @author Ryan McGee
- *
- */
-public class ParticleReport implements Comparator<ParticleReport>,
-        Comparable<ParticleReport>
-{
-/**
- * The area of the bounding rectangle around the blob
- */
-public double area = 0;
+	/**
+	 * A class that holds several statistics about particles.
+	 * 
+	 * The measures include:
+	 * area: The area, in pixels of the blob
+	 * boundingRect: The rectangle around the blob
+	 * center: the point of the center of the blob
+	 * 
+	 * @author Ryan McGee
+	 *
+	 */
+	public class ParticleReport implements Comparator<ParticleReport>, Comparable<ParticleReport>
+	{
+		/**
+		 * The area of the bounding rectangle around the blob
+		 */
+		public double area = 0;
 
-/**
- * The rectangle around the blob
- */
-public Rect boundingRect = new Rect(new Point(0, 0), new Point(0, 0));
+		/**
+		 * The rectangle around the blob
+		 */
+		public Rect boundingRect = new Rect(new Point(0, 0), new Point(0, 0));
 
-/**
- * the center of the bounding rectangle around the blob
- */
-public Point center = new Point(0, 0);
+		/**
+		 * the center of the bounding rectangle around the blob
+		 */
+		public Point center = new Point(0, 0);
 
+		@Override
+		public int compare(ParticleReport r1, ParticleReport r2)
+		{
+			return (int) (r1.area - r2.area);
+		}
 
-@Override
-public int compare (ParticleReport r1, ParticleReport r2)
-{
-    return (int) (r1.area - r2.area);
-}
+		@Override
+		public int compareTo(ParticleReport r)
+		{
+			return (int) (r.area - this.area);
+		}
+	}
 
-@Override
-public int compareTo (ParticleReport r)
-{
-    return (int) (r.area - this.area);
-}
-}
+	/**
+	 * The type of source for the input pictures.
+	 * 
+	 * @author Ryan McGee
+	 *
+	 */
+	public enum ImageSource
+	{
+		/**
+		 * The IP for the axis camera; must include the final .mpeg
+		 * extension
+		 */
+		IPCAM,
+		/**
+		 * The port for the USB camera. 0 is the default, and 1 is the alternate.
+		 */
+		USBCAM
+	}
 
-/**
- * The type of source for the input pictures.
- * 
- * @author Ryan McGee
- *
- */
-public enum ImageSource
-    {
-    /**
-     * The IP for the axis camera; must include the final .mpeg
-     * extension
-     */
-    IPCAM,
-    /**
-     * The port for the USB camera. 0 is the default, and 1 is the alternate.
-     */
-    USBCAM
-    }
+	/**
+	 * The user must set which camera is connected for correct field of views and
+	 * focal lengths.
+	 * 
+	 * @author Ryan McGee
+	 *
+	 */
+	public enum CameraType
+	{
+		LIFECAM, AXIS_M1011, AXIS_M1013
+	}
 
-/**
- * The user must set which camera is connected for correct field of views and
- * focal lengths.
- * 
- * @author Ryan McGee
- *
- */
-public enum CameraType
-    {
-    LIFECAM, AXIS_M1011, AXIS_M1013
-    }
+	// In order to calculate the horizontal / vertical field of view,
+	// you can use the formula: a = 2arctan(d/2f) where 'a' is the angle,
+	// 'd' is the size of the sensor (in millimeters and in the direction
+	// needed), and f is the focal length (again in millimeters).
+	// source:
+	// https://photo.stackexchange.com/questions/21536/how-can-i-calculate-vertical-field-of-view-from-horizontal-field-of-view.
 
-private final ImageSource sourceType;
+	// Remember to use all info available. If the datasheet says 47 degrees
+	// horizontal and the calculated answer is
+	// different, remember that video cuts off a certain amount of data and
+	// recalculate presuming only that portion
+	// of the sensor is used.
 
-private int usbPort = 0;
+	// ========M1011 SPECS========
+	private final int M1011_HORIZ_FOV = 47;
 
-private String ip = "";
+	private final int M1011_VERT_FOV = 36;
 
-private volatile VideoCapture source = null;
+	private final float M1011_FOC_LENGTH = 4.4f;
 
-private volatile Mat image = new Mat();
+	// ========M1013 SPECS========
+	private final int M1013_HORIZ_FOV = 67;
 
-private volatile ParticleReport[] particleReports = new ParticleReport[0];
+	private final int M1013_VERT_FOV = 51;
 
+	private final float M1013_FOC_LENGTH = 2.8f;
 
-private final int horizontalFieldOfView;
+	// ========LIFECAM SPECS========
 
-private final int verticalFieldOfView;
+	/*
+	 * There is not enough information on the technical data sheet to find this
+	 * info. They must instead be calculated manually.
+	 */
 
-private final int focalLength;
+	private final ImageSource sourceType;
 
+	private int usbPort = 0;
 
-private final CameraType camera;
+	private String ip = "";
 
+	private volatile VideoCapture source = null;
 
-/**
- * Creates the object and sets the IP
- * 
- * @param ip
- *            the IP of the .mjpg the axis camera outputs
- */
-public VisionProcessor (String ip, CameraType camera)
-{
-    this.sourceType = ImageSource.IPCAM;
-    this.ip = ip;
+	private volatile Mat image = new Mat();
 
-    // Based on the selected camera type, set the field of views and focal
-    // length.
-    this.camera = camera;
-    switch (this.camera)
-        {
-        case AXIS_M1011:
-            this.horizontalFieldOfView = 0;
-            this.verticalFieldOfView = 0;
-            this.focalLength = 0;
-            break;
-        case AXIS_M1013:
-            this.horizontalFieldOfView = 0;
-            this.verticalFieldOfView = 0;
-            this.focalLength = 0;
-            break;
+	private volatile ParticleReport[] particleReports = new ParticleReport[0];
 
-        default:
-            this.horizontalFieldOfView = 0;
-            this.verticalFieldOfView = 0;
-            this.focalLength = 0;
-        }
+	private final int horizontalFieldOfView;
 
-    initCamera();
-}
+	private final int verticalFieldOfView;
 
-/**
- * Creates the object and sets the usb port number
- * 
- * @param port
- *            the port number that the USB camera is on. The default is 0 and
- *            increments for each camera added.
- */
-public VisionProcessor (int port, CameraType camera)
-{
-    this.sourceType = ImageSource.USBCAM;
-    this.usbPort = port;
+	private final float focalLength;
 
-    // Based on the selected camera type, set the field of views and focal
-    // length.
-    this.camera = camera;
-    switch (this.camera)
-        {
-        case LIFECAM:
-            this.horizontalFieldOfView = 0;
-            this.verticalFieldOfView = 0;
-            this.focalLength = 0;
-            break;
-        default:
-            this.horizontalFieldOfView = 0;
-            this.verticalFieldOfView = 0;
-            this.focalLength = 0;
-        }
+	private final CameraType camera;
 
-    initCamera();
-}
+	/**
+	 * Creates the object and sets the IP
+	 * 
+	 * @param ip
+	 *            the IP of the .mjpg the axis camera outputs
+	 * @param camera the brand / model of the camera
+	 */
+	public VisionProcessor(String ip, CameraType camera)
+	{
+		this.sourceType = ImageSource.IPCAM;
+		this.ip = ip;
 
-/**
- * Initialize the capture source and return whether or not it has been opened.
- * 
- * @return whether or not the camera has been set up yet
- */
-private boolean initCamera ()
-{
-    // IF the source has not been initialized, do so and open the port.
-    if (source == null)
-        {
-        source = new VideoCapture();
-        }
+		// Based on the selected camera type, set the field of views and focal
+		// length.
+		this.camera = camera;
+		switch (this.camera)
+		{
+		case AXIS_M1011:
+			this.horizontalFieldOfView = M1011_HORIZ_FOV;
+			this.verticalFieldOfView = M1011_VERT_FOV;
+			this.focalLength = M1011_FOC_LENGTH;
+			break;
+		case AXIS_M1013:
+			this.horizontalFieldOfView = M1013_HORIZ_FOV;
+			this.verticalFieldOfView = M1013_VERT_FOV;
+			this.focalLength = M1013_FOC_LENGTH;
+			break;
 
-    if (sourceType == ImageSource.IPCAM)
-        {
-        source.open(ip);
-        }
-    else if (sourceType == ImageSource.USBCAM)
-        {
-        source.open(usbPort);
-        }
-    return source.isOpened();
-}
+		default: // Data will default to one to avoid any "divide by zero"
+					// errors.
+			this.horizontalFieldOfView = 1;
+			this.verticalFieldOfView = 1;
+			this.focalLength = 1;
+		}
 
-// ==========================END INIT===================================
+		initCamera();
+	}
 
+	/**
+	 * Creates the object and sets the usb port number
+	 * 
+	 * @param port
+	 *            the port number that the USB camera is on. The default is 0 and
+	 *            increments for each camera added.
+	 * @param camera the brand / model of the camera
+	 */
+	public VisionProcessor(int port, CameraType camera)
+	{
+		this.sourceType = ImageSource.USBCAM;
+		this.usbPort = port;
 
-/**
- * The method that processes the image and inputs it into the particle reports
- */
-public void processImage ()
-{
-    // If the camera suddenly dies or is not connected, then just don't.
-    if (source.isOpened() == false)
-        {
-        System.out.println(
-                "Unable to process image: camera is disabled/unplugged. Attempting to reconnect.");
-        initCamera();
-        return;
+		// Based on the selected camera type, set the field of views and focal
+		// length.
+		this.camera = camera;
+		switch (this.camera)
+		{
+		// case LIFECAM: //Not enough information to properly find this data.
+		// see above.
+		// this.horizontalFieldOfView =
+		// this.verticalFieldOfView =
+		// this.focalLength =
+		// break;
+		default: // Data will default to one to avoid any "divide by zero"
+					// errors.
+			this.horizontalFieldOfView = 1;
+			this.verticalFieldOfView = 1;
+			this.focalLength = 1;
+		}
 
-        }
+		initCamera();
+	}
 
-    source.read(image);
-    super.process(image);
-    createParticleReports(super.filterContoursOutput());
-    Arrays.sort(particleReports, Comparator.reverseOrder());
-}
+	/**
+	 * Initialize the capture source and return whether or not it has been opened.
+	 * 
+	 * @return whether or not the camera has been set up yet
+	 */
+	private boolean initCamera()
+	{
+		// IF the source has not been initialized, do so and open the port.
+		if (source == null)
+		{
+			source = new VideoCapture();
+		}
 
-/**
- * Takes the base OpenCV list of contours and changes the output to be easier to
- * work with.
- * 
- * @param contours
- *            The input from the base OpenCV contours output
- */
-private void
-        createParticleReports (List<MatOfPoint> contours)
-{
-    ParticleReport[] reports = new ParticleReport[contours.size()];
+		if (sourceType == ImageSource.IPCAM)
+		{
+			source.open(ip);
+		} else if (sourceType == ImageSource.USBCAM)
+		{
+			source.open(usbPort);
+		}
+		return source.isOpened();
+	}
 
-    for (int i = 0; i < reports.length; i++)
-        {
-        reports[i] = new ParticleReport();
-        Rect r = Imgproc.boundingRect(contours.get(i));
-        reports[i].area = r.area();
-        reports[i].center = new Point(r.x + (r.width / 2),
-                r.y + (r.height / 2));
-        reports[i].boundingRect = r;
-        }
+	// ==========================END INIT===================================
 
-    this.particleReports = reports;
-}
+	/**
+	 * The method that processes the image and inputs it into the particle reports
+	 */
+	public void processImage()
+	{
+		// If the camera suddenly dies or is not connected, then just don't.
+		if (source.isOpened() == false)
+		{
+			System.out.println("Unable to process image: camera is disabled/unplugged. Attempting to reconnect.");
+			initCamera();
+			return;
 
+		}
 
-// S=====================USER ACCESSABLE METHODS========================
-/**
- * 
- * @return the list of blobs generated after processing the image
- */
-public ParticleReport[] getParticleReports ()
-{
-    return particleReports;
-}
+		source.read(image);
+		super.process(image);
+		createParticleReports(super.filterContoursOutput());
+		Arrays.sort(particleReports, Comparator.reverseOrder());
+	}
 
-/**
- * @param n
- *            The index of the size requested. 0 is the largest, and
- *            gradually gets smaller until the end of the array is reached.
- * @return The blob thats the Nth largest in the particleReports array.
- */
-public ParticleReport getNthSizeBlob (int n)
-{
-    return particleReports[n];
-}
+	/**
+	 * Takes the base OpenCV list of contours and changes the output to be easier to
+	 * work with.
+	 * 
+	 * @param contours
+	 *            The input from the base OpenCV contours output
+	 */
+	private void createParticleReports(List<MatOfPoint> contours)
+	{
+		ParticleReport[] reports = new ParticleReport[contours.size()];
 
+		for (int i = 0; i < reports.length; i++)
+		{
+			reports[i] = new ParticleReport();
+			Rect r = Imgproc.boundingRect(contours.get(i));
+			reports[i].area = r.area();
+			reports[i].center = new Point(r.x + (r.width / 2), r.y + (r.height / 2));
+			reports[i].boundingRect = r;
+		}
 
+		this.particleReports = reports;
+	}
 
+	// S=====================USER ACCESSABLE METHODS========================
+	/**
+	 * 
+	 * @return the list of blobs generated after processing the image
+	 */
+	public ParticleReport[] getParticleReports()
+	{
+		return particleReports;
+	}
 
+	/**
+	 * @param n
+	 *            The index of the size requested. 0 is the largest, and
+	 *            gradually gets smaller until the end of the array is reached.
+	 * @return The blob thats the Nth largest in the particleReports array.
+	 */
+	public ParticleReport getNthSizeBlob(int n)
+	{
+		return particleReports[n];
+	}
 
 }
