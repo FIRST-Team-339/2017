@@ -96,7 +96,18 @@ public class VisionProcessor extends AutoGenVision
 	 */
 	public enum CameraType
 	{
-		LIFECAM, AXIS_M1011, AXIS_M1013
+		/**
+		 * The USB camera supplied by FIRST, model Lifecam HD-3000
+		 */
+		LIFECAM,
+		/**
+		 * The OLD model of the IP camera supplied by FIRST
+		 */
+		AXIS_M1011,
+		/**
+		 * The NEW model of the IP camera supplied by FIRST
+		 */
+		AXIS_M1013
 	}
 
 	// In order to calculate the horizontal / vertical field of view,
@@ -117,14 +128,10 @@ public class VisionProcessor extends AutoGenVision
 
 	private final int M1011_VERT_FOV = 36;
 
-	private final float M1011_FOC_LENGTH = 4.4f;
-
 	// ========M1013 SPECS========
 	private final int M1013_HORIZ_FOV = 67;
 
 	private final int M1013_VERT_FOV = 51;
-
-	private final float M1013_FOC_LENGTH = 2.8f;
 
 	// ========LIFECAM SPECS========
 
@@ -149,8 +156,6 @@ public class VisionProcessor extends AutoGenVision
 
 	private final int verticalFieldOfView;
 
-	private final float focalLength;
-
 	private final CameraType camera;
 
 	/**
@@ -173,19 +178,16 @@ public class VisionProcessor extends AutoGenVision
 		case AXIS_M1011:
 			this.horizontalFieldOfView = M1011_HORIZ_FOV;
 			this.verticalFieldOfView = M1011_VERT_FOV;
-			this.focalLength = M1011_FOC_LENGTH;
 			break;
 		case AXIS_M1013:
 			this.horizontalFieldOfView = M1013_HORIZ_FOV;
 			this.verticalFieldOfView = M1013_VERT_FOV;
-			this.focalLength = M1013_FOC_LENGTH;
 			break;
 
 		default: // Data will default to one to avoid any "divide by zero"
 					// errors.
 			this.horizontalFieldOfView = 1;
 			this.verticalFieldOfView = 1;
-			this.focalLength = 1;
 		}
 
 		initCamera();
@@ -219,7 +221,6 @@ public class VisionProcessor extends AutoGenVision
 					// errors.
 			this.horizontalFieldOfView = 1;
 			this.verticalFieldOfView = 1;
-			this.focalLength = 1;
 		}
 
 		initCamera();
@@ -293,10 +294,16 @@ public class VisionProcessor extends AutoGenVision
 		this.particleReports = reports;
 	}
 
-	// S=====================USER ACCESSABLE METHODS========================
+	// =====================USER ACCESSABLE METHODS========================
+	/*
+	 * Any methods that will allow the user to directly access raw data outside
+	 * the class will be stored below.
+	 */
+
 	/**
 	 * 
-	 * @return the list of blobs generated after processing the image
+	 * @return the list of blobs generated after processing the image, in 
+	 * 			descending order of size.
 	 */
 	public ParticleReport[] getParticleReports()
 	{
@@ -304,6 +311,8 @@ public class VisionProcessor extends AutoGenVision
 	}
 
 	/**
+	 * Gets a report of the index the user requests.
+	 * 
 	 * @param n
 	 *            The index of the size requested. 0 is the largest, and
 	 *            gradually gets smaller until the end of the array is reached.
@@ -312,6 +321,72 @@ public class VisionProcessor extends AutoGenVision
 	public ParticleReport getNthSizeBlob(int n)
 	{
 		return particleReports[n];
+	}
+
+	// ======================POST PROCESSING METHODS========================
+	/*
+	 * Any methods that DO NOT require direct OpenCV access and are NOT game
+	 * specific can be placed below.
+	 */
+
+	/**
+	 * TODO TEST THIS
+	 * 
+	 * Calculates the angle the target is at from the center line.
+	 * The formula can be cut into two easier sections, one for the focal
+	 * length and one for the angle.
+	 * 
+	 * Focal length (in pixels): Resolution / 2 x tan(FOV / 2)
+	 * Angle (in radians): arctan(distanceFromCenter / focalLength)
+	 * 
+	 * @param target The input: takes the Y axis from the center point.
+	 * @return the angle, in degrees. If the target is above the center line,
+	 * 			 it will show positive. If it is below the line, it will show negative.
+	 */
+	public double getPitchAngleDegrees(ParticleReport target)
+	{
+		int distFromCenterLine = (int) Math.abs((image.size().height / 2) - target.center.y);
+
+		// The focal length is dependent on the resolution of the image, since
+		// units must remain in pixels, and the field of view must not change.
+		double focalLengthPixels = image.size().height / (2 * Math.tan(verticalFieldOfView / 2.0));
+
+		// Conditions for the return statement based on the position of the
+		// target.
+		if ((image.size().height / 2) - target.center.y > 0)
+			return Math.toDegrees(Math.atan(distFromCenterLine / focalLengthPixels));
+
+		return -Math.toDegrees(Math.atan(distFromCenterLine / focalLengthPixels));
+	}
+
+	/**
+	 * TODO TEST THIS
+	 * 
+	 * Calculates the angle the target is at from the center line.
+	 * The formula can be cut into two easier sections, one for the focal
+	 * length and one for the angle.
+	 * 
+	 * Focal length (in pixels): Resolution / 2 x tan(FOV / 2)
+	 * Angle (in radians): arctan(distanceFromCenter / focalLength)
+	 * 
+	 * @param target The input: takes the X axis from the center point.
+	 * @return the angle, in degrees. If the target is to the right of the center line,
+	 * 			 it will show positive. If it is to the left, it will show negative.
+	 */
+	public double getYawAngleDegrees(ParticleReport target)
+	{
+		int distFromCenterLine = (int) Math.abs((image.size().width / 2) - target.center.x);
+
+		// The focal length is dependent on the resolution of the image, since
+		// units must remain in pixels, and the field of view must not change.
+		double focalLengthPixels = image.size().width / (2 * Math.tan(horizontalFieldOfView / 2.0));
+
+		// Conditions for the return statement based on the position of the
+		// target.
+		if ((image.size().width / 2) - target.center.x < 0)
+			return Math.toDegrees(Math.atan(distFromCenterLine / focalLengthPixels));
+
+		return -Math.toDegrees(Math.atan(distFromCenterLine / focalLengthPixels));
 	}
 
 }
