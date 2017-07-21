@@ -118,7 +118,16 @@ public class Teleop
 		// // SmartDashboard.putNumber("Err",
 		// // Hardware.shooterMotor.getError());
 		// }
-
+		
+	    testingTalon.setFeedbackDevice(FeedbackDevice.QuadEncoder);
+	    testingTalon.changeControlMode(TalonControlMode.Speed);
+	    // testingTalon.setProfile(0);
+	    testingTalon.configEncoderCodesPerRev(1024);
+	    testingTalon.configPeakOutputVoltage(-12f, 12f);
+	    testingTalon.configNominalOutputVoltage(0f, 0f);
+	    testingTalon.setPID(0.0, 0.0, 0.0);
+	    testingTalon.reverseSensor(false);
+		
 		// put stuff on smartdashboard
 		SmartDashboard.putNumber("DB/Slider 0", 0);
 		SmartDashboard.putNumber("DB/Slider 1", 0);
@@ -129,20 +138,15 @@ public class Teleop
 		// Hardware.driveGyro.reset();
 
 	} // end Init
-
-    testingTalon.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-    testingTalon.changeControlMode(TalonControlMode.Speed);
-    // testingTalon.setProfile(0);
-    testingTalon.configEncoderCodesPerRev(1024);
-    testingTalon.configPeakOutputVoltage(-12f, 12f);
-    testingTalon.configNominalOutputVoltage(0f, 0f);
-    testingTalon.setPID(0.0, 0.0, 0.0);
-    testingTalon.reverseSensor(false);
 	static double tempSetpoint = 0.0;
 
-	private static SmartDashboardPIDTunerDevice PIDTuner = new SmartDashboardPIDTunerDevice(
-			new CanTalonPIDTuner(new CANTalon(12), 10 /* Motor controller */));
+	static CANTalon testingTalon = new CANTalon(12);
 
+	private static SmartDashboardPIDTunerDevice PIDTuner = new SmartDashboardPIDTunerDevice(
+	        new CanTalonPIDTuner(testingTalon,
+	                0 /* Motor controller */));
+
+			// tune pid loop
 	/**
 	 * User Periodic code for teleop mode should go here. Will be called
 	 * periodically at a regular rate while the robot is in teleop mode.
@@ -150,15 +154,6 @@ public class Teleop
 	 * @author Nathanial Lydick
 	 * @written Jan 13, 2015
 	 */
-
-static CANTalon testingTalon = new CANTalon(12);
-
-private static SmartDashboardPIDTunerDevice PIDTuner = new SmartDashboardPIDTunerDevice(
-        new CanTalonPIDTuner(testingTalon,
-                0 /* Motor controller */));
-
-		// tune pid loop
-
 public static void periodic ()
 {
     // System.out.println(testDashboard);
