@@ -279,7 +279,7 @@ public static final double KILROY_XVII_US_SCALING_FACTOR = .05;// .0493151;
 // public static UsbCamera camForward = CameraServer.getInstance()
 // .startAutomaticCapture(0);
 
-public static KilroyCamera axisCamera = new KilroyCamera(true);
+public static KilroyCamera axisCamera = new KilroyCamera(false);
 // "10.13.39.11");// TODO change
 
 public static VisionScript visionScript = new VisionScript(

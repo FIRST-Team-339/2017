@@ -118,16 +118,21 @@ public class Teleop
 		// // SmartDashboard.putNumber("Err",
 		// // Hardware.shooterMotor.getError());
 		// }
-		
-	    testingTalon.setFeedbackDevice(FeedbackDevice.QuadEncoder);
-	    testingTalon.changeControlMode(TalonControlMode.Speed);
+	    // Hardware.shooterMotor.changeControlMode(TalonControlMode.Speed);
+	    // // put back in once finished testing!!!
+	    // Hardware.shooterMotor.configPeakOutputVoltage(12f, 0f);
+	    // Hardware.shooterMotor.configNominalOutputVoltage(0f, 0f);
+	    // Hardware.shooterMotor
+	    // .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+	    // Hardware.shooterMotor.configEncoderCodesPerRev(1024);
+	    // Hardware.shooterMotor.setPID(shooterP, shooterI, shooterD);
+	    // Hardware.shooterMotor.setSetpoint(0.0);
+	    // Hardware.shooterMotor.reverseSensor(true);
 	    // testingTalon.setProfile(0);
-	    testingTalon.configEncoderCodesPerRev(1024);
-	    testingTalon.configPeakOutputVoltage(-12f, 12f);
-	    testingTalon.configNominalOutputVoltage(0f, 0f);
-	    testingTalon.setPID(0.0, 0.0, 0.0);
-	    testingTalon.reverseSensor(false);
 		
+	    CanTuner.setupMotorController(FeedbackDevice.QuadEncoder, TalonControlMode.Speed, 1024, false);
+	    testingTalon.setPID(0.0, 0.0, 0.0);
+	    testingTalon.setSetpoint(0.0);
 		// put stuff on smartdashboard
 		SmartDashboard.putNumber("DB/Slider 0", 0);
 		SmartDashboard.putNumber("DB/Slider 1", 0);
@@ -142,9 +147,10 @@ public class Teleop
 
 	static CANTalon testingTalon = new CANTalon(12);
 
+	private static CanTalonPIDTuner CanTuner = new CanTalonPIDTuner(testingTalon,0);
+	
 	private static SmartDashboardPIDTunerDevice PIDTuner = new SmartDashboardPIDTunerDevice(
-	        new CanTalonPIDTuner(testingTalon,
-	                0 /* Motor controller */));
+	        CanTuner);
 
 			// tune pid loop
 	/**
