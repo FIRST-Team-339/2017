@@ -4,9 +4,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SmartDashboardPIDTunerDevice
 {
-public PIDTuner tuner = null;
+public PIDTunable tuner = null;
 
-public SmartDashboardPIDTunerDevice (PIDTuner tuner)
+public SmartDashboardPIDTunerDevice (PIDTunable tuner)
 {
     this.tuner = tuner;
 }

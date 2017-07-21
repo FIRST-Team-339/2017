@@ -1,11 +1,9 @@
 package org.usfirst.frc.team339.Utils.pidTuning;
-
 /**
- * Describes a device which is controlled by a PID loop and needs to be tuned.
+ * Describes a class which tunes a PID device or which is a PID device which can be tuned
  * 
  * @author Alexander Kneipp
  * @written 4/27/17
- *
  */
 public interface PIDTunable
 {

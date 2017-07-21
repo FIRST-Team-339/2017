@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.Timer;
  * @author Alex Kneipp
  * @written 1/21/17
  */
-public class CanTalonPIDTuner implements PIDTuner
+public class CanTalonPIDTuner implements PIDTunable
 {
 public CANTalon tunedMotorController = null;
 
