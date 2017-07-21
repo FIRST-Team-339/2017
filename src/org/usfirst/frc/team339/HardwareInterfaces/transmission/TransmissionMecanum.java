@@ -243,44 +243,76 @@ public void drive (final double magnitude, final double direction,
         final double cosD = Math.cos(dirInRad);
         final double sinD = Math.sin(dirInRad);
 
-        // Calculate the speed to send to each motor.
+        // Calculates the speed to send to each motor.
         // uses sine for the \\ wheels (for clarification of this notation,
-        // Noah's javadoc); uses cosine for // wheels
-        double leftFrontSpeed = (sinD * tempMagnitude) + tempRotation;
-        double rightFrontSpeed = (cosD * tempMagnitude) - tempRotation;
-        double leftRearSpeed = (cosD * tempMagnitude) + tempRotation;
-        double rightRearSpeed = (sinD * tempMagnitude) - tempRotation;
-
-
-        // prints out select values if we are debugging this part of the code
-        if ((this.getDebugState() == DebugState.DEBUG_MOTOR_DATA)
-                || (this.getDebugState() == DebugState.DEBUG_ALL))
+        // see Noah's javadoc above); uses cosine for // wheels, then scales
+        // them according to the magnitude
+        // Also add/ subtracts the rotation value so we can turn while
+        // driving in a direction
+        // Other notes: because of the 45 degrees added earlier and the
+        // nature of trig functions, going straight forward, even at a magnitude
+        // of 1, the motors be given about .707. A motor value of 1.0 is only
+        // theoretically achievable at a joystick angle of -135, -45, 45, and
+        // 135 (assuming a magnitude of 1.0)
+        // if (/* tempDirection != 90 && */ tempDirection != -90)
             {
-            System.out.println("MECANUM OUTPUT:\n" + "LF: "
-                    + leftFrontSpeed + "\tRF: " + rightFrontSpeed + "\n"
-                    + "LR: " + leftRearSpeed + "\tRR: "
-                    + rightRearSpeed);
-            } // if
+            double leftFrontSpeed = (sinD * tempMagnitude)
+                    + tempRotation;
+            double rightFrontSpeed = (cosD * tempMagnitude)
+                    - tempRotation;
+            double leftRearSpeed = (cosD * tempMagnitude)
+                    + tempRotation;
+            double rightRearSpeed = (sinD * tempMagnitude)
+                    - tempRotation;
 
-        final double gearPercentage = getCurrentGearPercentage();
-        // limit the values to our motor range of -1..1
-        leftFrontSpeed = this.limit(leftFrontSpeed * gearPercentage);
-        leftRearSpeed = this.limit(leftRearSpeed * gearPercentage);
-        rightFrontSpeed = this.limit(rightFrontSpeed * gearPercentage);
-        rightRearSpeed = this.limit(rightRearSpeed * gearPercentage);
 
-        // scale all of the motor "send" values by our current gear and
-        // deadzone.
-        leftFrontSpeed = this.scaleJoystickValue(leftFrontSpeed);
-        leftRearSpeed = this.scaleJoystickValue(leftRearSpeed);
-        rightFrontSpeed = this.scaleJoystickValue(rightFrontSpeed);
-        rightRearSpeed = this.scaleJoystickValue(rightRearSpeed);
+            // prints out select values if we are debugging this part of the
+            // code
+            if ((this.getDebugState() == DebugState.DEBUG_MOTOR_DATA)
+                    || (this.getDebugState() == DebugState.DEBUG_ALL))
+                {
+                System.out.println("MECANUM OUTPUT:\n" + "LF: "
+                        + leftFrontSpeed + "\tRF: " + rightFrontSpeed
+                        + "\n"
+                        + "LR: " + leftRearSpeed + "\tRR: "
+                        + rightRearSpeed);
+                } // if
 
-        // finally, send the scaled values to our motors.
-        this.driveLeftMotor(leftFrontSpeed);
-        this.driveLeftRearMotor(leftRearSpeed);
-        this.driveRightMotor(rightFrontSpeed);
-        this.driveRightRearMotor(rightRearSpeed);
+            final double gearPercentage = getCurrentGearPercentage();
+            // limit the values to our motor range of -1..1
+            leftFrontSpeed = this
+                    .limit(leftFrontSpeed * gearPercentage);
+            leftRearSpeed = this.limit(leftRearSpeed * gearPercentage);
+            rightFrontSpeed = this
+                    .limit(rightFrontSpeed * gearPercentage);
+            rightRearSpeed = this
+                    .limit(rightRearSpeed * gearPercentage);
+
+            // scale all of the motor "send" values by our current gear and
+            // deadzone.
+            leftFrontSpeed = this.scaleJoystickValue(leftFrontSpeed);
+            leftRearSpeed = this.scaleJoystickValue(leftRearSpeed);
+            rightFrontSpeed = this.scaleJoystickValue(rightFrontSpeed);
+            rightRearSpeed = this.scaleJoystickValue(rightRearSpeed);
+
+            // finally, send the scaled values to our motors.
+            this.driveLeftMotor(leftFrontSpeed);
+            this.driveLeftRearMotor(leftRearSpeed);
+            this.driveRightMotor(rightFrontSpeed);
+            this.driveRightRearMotor(rightRearSpeed);
+            }
+        /*
+         * else
+         * {
+         * 
+         * if (tempDirection == 90)
+         * Hardware.autoDrive.strafeStraight(Direction.RIGHT, .7,
+         * .65, .1);
+         * 
+         * Hardware.autoDrive.strafeStraight(Direction.LEFT, .7,
+         * .9, .07);
+         * }
+         */
         // }
         }
     else

@@ -59,8 +59,6 @@
 // ====================================================================
 package org.usfirst.frc.team339.robot;
 
-import com.ctre.CANTalon.FeedbackDevice;
-import com.ctre.CANTalon.TalonControlMode;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
@@ -89,7 +87,7 @@ public class Robot extends IterativeRobot
 // private data for the class
 // =================================================
 // -------------------------------------------------------
-	
+
 /**
  * Initialization code for autonomous mode should go here. Will be called
  * once when the robot enters autonomous mode.
@@ -156,7 +154,7 @@ public void autonomousPeriodic ()
     // =========================================================
     // feed all motor safeties
 }// end autonomousPeriodic
-// -------------------------------------------------------
+ // -------------------------------------------------------
 
 /**
  * Initialization code for disabled mode should go here. Will be called once
@@ -177,12 +175,12 @@ public void disabledInit ()
     // =========================================================
     // User code goes below here
     // =========================================================
-    //motors
+    // motors
     // Hardware.rightFrontMotor.setInverted(true);
     // Hardware.rightRearMotor.setInverted(true);
     // Hardware.leftFrontMotor.setInverted(true);
     // Hardware.leftRearMotor.setInverted(true);
-    //mecanum
+    // mecanum
     Hardware.mecanumDrive.setMecanumJoystickReversed(false);
     // =========================================================
     // User code goes above here
@@ -214,12 +212,12 @@ public void disabledPeriodic ()
     // =========================================================
     // User code goes below here
     // =========================================================
-    //motors
+    // motors
     Hardware.leftFrontMotor.set(0);
     Hardware.rightFrontMotor.set(0);
     Hardware.leftRearMotor.set(0);
     Hardware.rightRearMotor.set(0);
-    //motor safty
+    // motor safty
     // Hardware.leftFrontMotorSafety.feed();
     // Hardware.leftRearMotorSafety.feed();
     // Hardware.rightFrontMotorSafety.feed();
@@ -228,7 +226,7 @@ public void disabledPeriodic ()
     // User code goes above here
     // =========================================================
 } // end disabledPeriodic
-// -------------------------------------------------------
+  // -------------------------------------------------------
 
 /**
  * This function is run when the robot is first started up and should be
@@ -247,66 +245,64 @@ public void robotInit ()
     // =========================================================
     // User code goes below here
     // =========================================================
-	//reset encoders
+    // reset encoders
     Hardware.leftFrontEncoder.reset();
     Hardware.leftRearEncoder.reset();
     Hardware.rightFrontEncoder.reset();
     Hardware.rightRearEncoder.reset();
-    //change stuff based on kilroy version
+    // change stuff based on kilroy version
     if (Hardware.isRunningOnKilroyXVIII == true)
         {
-    //encoder direction
-    Hardware.rightFrontEncoder.setReverseDirection(true);
-    Hardware.rightRearEncoder.setReverseDirection(false);
-    Hardware.leftFrontEncoder.setReverseDirection(true);
-    Hardware.leftRearEncoder.setReverseDirection(false);
-    //distance per pulses
-    Hardware.rightRearEncoder.setDistancePerPulse(
+        // encoder direction
+        Hardware.rightFrontEncoder.setReverseDirection(true);
+        Hardware.rightRearEncoder.setReverseDirection(false);
+        Hardware.leftFrontEncoder.setReverseDirection(true);
+        Hardware.leftRearEncoder.setReverseDirection(false);
+        // distance per pulses
+        Hardware.rightRearEncoder.setDistancePerPulse(
                 ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-    Hardware.leftRearEncoder.setDistancePerPulse(
+        Hardware.leftRearEncoder.setDistancePerPulse(
                 ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-    Hardware.rightFrontEncoder.setDistancePerPulse(
+        Hardware.rightFrontEncoder.setDistancePerPulse(
                 ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-    Hardware.leftFrontEncoder.setDistancePerPulse(
+        Hardware.leftFrontEncoder.setDistancePerPulse(
                 ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-        //gear percentages
-    Hardware.tankDrive.setGearPercentage(1,
+        // gear percentages
+        Hardware.tankDrive.setGearPercentage(1,
                 KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
-    Hardware.tankDrive.setGearPercentage(2,
+        Hardware.tankDrive.setGearPercentage(2,
                 KILROY_XVIII_SECOND_GEAR_PERCENTAGE);
-    Hardware.mecanumDrive.setFirstGearPercentage(
+        Hardware.mecanumDrive.setFirstGearPercentage(
                 KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
-        //invert motors
+        // invert motors
         Hardware.rightFrontMotor.setInverted(false);
         Hardware.rightRearMotor.setInverted(false);
         Hardware.leftFrontMotor.setInverted(false);
         Hardware.leftRearMotor.setInverted(true);
         Hardware.intakeMotor.setInverted(true);
-        //mecanum
+        // mecanum
         Hardware.mecanumDrive
                 .setDeadbandPercentageZone(Hardware.joystickDeadzone);
-        Hardware.mecanumDrive.setDirectionalDeadzone(10.0);
+        Hardware.mecanumDrive.setDirectionalDeadzone(20.0);
         Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-        //motor safty
+        // motor safty
         // Hardware.rightFrontMotorSafety.setExpiration(.5);
         // Hardware.rightRearMotorSafety.setExpiration(.5);
         // Hardware.leftFrontMotorSafety.setExpiration(.5);
         // Hardware.leftRearMotorSafety.setExpiration(1.0);
         // Sets the scaling factor and general ultrasonic stuff
-        Hardware.rightUS.setScalingFactor(
+        Hardware.ultraSonic.setScalingFactor(
                 Hardware.KILROY_XVIII_US_SCALING_FACTOR);
-        Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
-        Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
         }
-    	//kilroy XVII is below this statement of commented code in code
+    // kilroy XVII is below this statement of commented code in code
     else
         {
-    	//encoders
+        // encoders
         // Hardware.rightFrontEncoder.setReverseDirection(true);
         // Hardware.rightRearEncoder.setReverseDirection(false);
         // Hardware.leftFrontEncoder.setReverseDirection(true);
         // Hardware.leftRearEncoder.setReverseDirection(false);
-    	//distance per pulses
+        // distance per pulses
         Hardware.rightRearEncoder.setDistancePerPulse(
                 ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
         Hardware.leftRearEncoder.setDistancePerPulse(
@@ -315,15 +311,15 @@ public void robotInit ()
                 ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
         Hardware.rightFrontEncoder.setDistancePerPulse(
                 ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-        //gear percentages
-        	//tank
+        // gear percentages
+        // tank
         Hardware.tankDrive.setGearPercentage(1,
                 Robot.KILROY_XVII_FIRST_GEAR_PERCENTAGE);
         Hardware.tankDrive.setGearPercentage(2,
                 Robot.KILROY_XVII_SECOND_GEAR_PERCENTAGE);
-        	//mecanum
+        // mecanum
         Hardware.mecanumDrive.setFirstGearPercentage(
-                        Robot.KILROY_XVII_SECOND_GEAR_PERCENTAGE);
+                Robot.KILROY_XVII_SECOND_GEAR_PERCENTAGE);
         Hardware.rightFrontMotor.setInverted(true);
         Hardware.rightRearMotor.setInverted(false);
         Hardware.leftFrontMotor.setInverted(false);
@@ -336,12 +332,9 @@ public void robotInit ()
                 Hardware.KILROY_XVII_JOYSTICK_DIRECTIONAL_DEADZONE);
         Hardware.mecanumDrive.setMecanumJoystickReversed(false);
         // Sets the scaling factor and general ultrasonic stuff
-        Hardware.rightUS.setScalingFactor(
+        Hardware.ultraSonic.setScalingFactor(
                 Hardware.KILROY_XVII_US_SCALING_FACTOR);
-        Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
-        Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
-
-      }
+        }
     // -------------------------------------
     // motor initialization
     // -------------------------------------
@@ -353,39 +346,47 @@ public void robotInit ()
     // initialize PID values and set the motor to 0.0 because it isn't safe
     // if
     // we don't.
-    Hardware.shooterMotor.changeControlMode(TalonControlMode.Speed);
-    // put back in once finished testing!!!
-    Hardware.shooterMotor.configPeakOutputVoltage(12f, 0f);
-    Hardware.shooterMotor.configNominalOutputVoltage(0f, 0f);
-    Hardware.shooterMotor
-            .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-    Hardware.shooterMotor.configEncoderCodesPerRev(1024);
-    Hardware.shooterMotor.setPID(shooterP, shooterI, shooterD);
-    Hardware.shooterMotor.setSetpoint(0.0);
-    Hardware.shooterMotor.reverseSensor(true);
+    // Hardware.shooterMotor.changeControlMode(TalonControlMode.Speed);
+    // // put back in once finished testing!!!
+    // Hardware.shooterMotor.configPeakOutputVoltage(12f, 0f);
+    // Hardware.shooterMotor.configNominalOutputVoltage(0f, 0f);
+    // Hardware.shooterMotor
+    // .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+    // Hardware.shooterMotor.configEncoderCodesPerRev(1024);
+    // Hardware.shooterMotor.setPID(shooterP, shooterI, shooterD);
+    // Hardware.shooterMotor.setSetpoint(0.0);
+    // Hardware.shooterMotor.reverseSensor(true);
     // -------------------------------------
     // AXIS Camera initialization
     // NOTE: The AXIS Camera getInstance() MUST
     // Preceed the USB camera setResolution() code
     // -------------------------------------
-    CameraServer.getInstance().addAxisCamera("10.3.39.11");
-    Hardware.axisCamera.writeColorLevel(79);
-    Hardware.axisCamera.writeBrightness(1);
+    if (Hardware.isRunningOnKilroyXVIII)
+        {
+        // CameraServer.getInstance().addAxisCamera("10.3.39.11");
+        }
+    else
+        {
+        // CameraServer.getInstance().addAxisCamera("10.13.39.11");
+        }
+
+    Hardware.axisCamera.writeColorLevel(50);
+    Hardware.axisCamera.writeBrightness(0);
     Hardware.axisCamera.writeResolution(Resolution.k320x240);
-    Hardware.axisCamera.writeWhiteBalance(WhiteBalance.kFixedOutdoor1);
+    Hardware.axisCamera.writeWhiteBalance(WhiteBalance.kFixedOutdoor2);
     // -------------------------------------
     // USB Camera initialization
     // -------------------------------------
+
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
-    // Sets the scaling factor and general ultrasonic stuff
-    Hardware.rightUS.setScalingFactor(.13);
-    Hardware.rightUS.setOffsetDistanceFromNearestBummper(3);
-    Hardware.rightUS.setNumberOfItemsToCheckBackwardForValidity(3);
-    //gimbal motors
-    Hardware.gimbalMotor
-            .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-    Hardware.gimbalMotor.setEncPosition(0);
+    Hardware.ultraSonic.setOffsetDistanceFromNearestBummper(3);
+    Hardware.ultraSonic.setNumberOfItemsToCheckBackwardForValidity(3);
+    // gimbal motors
+    // Hardware.gimbalMotor
+    // .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+    // Hardware.gimbalMotor.setEncPosition(0);
+    Hardware.driveGyro.calibrate();// @AHK
     // =========================================================
     // User code goes above here
     // =========================================================
@@ -395,7 +396,7 @@ public void robotInit ()
     // ---------------------------------------
     System.out.println(
             "Kilroy XVIII is started.  All hardware items created.");
-    
+
 } // end
   // robotInit
 
@@ -450,7 +451,7 @@ public void teleopPeriodic ()
     // -------------------------------------
     Teleop.periodic();
 } // end teleopPeriodic
-// -------------------------------------------------------
+  // -------------------------------------------------------
 
 /**
  * Initialization code for test mode should go here. Will be called once
@@ -472,7 +473,7 @@ public void testInit ()
     // =========================================================
 
 } // end testInit
-// -------------------------------------------------------
+  // -------------------------------------------------------
 
 /**
  * Periodic code for test mode should go here. Will be called periodically
@@ -502,7 +503,7 @@ public void testPeriodic ()
 /**
  * The percentage we want the motors to run at while we are in first gear
  */
-public static final double KILROY_XVIII_FIRST_GEAR_PERCENTAGE = .85;
+public static final double KILROY_XVIII_FIRST_GEAR_PERCENTAGE = .5;
 
 /**
  * The percentage we want the motors to run at while we are in second gear
@@ -521,20 +522,27 @@ public static final double KILROY_XVII_FIRST_GEAR_PERCENTAGE = 1.0;
  */
 public static final double KILROY_XVII_SECOND_GEAR_PERCENTAGE = 1.0;
 
-/** Distance per pulse for kilroy XVIII
- * */
- 
+/**
+ * Distance per pulse for kilroy XVIII
+ */
+
 public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.069;
-/** Distance per pulse on kilroy XVII
+
+/**
+ * Distance per pulse on kilroy XVII
  * 
  */
 
-public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVII = .0197;
-//pid stuff
-public static double shooterP = .029; 
+public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVII = .018605;
 
-public static double shooterI = .000042;
+// pid stuff
+public static double shooterP = .3;
 
-public static double shooterD = .85;
+// testing the smartdashboard ability to set values on Dashboard
+public static double testShooterP = .6;
+
+public static double shooterI = .0000084;
+
+public static double shooterD = 2.0;
 
 } // end class
