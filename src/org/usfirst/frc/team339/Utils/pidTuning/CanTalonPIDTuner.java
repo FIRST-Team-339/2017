@@ -114,11 +114,10 @@ public void setF (double F)
  *            The proportional constant for the PID loop.
  */
 @Override
-public double setP (double P)
+public void setP (double P)
 {
     this.P = P;
     this.update();
-    return this.getP();// TODO incorrect implementation
 }
 
 /**
@@ -127,11 +126,10 @@ public double setP (double P)
  *            The integral constant for the PID loop.
  */
 @Override
-public double setI (double I)
+public void setI (double I)
 {
     this.I = I;
     this.update();
-    return this.getI();
 }
 
 /**
@@ -140,11 +138,10 @@ public double setI (double I)
  *            The derivative constant for the PID loop.
  */
 @Override
-public double setD (double D)
+public void setD (double D)
 {
     this.D = D;
     this.update();
-    return this.getD();
 }
 
 /**
@@ -170,14 +167,12 @@ public double getF ()
  */
 @Deprecated
 @Override
-public double setPID (double p, double i, double d)
+public void setPID (double p, double i, double d)
 {
     this.P = p;
     this.I = i;
     this.D = d;
     this.update();
-    // TODO does not return correctly on failed set
-    return this.getP() + this.getI() + this.getD();
 }
 
 /**
@@ -237,12 +232,9 @@ public double getD ()
  *            Sets the error threshold that we find acceptable. Always positive.
  */
 @Override
-public double setErrorThreshold (double threshold)
+public void setErrorThreshold (double threshold)
 {
     this.errorThresh = threshold;
-    // TODO incorrect implementation of error return, but should never fail to
-    // write?
-    return this.getErrorThreshold();
 }
 
 /**
@@ -262,11 +254,10 @@ public double getErrorThreshold ()
  *            in revolutions or rpm depending on PID type.
  */
 @Override
-public double setSetpoint (double setpoint)
+public void setSetpoint (double setpoint)
 {
     this.setpoint = setpoint;
     this.update();
-    return this.getSetpoint();
 }
 
 /**
