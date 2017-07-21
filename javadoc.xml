@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc access="public" additionalparam=" -tag written:a:&quot;Written Date:&quot;&#13;&#10;-tag date:a:&quot;Written Date:&quot;" author="true" classpath="C:\Users\Kilroy\wpilib\java\current\lib\WPILib.jar;C:\Users\Kilroy\wpilib\java\current\lib\NetworkTables.jar" destdir="javadoc" doctitle="Kilroy Documentation" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="org.usfirst.frc.team339.Utils,org.usfirst.frc.team339.Vision,org.usfirst.frc.team339.robot,org.usfirst.frc.team339.HardwareInterfaces,org.usfirst.frc.team339.HardwareInterfaces.transmission,org.usfirst.frc.team339.Hardware,org.usfirst.frc.team339.HardwareTemplates,org.usfirst.frc.team339.Vision.operators" source="1.8" sourcepath="src" splitindex="true" use="true" version="true"/>
+    </target>
+</project>
