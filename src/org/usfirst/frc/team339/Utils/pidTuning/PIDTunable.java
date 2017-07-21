@@ -1,4 +1,4 @@
-package org.usfirst.frc.team339.Utils;
+package org.usfirst.frc.team339.Utils.pidTuning;
 
 /**
  * Describes a device which is controlled by a PID loop and needs to be tuned.

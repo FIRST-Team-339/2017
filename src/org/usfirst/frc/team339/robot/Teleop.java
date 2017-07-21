@@ -35,11 +35,10 @@ import com.ctre.CANTalon;
 import com.ctre.CANTalon.FeedbackDevice;
 import com.ctre.CANTalon.TalonControlMode;
 import org.usfirst.frc.team339.Hardware.Hardware;
-import org.usfirst.frc.team339.Utils.CanTalonPIDTuner;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Shooter;
-import org.usfirst.frc.team339.Utils.SmartDashboardPIDTunerDevice;
-
+import org.usfirst.frc.team339.Utils.pidTuning.CanTalonPIDTuner;
+import org.usfirst.frc.team339.Utils.pidTuning.SmartDashboardPIDTunerDevice;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
