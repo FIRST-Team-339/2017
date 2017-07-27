@@ -6,8 +6,6 @@ package org.usfirst.frc.team339.Utils.pidTuning;
  * Consider scrapping this or writing a wrapper for the 
  * PIDController that isn't as specific.  That class 
  * seems to do most of what we need here.
- * 
- * Not currently on Github pending considerations listed above
  */
 
 import edu.wpi.first.wpilibj.PIDController;
@@ -27,7 +25,7 @@ import edu.wpi.first.wpilibj.SpeedController;
  * @written 7/20/17
  *
  */
-public class MotorControllerPIDTuner implements PIDTunable
+public class MotorControllerPIDController implements PIDTunable
 {
 private PIDController pid= null;
 
@@ -39,8 +37,18 @@ public enum ControlType
 }
 
 
-
-public MotorControllerPIDTuner(double p, double i, 
+/**
+ * 
+ * @param p
+ * @param i
+ * @param d
+ * @param f
+ * @param source
+ * @param controller
+ * @param samplingPeriod
+ * @param outputIsContinuous
+ */
+public MotorControllerPIDController(double p, double i, 
         double d, double f, PIDSource source, 
         SpeedController controller, double samplingPeriod, 
         boolean outputIsContinuous)
