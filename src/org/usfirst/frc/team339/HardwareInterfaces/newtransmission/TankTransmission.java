@@ -85,13 +85,7 @@ public class TankTransmission extends TransmissionBase
 		}
 	}
 
-	/**
-	 * Drives the robot without the use of deadbands and gear ratios. The value
-	 * input is the value that is passed to the motors.
-	 * 
-	 * @param leftVal The value sent to the left motor controllers
-	 * @param rightVal The value sent to the right motor controllers
-	 */
+	@Override
 	public void driveRaw(double leftVal, double rightVal)
 	{
 		leftFrontMotor.set(leftVal);
@@ -101,4 +95,12 @@ public class TankTransmission extends TransmissionBase
 		rightRearMotor.set(rightVal);
 	}
 
+	@Override
+	public void stop()
+	{
+		this.leftFrontMotor.set(0.0);
+		this.rightFrontMotor.set(0.0);
+		this.leftRearMotor.set(0.0);
+		this.rightRearMotor.set(0.0);
+	}
 }

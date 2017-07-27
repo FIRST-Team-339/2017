@@ -129,4 +129,22 @@ public class MecanumTransmission extends TransmissionBase
 
 		return Math.max(val, -1.0);
 	}
+
+	@Override
+	public void driveRaw(double leftVal, double rightVal)
+	{
+		this.leftFrontMotor.set(leftVal);
+		this.rightFrontMotor.set(rightVal);
+		this.leftRearMotor.set(leftVal);
+		this.rightRearMotor.set(rightVal);
+	}
+
+	@Override
+	public void stop()
+	{
+		this.leftFrontMotor.set(0.0);
+		this.rightFrontMotor.set(0.0);
+		this.leftRearMotor.set(0.0);
+		this.rightRearMotor.set(0.0);
+	}
 }

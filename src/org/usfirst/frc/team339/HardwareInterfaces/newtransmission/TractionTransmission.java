@@ -71,4 +71,18 @@ public class TractionTransmission extends TransmissionBase
 		}
 	}
 
+	@Override
+	public void driveRaw(double leftVal, double rightVal)
+	{
+		leftMotor.set(leftVal);
+		rightMotor.set(rightVal);
+	}
+
+	@Override
+	public void stop()
+	{
+		this.leftMotor.set(0.0);
+		this.rightMotor.set(0.0);
+	}
+
 }

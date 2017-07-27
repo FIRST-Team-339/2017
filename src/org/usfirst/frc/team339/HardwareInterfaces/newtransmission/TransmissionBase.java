@@ -120,4 +120,21 @@ public abstract class TransmissionBase
 		return (deadbandSlope * input) + constant;
 	}
 
+	/**
+	 * Tells the robot to cut all power to the motors.
+	 */
+	public abstract void stop();
+
+	/**
+	 * Drives either the left side or the right side of the robot,
+	 * without the use of deadbands and gear ratios.
+	 * Useful in autonomous driving situations
+	 * 
+	 * Also forces tank style driving if there are other forms.
+	 * 
+	 * @param leftVal Percentage sent to the left-side motors (-1.0 to 1.0)
+	 * @param rightVal Percentage sent to the right-side motors (-1.0 to 1.0)
+	 */
+	public abstract void driveRaw(double leftVal, double rightVal);
+
 }
