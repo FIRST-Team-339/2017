@@ -1,8 +1,10 @@
 package org.usfirst.frc.team339.HardwareInterfaces.newtransmission;
 
+import org.usfirst.frc.team339.HardwareInterfaces.KilroyGyro;
 import org.usfirst.frc.team339.HardwareInterfaces.newtransmission.TransmissionBase.TransmissionType;
 
 import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.Ultrasonic;
 
 /**
  * The class that controls autonomous driving functions or 
@@ -24,17 +26,63 @@ public class Drive
 	private MecanumTransmission mecanumTransmission = null;
 
 	private Encoder leftFrontEncoder = null, rightFrontEncoder = null, leftRearEncoder = null, rightRearEncoder = null;
+	private Ultrasonic ultrasonic = null;
+	private KilroyGyro gyro = null;
 
 	private final TransmissionType transmissionType;
 
 	/**
-	 * Creates the Drive object.
+	 * Creates the Drive object. If a sensor listed is not used (except for encoders), set it to null.
+	 * 
 	 * 
 	 * @param transmission The robot's transmission object
+	 * @param leftFrontEncoder The left-front corner encoder
+	 * @param rightFrontEncoder The right-front corner encoder
+	 * @param leftRearEncoder The left-rear corner encoder
+	 * @param rightRearEncoder The right-rear corner encoder
+	 * @param ultrasonic The sensor that finds distance using sound
+	 * @param gyro A sensor that uses a spinning disk to measure rotation.
 	 */
-	public Drive(TransmissionBase transmission)
+	public Drive(TransmissionBase transmission, Encoder leftFrontEncoder, Encoder rightFrontEncoder,
+			Encoder leftRearEncoder, Encoder rightRearEncoder, Ultrasonic ultrasonic, KilroyGyro gyro)
 	{
 		this.transmissionType = transmission.getType();
+		this.leftFrontEncoder = leftFrontEncoder;
+		this.rightFrontEncoder = rightFrontEncoder;
+		this.leftRearEncoder = leftRearEncoder;
+		this.rightRearEncoder = rightRearEncoder;
+
+		this.ultrasonic = ultrasonic;
+		this.gyro = gyro;
+
+		init(transmission);
+	}
+
+	/**
+	 * Creates the Drive object. If a sensor listed is not used (except for encoders), set it to null.
+	 * Setup for Traction drive (only 2 motors/encoders)
+	 * 
+	 * @param transmission The robot's transmission object
+	 * @param leftEncoder The left-side encoder
+	 * @param rightEncoder The right-side encoder
+	 * @param ultrasonic The sensor that finds distance using sound
+	 * @param gyro A sensor that uses a spinning disk to measure rotation.
+	 */
+	public Drive(TransmissionBase transmission, Encoder leftEncoder, Encoder rightEncoder, Ultrasonic ultrasonic,
+			KilroyGyro gyro)
+	{
+		this.transmissionType = transmission.getType();
+		this.leftRearEncoder = leftEncoder;
+		this.rightRearEncoder = rightEncoder;
+
+		this.ultrasonic = ultrasonic;
+		this.gyro = gyro;
+
+		init(transmission);
+	}
+
+	private void init(TransmissionBase transmission)
+	{
 
 		// Only sets the transmission if it is the same type. Other transmission
 		// objects get set to null.
@@ -48,6 +96,10 @@ public class Drive
 			break;
 		case TRACTION:
 			this.tractionTransmission = (TractionTransmission) transmission;
+			break;
+		default:
+			System.out.println(
+					"There was an error setting up the DRIVE class. Please check the declaration for a valid transmission object.");
 			break;
 
 		}
@@ -76,7 +128,11 @@ public class Drive
 	}
 
 	// ================ENCODER METHODS================
-
+	/**
+	 * Different groups of wheels for use in encoder data collection.
+	 * 
+	 * @author Ryan McGee
+	 */
 	public enum WheelGroups
 	{
 		/**
@@ -180,7 +236,7 @@ public class Drive
 
 	private boolean driveInchesInit = true;
 
-	/**
+	/**TODO test this!
 	 * Drives the robot a certain distance based on the encoder values. 
 	 * If the robot should go backwards, set speed to be negative instead of distance.
 	 * 
@@ -210,7 +266,7 @@ public class Drive
 		return false;
 	}
 
-	/**
+	/**TODO Test this!
 	 * Drives the robot in a straight line based on encoders.
 	 * 
 	 * This works by polling the encoders every (COLLECTION_TIME) milliseconds
@@ -232,7 +288,6 @@ public class Drive
 		{
 			// Reset the "timer"
 			driveStraightOldTime = System.currentTimeMillis();
-			int leftChange, rightChange;
 			// Only use the four encoders if the robot uses a four-wheel system
 			if (transmissionType == TransmissionType.MECANUM || transmissionType == TransmissionType.TANK)
 			{
@@ -253,25 +308,72 @@ public class Drive
 				prevEncoderValues[0] = leftRearEncoder.get();
 				prevEncoderValues[1] = rightRearEncoder.get();
 			}
-
-			// Changes how much the robot corrects by how off course it is. The
-			// more off course, the more it will attempt to correct.
-			this.getTransmission().driveRaw(speed * ((double) rightChange / leftChange),
-					speed * ((double) leftChange / rightChange));
-
 		}
+		// Changes how much the robot corrects by how off course it is. The
+		// more off course, the more it will attempt to correct.
+		this.getTransmission().driveRaw(speed * ((double) rightChange / leftChange),
+				speed * ((double) leftChange / rightChange));
+
 	}
+
+	private int leftChange = 1, rightChange = 1;
 
 	private int[] prevEncoderValues =
 	{ 1, 1 };
+	// {Left encoder, Right encoder}
 	// Preset to 1 to avoid divide by zero errors.
 
 	// Used for calculating how much time has passed for driveStraight
 	private long driveStraightOldTime = 0;
+
+	/**TODO Test this!
+	 * Turns the robot to a certain angle using the robot's turning circle to find the arc-length.
+	 * 
+	 * @param angle How far the robot should turn. Negative angle turns left, positive turns right.
+	 * @param speed How fast the robot should turn (0 to 1.0)
+	 * @return Whether or not the robot has finished turning
+	 */
+	public boolean turnDegrees(int angle, double speed)
+	{
+		// Only reset the encoders on the method's first start.
+		if (turnDegreesInit == true)
+		{
+			this.resetEncoders();
+			turnDegreesInit = false;
+		}
+
+		// Tests whether any encoder has driven the arc-length of the angle
+		// (angle x radius)
+		if (isAnyEncoderLargerThan(Math.toRadians(Math.abs(angle)) * TURNING_RADIUS) == true)
+		{
+			this.getTransmission().stop();
+			turnDegreesInit = true;
+			return true;
+		}
+
+		// Change which way the robot turns based on whether the angle is
+		// positive or negative
+		if (angle < 0)
+		{
+			this.getTransmission().driveRaw(-speed, speed);
+		} else
+		{
+			this.getTransmission().driveRaw(speed, -speed);
+		}
+
+		return false;
+	}
+
+	private boolean turnDegreesInit = true;
 
 	// ================TUNABLES================
 
 	// Number of milliseconds that will pass before collecting data on encoders
 	// for driveStraight
 	private static final int COLLECTION_TIME = 20;
+
+	// The distance from the left side wheel to the right-side wheel divided by
+	// 2, in inches. Used in turnDegrees.
+	// TODO find this value.
+	private static final int TURNING_RADIUS = 24;
 }

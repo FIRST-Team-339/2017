@@ -54,7 +54,7 @@ public abstract class TransmissionBase
 		return type;
 	}
 
-	/**
+	/**TODO Test gear system
 	 * Sets the current gear for the robot. This will change the maximum
 	 * speed of the robot for precise aiming/driving.
 	 * @param gear The requested gear number. If outside the range, it will do nothing.
@@ -83,7 +83,7 @@ public abstract class TransmissionBase
 			currentGear--;
 	}
 
-	/**
+	/**TODO test deadbands
 	 * Sets the minimum value the joysticks must output in order for the robot to start moving.
 	 * @param deadband Percentage value, ranging from 0.0 to 1.0, in decimals.
 	 */

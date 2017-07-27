@@ -3,7 +3,7 @@ package org.usfirst.frc.team339.HardwareInterfaces.newtransmission;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SpeedController;
 
-/**
+/**TODO Test this on Nessie!
  * Like the traction drive system, except with four motors, usually all as omni-wheels.
  * Or, tank drive with paired motors. Each joystick controls one side of the robot.
  * 

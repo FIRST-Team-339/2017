@@ -3,7 +3,7 @@ package org.usfirst.frc.team339.HardwareInterfaces.newtransmission;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.SpeedController;
 
-/**
+/**TODO Test this on Buzzbot!
  * One of the more complex drive systems: uses 4 mecanum wheels to allow 
  * for lateral movement as well as normal tank controls.
  * 
