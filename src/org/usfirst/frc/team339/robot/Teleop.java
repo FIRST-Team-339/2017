@@ -355,36 +355,7 @@ public class Teleop
 		// Driving code
 		// =================================================================
 
-		// rotate only when we are pulling the trigger
-		if (Hardware.leftDriver.getTrigger() == true)
-		{
-			rotationValue = Hardware.leftDriver.getTwist();
-		} else
-			rotationValue = 0.0;
-
-		// TODO Temporarily Commented out for speed testing; uncomment later
-		if (isTestingDrive == false && isTestingCamera == false)
-		// main driving function
-		{
-			if (Hardware.isUsingMecanum == true)
-				Hardware.mecanumDrive.drive(Hardware.leftDriver.getMagnitude(),
-						Hardware.leftDriver.getDirectionDegrees(), rotationValue);
-			else
-				Hardware.tankDrive.drive(Hardware.rightDriver.getY(), Hardware.leftDriver.getY());
-		}
-		// System.out.println(
-		// "speedTesterButton = "
-		// + Hardware.speedTesterButton.isOnCheckNow());
-		if (Hardware.speedTesterButton.get() == true)
-		{
-			Hardware.LFSpeedTester.watchJoystick(Hardware.leftDriver.getY());
-			// Hardware.RRSpeedTester
-			// .watchJoystick(Hardware.rightDriver.getY());
-			// Hardware.RFSpeedTester
-			// .watchJoystick(Hardware.rightOperator.getY());
-			// Hardware.LRSpeedTester
-			// .watchJoystick(Hardware.leftOperator.getY());
-		}
+		Hardware.transmission.drive(Hardware.leftDriver, Hardware.rightDriver);
 
 		// ----------------------TESTING DRIVE FUNCTIONS--------------------
 
