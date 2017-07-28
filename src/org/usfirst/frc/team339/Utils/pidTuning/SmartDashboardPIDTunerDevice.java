@@ -40,7 +40,8 @@ ALL (),
 RETURN_TIME,
 /**
  * Prints out the current target velocity, the current error, whether the
- * controller is currently on target, and the current target
+ * controller is currently on target, the current feedback value,
+ * and the current output
  */
 CONTROLLER_STATUS,
 /**
