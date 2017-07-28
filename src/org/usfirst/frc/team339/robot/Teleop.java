@@ -34,6 +34,7 @@ package org.usfirst.frc.team339.robot;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Shooter;
+import org.usfirst.frc.team339.Utils.Threading;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -123,7 +124,7 @@ public static void init ()
     SmartDashboard.putNumber("DB/Slider 1", 1);
 
 
-    // thread1.start();
+    thread1.start();
     //
     // System.out.println("Got here 1");
     //
@@ -425,7 +426,7 @@ public static void periodic ()
                 }
             if (Hardware.leftDriver.getY() <= -0.5)
                 {
-                testingSpeed = .85;
+                testingSpeed = 1.0;
 
                 Hardware.leftFrontMotor.set(testingSpeed);
                 Hardware.leftRearMotor.set(testingSpeed);
@@ -483,18 +484,19 @@ public static void periodic ()
             // "Left rear speed tester " + Hardware.leftFrontTest
             // .watchJoystick(Hardware.leftDriver.getY(),
             // Hardware.rightDriver.getY()));
-            System.out.println(
-                    "Right front speed tester "
-                            + Hardware.rightFrontTest
-                                    .watchJoystick(
-                                            Hardware.leftDriver.getY(),
-                                            Hardware.rightDriver
-                                                    .getY()));
+            // ADD BACK IN
+            // System.out.println(
+            // "Right front speed tester "
+            // + Hardware.rightFrontTest
+            // .watchJoystick(
+            // Hardware.leftDriver.getY(),
+            // Hardware.rightDriver
+            // .getY()));
             }
-        else
+        else // @ANE uncomment
             {
-            Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
-                    Hardware.leftDriver.getY());
+            // Hardware.tankDrive.drive(Hardware.rightDriver.getY(),
+            // Hardware.leftDriver.getY());
             }
 
 
@@ -565,8 +567,8 @@ public static void printStatements ()
     // System.out.println("Delay Pot: " + Hardware.delayPot.get(0, 5));
     // System.out.println("Left Front Motor Controller: " +
     // Hardware.leftFrontMotor.get());
-    // System.out.println("Right Rear Motor Controller: " +
-    // Hardware.rightRearMotor.get());
+    System.out.println("Right Rear Motor Controller: " +
+            Hardware.rightRearMotor.get());
     // System.out.println("Left Rear Motor Controller: " +
     // Hardware.leftRearMotor.get());
     // System.out.println("Right Front Motor Controller: "
@@ -796,7 +798,7 @@ public static void printStatements ()
     // {
     // System.out.println("Twist: " + Hardware.leftDriver.getTwist());
     // }
-    // System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
+    System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
     // System.out.println("Right Joystick: " + Hardware.rightDriver.getY());
     // System.out.println("Left Operator: " + Hardware.leftOperator.getY());
     // System.out.println("Right Operator: " +
@@ -846,5 +848,9 @@ public static double testingSpeed;
 // temporary variable to test the ability to send information from a
 // separate thread to teleop
 public static int valueFromThread;
+
+
+public static Threading thread1 = new Threading("Thread 1");
+
 
 } // end class
