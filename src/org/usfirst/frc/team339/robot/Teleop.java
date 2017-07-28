@@ -34,7 +34,7 @@ package org.usfirst.frc.team339.robot;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Shooter;
-import org.usfirst.frc.team339.Utils.Threading;
+// import org.usfirst.frc.team339.Utils.Threading;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -124,7 +124,7 @@ public static void init ()
     SmartDashboard.putNumber("DB/Slider 1", 1);
 
 
-    thread1.start();
+    // thread1.start();
     //
     // System.out.println("Got here 1");
     //
@@ -414,24 +414,24 @@ public static void periodic ()
         {
         if (Hardware.isUsingMecanum == true)
             {
-            if (Hardware.leftDriver.getY() > -.5
+            if (Hardware.leftDriver.getY() > -.8
                     && Hardware.leftDriver.getY() < -0.15)
                 {
                 Hardware.leftFrontMotor.set(Hardware.leftDriver.getY());
                 Hardware.leftRearMotor.set(Hardware.leftDriver.getY());
                 Hardware.rightFrontMotor
-                        .set(Hardware.leftDriver.getY());
+                        .set(-Hardware.leftDriver.getY());
                 Hardware.rightRearMotor
                         .set(-Hardware.leftDriver.getY());
                 }
-            if (Hardware.leftDriver.getY() <= -0.5)
+            if (Hardware.leftDriver.getY() <= -0.8)
                 {
                 testingSpeed = 1.0;
 
-                Hardware.leftFrontMotor.set(testingSpeed);
-                Hardware.leftRearMotor.set(testingSpeed);
+                Hardware.leftFrontMotor.set(-testingSpeed);
+                Hardware.leftRearMotor.set(-testingSpeed);
                 Hardware.rightFrontMotor.set(testingSpeed);
-                Hardware.rightRearMotor.set(-testingSpeed);
+                Hardware.rightRearMotor.set(testingSpeed);
                 // System.out.println("Right Front draw = "
                 // + Hardware.pdp.getCurrent(1));
                 // System.out.println("Right Rear draw = "
@@ -441,7 +441,7 @@ public static void periodic ()
                 // System.out.println("Left Rear draw = "
                 // + Hardware.pdp.getCurrent(3));
                 }
-            else
+            else if (Hardware.leftDriver.getY() > -.15)
                 {
                 Hardware.leftFrontMotor.set(0.0);
                 Hardware.leftRearMotor.set(0.0);
@@ -850,7 +850,7 @@ public static double testingSpeed;
 public static int valueFromThread;
 
 
-public static Threading thread1 = new Threading("Thread 1");
+// public static Threading thread1 = new Threading("Thread 1");
 
 
 } // end class
