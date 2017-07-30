@@ -161,7 +161,11 @@ public void set (final double speed)
 {
     this.speedController.set(speed * this.maxSpeed);
 } // end set
-
+//Does nothing, added for compile compliance
+public void set(final double speed, final byte syncGroup)
+{
+    this.set(speed);
+}
 
 /**
  * @description Gets whether or not this speed controller's motor is inverted.
