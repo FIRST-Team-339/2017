@@ -31,40 +31,63 @@ public enum DebugType
 /**
  * Print out ALL debug information
  */
-ALL (),
+ALL ((byte)0b01111111),
 /**
  * Prints out a single message when the controller leaves the acceptable target
  * range, and another when we reenter the target range with the time difference
  * between leaving and reentering the acceptable range
  */
-RETURN_TIME,
+RETURN_TIME ((byte)0b00100000),
 /**
  * Prints out the current target velocity, the current error, whether the
  * controller is currently on target, the current feedback value,
  * and the current output
  */
-CONTROLLER_STATUS,
+CONTROLLER_STATUS((byte)0b01010111),
 /**
  * Only prints out the error reported by the controller
  */
-CONTROLLER_ERROR,
+CONTROLLER_ERROR((byte)0b00010000),
 /**
  * Prints out the F, P, I, and D values for the controller
  */
-CONTROL_VALUES,
+CONTROL_VALUES ((byte)0b00001000),
 /**
  * Prints out whether or not the PID controller is currently on target
  */
-CONTROLLER_IS_ON_TARGET,
+CONTROLLER_IS_ON_TARGET((byte)0b00000100),
 /**
  * prints out nothing
  */
-NONE
+NONE ((byte)0b00000000);
+
+private byte equivalentDebugCodeVal;
+
+DebugType(byte debugVarEquivalent)
+{
+    this.equivalentDebugCodeVal = debugVarEquivalent;
+}
+
+byte getDebugCodeEquivalent()
+{
+    return this.equivalentDebugCodeVal;
+}
     }
+
+public SmartDashboardPIDTunerDevice(PIDTunable tuner, byte debug)
+{
+    this.debugOutput = debug;
+    this.tuner = tuner;
+}
+
+public SmartDashboardPIDTunerDevice(PIDTunable tuner, DebugType debug)
+{
+    this(tuner,debug.getDebugCodeEquivalent());
+}
 
 public SmartDashboardPIDTunerDevice (PIDTunable tuner)
 {
-    this.tuner = tuner;
+    this(tuner, DebugType.NONE);
 }
 
 
@@ -82,7 +105,7 @@ public void update ()
 
 public void setDebugOutputType (DebugType type)
 {
-
+    this.debugOutput = type.getDebugCodeEquivalent();
 }
 
 public void printOutDebugInformation ()
