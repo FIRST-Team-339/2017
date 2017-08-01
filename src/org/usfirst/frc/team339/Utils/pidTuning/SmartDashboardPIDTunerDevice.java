@@ -4,9 +4,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SmartDashboardPIDTunerDevice
 {
-public PIDTunable tuner = null;
+public PIDTunable tunable = null;
 
-private byte debugOutput = 0x0;
+private byte debugOutputMask = 0x0;
 
 /**
  * Defines the type of debug information the tuner wants to see as output
@@ -76,8 +76,8 @@ byte getDebugCodeEquivalent()
 
 public SmartDashboardPIDTunerDevice(PIDTunable tuner, byte debug)
 {
-    this.debugOutput = debug;
-    this.tuner = tuner;
+    this.debugOutputMask = debug;
+    this.tunable = tuner;
 }
 
 public SmartDashboardPIDTunerDevice(PIDTunable tuner, DebugType debug)
@@ -97,20 +97,84 @@ public void update ()
     double I = SmartDashboard.getNumber("DB/Slider 1", 0.0);
     double D = SmartDashboard.getNumber("DB/Slider 2", 0.0);
     double setPoint = SmartDashboard.getNumber("DB/Slider 3", 0.0);
-    this.tuner.setP(P);
-    this.tuner.setI(I);
-    this.tuner.setD(D);
-    this.tuner.setSetpoint(setPoint);
+    this.tunable.setP(P);
+    this.tunable.setI(I);
+    this.tunable.setD(D);
+    this.tunable.setSetpoint(setPoint);
 }
 
 public void setDebugOutputType (DebugType type)
 {
-    this.debugOutput = type.getDebugCodeEquivalent();
+    this.debugOutputMask = type.getDebugCodeEquivalent();
+}
+/**
+ * <p>
+ * The debug information printed to the console is controlled via a one-byte bit mask.
+ * (Each bit in the byte represents whether or not to print out a particular available
+ * debug value) Following is a list of the available debug information, in order from 
+ * the MSB (Most significant bit) to LSB (Least significant bit)
+ * </p>
+ * <ol>
+ * <li>DO NOT SET THIS BIT.  IT DOES NOTHING</li>
+ * <li>The current value of the output</li>
+ * <li>When the controller leaves the acceptable error value and how long it
+ * takes to return</li>
+ * <li>The current error in the output</li>
+ * <li>The current values for the F, P, I, and D variables in the
+ * controller</li>
+ * <li>Whether or not the controller is currently on target</li>
+ * <li>The current target for the controller</li>
+ * <li>The current feedback value</li>
+ * </ol>
+ * @param debugMask
+ *      A one byte bit mask determining what debug information to print out 
+ *      (See list above).  Java has a nifty feature where you can directly 
+ *      define binary literals by prepending the binary number with <em>0b</em>.
+ *      e.g. To print out the output value, the error in the controller, 
+ *      and the current feedback value, you should pass the argument 
+ *      <em>0b01010001</em>
+ *      
+ * @author Alexander Kneipp
+ */
+public void setDebugOutputBitmask(byte debugMask)
+{
+    this.debugOutputMask = debugMask;
 }
 
 public void printOutDebugInformation ()
 {
-
+    if((this.debugOutputMask & 0b01000000) != 0)
+        {
+            System.out.println("PID output: " + this.tunable.getOutput());
+        }
+    if((this.debugOutputMask & 0b00100000) != 0)
+        {
+        //TODO add in timer logic and stuff
+            System.out.println("timer stuff");
+        }
+    if((this.debugOutputMask & 0b00010000) != 0)
+        {
+            System.out.println("PID error: " + this.tunable.getError());
+        }
+    if((this.debugOutputMask & 0b00001000) != 0)
+        {
+        System.out.println("PID Tunable values: (" + this.tunable.getP() 
+            + ", " + this.tunable.getI() + ", " + this.tunable.getD() + ")");
+        }
+    if((this.debugOutputMask & 0b00000100)!= 0)
+        {
+        System.out.println("PID tunable is on target?" + 
+                (this.tunable.getIsInAcceptableErrorZone()?"YES!":"NO :("));
+        
+        }
+    if((this.debugOutputMask & 0b00000010) != 0)
+        {
+            System.out.println("PID tunable target: " + this.tunable.getSetpoint());
+        }
+    if((this.debugOutputMask & 0b00000001) != 0)
+        {
+            System.out.println("PID tunable feedback value: " + this.tunable.getInput());
+        }
 }
 
 }
