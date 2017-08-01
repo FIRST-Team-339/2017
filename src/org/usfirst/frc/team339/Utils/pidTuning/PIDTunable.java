@@ -73,6 +73,12 @@ public void setErrorThreshold (double threshold);
 
 /**
  * @return
+ *      The current error the PID device is reporting
+ *      (The difference between the target value and the feedback value)
+ */
+public double getError();
+/**
+ * @return
  *         The amount, above and below the setpoint, within which we're willing
  *         to accept the error
  */
@@ -100,4 +106,16 @@ public void setSetpoint (double setpoint);
  *         The value the PID device is currently targeting.
  */
 public double getSetpoint ();
+/**
+ * @return
+ *        The value the PID device is currently outputting.
+ */
+public double getOutput ();
+/**
+ * @return
+ *        The value the PID device is currently receiving 
+ *        from it's feedback device.
+ */
+public double getInput ();
+
 }

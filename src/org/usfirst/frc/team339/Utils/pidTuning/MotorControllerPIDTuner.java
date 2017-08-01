@@ -31,6 +31,8 @@ private PIDController pid = null;
 
 private SpeedController motorController = null;
 
+private PIDSource source = null;
+
 public enum ControlType
     {
 POSITION, VELOCITY
@@ -78,6 +80,7 @@ public MotorControllerPIDTuner (double p, double i,
             samplingPeriod);
     // Save the motor controller, though I'm not sure that's actually necessary
     this.motorController = controller;
+    this.source = source;
     // tell the PID controller if the in/output is continuous or not
     this.pid.setContinuous(outputIsContinuous);
 }
@@ -160,6 +163,24 @@ public void setSetpoint (double setpoint)
 public double getSetpoint ()
 {
     return this.pid.getSetpoint();
+}
+
+@Override
+public double getError ()
+{
+    return this.pid.getError();
+}
+
+@Override
+public double getOutput ()
+{
+    return this.pid.get();
+}
+
+@Override
+public double getInput ()
+{
+    return this.source.pidGet();
 }
 
 }

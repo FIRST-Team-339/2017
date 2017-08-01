@@ -277,4 +277,27 @@ public boolean getIsInAcceptableErrorZone ()
     return Math.abs(this.tunedMotorController.getError()) < this
             .getErrorThreshold();
 }
+
+
+@Override
+public double getError ()
+{
+    return this.tunedMotorController.getError();
+}
+
+
+@Override
+public double getOutput ()
+{
+    return this.tunedMotorController.getOutputVoltage()/
+            this.tunedMotorController.getBusVoltage();
+}
+
+
+@Override
+public double getInput ()
+{
+    // TODO Auto-generated method stub
+    return 0;
+}
 }
