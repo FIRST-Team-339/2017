@@ -150,7 +150,7 @@ public void printOutDebugInformation ()
     if((this.debugOutputMask & 0b00100000) != 0)
         {
         //TODO add in timer logic and stuff
-            System.out.println("timer stuff");
+            System.out.println("timer stuff: WIP");
         }
     if((this.debugOutputMask & 0b00010000) != 0)
         {
