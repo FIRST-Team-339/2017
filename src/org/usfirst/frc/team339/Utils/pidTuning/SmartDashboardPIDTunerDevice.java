@@ -1,5 +1,6 @@
 package org.usfirst.frc.team339.Utils.pidTuning;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class SmartDashboardPIDTunerDevice
@@ -7,6 +8,8 @@ public class SmartDashboardPIDTunerDevice
 public PIDTunable tunable = null;
 
 private byte debugOutputMask = 0x0;
+
+private Timer errTime = new Timer();
 
 /**
  * Defines the type of debug information the tuner wants to see as output
@@ -149,8 +152,19 @@ public void printOutDebugInformation ()
         }
     if((this.debugOutputMask & 0b00100000) != 0)
         {
-        //TODO add in timer logic and stuff
-            System.out.println("timer stuff: WIP");
+            if(this.tunable.getIsInAcceptableErrorZone() ==false && wasOffTarget == false)
+                {
+                    System.out.println("Tunable is off target, recording time...");
+                    this.errTime.reset();
+                    this.errTime.start();
+                }
+            else if(this.tunable.getIsInAcceptableErrorZone() == true && wasOffTarget == true)
+                {
+                    this.errTime.stop();
+                    System.out.println("Tunable has returned to target, took " 
+                            + this.errTime.get() + " Seconds");
+                }
+        wasOffTarget = !this.tunable.getIsInAcceptableErrorZone();
         }
     if((this.debugOutputMask & 0b00010000) != 0)
         {
@@ -176,5 +190,6 @@ public void printOutDebugInformation ()
             System.out.println("PID tunable feedback value: " + this.tunable.getInput());
         }
 }
+private boolean wasOffTarget = false;
 
 }
