@@ -59,7 +59,20 @@ private FeedbackDevice feedbackType;
 
 // TODO reference CTRE doc
 /**
+ * <h1>
+ * WARNING!!!
+ * </h1>
+ * 
+ * <p>
+ * You ABSOLUTELY need to call this method before you start tuning
+ * your PID loop with the CANTalon.  IF YOU DO NOT, YOUR TALON'S
+ * PID LOOP WILL NOT TUNE.  You only need to call it once for it 
+ * to take effect.  Somewhere in an init method will do perfecty. 
+ * </p>
+ * 
+ * <p>
  * Initializes all the CAN stuff for the motor controller.
+ * </p>
  * 
  * @param feedbackType
  *            The type of feedback device in the MotorController.
@@ -71,6 +84,7 @@ private FeedbackDevice feedbackType;
  * @param reverseSensor
  *            Is the feedback device reversed.
  */
+//TODO comment the method body.
 public void setupMotorController (FeedbackDevice feedbackType,
         TalonControlMode tunetype, int codesPerRev,
         boolean reverseSensor)

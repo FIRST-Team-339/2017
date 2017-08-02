@@ -93,21 +93,66 @@ public SmartDashboardPIDTunerDevice (PIDTunable tuner)
     this(tuner, DebugType.NONE);
 }
 
-
+/**
+ * <h1>
+ * WARNING!!!
+ * </h1>
+ * <p>
+ * It is STRONGLY recommended by the author of this class that you
+ * call either setDebugOutputType(DebugType) or 
+ * setDebugOutputBitmask(byte) BEFORE you call this method.  You only
+ * need to call one of them once with the desired bitmask or DebugType
+ * for them to have the desired effect.  Somewhere in an init will do
+ * perfectly.
+ * </p>
+ * <p>
+ *  This should be the primary or only method call in your PID tuning
+ *  loop; it should handle everything you need it to handle, so long
+ *  as you call the debug setup methods before your tuning loop.
+ * </p> 
+ * <p>
+ * Multi purpose method.
+ * First pulls the setpoint, P, I, and D information from
+ * the smart dashboard sliders.  It then sets that information
+ * to the tunable device, and finally prints out the debug
+ * information set with setDebugOutputType(DebugType) or
+ * setDebugOutputBitmask(byte) (See those methods for more
+ * information.)  The debug phase prints out nothing if
+ * neither of these methods have been called.
+ * </p>
+ */
 public void update ()
 {
+    //Pull the P, I, D, and setpoint information from the smart dashboard
     double P = SmartDashboard.getNumber("DB/Slider 0", 0.0);
     double I = SmartDashboard.getNumber("DB/Slider 1", 0.0);
     double D = SmartDashboard.getNumber("DB/Slider 2", 0.0);
     double setPoint = SmartDashboard.getNumber("DB/Slider 3", 0.0);
+    //Set the P, I, D, and setpoint info to the PID device
     this.tunable.setP(P);
     this.tunable.setI(I);
     this.tunable.setD(D);
     this.tunable.setSetpoint(setPoint);
+    //Print out the previously set debug information
+    this.printOutDebugInformation();
 }
-
+/**
+ *<p>
+ * Sets the debug information to output to the console via 
+ * predetermined Enum values
+ * </p>
+ * @param type
+ *      <p>
+ *      The DebugType Enum deciding the debug information to
+ *      output.  See the documentation in DebugType for more info
+ *      </p>
+ */
 public void setDebugOutputType (DebugType type)
 {
+    /*
+     * Get the preset debug mask equivalent from the
+     * Enum, and save that for debugging output
+     */
     this.debugOutputMask = type.getDebugCodeEquivalent();
 }
 /**
@@ -143,7 +188,14 @@ public void setDebugOutputBitmask(byte debugMask)
 {
     this.debugOutputMask = debugMask;
 }
-
+/**
+ * Prints debug information according to the set debugStatus.
+ * The default debug status is NONE; nothing is printed out.
+ * If you actually want debug information, you need to set it
+ * with either of the setDebugOutput... methods.
+ * See the enum DebugType and/or the method setDebugOutputBitmask
+ * for more documentation 
+ */
 public void printOutDebugInformation ()
 {
     if((this.debugOutputMask & 0b01000000) != 0)
