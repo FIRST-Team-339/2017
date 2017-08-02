@@ -2,7 +2,21 @@ package org.usfirst.frc.team339.Utils.pidTuning;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
+//TODO correct the author's note.
+/**
+ * Author's note:
+ * <p>
+ * Only ONE instance of this class will work at a time.  Do NOT
+ * try to tune multiple PID devices with multiple instances of 
+ * this class.  Tune your devices one at a time
+ * </p>
+ * 
+ * <p>
+ * A class for tuning PID devices which implement the PIDTunable
+ * interface.
+ * </p>
+ * @author Alexander Kneipp
+ */
 public class SmartDashboardPIDTunerDevice
 {
 public PIDTunable tunable = null;
@@ -76,21 +90,39 @@ byte getDebugCodeEquivalent()
     return this.equivalentDebugCodeVal;
 }
     }
-
-public SmartDashboardPIDTunerDevice(PIDTunable tuner, byte debug)
+/**
+ * Creates a new SmartDashboardPIDTunerDevice with debug information
+ * @param tunable
+ *      The PIDTunable object you want to tune with the smart dashboard
+ * @param debug
+ *      The debug information bitmask you want while you're tuning, see
+ *      setDebugOutputBitmask(byte) for more information.
+ */
+public SmartDashboardPIDTunerDevice(PIDTunable tunable, byte debug)
 {
     this.debugOutputMask = debug;
-    this.tunable = tuner;
+    this.tunable = tunable;
 }
-
-public SmartDashboardPIDTunerDevice(PIDTunable tuner, DebugType debug)
+/**
+ * Creates a new SmartDashboardPIDTunerDevice with debug information
+ * @param tunable
+ *      The PIDTunable object you want to tune with the smart dashboard
+ * @param debug
+ *      The debug information DebugType you want while you're tuning, see
+ *      setDebugOutputType(DebugType) for more information.
+ */
+public SmartDashboardPIDTunerDevice(PIDTunable tunable, DebugType debug)
 {
-    this(tuner,debug.getDebugCodeEquivalent());
+    this(tunable,debug.getDebugCodeEquivalent());
 }
-
-public SmartDashboardPIDTunerDevice (PIDTunable tuner)
+/**
+ * Creates a new SmartDashboardPIDTuner object without debug information
+ * @param tunable
+ *      The PIDTunable object you want to tune with the smart dashboard
+ */
+public SmartDashboardPIDTunerDevice (PIDTunable tunable)
 {
-    this(tuner, DebugType.NONE);
+    this(tunable, DebugType.NONE);
 }
 
 /**
@@ -100,9 +132,12 @@ public SmartDashboardPIDTunerDevice (PIDTunable tuner)
  * <p>
  * It is STRONGLY recommended by the author of this class that you
  * call either setDebugOutputType(DebugType) or 
- * setDebugOutputBitmask(byte) BEFORE you call this method.  You only
- * need to call one of them once with the desired bitmask or DebugType
- * for them to have the desired effect.  Somewhere in an init will do
+ * setDebugOutputBitmask(byte) OR you make sure that you constructed 
+ * your SmartDashboardPIDTuner object with one of the constructors 
+ * that accepts debug information (see the constructor doc) BEFORE 
+ * you call this method.  You only need to call one of them once 
+ * with the desired bitmask or DebugType for them to have the desired
+ * effect.  Somewhere in an init will do for the setDebugOutput... methods.
  * perfectly.
  * </p>
  * <p>
