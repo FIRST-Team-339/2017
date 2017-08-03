@@ -278,16 +278,16 @@ public void printOutDebugInformation ()
             this.errTime.reset();
             this.errTime.start();
             }
-        //If we are in the acceptable range but we weren't last iteration...
+        // If we are in the acceptable range but we weren't last iteration...
         else if (this.tunable.getIsInAcceptableErrorZone() == true
                 && wasOffTarget == true)
             {
-            //stop the timer and print out how long it took to get back
+            // stop the timer and print out how long it took to get back
             this.errTime.stop();
             System.out.println("Tunable has returned to target, took "
                     + this.errTime.get() + " Seconds");
             }
-        //update whether or not we were off target last iteration.
+        // update whether or not we were off target last iteration.
         wasOffTarget = !this.tunable.getIsInAcceptableErrorZone();
         }
     if ((this.debugOutputMask & 0b00010000) != 0)
