@@ -14,6 +14,7 @@
 // ====================================================================
 package org.usfirst.frc.team339.Hardware;
 
+import com.ni.vision.NIVision.MeasurementType;
 import org.usfirst.frc.team339.HardwareInterfaces.DoubleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.HRLVMaxSonarEZ;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
@@ -28,13 +29,14 @@ import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecan
 import org.usfirst.frc.team339.Utils.BallIntake;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.SpeedTester;
-import org.usfirst.frc.team339.Vision.ImageProcessor;
-import org.usfirst.frc.team339.Vision.VisionScript;
-import org.usfirst.frc.team339.Vision.operators.ConvexHullOperator;
-import org.usfirst.frc.team339.Vision.operators.HSLColorThresholdOperator;
-import org.usfirst.frc.team339.Vision.operators.RemoveSmallObjectsOperator;
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.wpilibj.CameraServer;
+import org.usfirst.frc.team339.vision.ImageProcessor;
+import org.usfirst.frc.team339.vision.VisionScript;
+import org.usfirst.frc.team339.vision.opencv.VisionProcessor;
+import org.usfirst.frc.team339.vision.opencv.VisionProcessor.CameraType;
+import org.usfirst.frc.team339.vision.operators.ConvexHullOperator;
+import org.usfirst.frc.team339.vision.operators.HSLColorThresholdOperator;
+import org.usfirst.frc.team339.vision.operators.ParticleFilter;
+import org.usfirst.frc.team339.vision.operators.RemoveSmallObjectsOperator;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
@@ -244,7 +246,7 @@ public static IRSensor gearSensor2 = new IRSensor(0);
 // ------------------------------------
 // Gyro class
 // ------------------------------------
-public static KilroyGyro driveGyro = new KilroyGyro(true);
+public static KilroyGyro driveGyro = new KilroyGyro(false);
 
 // -------------------------------------
 // Potentiometers
@@ -274,8 +276,8 @@ public static final double KILROY_XVII_US_SCALING_FACTOR = .05;// .0493151;
 // Note: If causing problems, replace "USB_Camera_0" w/ "cam0", and
 // "USB_Camera_1" w/ "cam1"
 
-public static UsbCamera camForward = CameraServer.getInstance()
-        .startAutomaticCapture(0);
+// public static UsbCamera camForward = CameraServer.getInstance()
+// .startAutomaticCapture(0);
 
 public static KilroyCamera axisCamera = new KilroyCamera(false);
 // "10.13.39.11");// TODO change
@@ -287,10 +289,14 @@ public static VisionScript visionScript = new VisionScript(
                                                                     * 214, 33,
                                                                     * 255)
                                                                     */// (76,
-                                                                     // 200,
-                                                                     // 71,
+                                                                      // 200,
+                                                                      // 71,
         new RemoveSmallObjectsOperator(1, true), // TODO fix this for normal use
-                                                 // // 255, 50,255),
+        (new ParticleFilter())
+                .addCriteria(MeasurementType.MT_CENTER_OF_MASS_Y, 0,
+                        120, 0, 0),
+        // 255,
+        // 50,255),
         new ConvexHullOperator(false));
 
 
@@ -298,6 +304,10 @@ public static VisionScript visionScript = new VisionScript(
 
 public static ImageProcessor imageProcessor = new ImageProcessor(
         axisCamera, visionScript);
+
+public static VisionProcessor testingProcessor = new VisionProcessor(
+        "http://10.3.39.11/mjpg/video.mjpg",
+        CameraType.AXIS_M1013);
 // -------------------------------------
 // declare the USB camera server and the
 // USB camera it serves
@@ -404,6 +414,8 @@ public static boolean isUsingMecanum = true;
  */
 public static boolean twoJoystickControl = false;
 
+public static SpeedTester LFSpeedTester = new SpeedTester(
+        Hardware.leftFrontEncoder, Hardware.speedTesterTimer);
 
 // -------------------
 // Assembly classes (e.g. forklift)
@@ -427,13 +439,14 @@ public static final Timer speedTimer = new Timer();
 
 public static final Timer autoStateTimer = new Timer();
 
-public static final Timer speedTestingTimer = new Timer();
+public static final Timer speedTesterTimer = new Timer();
+
 
 // public static SpeedTester leftRearTest = new SpeedTester(
 // leftRearEncoder, speedTestingTimer);
 
 public static SpeedTester rightFrontTest = new SpeedTester(
-        rightFrontEncoder, speedTestingTimer);
+        rightFrontEncoder, speedTesterTimer);
 
 // public static PowerDistributionPanel pdp = new PowerDistributionPanel();
 /**

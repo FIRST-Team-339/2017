@@ -16,7 +16,7 @@ import com.ctre.CANTalon;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
-import org.usfirst.frc.team339.Vision.ImageProcessor;
+import org.usfirst.frc.team339.vision.ImageProcessor;
 import edu.wpi.first.wpilibj.Spark;
 // import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;

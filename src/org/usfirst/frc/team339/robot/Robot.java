@@ -363,11 +363,11 @@ public void robotInit ()
     // -------------------------------------
     if (Hardware.isRunningOnKilroyXVIII)
         {
-        CameraServer.getInstance().addAxisCamera("10.3.39.11");
+        // CameraServer.getInstance().addAxisCamera("10.3.39.11");
         }
     else
         {
-        CameraServer.getInstance().addAxisCamera("10.13.39.11");
+        // CameraServer.getInstance().addAxisCamera("10.13.39.11");
         }
 
     Hardware.axisCamera.writeColorLevel(50);
@@ -541,6 +541,9 @@ public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVII = .018605;
 
 // pid stuff
 public static double shooterP = .3;
+
+// testing the smartdashboard ability to set values on Dashboard
+public static double testShooterP = .6;
 
 public static double shooterI = .0000084;
 

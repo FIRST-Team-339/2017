@@ -56,6 +56,7 @@ private static int txtNumber = 0;
 
 // The focal length of the camera, you can find it in the camera documentation
 private double focalLength = 2.8;
+
 // The horizontal field of view of the camera in degrees.
 private double horizFieldOfView = 67;
 

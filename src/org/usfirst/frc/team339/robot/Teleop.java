@@ -31,10 +31,14 @@
 // ====================================================================
 package org.usfirst.frc.team339.robot;
 
+import com.ctre.CANTalon;
+import com.ctre.CANTalon.FeedbackDevice;
+import com.ctre.CANTalon.TalonControlMode;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Shooter;
-import edu.wpi.first.wpilibj.Relay;
+import org.usfirst.frc.team339.Utils.pidTuning.CanTalonPIDTuner;
+import org.usfirst.frc.team339.Utils.pidTuning.SmartDashboardPIDTunerDevice;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -108,19 +112,36 @@ public static void init ()
         Hardware.autoDrive.setEncoderSlack(1);
         }
     // PID smartdashboard
-    if (tunePIDLoop == true)
-        {
-        SmartDashboard.putNumber("P", Robot.shooterP);
-        SmartDashboard.putNumber("I", Robot.shooterI);
-        SmartDashboard.putNumber("D", Robot.shooterD);
-        SmartDashboard.putNumber("Setpoint", tempSetpoint);
-        // SmartDashboard.putNumber("Err",
-        // Hardware.shooterMotor.getError());
-        }
+    // if (tunePIDLoop == true)
+    // {
+    // SmartDashboard.putNumber("P", Robot.shooterP);
+    // SmartDashboard.putNumber("I", Robot.shooterI);
+    // SmartDashboard.putNumber("D", Robot.shooterD);
+    // SmartDashboard.putNumber("Setpoint", tempSetpoint);
+    // // SmartDashboard.putNumber("Err",
+    // // Hardware.shooterMotor.getError());
+    // }
+    // Hardware.shooterMotor.changeControlMode(TalonControlMode.Speed);
+    // // put back in once finished testing!!!
+    // Hardware.shooterMotor.configPeakOutputVoltage(12f, 0f);
+    // Hardware.shooterMotor.configNominalOutputVoltage(0f, 0f);
+    // Hardware.shooterMotor
+    // .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
+    // Hardware.shooterMotor.configEncoderCodesPerRev(1024);
+    // Hardware.shooterMotor.setPID(shooterP, shooterI, shooterD);
+    // Hardware.shooterMotor.setSetpoint(0.0);
+    // Hardware.shooterMotor.reverseSensor(true);
+    // testingTalon.setProfile(0);
 
+    CanTuner.setupMotorController(FeedbackDevice.QuadEncoder,
+            TalonControlMode.Speed, 1024, false);
+    testingTalon.setPID(0.0, 0.0, 0.0);
+    testingTalon.setSetpoint(0.0);
     // put stuff on smartdashboard
-    SmartDashboard.putNumber("DB/Slider 0", 1);
-    SmartDashboard.putNumber("DB/Slider 1", 1);
+    SmartDashboard.putNumber("DB/Slider 0", 0);
+    SmartDashboard.putNumber("DB/Slider 1", 0);
+    SmartDashboard.putNumber("DB/Slider 2", 0);
+    SmartDashboard.putNumber("DB/Slider 3", 0);
 
 
     // thread1.start();
@@ -147,6 +168,15 @@ public static void init ()
 
 static double tempSetpoint = 0.0;
 
+static CANTalon testingTalon = new CANTalon(12);
+
+private static CanTalonPIDTuner CanTuner = new CanTalonPIDTuner(
+        testingTalon, 0);
+
+private static SmartDashboardPIDTunerDevice PIDTuner = new SmartDashboardPIDTunerDevice(
+        CanTuner);
+
+// tune pid loop
 /**
  * User Periodic code for teleop mode should go here. Will be called
  * periodically at a regular rate while the robot is in teleop mode.
@@ -164,6 +194,8 @@ public static void periodic ()
     testDashboard = SmartDashboard.getNumber("DB/Slider 0", 0.0);
     testDashboard2 = SmartDashboard.getNumber("DB/Slider 1", 0.0);
     // ADD IN???
+    // System.out.println(testDashboard);
+    // System.out.println(testDashboard);
     // System.out.println(testDashboard);
     // print values from hardware items
     printStatements();
@@ -189,6 +221,8 @@ public static void periodic ()
 
     // Hardware.shooterMotor
     // .set(tempSetpoint);
+    // printStatements();
+    // printStatements();
 
     // previousFireButton = Hardware.leftDriver.getTrigger();
     //
@@ -208,21 +242,24 @@ public static void periodic ()
      * Hardware.shooterMotor.getSpeed());
      */
 
-    // light on/off
-    if (Hardware.ringlightSwitch.isOnCheckNow() == true)
+    if (tunePIDLoop == true)
         {
-        Hardware.ringlightRelay.set(Relay.Value.kOn);
+        PIDTuner.update();
+        System.out.println("Error: " + testingTalon.getError());
+        System.out.println("Setpoint: " + testingTalon.getSetpoint());
+        System.out.println("Velocity: " + testingTalon.getSpeed());
+        System.out.println("P, I, D: " + testingTalon.getP() + ", "
+                + testingTalon.getI() + ", " + testingTalon.getD());
         }
-    else
-        {
-        Hardware.ringlightRelay.set(Relay.Value.kOff);
-        }
+    // Hardware.shooterMotor
+    // .set(tempSetpoint);
 
     // gear servo set angles
     // Hardware.gearServo.setAngle(200);
     // Hardware.gearServo.getAngle();
 
 
+    // TODO delete this shortcut
 
 
     // Hardware.leftRearTest.watchJoystick(Hardware.leftOperator.getY());
@@ -230,7 +267,6 @@ public static void periodic ()
     // Hardware.rightRearTest.watchJoystick(Hardware.rightOperator.getY());
     // Hardware.rightFrontTest
     // .watchJoystick(Hardware.rightOperator.getY());
-
 
 
 
@@ -383,7 +419,7 @@ public static void periodic ()
                 Hardware.leftOperator.getRawButton(6)
                         || Hardware.leftOperator.getRawButton(7),
                 .15, .1);
-        System.out.println(alignValue);
+        // System.out.println(alignValue);
         if (alignValue == Drive.AlignReturnType.DONE)
             {
             isTestingCamera = false;
@@ -490,6 +526,11 @@ public static void periodic ()
                                             Hardware.leftDriver.getY(),
                                             Hardware.rightDriver
                                                     .getY()));
+
+            Hardware.mecanumDrive.drive(
+                    Hardware.leftDriver.getMagnitude(),
+                    Hardware.leftDriver.getDirectionDegrees(),
+                    rotationValue);
             }
         else
             {
@@ -822,7 +863,7 @@ private static double LFVal = Hardware.autoDrive
 private final static double CAMERA_ALIGN_DEADBAND = 10.0 // +/- Pixels
         / Hardware.axisCamera.getHorizontalResolution();
 
-private static boolean tunePIDLoop = false;
+private static boolean tunePIDLoop = true;
 // TODO find actual value
 
 private final static double HIGHER_CAMERASERVO_POSITIONY = 90;// TODO find
