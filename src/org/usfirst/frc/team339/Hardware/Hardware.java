@@ -37,6 +37,8 @@ import org.usfirst.frc.team339.vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.vision.operators.ParticleFilter;
 import org.usfirst.frc.team339.vision.operators.RemoveSmallObjectsOperator;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
@@ -276,8 +278,8 @@ public static final double KILROY_XVII_US_SCALING_FACTOR = .05;// .0493151;
 // Note: If causing problems, replace "USB_Camera_0" w/ "cam0", and
 // "USB_Camera_1" w/ "cam1"
 
-// public static UsbCamera camForward = CameraServer.getInstance()
-// .startAutomaticCapture(0);
+public static UsbCamera camForward = CameraServer.getInstance()
+        .startAutomaticCapture(0);
 
 public static KilroyCamera axisCamera = new KilroyCamera(false);
 // "10.13.39.11");// TODO change

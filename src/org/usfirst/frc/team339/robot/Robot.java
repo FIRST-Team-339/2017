@@ -60,7 +60,6 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.vision.AxisCamera.Resolution;
@@ -507,7 +506,12 @@ public void testPeriodic ()
 /**
  * The percentage we want the motors to run at while we are in first gear
  */
-public static final double KILROY_XVIII_FIRST_GEAR_PERCENTAGE = .5;
+// This is the variable you need to change in order to change the max
+// speed for the motors when kilroy is going forward or backward
+// note : the strafing max value is controlled by something else
+// CHECK WITH ASHLEY ESPELAND IF YOU HAVE QUESTIONS
+public static final double KILROY_XVIII_FIRST_GEAR_PERCENTAGE = .7; // 1.0; //
+                                                                    // .5;
 
 /**
  * The percentage we want the motors to run at while we are in second gear

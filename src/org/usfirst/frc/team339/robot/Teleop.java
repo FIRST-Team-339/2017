@@ -449,46 +449,52 @@ public static void periodic ()
         {
         if (Hardware.isUsingMecanum == true)
             {
-            if (Hardware.leftDriver.getY() > -.5
-                    && Hardware.leftDriver.getY() < -0.15)
-                {
-                Hardware.leftFrontMotor.set(Hardware.leftDriver.getY());
-                Hardware.leftRearMotor.set(Hardware.leftDriver.getY());
-                Hardware.rightFrontMotor
-                        .set(Hardware.leftDriver.getY());
-                Hardware.rightRearMotor
-                        .set(-Hardware.leftDriver.getY());
-                }
-            if (Hardware.leftDriver.getY() <= -0.5)
-                {
-                testingSpeed = .85;
-
-                Hardware.leftFrontMotor.set(testingSpeed);
-                Hardware.leftRearMotor.set(testingSpeed);
-                Hardware.rightFrontMotor.set(testingSpeed);
-                Hardware.rightRearMotor.set(-testingSpeed);
-                // System.out.println("Right Front draw = "
-                // + Hardware.pdp.getCurrent(1));
-                // System.out.println("Right Rear draw = "
-                // + Hardware.pdp.getCurrent(2));
-                // System.out.println("Left Front draw = "
-                // + Hardware.pdp.getCurrent(4));
-                // System.out.println("Left Rear draw = "
-                // + Hardware.pdp.getCurrent(3));
-                }
-            else
-                {
-                Hardware.leftFrontMotor.set(0.0);
-                Hardware.leftRearMotor.set(0.0);
-                Hardware.rightFrontMotor.set(0.0);
-                Hardware.rightRearMotor.set(0.0);
-                }
+            // if (Hardware.leftDriver.getY() > -.5
+            // && Hardware.leftDriver.getY() < -0.15)
+            // {
+            // Hardware.leftFrontMotor.set(Hardware.leftDriver.getY());
+            // Hardware.leftRearMotor.set(Hardware.leftDriver.getY());
+            // Hardware.rightFrontMotor
+            // .set(Hardware.leftDriver.getY());
+            // Hardware.rightRearMotor
+            // .set(-Hardware.leftDriver.getY());
+            // }
+            // if (Hardware.leftDriver.getY() <= -0.5)
+            // {
+            // testingSpeed = .85;
+            //
+            // Hardware.leftFrontMotor.set(testingSpeed);
+            // Hardware.leftRearMotor.set(testingSpeed);
+            // Hardware.rightFrontMotor.set(testingSpeed);
+            // Hardware.rightRearMotor.set(-testingSpeed);
+            // // System.out.println("Right Front draw = "
+            // // + Hardware.pdp.getCurrent(1));
+            // // System.out.println("Right Rear draw = "
+            // // + Hardware.pdp.getCurrent(2));
+            // // System.out.println("Left Front draw = "
+            // // + Hardware.pdp.getCurrent(4));
+            // // System.out.println("Left Rear draw = "
+            // // + Hardware.pdp.getCurrent(3));
+            // }
+            // else
+            // {
+            // Hardware.leftFrontMotor.set(0.0);
+            // Hardware.leftRearMotor.set(0.0);
+            // Hardware.rightFrontMotor.set(0.0);
+            // Hardware.rightRearMotor.set(0.0);
+            // }
             // ADD BACK IN AFTER TESTING IS DONE
 
-            // Hardware.mecanumDrive.drive(
-            // Hardware.leftDriver.getMagnitude(),
-            // Hardware.leftDriver.getDirectionDegrees(),
-            // rotationValue);
+
+            // ASK ASHLEY ESPELAND IF YOU HAVE QUESTIONS @ANE
+            // In order to change the top speed for going forward and
+            // backward, you must go into Robot.java and change the
+            // KILROY_XVIII_FIRST_GEAR_PERCENTAGE which is currently set
+            // at .7
+            Hardware.mecanumDrive.drive(
+                    Hardware.leftDriver.getMagnitude(),
+                    Hardware.leftDriver.getDirectionDegrees(),
+                    rotationValue);
 
             // get speed code
 
@@ -519,18 +525,18 @@ public static void periodic ()
             // "Left rear speed tester " + Hardware.leftFrontTest
             // .watchJoystick(Hardware.leftDriver.getY(),
             // Hardware.rightDriver.getY()));
-            System.out.println(
-                    "Right front speed tester "
-                            + Hardware.rightFrontTest
-                                    .watchJoystick(
-                                            Hardware.leftDriver.getY(),
-                                            Hardware.rightDriver
-                                                    .getY()));
+            // System.out.println(
+            // "Right front speed tester "
+            // + Hardware.rightFrontTest
+            // .watchJoystick(
+            // Hardware.leftDriver.getY(),
+            // Hardware.rightDriver
+            // .getY()));
 
-            Hardware.mecanumDrive.drive(
-                    Hardware.leftDriver.getMagnitude(),
-                    Hardware.leftDriver.getDirectionDegrees(),
-                    rotationValue);
+            // Hardware.mecanumDrive.drive(
+            // Hardware.leftDriver.getMagnitude(),
+            // Hardware.leftDriver.getDirectionDegrees(),
+            // rotationValue);
             }
         else
             {
@@ -863,7 +869,7 @@ private static double LFVal = Hardware.autoDrive
 private final static double CAMERA_ALIGN_DEADBAND = 10.0 // +/- Pixels
         / Hardware.axisCamera.getHorizontalResolution();
 
-private static boolean tunePIDLoop = true;
+private static boolean tunePIDLoop = false;
 // TODO find actual value
 
 private final static double HIGHER_CAMERASERVO_POSITIONY = 90;// TODO find
