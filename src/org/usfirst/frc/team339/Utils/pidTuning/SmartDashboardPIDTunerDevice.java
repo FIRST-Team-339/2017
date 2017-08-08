@@ -21,7 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  */
 public class SmartDashboardPIDTunerDevice
 {
-public PIDTunable tunable = null;
+private PIDTunable tunable = null;
 
 private byte debugOutputMask = 0x0;
 
@@ -47,40 +47,40 @@ private Timer errTime = new Timer();
  */
 public enum DebugType
     {
-    /**
-     * Print out ALL debug information
-     */
-    ALL ((byte) 0b01111111),
-    /**
-     * Prints out a single message when the controller leaves the acceptable
-     * target
-     * range, and another when we reenter the target range with the time
-     * difference
-     * between leaving and reentering the acceptable range
-     */
-    RETURN_TIME ((byte) 0b00100000),
-    /**
-     * Prints out the current target velocity, the current error, whether the
-     * controller is currently on target, the current feedback value,
-     * and the current output
-     */
-    CONTROLLER_STATUS ((byte) 0b01010111),
-    /**
-     * Only prints out the error reported by the controller
-     */
-    CONTROLLER_ERROR ((byte) 0b00010000),
-    /**
-     * Prints out the F, P, I, and D values for the controller
-     */
-    CONTROL_VALUES ((byte) 0b00001000),
-    /**
-     * Prints out whether or not the PID controller is currently on target
-     */
-    CONTROLLER_IS_ON_TARGET ((byte) 0b00000100),
-    /**
-     * prints out nothing
-     */
-    NONE ((byte) 0b00000000);
+/**
+ * Print out ALL debug information
+ */
+ALL ((byte) 0b01111111),
+/**
+ * Prints out a single message when the controller leaves the acceptable
+ * target
+ * range, and another when we reenter the target range with the time
+ * difference
+ * between leaving and reentering the acceptable range
+ */
+RETURN_TIME ((byte) 0b00100000),
+/**
+ * Prints out the current target velocity, the current error, whether the
+ * controller is currently on target, the current feedback value,
+ * and the current output
+ */
+CONTROLLER_STATUS ((byte) 0b01010111),
+/**
+ * Only prints out the error reported by the controller
+ */
+CONTROLLER_ERROR ((byte) 0b00010000),
+/**
+ * Prints out the F, P, I, and D values for the controller
+ */
+CONTROL_VALUES ((byte) 0b00001000),
+/**
+ * Prints out whether or not the PID controller is currently on target
+ */
+CONTROLLER_IS_ON_TARGET ((byte) 0b00000100),
+/**
+ * prints out nothing
+ */
+NONE ((byte) 0b00000000);
 
     private byte equivalentDebugCodeVal;
 
@@ -89,7 +89,11 @@ public enum DebugType
         this.equivalentDebugCodeVal = debugVarEquivalent;
     }
 
-    byte getDebugCodeEquivalent ()
+    /**
+     * @return
+     *         The bitmask equivalent of the enum.
+     */
+    public byte getDebugCodeEquivalent ()
     {
         return this.equivalentDebugCodeVal;
     }
