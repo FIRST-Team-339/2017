@@ -109,6 +109,7 @@ public static final double CAMERA_MOUNT_ANGLE = Math.toRadians(65);
 // ------------------------------------
 
 // changed these to kilroy equipment list 2017
+// @AHK
 public static TalonSRX rightRearMotor = new TalonSRX(2);
 
 public static TalonSRX rightFrontMotor = new TalonSRX(1);
@@ -289,8 +290,8 @@ public static VisionScript visionScript = new VisionScript(
                                                                     * 214, 33,
                                                                     * 255)
                                                                     */// (76,
-                                                                     // 200,
-                                                                     // 71,
+                                                                      // 200,
+                                                                      // 71,
         new RemoveSmallObjectsOperator(1, true),// TODO fix this for normal use
         (new ParticleFilter())
                 .addCriteria(MeasurementType.MT_CENTER_OF_MASS_Y, 0,

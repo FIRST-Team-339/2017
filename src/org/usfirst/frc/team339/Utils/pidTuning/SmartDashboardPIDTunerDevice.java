@@ -306,7 +306,7 @@ public void printOutDebugInformation ()
         }
     if ((this.debugOutputMask & 0b00000100) != 0)
         {
-        System.out.println("PID tunable is on target?" +
+        System.out.println("PID tunable is on target? " +
                 (this.tunable.getIsInAcceptableErrorZone() ? "YES!"
                         : "NO :("));
 

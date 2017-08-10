@@ -27,7 +27,8 @@ import edu.wpi.first.wpilibj.SpeedController;
  */
 public class MotorControllerPIDTuner implements PIDTunable
 {
-private PIDController pid = null;
+// @AHK
+public PIDController pid = null;
 
 private SpeedController motorController = null;
 

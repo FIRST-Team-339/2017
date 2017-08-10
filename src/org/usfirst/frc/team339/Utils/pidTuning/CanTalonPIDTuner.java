@@ -65,9 +65,9 @@ private FeedbackDevice feedbackType;
  * 
  * <p>
  * You ABSOLUTELY need to call this method before you start tuning
- * your PID loop with the CANTalon.  IF YOU DO NOT, YOUR TALON'S
- * PID LOOP WILL NOT TUNE.  You only need to call it once for it 
- * to take effect.  Somewhere in an init method will do perfecty. 
+ * your PID loop with the CANTalon. IF YOU DO NOT, YOUR TALON'S
+ * PID LOOP WILL NOT TUNE. You only need to call it once for it
+ * to take effect. Somewhere in an init method will do perfecty.
  * </p>
  * 
  * <p>
@@ -84,7 +84,7 @@ private FeedbackDevice feedbackType;
  * @param reverseSensor
  *            Is the feedback device reversed.
  */
-//TODO comment the method body.
+// TODO comment the method body.
 public void setupMotorController (FeedbackDevice feedbackType,
         TalonControlMode tunetype, int codesPerRev,
         boolean reverseSensor)
@@ -98,6 +98,8 @@ public void setupMotorController (FeedbackDevice feedbackType,
     this.tunedMotorController.setProfile(0);
     this.tunedMotorController.configPeakOutputVoltage(12f, -12f);
     this.tunedMotorController.configNominalOutputVoltage(0f, 0f);
+    this.setPID(0.0, 0.0, 0.0);
+    this.setSetpoint(0.0);
     wasIncorrect = false;
     time.stop();
     time.reset();
@@ -303,7 +305,7 @@ public double getError ()
 @Override
 public double getOutput ()
 {
-    return this.tunedMotorController.getOutputVoltage()/
+    return this.tunedMotorController.getOutputVoltage() /
             this.tunedMotorController.getBusVoltage();
 }
 
