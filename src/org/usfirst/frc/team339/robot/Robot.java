@@ -60,7 +60,6 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.vision.AxisCamera.Resolution;
@@ -275,9 +274,9 @@ public void robotInit ()
         Hardware.mecanumDrive.setFirstGearPercentage(
                 KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
         // invert motors
-        Hardware.rightFrontMotor.setInverted(false);
+        Hardware.rightFrontMotor.setInverted(true);
         Hardware.rightRearMotor.setInverted(false);
-        Hardware.leftFrontMotor.setInverted(false);
+        Hardware.leftFrontMotor.setInverted(true);
         Hardware.leftRearMotor.setInverted(true);
         Hardware.intakeMotor.setInverted(true);
         // mecanum
