@@ -124,23 +124,8 @@ public static void init ()
     SmartDashboard.putNumber("DB/Slider 1", 1);
 
 
-    thread1.start();
-    //
-    // System.out.println("Got here 1");
-    //
-    // System.out.println("Thread 1 'return' : " + thread1.valueForTeleop);
-    //
-    // System.out
-    // .println("Thread 1 State Pre Join: " + thread1.getState());
 
 
-
-    // thread1.join();
-
-    // System.out
-    // .println("Thread 1 State Post Join: " + thread1.getState());
-
-    // thread2.start();
     // Hardware.driveGyro.calibrate();
     // Hardware.driveGyro.reset();
 
@@ -158,6 +143,48 @@ static double tempSetpoint = 0.0;
 
 public static void periodic ()
 {
+    boolean threadOneStart = true;
+    boolean threadTwoStart = true;
+
+    if (threadOneStart == true)
+        {
+        thread1.start();
+        threadOneStart = false;
+        }
+    if (threadTwoStart == true)
+        {
+        thread1.start();
+        threadTwoStart = false;
+        }
+    // thread1
+    System.out.println("thread1?" + thread1.isAlive());
+
+    thread1.valueForTeleopInteger = 1;
+    thread1.valueForTeleopDouble = 3.14;
+    thread1.valueForTeleopString = "Hello Wold";
+
+    System.out.println(
+            "Thread 1 int return : " + thread1.valueForTeleopInteger);
+    System.out.println(
+            "Thread 1 double return : " + thread1.valueForTeleopDouble);
+    System.out.println(
+            "Thread 1 string return : " + thread1.valueForTeleopString);
+    // thread2
+    System.out.println("thread2?" + thread2.isAlive());
+
+    thread2.valueForTeleopInteger = 2;
+    thread2.valueForTeleopDouble = 9.12;
+    thread2.valueForTeleopString = "GoodBye World";
+
+    System.out.println(
+            "Thread 2 int return : " + thread2.valueForTeleopInteger);
+    System.out.println(
+            "Thread 2 double return : " + thread2.valueForTeleopDouble);
+    System.out.println(
+            "Thread 2 string return : " + thread2.valueForTeleopString);
+    // end threads
+
+
 
     double testDashboard = 0.0;
     double testDashboard2 = 0.0;
@@ -567,8 +594,8 @@ public static void printStatements ()
     // System.out.println("Delay Pot: " + Hardware.delayPot.get(0, 5));
     // System.out.println("Left Front Motor Controller: " +
     // Hardware.leftFrontMotor.get());
-    System.out.println("Right Rear Motor Controller: " +
-            Hardware.rightRearMotor.get());
+    // System.out.println("Right Rear Motor Controller: " +
+    // Hardware.rightRearMotor.get());
     // System.out.println("Left Rear Motor Controller: " +
     // Hardware.leftRearMotor.get());
     // System.out.println("Right Front Motor Controller: "
@@ -798,7 +825,7 @@ public static void printStatements ()
     // {
     // System.out.println("Twist: " + Hardware.leftDriver.getTwist());
     // }
-    System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
+    // System.out.println("Left Joystick: " + Hardware.leftDriver.getY());
     // System.out.println("Right Joystick: " + Hardware.rightDriver.getY());
     // System.out.println("Left Operator: " + Hardware.leftOperator.getY());
     // System.out.println("Right Operator: " +
@@ -850,7 +877,11 @@ public static double testingSpeed;
 public static int valueFromThread;
 
 
-public static Threading thread1 = new Threading("Thread 1");
+public static Threading thread1 = new Threading("Thread1");
+
+public static Threading thread2 = new Threading("Thread2");
+
+// public static Thread thread3 = new Threading("thread3");
 
 
 } // end class
