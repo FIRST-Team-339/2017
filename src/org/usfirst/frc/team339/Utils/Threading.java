@@ -1,6 +1,7 @@
 package org.usfirst.frc.team339.Utils;
 
 import com.ni.vision.NIVision.Image;
+import org.usfirst.frc.team339.robot.Teleop;
 
 public class Threading extends Thread
 {
@@ -43,7 +44,25 @@ public void run ()
     while (runThread == true)
         {
 
+        System.out.println("thread1?" + Teleop.thread1.isAlive());
 
+        Teleop.thread1.valueForTeleopInteger = 1;
+        Teleop.thread1.valueForTeleopDouble = 3.14;
+        Teleop.thread1.valueForTeleopString = "Hello Wold";
+
+        System.out.println(
+                "Thread 1 int return : "
+                        + Teleop.thread1.valueForTeleopInteger);
+        System.out.println(
+                "Thread 1 double return : "
+                        + Teleop.thread1.valueForTeleopDouble);
+        System.out.println(
+                "Thread 1 string return : "
+                        + Teleop.thread1.valueForTeleopString);
+        System.out.println("thread 1 id" + Teleop.thread1.getId());
+
+        System.out.println("This is running on thread id"
+                + Thread.currentThread().getId());
         }
 }
 
