@@ -10,6 +10,7 @@ package org.usfirst.frc.team339.Utils.pidTuning;
 
 import edu.wpi.first.wpilibj.PIDController;
 import edu.wpi.first.wpilibj.PIDSource;
+import edu.wpi.first.wpilibj.PIDSourceType;
 import edu.wpi.first.wpilibj.SpeedController;
 
 /**
@@ -20,6 +21,10 @@ import edu.wpi.first.wpilibj.SpeedController;
  * CanTalonPIDTuner class instead. It uses the internal PID
  * controller in the motor controller, rather than a
  * software one here.
+ * 
+ * Make sure you call setErrorThreshold(double) before trying
+ * to do any tuning, because otherwise the program will throw
+ * an exception.
  * 
  * @author Alexander Kneipp
  * @written 7/20/17
@@ -33,11 +38,6 @@ public PIDController pid = null;
 private SpeedController motorController = null;
 
 private PIDSource source = null;
-
-public enum ControlType
-    {
-POSITION, VELOCITY
-    }
 
 
 /**
@@ -63,6 +63,8 @@ POSITION, VELOCITY
  *            The PIDSource class that provides feedback for the PIDController
  * @param controller
  *            The motor controller we want to tune the PID loop for
+ * @param pidType
+ *            Either kDisplacement for position, or kRate for velocity
  * @param samplingPeriod
  *            How rapidly the PID controller will calculate the PID loop
  * @param outputIsContinuous
@@ -73,17 +75,52 @@ POSITION, VELOCITY
  */
 public MotorControllerPIDTuner (double p, double i,
         double d, double f, PIDSource source,
-        SpeedController controller, double samplingPeriod,
+        SpeedController controller, PIDSourceType pidType,
+        double samplingPeriod,
         boolean outputIsContinuous)
 {
-    // Set up the PID controller for the motor
-    this.pid = new PIDController(p, i, d, f, source, controller,
-            samplingPeriod);
     // Save the motor controller, though I'm not sure that's actually necessary
     this.motorController = controller;
     this.source = source;
+    this.source.setPIDSourceType(pidType);
+    // Set up the PID controller for the motor
+    this.pid = new PIDController(p, i, d, f, this.source,
+            this.motorController,
+            samplingPeriod);
     // tell the PID controller if the in/output is continuous or not
     this.pid.setContinuous(outputIsContinuous);
+}
+/**
+ * Sets up the PID Controller using the default sampling period.
+ * @param p
+ *            The proportional value to initialize the underlying PIDController
+ *            with.
+ * @param i
+ *            The integral value to initialize the underlying PIDController
+ *            with.
+ * @param d
+ *            The Derivitave value to initialize the underlying PIDController
+ *            with
+ * @param f
+ *            The Feed-Forward value to initialize the underlying PIDController
+ *            with
+ * @param source
+ *            The PIDSource class that provides feedback for the PIDController
+ * @param controller
+ *            The motor controller we want to tune the PID loop for
+ * @param pidType
+ *            Either kDisplacement for position, or kRate for velocity
+ * @param outputIsContinuous
+ *            If the beginning and end of the output are the same position (E.g.
+ *            like 0 degrees and 360 degrees on a circle) and there is no hard
+ *            or soft stop to prevent continuous motion, set to true, otherwise
+ *            false.
+ */
+public MotorControllerPIDTuner (double p, double i, double d, double f,
+        PIDSource source, SpeedController controller,
+        PIDSourceType pidType, boolean outputIsContinuous)
+{
+    this(p,i,d,f,source,controller,pidType,0.50,outputIsContinuous);
 }
 
 @Override

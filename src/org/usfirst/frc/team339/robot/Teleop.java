@@ -57,6 +57,7 @@ public class Teleop
 
 public static void init ()
 {
+    //@AHK check these sets and resets
     // --------------------------------------
     // initialize all encoders here
     // --------------------------------------
@@ -134,7 +135,6 @@ public static void init ()
     // testingTalon.setSetpoint(0.0);
     PIDTuner.setDebugOutputBitmask((byte) 0b1001111);
     pwmTalonTuner.setErrorThreshold(0.0);
-    Hardware.rightRearEncoder.setPIDSourceType(PIDSourceType.kRate);
     // PIDTuner.setDebugOutputType(DebugType.ALL);
     // Hardware.driveGyro.calibrate();
     // Hardware.driveGyro.reset();
@@ -158,7 +158,7 @@ static double tempSetpoint = 0.0;
 // check sample period units
 private static MotorControllerPIDTuner pwmTalonTuner = new MotorControllerPIDTuner(
         0.0, 0.0, 0.0, 0.0, Hardware.rightRearEncoder,
-        Hardware.rightRearMotor, .05, false);
+        Hardware.rightRearMotor,PIDSourceType.kRate ,.05, false);
 
 private static SmartDashboardPIDTunerDevice PIDTuner = new SmartDashboardPIDTunerDevice(
         pwmTalonTuner);
