@@ -40,9 +40,9 @@ public class AutoGenVision {
 	public void process(Mat source0) {
 		// Step HSL_Threshold0:
 		Mat hslThresholdInput = source0;
-		double[] hslThresholdHue = {50.17985611510791, 95.52901023890782};
-		double[] hslThresholdSaturation = {208.67805755395685, 255.0};
-		double[] hslThresholdLuminance = {52.74280575539568, 98.34470989761094};
+		double[] hslThresholdHue = {55.03597122302158, 69.41979522184296};
+		double[] hslThresholdSaturation = {220.14388489208633, 255.0};
+		double[] hslThresholdLuminance = {50.44964028776978, 115.75085324232082};
 		hslThreshold(hslThresholdInput, hslThresholdHue, hslThresholdSaturation, hslThresholdLuminance, hslThresholdOutput);
 
 		// Step Find_Contours0:

@@ -7,6 +7,7 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
 
@@ -76,15 +77,15 @@ public int compareTo (ParticleReport r)
  */
 public enum ImageSource
     {
-    /**
-     * The IP for the axis camera; must include the final .mpeg
-     * extension
-     */
-    IPCAM,
-    /**
-     * The port for the USB camera. 0 is the default, and 1 is the alternate.
-     */
-    USBCAM
+/**
+ * The IP for the axis camera; must include the final .mpeg
+ * extension
+ */
+IPCAM,
+/**
+ * The port for the USB camera. 0 is the default, and 1 is the alternate.
+ */
+USBCAM
     }
 
 /**
@@ -96,18 +97,18 @@ public enum ImageSource
  */
 public enum CameraType
     {
-    /**
-     * The USB camera supplied by FIRST, model Lifecam HD-3000
-     */
-    LIFECAM,
-    /**
-     * The OLD model of the IP camera supplied by FIRST
-     */
-    AXIS_M1011,
-    /**
-     * The NEW model of the IP camera supplied by FIRST
-     */
-    AXIS_M1013
+/**
+ * The USB camera supplied by FIRST, model Lifecam HD-3000
+ */
+LIFECAM,
+/**
+ * The OLD model of the IP camera supplied by FIRST
+ */
+AXIS_M1011,
+/**
+ * The NEW model of the IP camera supplied by FIRST
+ */
+AXIS_M1013
     }
 
 // In order to calculate the horizontal / vertical field of view,
@@ -237,10 +238,15 @@ private boolean initCamera ()
 {
     if (sourceType == ImageSource.USBCAM)
         {
-        source = new VideoCapture(ip);
+        source.open(usbPort);
         }
-    // If it's not a usb camera, then definitely make it IP.
-    source = new VideoCapture(usbPort);
+    else
+        {
+        // If it's not a usb camera, then definitely make it IP.
+        source.open(ip);
+        }
+
+    System.out.println("Source is Open?" + source.isOpened());
     return source.isOpened();
 }
 
@@ -252,15 +258,25 @@ private boolean initCamera ()
 public void processImage ()
 {
     // If the camera suddenly dies or is not connected, then just don't.
-    if (source.isOpened() == false)
+    // if (source.isOpened() == false)
+    // {
+    // System.out.println(
+    // "Unable to process image: camera is disabled/unplugged. Attempting to
+    // reconnect.");
+    // initCamera();
+    // return;
+    // }
+
+    // this.source.(image);
+
+    image = Imgcodecs.imread("http://10.3.39.11/jpg/image.jpg");
+
+    if (image.empty())
         {
-        System.out.println(
-                "Unable to process image: camera is disabled/unplugged. Attempting to reconnect.");
-        initCamera();
+        System.out.println("Image is Empty! Unable to process image!");
         return;
         }
 
-    source.read(image);
     super.process(image);
     createParticleReports(super.filterContoursOutput());
     Arrays.sort(particleReports, Comparator.reverseOrder());
