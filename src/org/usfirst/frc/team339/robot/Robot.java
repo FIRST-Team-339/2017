@@ -60,7 +60,6 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.vision.AxisCamera.Resolution;
@@ -367,7 +366,7 @@ public void robotInit ()
         }
     else
         {
-        // CameraServer.getInstance().addAxisCamera("10.13.39.11");
+        // CameraServer.getInstance().addAxisCamera("10.3.39.11");
         }
 
     Hardware.axisCamera.writeColorLevel(50);

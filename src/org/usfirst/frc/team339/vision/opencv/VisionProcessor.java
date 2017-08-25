@@ -7,9 +7,9 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.videoio.VideoCapture;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
 
 /**
  * This class contains vision code that uses OpenCV and the auto-generated
@@ -141,13 +141,7 @@ private final int M1013_VERT_FOV = 51;
  * info. They must instead be calculated manually.
  */
 
-private final ImageSource sourceType;
-
-private int usbPort = 0;
-
-private String ip = "";
-
-private VideoCapture source = new VideoCapture();
+CameraServer server = CameraServer.getInstance();
 
 private Mat image = new Mat();
 
@@ -169,8 +163,7 @@ private final CameraType camera;
  */
 public VisionProcessor (String ip, CameraType camera)
 {
-    this.sourceType = ImageSource.IPCAM;
-    this.ip = ip;
+    CameraServer.getInstance().addAxisCamera(ip);
 
     // Based on the selected camera type, set the field of views and focal
     // length.
@@ -192,22 +185,19 @@ public VisionProcessor (String ip, CameraType camera)
             this.verticalFieldOfView = 1;
         }
 
-    initCamera();
 }
 
 /**
  * Creates the object and sets the usb port number
  * 
- * @param port
- *            the port number that the USB camera is on. The default is 0 and
- *            increments for each camera added.
+ * @param usbCam
+ *            The USB camera object that will be used for vision processing
  * @param camera
  *            the brand / model of the camera
  */
-public VisionProcessor (int port, CameraType camera)
+public VisionProcessor (UsbCamera usbCam, CameraType camera)
 {
-    this.sourceType = ImageSource.USBCAM;
-    this.usbPort = port;
+    CameraServer.getInstance().addCamera(usbCam);
 
     // Based on the selected camera type, set the field of views and focal
     // length.
@@ -226,29 +216,8 @@ public VisionProcessor (int port, CameraType camera)
             this.verticalFieldOfView = 1;
         }
 
-    initCamera();
 }
 
-/**
- * Initialize the capture source and return whether or not it has been opened.
- * 
- * @return whether or not the camera has been set up yet
- */
-private boolean initCamera ()
-{
-    if (sourceType == ImageSource.USBCAM)
-        {
-        source.open(usbPort);
-        }
-    else
-        {
-        // If it's not a usb camera, then definitely make it IP.
-        source.open(ip);
-        }
-
-    System.out.println("Source is Open?" + source.isOpened());
-    return source.isOpened();
-}
 
 // ==========================END INIT===================================
 
@@ -257,19 +226,7 @@ private boolean initCamera ()
  */
 public void processImage ()
 {
-    // If the camera suddenly dies or is not connected, then just don't.
-    // if (source.isOpened() == false)
-    // {
-    // System.out.println(
-    // "Unable to process image: camera is disabled/unplugged. Attempting to
-    // reconnect.");
-    // initCamera();
-    // return;
-    // }
-
-    // this.source.(image);
-
-    image = Imgcodecs.imread("http://10.3.39.11/jpg/image.jpg");
+    CameraServer.getInstance().getVideo().grabFrame(image);
 
     if (image.empty())
         {
@@ -278,7 +235,7 @@ public void processImage ()
         }
 
     super.process(image);
-    createParticleReports(super.filterContoursOutput());
+    this.createParticleReports(super.filterContoursOutput());
     Arrays.sort(particleReports, Comparator.reverseOrder());
 }
 

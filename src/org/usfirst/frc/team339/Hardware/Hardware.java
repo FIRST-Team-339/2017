@@ -289,8 +289,8 @@ public static VisionScript visionScript = new VisionScript(
                                                                     * 214, 33,
                                                                     * 255)
                                                                     */// (76,
-                                                                     // 200,
-                                                                     // 71,
+                                                                      // 200,
+                                                                      // 71,
         new RemoveSmallObjectsOperator(1, true),// TODO fix this for normal use
         (new ParticleFilter())
                 .addCriteria(MeasurementType.MT_CENTER_OF_MASS_Y, 0,
@@ -306,7 +306,7 @@ public static ImageProcessor imageProcessor = new ImageProcessor(
         axisCamera, visionScript);
 
 public static VisionProcessor testingProcessor = new VisionProcessor(
-        "http://10.3.39.11/mjpg/video.mjpg",
+        "10.3.39.11",
         CameraType.AXIS_M1013);
 // -------------------------------------
 // declare the USB camera server and the
@@ -351,7 +351,7 @@ public static Joystick leftOperator = new Joystick(2);
 public static Joystick rightOperator = new Joystick(3);
 
 public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
-        leftOperator, 5, false);
+        leftOperator, 11, false);
 
 public static MomentarySwitch cameraServoSwitch = new MomentarySwitch(
         leftOperator, 10, false);

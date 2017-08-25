@@ -330,16 +330,7 @@ public static void periodic ()
         Hardware.intake.stopIntake();
     // END INTAKE CONTROLS
 
-    // CLIMBER CODE
-    if (Hardware.rightOperator.getRawButton(10))
-        {
-        Hardware.climberMotor.set(-1);
-        }
-    else
-        {
-        Hardware.climberMotor.set(0);
-        }
-    // END CLIMBER
+
     // =================================================================
     // CAMERA CODE
     // =================================================================
