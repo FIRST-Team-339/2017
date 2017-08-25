@@ -126,14 +126,16 @@ public static TalonSRX leftFrontMotor = new TalonSRX(4);
 // ------------------------------------
 // public static Victor elevatorMotor = new Victor(0);// PWM 0
 
-public static Victor intakeMotor = new Victor(5);
+public static Victor newClimberMotor = new Victor(5);//was intake motor
 
-public static Victor agitatorMotor = new Victor(0); // did this to make shooter
+public static Victor gearIntakeMotor = new Victor(0); //was agitator motor
+													// did this to make shooter
                                                     // method happy
 
-public static Spark elevatorMotor = new Spark(6);
+//public static Spark elevatorMotor = new Spark(6);
 
-public static Victor climberMotor = new Victor(18);
+//public static Victor climberMotor = new Victor(18);
+
 
 // ====================================
 // CAN classes
@@ -426,8 +428,8 @@ public static SpeedTester LFSpeedTester = new SpeedTester(
 // gearSensor1, elevatorMotor, 25.0, imageProcessor,
 // 3.0, gimbalMotor, agitatorMotor, ultraSonic);
 
-public static BallIntake intake = new BallIntake(intakeMotor,
-        agitatorMotor);
+//public static BallIntake intake = new BallIntake(intakeMotor,
+//        agitatorMotor);
 
 // ------------------------------------
 // Utility classes

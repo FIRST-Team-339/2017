@@ -278,7 +278,9 @@ public void robotInit ()
         Hardware.rightRearMotor.setInverted(false);
         Hardware.leftFrontMotor.setInverted(false);
         Hardware.leftRearMotor.setInverted(true);
-        Hardware.intakeMotor.setInverted(true);
+        Hardware.newClimberMotor.setInverted(false);
+        //@ANE removed for sanity's sake 
+        //Hardware.intakeMotor.setInverted(true);
         // mecanum
         Hardware.mecanumDrive
                 .setDeadbandPercentageZone(Hardware.joystickDeadzone);
@@ -323,6 +325,7 @@ public void robotInit ()
         Hardware.rightRearMotor.setInverted(false);
         Hardware.leftFrontMotor.setInverted(false);
         Hardware.leftRearMotor.setInverted(false);
+        //@ANE removed for sanity's sake 
         // Hardware.intakeMotor.setInverted(true);
         Hardware.mecanumDrive
                 .setDeadbandPercentageZone(

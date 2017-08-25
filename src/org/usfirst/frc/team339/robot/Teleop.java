@@ -74,6 +74,7 @@ public static void init ()
     Hardware.rightRearMotor.set(0.0);
     Hardware.rightFrontMotor.set(0.0);
     Hardware.leftFrontMotor.set(0.0);
+    Hardware.newClimberMotor.set(0.0);
     // ---------------------------------------
     // Servo init
     // ---------------------------------------
@@ -282,21 +283,22 @@ public static void periodic ()
     // OPERATOR CONTROLS
     // =================================================================
 
+    //@ANE Updated motor names
     // rightOperator stuffs
     // If the operator is pressing right button 10
     if (Hardware.rightOperator.getRawButton(10))
         {
         // Climb climb climb!
-        Hardware.climberMotor.set(-1);
+        Hardware.newClimberMotor.set(-1);
         }
     else if (Hardware.rightOperator.getRawButton(6) == true
             && Hardware.rightOperator.getRawButton(7) == true)
         {
-        Hardware.climberMotor.set(1);
+        Hardware.newClimberMotor.set(1);
         }
     else// They're not pressing it
         {
-        Hardware.climberMotor.set(0.0);// STOP THE MOTOR
+        Hardware.newClimberMotor.set(0.0);// STOP THE MOTOR
         }
 
     // TESTING SHOOTER
@@ -373,24 +375,25 @@ public static void periodic ()
         // isTurningToGoal = !Hardware.shooter.turnToGoalRaw();
         }
 
+    //@ANE removed for sanity's sake
     // INTAKE CONTROLS
-    if (Hardware.leftOperator.getRawButton(2) == true)
-        Hardware.intake.startIntake();
-    else if (Hardware.leftOperator.getRawButton(3) == true)
-        Hardware.intake.reverseIntake();
-    else if (Hardware.rightOperator.getRawButton(3) == false)
-        Hardware.intake.stopIntake();
+//    if (Hardware.leftOperator.getRawButton(2) == true)
+//        Hardware.intake.startIntake();
+//    else if (Hardware.leftOperator.getRawButton(3) == true)
+//        Hardware.intake.reverseIntake();
+//    else if (Hardware.rightOperator.getRawButton(3) == false)
+//        Hardware.intake.stopIntake();
     // END INTAKE CONTROLS
 
-    // CLIMBER CODE
-    if (Hardware.rightOperator.getRawButton(10))
-        {
-        Hardware.climberMotor.set(-1);
-        }
-    else
-        {
-        Hardware.climberMotor.set(0);
-        }
+    // OLD CLIMBER CODE
+//    if (Hardware.rightOperator.getRawButton(10))
+//        {
+//        Hardware.climberMotor.set(-1);
+//        }
+//    else
+//        {
+//        Hardware.climberMotor.set(0);
+//        }
     // END CLIMBER
     // =================================================================
     // CAMERA CODE
