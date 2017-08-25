@@ -31,10 +31,12 @@
 // ====================================================================
 package org.usfirst.frc.team339.robot;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Shooter;
-import org.usfirst.frc.team339.Utils.Threading;
+import org.usfirst.frc.team339.Utils.ThreadRunnable;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -54,6 +56,7 @@ public class Teleop
  * @author Nathanial Lydick
  * @written Jan 13, 2015
  */
+private static final int NTHREDS = 2;
 
 public static void init ()
 {
@@ -125,11 +128,12 @@ public static void init ()
 
 
 
-    thread1.start();
-    thread2.start();
+    // thread1.start();
+    // thread2.start();
 
     // Hardware.driveGyro.calibrate();
     // Hardware.driveGyro.reset();
+
 
 } // end Init
 
@@ -146,46 +150,30 @@ static double tempSetpoint = 0.0;
 public static void periodic ()
 {
 
+    // System.out.println("in periodic");
+    // System.out.println("checking if both threads are running");
+    // System.out.println(thread1.getState());
+    // System.out.println(thread2.getState());
 
-    // thread1
-    // System.out.println("thread1?" + thread1.isAlive());
-    //
-    // thread1.valueForTeleopInteger = 1;
-    // thread1.valueForTeleopDouble = 3.14;
-    // thread1.valueForTeleopString = "Hello Wold";
-    //
-    // System.out.println(
-    // "Thread 1 int return : " + thread1.valueForTeleopInteger);
-    // System.out.println(
-    // "Thread 1 double return : " + thread1.valueForTeleopDouble);
-    // System.out.println(
-    // "Thread 1 string return : " + thread1.valueForTeleopString);
-    // System.out.println("thread 1 id" + thread1.getId());
-    //
-    // System.out.println("This is running on thread id"
-    // + Thread.currentThread().getId());
-    //
-    // // thread2
-    //
-    // System.out.println("thread2?" + thread2.isAlive());
-    //
-    // thread2.valueForTeleopInteger = 2;
-    // thread2.valueForTeleopDouble = 9.12;
-    // thread2.valueForTeleopString = "GoodBye World";
-    //
-    // System.out.println(
-    // "Thread 2 int return : " + thread2.valueForTeleopInteger);
-    // System.out.println(
-    // "Thread 2 double return : " + thread2.valueForTeleopDouble);
-    // System.out.println(
-    // "Thread 2 string return : " + thread2.valueForTeleopString);
-    //
-    // System.out.println("thread 2 id" + thread2.getId());
-    //
-    // System.out.println("This is running on thread id"
-    // + Thread.currentThread().getId());
+    ExecutorService executor = Executors.newFixedThreadPool(NTHREDS);
+    String threadName = Thread.currentThread().getName();
+    for (int T = 0; T < 2; T++)
+        {
 
-    // end threads
+
+        Runnable worker = new ThreadRunnable(1);
+        executor.execute(worker);
+
+        }
+    executor.shutdown();
+    // Wait until all threads are finish
+
+    System.out.println("Finished all threads");
+
+
+
+
+
 
 
 
@@ -880,12 +868,10 @@ public static double testingSpeed;
 public static int valueFromThread;
 
 
-public static Threading thread1 = new Threading("Thread1");
-
-public static Threading thread2 = new Threading("Thread2");
 
 
-// public static Thread thread3 = new Threading("thread3");
+
+
 
 
 } // end class
