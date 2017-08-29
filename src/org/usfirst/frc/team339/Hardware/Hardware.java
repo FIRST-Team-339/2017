@@ -32,7 +32,7 @@ import org.usfirst.frc.team339.Utils.SpeedTester;
 import org.usfirst.frc.team339.vision.ImageProcessor;
 import org.usfirst.frc.team339.vision.VisionScript;
 import org.usfirst.frc.team339.vision.opencv.VisionProcessor;
-import org.usfirst.frc.team339.vision.opencv.VisionProcessor.CameraType;
+import org.usfirst.frc.team339.vision.opencv.VisionProcessor.CameraModel;
 import org.usfirst.frc.team339.vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.vision.operators.ParticleFilter;
@@ -307,7 +307,7 @@ public static ImageProcessor imageProcessor = new ImageProcessor(
 
 public static VisionProcessor testingProcessor = new VisionProcessor(
         "10.3.39.11",
-        CameraType.AXIS_M1013);
+        CameraModel.AXIS_M1013);
 // -------------------------------------
 // declare the USB camera server and the
 // USB camera it serves
