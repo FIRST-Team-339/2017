@@ -237,6 +237,8 @@ public static IRSensor gearSensor2 = new IRSensor(0);
 // Double Solenoids
 // ------------------------------------
 
+//public static DoubleSolenoid gearIntakeSolenoid = DoubleSolenoid;
+
 // ------------------------------------
 // Single Solenoids
 // ------------------------------------
