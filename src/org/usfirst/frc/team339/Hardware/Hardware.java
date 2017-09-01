@@ -306,8 +306,7 @@ public static ImageProcessor imageProcessor = new ImageProcessor(
         axisCamera, visionScript);
 
 public static VisionProcessor testingProcessor = new VisionProcessor(
-        "10.3.39.11",
-        CameraModel.AXIS_M1013);
+        0, CameraModel.LIFECAM);
 // -------------------------------------
 // declare the USB camera server and the
 // USB camera it serves

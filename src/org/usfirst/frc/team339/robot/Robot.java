@@ -60,7 +60,6 @@
 package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Relay;
 import edu.wpi.first.wpilibj.vision.AxisCamera.Resolution;
@@ -377,7 +376,6 @@ public void robotInit ()
     // -------------------------------------
     // USB Camera initialization
     // -------------------------------------
-    CameraServer.getInstance().startAutomaticCapture(0);
 
 
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);

@@ -1,5 +1,6 @@
 package org.usfirst.frc.team339.vision.opencv;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -7,8 +8,9 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-import edu.wpi.cscore.UsbCamera;
+import edu.wpi.cscore.VideoCamera;
 import edu.wpi.first.wpilibj.CameraServer;
 
 /**
@@ -130,7 +132,9 @@ private final int horizontalFieldOfView;
 
 private final int verticalFieldOfView;
 
-private final CameraModel camera;
+private final CameraModel cameraModel;
+
+private final VideoCamera camera;
 
 /**
  * Creates the object and starts the camera servera
@@ -144,12 +148,13 @@ public VisionProcessor (String ip, CameraModel camera)
 {
     // Adds the camera to the cscore CameraServer, in order to grab the
     // stream.
-    CameraServer.getInstance().addAxisCamera("VisionCamera", ip);
+    this.camera = CameraServer.getInstance()
+            .addAxisCamera("VisionCamera", ip);
 
     // Based on the selected camera type, set the field of views and focal
     // length.
-    this.camera = camera;
-    switch (this.camera)
+    this.cameraModel = camera;
+    switch (this.cameraModel)
         {
         case AXIS_M1011:
             this.horizontalFieldOfView = M1011_HORIZ_FOV;
@@ -171,21 +176,23 @@ public VisionProcessor (String ip, CameraModel camera)
 /**
  * Creates the object and starts the camera server
  * 
- * @param usbCam
- *            The USB camera object that will be used for vision processing
+ * @param usbPort
+ *            The USB camera port number. '0' for default.
  * @param camera
  *            the brand / model of the camera
  */
-public VisionProcessor (UsbCamera usbCam, CameraModel camera)
+public VisionProcessor (int usbPort, CameraModel camera)
 {
     // Adds the camera to the cscore CameraServer, in order to grab the
     // stream.
-    CameraServer.getInstance().addCamera(usbCam);
+    this.camera = CameraServer.getInstance().startAutomaticCapture(
+            "VisionCamera",
+            usbPort);
 
     // Based on the selected camera type, set the field of views and focal
     // length.
-    this.camera = camera;
-    switch (this.camera)
+    this.cameraModel = camera;
+    switch (this.cameraModel)
         {
         // case LIFECAM: //Not enough information to properly find this data.
         // see above.
@@ -208,6 +215,8 @@ public VisionProcessor (UsbCamera usbCam, CameraModel camera)
  */
 public void processImage ()
 {
+    // Gets the error code while getting the new image from the camera.
+    // If the error code is not 0, then there is no error.
     long errorCode = CameraServer.getInstance().getVideo("VisionCamera")
             .grabFrame(image);
 
@@ -216,7 +225,8 @@ public void processImage ()
         System.out.println("Image is Empty! Unable to process image!");
         return;
         }
-    else if (errorCode == 0)
+
+    if (errorCode == 0)
         {
         System.out.println(
                 "There was an error grabbing the image. See below:");
@@ -232,6 +242,96 @@ public void processImage ()
     // Sort the particles from largest to smallest
     Arrays.sort(particleReports, Comparator.reverseOrder());
 }
+
+/**
+ * Sets the camera image settings for use in image processing.
+ * 
+ * @param exposure
+ *            How much light will hit the sensor, in percentage.
+ * @param whiteBalence
+ *            The white balence of the camera. Constants are found in the
+ *            VideoCamera class
+ * @param brightness
+ *            How bright the image is in post processing, in percentage.
+ */
+public void setCameraSettings (int exposure, int whiteBalence,
+        int brightness)
+{
+    this.camera.setBrightness(brightness);
+    this.camera.setExposureManual(exposure);
+    this.camera.setWhiteBalanceManual(whiteBalence);
+}
+
+/**
+ * Sets the camera back to default settings for switching between vision
+ * processing and driver assisting mode.
+ */
+public void setDefaultCameraSettings ()
+{
+    this.camera.setExposureAuto();
+    this.camera.setBrightness(50);
+    this.camera.setWhiteBalanceAuto();
+}
+
+/**
+ * Saves an image to the file system before processing the image. Only 26 images
+ * are able to be saved before rewriting. It will start overwriting when the
+ * robot first starts.
+ */
+public void saveRawImage ()
+{
+    if (rawImageNum > 25)
+        rawImageNum = 0;
+
+    try
+        {
+        Runtime.getRuntime().exec("mkdir -p /home/lvuser/images");
+        }
+    catch (IOException e)
+        {
+        e.printStackTrace();
+        }
+    // grab the image
+    Mat tempImage = new Mat();
+    CameraServer.getInstance().getVideo("VisionCamera")
+            .grabFrame(tempImage);
+    // write the image to a file
+    Imgcodecs.imwrite("raw_image_" + rawImageNum++ + ".png", tempImage);
+
+}
+
+/**
+ * Saves an image to the file system after processing the image. Only 26 images
+ * are able to be saved before rewriting. It will start overwriting when the
+ * robot first starts.
+ */
+public void saveProcessedImage ()
+{
+    if (processedImageNum > 25)
+        processedImageNum = 0;
+
+    try
+        {
+        Runtime.getRuntime().exec("mkdir -p /home/lvuser/images");
+        }
+    catch (IOException e)
+        {
+        e.printStackTrace();
+        }
+    // grab the image
+    Mat tempImage = new Mat();
+    CameraServer.getInstance().getVideo("VisionCamera")
+            .grabFrame(tempImage);
+    // process the image
+    super.process(tempImage);
+    // write the image to a file
+    Imgcodecs.imwrite("proc_image_" + processedImageNum + ".png",
+            tempImage);
+}
+
+private int rawImageNum = 0;
+
+private int processedImageNum = 0;
 
 // =====================USER ACCESSABLE METHODS========================
 /*
