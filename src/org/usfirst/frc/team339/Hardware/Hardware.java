@@ -15,6 +15,7 @@
 package org.usfirst.frc.team339.Hardware;
 
 import com.ni.vision.NIVision.MeasurementType;
+import org.usfirst.frc.team339.HardwareInterfaces.DoubleSolenoid;
 import org.usfirst.frc.team339.HardwareInterfaces.DoubleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.HRLVMaxSonarEZ;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
@@ -26,7 +27,6 @@ import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
-import org.usfirst.frc.team339.Utils.BallIntake;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.SpeedTester;
 import org.usfirst.frc.team339.vision.ImageProcessor;
@@ -39,12 +39,12 @@ import org.usfirst.frc.team339.vision.operators.ParticleFilter;
 import org.usfirst.frc.team339.vision.operators.RemoveSmallObjectsOperator;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
@@ -92,6 +92,10 @@ public static final double CAMERA_MOUNT_ANGLE = Math.toRadians(65);
 // **********************************************************
 // DIGITAL I/O CLASSES
 // **********************************************************
+// @ANE add in port number, FORCE ISAAC TO DO IT
+// public static DigitalInput photoSwitch = new DigitalInput();
+
+
 // ====================================
 // PWM classes
 // ====================================
@@ -126,15 +130,16 @@ public static TalonSRX leftFrontMotor = new TalonSRX(4);
 // ------------------------------------
 // public static Victor elevatorMotor = new Victor(0);// PWM 0
 
-public static Victor newClimberMotor = new Victor(5);//was intake motor
+public static Victor newClimberMotor = new Victor(5);// was intake motor
 
-public static Victor gearIntakeMotor = new Victor(0); //was agitator motor
-													// did this to make shooter
-                                                    // method happy
+public static Victor gearIntakeMotor = new Victor(0); // was agitator motor
+                                                      // did this to make
+                                                      // shooter
+                                                      // method happy
 
-//public static Spark elevatorMotor = new Spark(6);
+// public static Spark elevatorMotor = new Spark(6);
 
-//public static Victor climberMotor = new Victor(18);
+// public static Victor climberMotor = new Victor(18);
 
 
 // ====================================
@@ -224,7 +229,7 @@ public static IRSensor gearSensor2 = new IRSensor(0);
 // ====================================
 // Compressor class - runs the compressor
 // ====================================
-// public static Compressor compressor = new Compressor();
+public static Compressor compressor = new Compressor();
 
 // ====================================
 // Pneumatic Control Module
@@ -237,7 +242,8 @@ public static IRSensor gearSensor2 = new IRSensor(0);
 // Double Solenoids
 // ------------------------------------
 
-//public static DoubleSolenoid gearIntakeSolenoid = DoubleSolenoid;
+public static DoubleSolenoid gearIntakeSolenoid = new DoubleSolenoid(0,
+        1);
 
 // ------------------------------------
 // Single Solenoids
@@ -430,8 +436,8 @@ public static SpeedTester LFSpeedTester = new SpeedTester(
 // gearSensor1, elevatorMotor, 25.0, imageProcessor,
 // 3.0, gimbalMotor, agitatorMotor, ultraSonic);
 
-//public static BallIntake intake = new BallIntake(intakeMotor,
-//        agitatorMotor);
+// public static BallIntake intake = new BallIntake(intakeMotor,
+// agitatorMotor);
 
 // ------------------------------------
 // Utility classes
