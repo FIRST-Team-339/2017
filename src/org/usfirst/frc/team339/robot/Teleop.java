@@ -37,8 +37,14 @@ import com.ctre.CANTalon.TalonControlMode;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Shooter;
+<<<<<<< HEAD
 import org.usfirst.frc.team339.Utils.pidTuning.CanTalonPIDTuner;
 import org.usfirst.frc.team339.Utils.pidTuning.SmartDashboardPIDTunerDevice;
+=======
+import org.usfirst.frc.team339.Utils.SmartDashboardPIDTunerDevice;
+import edu.wpi.cscore.VideoCamera;
+import edu.wpi.first.wpilibj.Relay;
+>>>>>>> refs/remotes/origin/OpenCV_Testing
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -385,6 +391,7 @@ public static void periodic ()
 //        Hardware.intake.stopIntake();
     // END INTAKE CONTROLS
 
+<<<<<<< HEAD
     // OLD CLIMBER CODE
 //    if (Hardware.rightOperator.getRawButton(10))
 //        {
@@ -395,38 +402,21 @@ public static void periodic ()
 //        Hardware.climberMotor.set(0);
 //        }
     // END CLIMBER
+=======
+
+>>>>>>> refs/remotes/origin/OpenCV_Testing
     // =================================================================
     // CAMERA CODE
     // =================================================================
-    // if (Hardware.cameraServoSwitch.isOnCheckNow() == true)
-    // {
-    // Hardware.cameraservoX.setAngle(190);// TODO find actual value
-    // Hardware.cameraservoY.setAngle(190);
-    // }
-    // else
-    // {
-    // Hardware.cameraservoX.setAngle(0);// TODO find actual value
-    // Hardware.cameraservoY.setAngle(0);
-    // }
 
-    // -----------------------Testing Camera Code-----------------------
-
-    if (Hardware.leftOperator.getRawButton(8))
+    if (Hardware.rightOperator.getRawButton(11))
         {
-        isTestingCamera = true;
+        Hardware.testingProcessor.setCameraSettings(0,
+                VideoCamera.WhiteBalance.kFixedIndoor, 50);
         }
-
-    if (isTestingCamera == true)
+    else if (Hardware.rightOperator.getRawButton(10))
         {
-        alignValue = Hardware.autoDrive.driveToGear(.4, .4, .1212, .05,
-                Hardware.leftOperator.getRawButton(6)
-                        || Hardware.leftOperator.getRawButton(7),
-                .15, .1);
-        // System.out.println(alignValue);
-        if (alignValue == Drive.AlignReturnType.DONE)
-            {
-            isTestingCamera = false;
-            }
+        Hardware.testingProcessor.setDefaultCameraSettings();
         }
 
     Hardware.axisCamera
@@ -784,7 +774,20 @@ public static void printStatements ()
     //
     // System.out.println("USB Cam Brightness: "
     // + "Hardware.camForward.getBrightness()");
+<<<<<<< HEAD
     // Hardware.imageProcessor.processImage();
+=======
+    Hardware.testingProcessor.processImage();
+    System.out.println("Num Of Blobs: "
+            + Hardware.testingProcessor.getParticleReports().length);
+    if (Hardware.testingProcessor.getParticleReports().length > 0)
+        {
+        System.out.println("X Coordinate: "
+                + Hardware.testingProcessor.getNthSizeBlob(0).center.x);
+        System.out.println("Y Coordinate: "
+                + Hardware.testingProcessor.getNthSizeBlob(0).center.y);
+        }
+>>>>>>> refs/remotes/origin/OpenCV_Testing
     // Hardware.imageProcessor.filterBlobsInYRange(1, .9);
     // if (Hardware.imageProcessor.getLargestBlob() != null)
     // {

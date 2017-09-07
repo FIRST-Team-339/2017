@@ -32,7 +32,7 @@ import org.usfirst.frc.team339.Utils.SpeedTester;
 import org.usfirst.frc.team339.vision.ImageProcessor;
 import org.usfirst.frc.team339.vision.VisionScript;
 import org.usfirst.frc.team339.vision.opencv.VisionProcessor;
-import org.usfirst.frc.team339.vision.opencv.VisionProcessor.CameraType;
+import org.usfirst.frc.team339.vision.opencv.VisionProcessor.CameraModel;
 import org.usfirst.frc.team339.vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.vision.operators.ParticleFilter;
@@ -357,7 +357,7 @@ public static Joystick leftOperator = new Joystick(2);
 public static Joystick rightOperator = new Joystick(3);
 
 public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
-        leftOperator, 5, false);
+        leftOperator, 11, false);
 
 public static MomentarySwitch cameraServoSwitch = new MomentarySwitch(
         leftOperator, 10, false);
