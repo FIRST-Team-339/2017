@@ -26,7 +26,6 @@ import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
-import org.usfirst.frc.team339.Utils.BallIntake;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.SpeedTester;
 import org.usfirst.frc.team339.vision.ImageProcessor;
@@ -44,7 +43,6 @@ import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
@@ -126,15 +124,16 @@ public static TalonSRX leftFrontMotor = new TalonSRX(4);
 // ------------------------------------
 // public static Victor elevatorMotor = new Victor(0);// PWM 0
 
-public static Victor newClimberMotor = new Victor(5);//was intake motor
+public static Victor newClimberMotor = new Victor(5);// was intake motor
 
-public static Victor gearIntakeMotor = new Victor(0); //was agitator motor
-													// did this to make shooter
-                                                    // method happy
+public static Victor gearIntakeMotor = new Victor(0); // was agitator motor
+                                                      // did this to make
+                                                      // shooter
+                                                      // method happy
 
-//public static Spark elevatorMotor = new Spark(6);
+// public static Spark elevatorMotor = new Spark(6);
 
-//public static Victor climberMotor = new Victor(18);
+// public static Victor climberMotor = new Victor(18);
 
 
 // ====================================
@@ -237,7 +236,7 @@ public static IRSensor gearSensor2 = new IRSensor(0);
 // Double Solenoids
 // ------------------------------------
 
-//public static DoubleSolenoid gearIntakeSolenoid = DoubleSolenoid;
+// public static DoubleSolenoid gearIntakeSolenoid = DoubleSolenoid;
 
 // ------------------------------------
 // Single Solenoids
@@ -312,8 +311,7 @@ public static ImageProcessor imageProcessor = new ImageProcessor(
         axisCamera, visionScript);
 
 public static VisionProcessor testingProcessor = new VisionProcessor(
-        "http://10.3.39.11/mjpg/video.mjpg",
-        CameraType.AXIS_M1013);
+        "http://10.3.39.11/mjpg/video.mjpg", CameraModel.AXIS_M1013);
 // -------------------------------------
 // declare the USB camera server and the
 // USB camera it serves
@@ -430,8 +428,8 @@ public static SpeedTester LFSpeedTester = new SpeedTester(
 // gearSensor1, elevatorMotor, 25.0, imageProcessor,
 // 3.0, gimbalMotor, agitatorMotor, ultraSonic);
 
-//public static BallIntake intake = new BallIntake(intakeMotor,
-//        agitatorMotor);
+// public static BallIntake intake = new BallIntake(intakeMotor,
+// agitatorMotor);
 
 // ------------------------------------
 // Utility classes

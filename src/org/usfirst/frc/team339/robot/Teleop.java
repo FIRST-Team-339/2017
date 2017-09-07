@@ -37,14 +37,9 @@ import com.ctre.CANTalon.TalonControlMode;
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Shooter;
-<<<<<<< HEAD
 import org.usfirst.frc.team339.Utils.pidTuning.CanTalonPIDTuner;
 import org.usfirst.frc.team339.Utils.pidTuning.SmartDashboardPIDTunerDevice;
-=======
-import org.usfirst.frc.team339.Utils.SmartDashboardPIDTunerDevice;
 import edu.wpi.cscore.VideoCamera;
-import edu.wpi.first.wpilibj.Relay;
->>>>>>> refs/remotes/origin/OpenCV_Testing
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -289,7 +284,7 @@ public static void periodic ()
     // OPERATOR CONTROLS
     // =================================================================
 
-    //@ANE Updated motor names
+    // @ANE Updated motor names
     // rightOperator stuffs
     // If the operator is pressing right button 10
     if (Hardware.rightOperator.getRawButton(10))
@@ -381,30 +376,26 @@ public static void periodic ()
         // isTurningToGoal = !Hardware.shooter.turnToGoalRaw();
         }
 
-    //@ANE removed for sanity's sake
+    // @ANE removed for sanity's sake
     // INTAKE CONTROLS
-//    if (Hardware.leftOperator.getRawButton(2) == true)
-//        Hardware.intake.startIntake();
-//    else if (Hardware.leftOperator.getRawButton(3) == true)
-//        Hardware.intake.reverseIntake();
-//    else if (Hardware.rightOperator.getRawButton(3) == false)
-//        Hardware.intake.stopIntake();
+    // if (Hardware.leftOperator.getRawButton(2) == true)
+    // Hardware.intake.startIntake();
+    // else if (Hardware.leftOperator.getRawButton(3) == true)
+    // Hardware.intake.reverseIntake();
+    // else if (Hardware.rightOperator.getRawButton(3) == false)
+    // Hardware.intake.stopIntake();
     // END INTAKE CONTROLS
 
-<<<<<<< HEAD
     // OLD CLIMBER CODE
-//    if (Hardware.rightOperator.getRawButton(10))
-//        {
-//        Hardware.climberMotor.set(-1);
-//        }
-//    else
-//        {
-//        Hardware.climberMotor.set(0);
-//        }
+    // if (Hardware.rightOperator.getRawButton(10))
+    // {
+    // Hardware.climberMotor.set(-1);
+    // }
+    // else
+    // {
+    // Hardware.climberMotor.set(0);
+    // }
     // END CLIMBER
-=======
-
->>>>>>> refs/remotes/origin/OpenCV_Testing
     // =================================================================
     // CAMERA CODE
     // =================================================================
@@ -774,20 +765,6 @@ public static void printStatements ()
     //
     // System.out.println("USB Cam Brightness: "
     // + "Hardware.camForward.getBrightness()");
-<<<<<<< HEAD
-    // Hardware.imageProcessor.processImage();
-=======
-    Hardware.testingProcessor.processImage();
-    System.out.println("Num Of Blobs: "
-            + Hardware.testingProcessor.getParticleReports().length);
-    if (Hardware.testingProcessor.getParticleReports().length > 0)
-        {
-        System.out.println("X Coordinate: "
-                + Hardware.testingProcessor.getNthSizeBlob(0).center.x);
-        System.out.println("Y Coordinate: "
-                + Hardware.testingProcessor.getNthSizeBlob(0).center.y);
-        }
->>>>>>> refs/remotes/origin/OpenCV_Testing
     // Hardware.imageProcessor.filterBlobsInYRange(1, .9);
     // if (Hardware.imageProcessor.getLargestBlob() != null)
     // {
