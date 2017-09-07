@@ -38,6 +38,7 @@ import org.usfirst.frc.team339.vision.operators.ParticleFilter;
 import org.usfirst.frc.team339.vision.operators.RemoveSmallObjectsOperator;
 import edu.wpi.cscore.UsbCamera;
 import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
@@ -90,6 +91,10 @@ public static final double CAMERA_MOUNT_ANGLE = Math.toRadians(65);
 // **********************************************************
 // DIGITAL I/O CLASSES
 // **********************************************************
+// @ANE add in port number, FORCE ISAAC TO DO IT
+// public static DigitalInput photoSwitch = new DigitalInput();
+
+
 // ====================================
 // PWM classes
 // ====================================
@@ -223,7 +228,7 @@ public static IRSensor gearSensor2 = new IRSensor(0);
 // ====================================
 // Compressor class - runs the compressor
 // ====================================
-// public static Compressor compressor = new Compressor();
+public static Compressor compressor = new Compressor();
 
 // ====================================
 // Pneumatic Control Module

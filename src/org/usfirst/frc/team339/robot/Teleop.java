@@ -287,20 +287,29 @@ public static void periodic ()
     // @ANE Updated motor names
     // rightOperator stuffs
     // If the operator is pressing right button 10
-    if (Hardware.rightOperator.getRawButton(10))
+
+    // @ANE add back in
+    if (Hardware.rightOperator.getTrigger() == true
+    /* Hardware.rightOperator.getRawButton(10) */)
         {
         // Climb climb climb!
-        Hardware.newClimberMotor.set(-1);
+        Hardware.newClimberMotor.set(climbingSpeed);
+        // System.out.println("climber speed = "
+        // + Hardware.newClimberMotor.getSpeed());
         }
     else if (Hardware.rightOperator.getRawButton(6) == true
             && Hardware.rightOperator.getRawButton(7) == true)
         {
-        Hardware.newClimberMotor.set(1);
+        Hardware.newClimberMotor.set(reverseClimbingSpeed);
         }
     else// They're not pressing it
         {
         Hardware.newClimberMotor.set(0.0);// STOP THE MOTOR
         }
+
+    // Calibration code
+
+    // Hardware.newClimberMotor.set(Hardware.rightOperator.getY());
 
     // TESTING SHOOTER
     if (Hardware.rightOperator.getTrigger() == true)
@@ -872,6 +881,10 @@ public static boolean cancelAgitator = false;
 public static boolean hasCanceledAgitator = false;
 
 public static double testingSpeed;
+
+public static double climbingSpeed = -1;
+
+public static double reverseClimbingSpeed = .5;
 
 // temporary variable to test the ability to send information from a
 // separate thread to teleop
