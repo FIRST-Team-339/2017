@@ -103,6 +103,7 @@ public void autonomousInit ()
     // setup
     // ---------------------------------------
     System.out.println("Started AutonousInit().");
+    
     // =========================================================
     // User code goes below here
     // =========================================================
@@ -365,6 +366,7 @@ public void robotInit ()
     // -------------------------------------
     if (Hardware.isRunningOnKilroyXVIII)
         {
+    	Hardware.armSolenoid.setForward(false);
         // CameraServer.getInstance().addAxisCamera("10.3.39.11");
         }
     else

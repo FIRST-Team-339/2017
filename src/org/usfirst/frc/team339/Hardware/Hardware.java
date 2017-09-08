@@ -245,6 +245,9 @@ public static Compressor compressor = new Compressor();
 public static DoubleSolenoid gearIntakeSolenoid = new DoubleSolenoid(0,
         1);
 
+//TODO Change channels
+public static DoubleSolenoid armSolenoid = new DoubleSolenoid(2, 3);
+
 // ------------------------------------
 // Single Solenoids
 // ------------------------------------
@@ -414,6 +417,8 @@ public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
 public static Drive autoDrive = new Drive(mecanumDrive,
         imageProcessor, rightFrontEncoder, rightRearEncoder,
         leftFrontEncoder, leftRearEncoder, ultraSonic, driveGyro);
+        
+  
 
 
 /**

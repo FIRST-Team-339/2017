@@ -575,7 +575,10 @@ public static void periodic ()
                 }
             }
         }
-
+System.out.println("Right Rear encoder distance: " + Hardware.rightRearEncoder.getDistance());
+System.out.println("Right Front encoder distance: "+ Hardware.rightFrontEncoder.getDistance());
+System.out.println("Left Rear encoder distance: " + Hardware.leftRearEncoder.getDistance());
+System.out.println("Left Front encoder distance: "+ Hardware.leftFrontEncoder.getDistance()); //TODO Take out
 } // end
   // Periodic
 
