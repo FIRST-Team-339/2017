@@ -15,6 +15,7 @@
 package org.usfirst.frc.team339.Hardware;
 
 import com.ni.vision.NIVision.MeasurementType;
+import org.usfirst.frc.team339.HardwareInterfaces.DoubleSolenoid;
 import org.usfirst.frc.team339.HardwareInterfaces.DoubleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.HRLVMaxSonarEZ;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
@@ -242,7 +243,8 @@ public static Compressor compressor = new Compressor();
 // Double Solenoids
 // ------------------------------------
 
-// public static DoubleSolenoid gearIntakeSolenoid = DoubleSolenoid;
+public static DoubleSolenoid gearIntakeSolenoid = new DoubleSolenoid(0,
+        1);
 
 // ------------------------------------
 // Single Solenoids
