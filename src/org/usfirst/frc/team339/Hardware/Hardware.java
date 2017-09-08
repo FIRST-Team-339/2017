@@ -21,6 +21,7 @@ import org.usfirst.frc.team339.HardwareInterfaces.HRLVMaxSonarEZ;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyGyro;
+import org.usfirst.frc.team339.HardwareInterfaces.LightSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.RobotPotentiometer;
 import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
@@ -93,7 +94,7 @@ public static final double CAMERA_MOUNT_ANGLE = Math.toRadians(65);
 // DIGITAL I/O CLASSES
 // **********************************************************
 // @ANE add in port number, FORCE ISAAC TO DO IT
-// public static DigitalInput photoSwitch = new DigitalInput();
+public static LightSensor photoSwitch = new LightSensor(18);// 18 as real port
 
 
 // ====================================

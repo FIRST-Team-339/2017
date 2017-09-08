@@ -249,6 +249,7 @@ public void robotInit ()
     Hardware.leftRearEncoder.reset();
     Hardware.rightFrontEncoder.reset();
     Hardware.rightRearEncoder.reset();
+    Hardware.gearIntakeMotor.set(0.0);
     // change stuff based on kilroy version
     if (Hardware.isRunningOnKilroyXVIII == true)
         {
@@ -279,8 +280,8 @@ public void robotInit ()
         Hardware.leftFrontMotor.setInverted(false);
         Hardware.leftRearMotor.setInverted(true);
         Hardware.newClimberMotor.setInverted(false);
-        //@ANE removed for sanity's sake 
-        //Hardware.intakeMotor.setInverted(true);
+        // @ANE removed for sanity's sake
+        // Hardware.intakeMotor.setInverted(true);
         // mecanum
         Hardware.mecanumDrive
                 .setDeadbandPercentageZone(Hardware.joystickDeadzone);
@@ -325,7 +326,7 @@ public void robotInit ()
         Hardware.rightRearMotor.setInverted(false);
         Hardware.leftFrontMotor.setInverted(false);
         Hardware.leftRearMotor.setInverted(false);
-        //@ANE removed for sanity's sake 
+        // @ANE removed for sanity's sake
         // Hardware.intakeMotor.setInverted(true);
         Hardware.mecanumDrive
                 .setDeadbandPercentageZone(

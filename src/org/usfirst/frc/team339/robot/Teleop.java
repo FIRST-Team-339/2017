@@ -75,7 +75,12 @@ public static void init ()
     Hardware.rightFrontMotor.set(0.0);
     Hardware.leftFrontMotor.set(0.0);
     Hardware.newClimberMotor.set(0.0);
+    Hardware.gearIntakeMotor.set(0.0);
     // ---------------------------------------
+    // Solenoid Init
+    // ----------------------------------------
+    Hardware.gearIntakeSolenoid.setForward(false);
+    // ----------------------------------------
     // Servo init
     // ---------------------------------------
     // Hardware.cameraservoX.setAngle(HIGHER_CAMERASERVO_POSITIONX);
@@ -309,6 +314,36 @@ public static void periodic ()
     // Calibration code
 
     // Hardware.newClimberMotor.set(Hardware.rightOperator.getY());
+
+    // @ANE Gear Intake Mechanism
+    // should set rightOperator button 3 to reverse gearintake,
+    // sets rightOperator button 2 to run intake as long as nothing is
+    // setting off the photoswitch, if something is setting off the
+    // photoswitch and the trigger is pressed then set solenoid to the
+    // "down" position and run the motors in reverse at half speed.
+    //
+    //
+    if (Hardware.rightOperator.getRawButton(3) == true)
+        {
+        Hardware.gearIntakeMotor.set(-1.0);
+        }
+    else if ((Hardware.photoSwitch.isOn() == false)
+            && (Hardware.rightOperator.getRawButton(2) == true))
+        {
+        Hardware.gearIntakeMotor.set(1.0);
+        }
+    else if (Hardware.photoSwitch.isOn() == true)
+        {
+        Hardware.gearIntakeMotor.set(0.0);
+        System.out.println("Something in gear intake!?");
+        if (Hardware.leftOperator.getTrigger() == true)
+            {
+            Hardware.gearIntakeSolenoid.setForward(true);
+            Hardware.gearIntakeMotor.set(-.5);
+            }
+        Hardware.gearIntakeSolenoid.setForward(false);
+        }
+
 
     // TESTING SHOOTER
     if (Hardware.rightOperator.getTrigger() == true)
