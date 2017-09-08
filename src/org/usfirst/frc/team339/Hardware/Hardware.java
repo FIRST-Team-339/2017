@@ -27,23 +27,24 @@ import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.HardwareInterfaces.newtransmission.MecanumTransmission;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
-import org.usfirst.frc.team339.Utils.BallIntake;
 import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.SpeedTester;
 import org.usfirst.frc.team339.vision.ImageProcessor;
 import org.usfirst.frc.team339.vision.VisionScript;
 import org.usfirst.frc.team339.vision.opencv.VisionProcessor;
-import org.usfirst.frc.team339.vision.opencv.VisionProcessor.CameraType;
+import org.usfirst.frc.team339.vision.opencv.VisionProcessor.CameraModel;
 import org.usfirst.frc.team339.vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.vision.operators.ParticleFilter;
 import org.usfirst.frc.team339.vision.operators.RemoveSmallObjectsOperator;
+import edu.wpi.cscore.UsbCamera;
+import edu.wpi.first.wpilibj.CameraServer;
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.Spark;
 import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
@@ -76,7 +77,7 @@ public static double KILROY_XVII_JOYSTICK_DIRECTIONAL_DEADZONE = 10.0;
  */
 public static boolean runningInLab = false;
 
-public static boolean isRunningOnKilroyXVIII = false; // 18
+public static boolean isRunningOnKilroyXVIII = true; // 18
 // -------------------------------------
 // Private Constants
 // -------------------------------------
@@ -90,6 +91,10 @@ public static final double CAMERA_MOUNT_ANGLE = Math.toRadians(65);
 // **********************************************************
 // DIGITAL I/O CLASSES
 // **********************************************************
+// @ANE add in port number, FORCE ISAAC TO DO IT
+// public static DigitalInput photoSwitch = new DigitalInput();
+
+
 // ====================================
 // PWM classes
 // ====================================
@@ -124,15 +129,18 @@ public static TalonSRX leftFrontMotor = new TalonSRX(4);
 // ------------------------------------
 // public static Victor elevatorMotor = new Victor(0);// PWM 0
 
-public static Victor intakeMotor = new Victor(5);
+public static Victor newClimberMotor = new Victor(5);// was intake motor
 
-public static Victor agitatorMotor = new Victor(0); // did this to make
-                                                    // shooter
-                                                    // method happy
 
-public static Spark elevatorMotor = new Spark(6);
+public static Victor gearIntakeMotor = new Victor(0); // was agitator motor
+                                                      // did this to make
+                                                      // shooter
+                                                      // method happy
 
-public static Victor climberMotor = new Victor(18);
+// public static Spark elevatorMotor = new Spark(6);
+
+// public static Victor climberMotor = new Victor(18);
+
 
 // ====================================
 // CAN classes
@@ -217,7 +225,7 @@ public static IRSensor gearSensor2 = new IRSensor(0);
 // ====================================
 // Compressor class - runs the compressor
 // ====================================
-// public static Compressor compressor = new Compressor();
+public static Compressor compressor = new Compressor();
 
 // ====================================
 // Pneumatic Control Module
@@ -229,6 +237,8 @@ public static IRSensor gearSensor2 = new IRSensor(0);
 // ------------------------------------
 // Double Solenoids
 // ------------------------------------
+
+// public static DoubleSolenoid gearIntakeSolenoid = DoubleSolenoid;
 
 // ------------------------------------
 // Single Solenoids
@@ -275,23 +285,25 @@ public static final double KILROY_XVII_US_SCALING_FACTOR = .05;// .0493151;
 // Note: If causing problems, replace "USB_Camera_0" w/ "cam0", and
 // "USB_Camera_1" w/ "cam1"
 
-// public static UsbCamera camForward = CameraServer.getInstance()
-// .startAutomaticCapture(0);
+public static UsbCamera camForward = CameraServer.getInstance()
+        .startAutomaticCapture(0);
 
-public static KilroyCamera axisCamera = new KilroyCamera(true);
+public static KilroyCamera axisCamera = new KilroyCamera(false);
 // "10.13.39.11");// TODO change
 
 public static VisionScript visionScript = new VisionScript(
-        new HSLColorThresholdOperator(57, 157, 164, 255, 21,
-                136), /*
-                       * 79, 210, 7, 214, 33, 255)
-                       */// (76,
-                         // 200,
-                         // 71,
-        new RemoveSmallObjectsOperator(1, true), // TODO fix this for normal
-                                                 // use
-        (new ParticleFilter()).addCriteria(
-                MeasurementType.MT_CENTER_OF_MASS_Y, 0, 120, 0, 0),
+        new HSLColorThresholdOperator(57, 157, 164, 255, 21, 136), /*
+                                                                    * 79, 210,
+                                                                    * 7,
+                                                                    * 214, 33,
+                                                                    * 255)
+                                                                    */// (76,
+                                                                      // 200,
+                                                                      // 71,
+        new RemoveSmallObjectsOperator(1, true), // TODO fix this for normal use
+        (new ParticleFilter())
+                .addCriteria(MeasurementType.MT_CENTER_OF_MASS_Y, 0,
+                        120, 0, 0),
         // 255,
         // 50,255),
         new ConvexHullOperator(false));
@@ -300,8 +312,7 @@ public static ImageProcessor imageProcessor = new ImageProcessor(
         axisCamera, visionScript);
 
 public static VisionProcessor testingProcessor = new VisionProcessor(
-        "http://10.3.39.11/mjpg/video.mjpg",
-        CameraType.AXIS_M1013);
+        "http://10.3.39.11/mjpg/video.mjpg", CameraModel.AXIS_M1013);
 // -------------------------------------
 // declare the USB camera server and the
 // USB camera it serves
@@ -345,7 +356,7 @@ public static Joystick leftOperator = new Joystick(2);
 public static Joystick rightOperator = new Joystick(3);
 
 public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
-        leftOperator, 5, false);
+        leftOperator, 11, false);
 
 public static MomentarySwitch cameraServoSwitch = new MomentarySwitch(
         leftOperator, 10, false);
@@ -356,8 +367,6 @@ public static MomentarySwitch setMotorsZero = new MomentarySwitch(
 public static MomentarySwitch brake = new MomentarySwitch(leftDriver,
         11, false);
 
-public static MomentarySwitch speedTesterButton = new MomentarySwitch(
-        leftDriver, 2, false);
 
 // **********************************************************
 // Kilroy's Ancillary classes
@@ -415,15 +424,6 @@ public static boolean twoJoystickControl = false;
 public static SpeedTester LFSpeedTester = new SpeedTester(
         Hardware.leftFrontEncoder, Hardware.speedTesterTimer);
 
-public static SpeedTester LRSpeedTester = new SpeedTester(
-        Hardware.leftRearEncoder, Hardware.speedTesterTimer);
-
-public static SpeedTester RFSpeedTester = new SpeedTester(
-        Hardware.rightFrontEncoder, Hardware.speedTesterTimer);
-
-public static SpeedTester RRSpeedTester = new SpeedTester(
-        Hardware.rightRearEncoder, Hardware.speedTesterTimer);
-
 // -------------------
 // Assembly classes (e.g. forklift)
 // -------------------
@@ -431,8 +431,8 @@ public static SpeedTester RRSpeedTester = new SpeedTester(
 // gearSensor1, elevatorMotor, 25.0, imageProcessor,
 // 3.0, gimbalMotor, agitatorMotor, ultraSonic);
 
-public static BallIntake intake = new BallIntake(intakeMotor,
-        agitatorMotor);
+// public static BallIntake intake = new BallIntake(intakeMotor,
+// agitatorMotor);
 
 // ------------------------------------
 // Utility classes
@@ -448,17 +448,12 @@ public static final Timer autoStateTimer = new Timer();
 
 public static final Timer speedTesterTimer = new Timer();
 
-public static SpeedTester leftRearTest = new SpeedTester(
-        leftRearEncoder, speedTimer);
 
-public static SpeedTester leftFrontTest = new SpeedTester(
-        leftFrontEncoder, speedTimer);
-
-public static SpeedTester rightRearTest = new SpeedTester(
-        rightRearEncoder, speedTimer);
+// public static SpeedTester leftRearTest = new SpeedTester(
+// leftRearEncoder, speedTestingTimer);
 
 public static SpeedTester rightFrontTest = new SpeedTester(
-        rightFrontEncoder, speedTimer);
+        rightFrontEncoder, speedTesterTimer);
 
 // public static PowerDistributionPanel pdp = new PowerDistributionPanel();
 /**

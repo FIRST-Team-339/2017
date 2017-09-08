@@ -29,6 +29,26 @@ import edu.wpi.first.wpilibj.Timer;
  * denote when we are calculating the speed. When the joystick is
  * let go, the speed calculations will be written to the
  * laptop in the output window.
+ * 
+ * Translation by Ashley Espeland
+ * declare the speed tester in hardware and only use one at a time. In the
+ * declaration you pass in the encoder you are using and the timer
+ * that you are using for the speed test. Make sure the timer you
+ * are using is actually a thing...
+ * To actually use the speed tester code, use the watch joystick method
+ * in teleop by printing it out. You must pass in two joysticks, but you can
+ * pass in the
+ * same joystick twice, which I would highly recommend.
+ * To speed test accurately for a set percentage of power, scale the
+ * joystick to a certain joystick value and then set the speed to the testing
+ * power that you want, of course a deadband zone is recommended, so
+ * youll have to put in an else statement where you set the motors to zero
+ * if they are not in the desired range.
+ *
+ * what the speed tester does is print out our speed in ft-in per
+ * second, but only once so if you dont have a riolog running youll want
+ * to have someone on the disable button to shut it down before the print
+ * statement
  *
  * @class SpeedTester
  * @author Bob Brown
@@ -117,7 +137,9 @@ public SpeedTester (final Encoder encoderToMeasure,
  * @written Jun 18, 2011
  *          -------------------------------------------------------
  */
-public double watchJoystick (double joystickYvalue)
+// NOTE ONLY USE ONE OF THESE AT A TIME OR ELSE IT WONT WORK
+public double watchJoystick (double joystickYvalue,
+        double secondJoystickYvalue)
 {
     // -------------------------------------
     // if we haven't started the speed check before
@@ -126,7 +148,7 @@ public double watchJoystick (double joystickYvalue)
     // -------------------------------------
     if (this.startedDistanceCheck == false)
         {
-        if (joystickYvalue < -0.9)
+        if (joystickYvalue < -0.9 || secondJoystickYvalue < -0.9)
             {
             this.startedDistanceCheck = true;
             this.speedTesterTimer.reset();
@@ -142,7 +164,7 @@ public double watchJoystick (double joystickYvalue)
             this.distanceCounting = true;
             } // if
         } // if
-    else if (joystickYvalue > -0.9)
+    else if (joystickYvalue > -0.9 || secondJoystickYvalue > -0.9)
         {
         int ftTraveled;
         double traveled;
@@ -161,8 +183,8 @@ public double watchJoystick (double joystickYvalue)
         ftTraveled = (int) (traveledPerSec / 12);
         inchesFurtherTraveled = (int) (traveledPerSec
                 - (ftTraveled * 12));
-        // System.out.println("ft'inches\"/sec = " + ftTraveled + "'"
-        // + inchesFurtherTraveled + "\"");
+        System.out.println("ft'inches\"/sec = " + ftTraveled + "'"
+                + inchesFurtherTraveled + "\"");
         this.speedTesterTimer.reset();
 
         return traveledPerSec;

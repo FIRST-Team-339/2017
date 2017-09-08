@@ -1,3 +1,38 @@
+<<<<<<< HEAD
 /bin/
 /build/
 /dist/
+=======
+<<<<<<< HEAD
+*.class
+*.html
+~*
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.zip
+*.jar
+*.war
+*.ear
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+.metadata
+.settings
+/bin/
+
+doc/
+
+#/sysProps.xml
+
+/sysProps.xml
+
+/javadoc.xml
+=======
+/build/
+/dist/
+/bin/
+>>>>>>> refs/remotes/origin/OpenCV_Testing
+>>>>>>> refs/remotes/origin/master

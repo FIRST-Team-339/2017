@@ -278,7 +278,10 @@ public void robotInit ()
         Hardware.rightRearMotor.setInverted(true);
         Hardware.leftFrontMotor.setInverted(true);
         Hardware.leftRearMotor.setInverted(false);
-        Hardware.intakeMotor.setInverted(true);
+        Hardware.newClimberMotor.setInverted(false);
+        //@ANE removed for sanity's sake 
+        //Hardware.intakeMotor.setInverted(true);
+
         // mecanum
         Hardware.mecanumDrive
                 .setDeadbandPercentageZone(Hardware.joystickDeadzone);
@@ -323,6 +326,7 @@ public void robotInit ()
         Hardware.rightRearMotor.setInverted(true);
         Hardware.leftFrontMotor.setInverted(false);
         Hardware.leftRearMotor.setInverted(true);
+        //@ANE removed for sanity's sake 
         // Hardware.intakeMotor.setInverted(true);
         Hardware.mecanumDrive
                 .setDeadbandPercentageZone(
@@ -366,7 +370,7 @@ public void robotInit ()
         }
     else
         {
-        // CameraServer.getInstance().addAxisCamera("10.13.39.11");
+        // CameraServer.getInstance().addAxisCamera("10.3.39.11");
         }
 
     Hardware.axisCamera.writeColorLevel(50);
@@ -377,10 +381,12 @@ public void robotInit ()
     // USB Camera initialization
     // -------------------------------------
 
+
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
     Hardware.ultraSonic.setOffsetDistanceFromNearestBummper(3);
     Hardware.ultraSonic.setNumberOfItemsToCheckBackwardForValidity(3);
+
     // gimbal motors
     // Hardware.gimbalMotor
     // .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
@@ -395,6 +401,10 @@ public void robotInit ()
     // ---------------------------------------
     System.out.println(
             "Kilroy XVIII is started.  All hardware items created.");
+
+    // ----------------------------------------
+
+
 
 } // end
   // robotInit
@@ -502,7 +512,12 @@ public void testPeriodic ()
 /**
  * The percentage we want the motors to run at while we are in first gear
  */
-public static final double KILROY_XVIII_FIRST_GEAR_PERCENTAGE = .5;
+// This is the variable you need to change in order to change the max
+// speed for the motors when kilroy is going forward or backward
+// note : the strafing max value is controlled by something else
+// CHECK WITH ASHLEY ESPELAND IF YOU HAVE QUESTIONS
+public static final double KILROY_XVIII_FIRST_GEAR_PERCENTAGE = .7; // 1.0; //
+                                                                    // .5;
 
 /**
  * The percentage we want the motors to run at while we are in second gear

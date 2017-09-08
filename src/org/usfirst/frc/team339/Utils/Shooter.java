@@ -168,7 +168,8 @@ public void loadBalls ()
     // load balls by running the elevator and agitator at their assigned speeds
     this.elevatorController.set(ELEVATOR_SPEED);
     this.agitatorMotor.set(AGITATOR_SPEED);
-    Hardware.intake.startIntake();
+    //@ANE removed for sanity's sake 
+    //Hardware.intake.startIntake();
 }
 
 /**
@@ -179,7 +180,8 @@ public void stopLoader ()
     // stops loading balls by stopping the elevator and the agitator
     this.elevatorController.set(0.0);
     this.agitatorMotor.set(0.0);
-    Hardware.intake.stopIntake();
+   //@ANE removed for samity's sake
+    // Hardware.intake.stopIntake();
 }
 
 /**

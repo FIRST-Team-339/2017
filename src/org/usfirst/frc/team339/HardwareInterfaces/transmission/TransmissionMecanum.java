@@ -82,7 +82,7 @@ public void drive (final double magnitude, final double direction,
     // than it usually would be in order to make strafing certain directions
     // work; note: the "nasty nasty hack" should be fixed later
     double tempRotation = rotation, tempMagnitude = magnitude,
-            tempDirection = direction, nastyHack = 2.5;
+            tempDirection = direction, nastyHack = 1.2;
 
     // checks if the deadbands for magnitude or twist have been exceeded so we
     // know if the robot should move
@@ -258,13 +258,17 @@ public void drive (final double magnitude, final double direction,
             {
             double leftFrontSpeed = (sinD * tempMagnitude)
                     + tempRotation;
-            double rightFrontSpeed = (cosD * tempMagnitude)
+            // made negative @ANE
+            double rightFrontSpeed = -(cosD * tempMagnitude)
                     - tempRotation;
             double leftRearSpeed = (cosD * tempMagnitude)
                     + tempRotation;
             double rightRearSpeed = (sinD * tempMagnitude)
                     - tempRotation;
 
+            // System.out.println("leftRearSpeed = " + leftRearSpeed);
+            // System.out.println("cosD = " + cosD);
+            // System.out.println("sinD = " + sinD);
 
             // prints out select values if we are debugging this part of the
             // code
@@ -290,10 +294,11 @@ public void drive (final double magnitude, final double direction,
 
             // scale all of the motor "send" values by our current gear and
             // deadzone.
-            leftFrontSpeed = this.scaleJoystickValue(leftFrontSpeed);
-            leftRearSpeed = this.scaleJoystickValue(leftRearSpeed);
-            rightFrontSpeed = this.scaleJoystickValue(rightFrontSpeed);
-            rightRearSpeed = this.scaleJoystickValue(rightRearSpeed);
+            // ADD BACK IN @ANE
+            // leftFrontSpeed = this.scaleJoystickValue(leftFrontSpeed);
+            // leftRearSpeed = this.scaleJoystickValue(leftRearSpeed);
+            // rightFrontSpeed = this.scaleJoystickValue(rightFrontSpeed);
+            // rightRearSpeed = this.scaleJoystickValue(rightRearSpeed);
 
             // finally, send the scaled values to our motors.
             this.driveLeftMotor(leftFrontSpeed);
