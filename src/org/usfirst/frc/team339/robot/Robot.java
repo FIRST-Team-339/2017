@@ -370,7 +370,7 @@ public void robotInit ()
         }
     else
         {
-        // CameraServer.getInstance().addAxisCamera("10.13.39.11");
+        // CameraServer.getInstance().addAxisCamera("10.3.39.11");
         }
 
     Hardware.axisCamera.writeColorLevel(50);
@@ -381,10 +381,12 @@ public void robotInit ()
     // USB Camera initialization
     // -------------------------------------
 
+
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
     Hardware.ultraSonic.setOffsetDistanceFromNearestBummper(3);
     Hardware.ultraSonic.setNumberOfItemsToCheckBackwardForValidity(3);
+
     // gimbal motors
     // Hardware.gimbalMotor
     // .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);

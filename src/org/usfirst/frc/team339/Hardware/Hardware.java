@@ -15,7 +15,6 @@
 package org.usfirst.frc.team339.Hardware;
 
 import com.ni.vision.NIVision.MeasurementType;
-import org.usfirst.frc.team339.HardwareInterfaces.DoubleSolenoid;
 import org.usfirst.frc.team339.HardwareInterfaces.DoubleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.HRLVMaxSonarEZ;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
@@ -33,7 +32,7 @@ import org.usfirst.frc.team339.Utils.SpeedTester;
 import org.usfirst.frc.team339.vision.ImageProcessor;
 import org.usfirst.frc.team339.vision.VisionScript;
 import org.usfirst.frc.team339.vision.opencv.VisionProcessor;
-import org.usfirst.frc.team339.vision.opencv.VisionProcessor.CameraType;
+import org.usfirst.frc.team339.vision.opencv.VisionProcessor.CameraModel;
 import org.usfirst.frc.team339.vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.vision.operators.ParticleFilter;
@@ -243,8 +242,7 @@ public static Compressor compressor = new Compressor();
 // Double Solenoids
 // ------------------------------------
 
-public static DoubleSolenoid gearIntakeSolenoid = new DoubleSolenoid(0,
-        1);
+// public static DoubleSolenoid gearIntakeSolenoid = DoubleSolenoid;
 
 // ------------------------------------
 // Single Solenoids
@@ -319,8 +317,7 @@ public static ImageProcessor imageProcessor = new ImageProcessor(
         axisCamera, visionScript);
 
 public static VisionProcessor testingProcessor = new VisionProcessor(
-        "http://10.3.39.11/mjpg/video.mjpg",
-        CameraType.AXIS_M1013);
+        "http://10.3.39.11/mjpg/video.mjpg", CameraModel.AXIS_M1013);
 // -------------------------------------
 // declare the USB camera server and the
 // USB camera it serves
@@ -364,7 +361,7 @@ public static Joystick leftOperator = new Joystick(2);
 public static Joystick rightOperator = new Joystick(3);
 
 public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
-        leftOperator, 5, false);
+        leftOperator, 11, false);
 
 public static MomentarySwitch cameraServoSwitch = new MomentarySwitch(
         leftOperator, 10, false);
