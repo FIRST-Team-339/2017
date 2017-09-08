@@ -430,26 +430,25 @@ public static void periodic ()
 
     Hardware.transmission.drive(Hardware.leftDriver);
 
-        // ----------------------TESTING DRIVE FUNCTIONS--------------------
+    // ----------------------TESTING DRIVE FUNCTIONS--------------------
 
-        if (Hardware.leftDriver.getRawButton(9) == true)
-            {
-            isTestingDrive = true;
-            }
-
-        if (isTestingDrive == true)
-            {
-
-            if (Hardware.leftOperator.getRawButton(6) == true
-                    || Hardware.leftOperator.getRawButton(7) == true)
-                {
-                isTestingDrive = false;
-                }
-            }
+    if (Hardware.leftDriver.getRawButton(9) == true)
+        {
+        isTestingDrive = true;
         }
 
-} // end
-  // Periodic
+    if (isTestingDrive == true)
+        {
+
+        if (Hardware.leftOperator.getRawButton(6) == true
+                || Hardware.leftOperator.getRawButton(7) == true)
+            {
+            isTestingDrive = false;
+            }
+        }
+}
+// end
+// Periodic
 
 private static Drive.AlignReturnType alignValue = Drive.AlignReturnType.MISALIGNED;
 
