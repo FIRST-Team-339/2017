@@ -275,9 +275,9 @@ public void robotInit ()
                 KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
         // invert motors
         Hardware.rightFrontMotor.setInverted(true);
-        Hardware.rightRearMotor.setInverted(false);
+        Hardware.rightRearMotor.setInverted(true);
         Hardware.leftFrontMotor.setInverted(true);
-        Hardware.leftRearMotor.setInverted(true);
+        Hardware.leftRearMotor.setInverted(false);
         Hardware.intakeMotor.setInverted(true);
         // mecanum
         Hardware.mecanumDrive
@@ -320,9 +320,9 @@ public void robotInit ()
         Hardware.mecanumDrive.setFirstGearPercentage(
                 Robot.KILROY_XVII_SECOND_GEAR_PERCENTAGE);
         Hardware.rightFrontMotor.setInverted(true);
-        Hardware.rightRearMotor.setInverted(false);
+        Hardware.rightRearMotor.setInverted(true);
         Hardware.leftFrontMotor.setInverted(false);
-        Hardware.leftRearMotor.setInverted(false);
+        Hardware.leftRearMotor.setInverted(true);
         // Hardware.intakeMotor.setInverted(true);
         Hardware.mecanumDrive
                 .setDeadbandPercentageZone(

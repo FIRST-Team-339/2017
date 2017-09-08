@@ -106,7 +106,7 @@ public void setJoystickDeadband (double deadband)
  * y = mx + b
  * 
  * m = 1 / (1 - deadband)
- * b = (1 - m)
+ * b = deadband * -m
  * x = joystick input
  * y = motor output
  * 
@@ -124,9 +124,12 @@ public void setJoystickDeadband (double deadband)
 public double scaleJoystickForDeadband (double input)
 {
     double deadbandSlope = 1.0 / (1.0 - joystickDeadband);
-    double constant = 1 - deadbandSlope;
+    double constant = -this.joystickDeadband * deadbandSlope;
 
-    return (deadbandSlope * input) + constant;
+    if (input > 0)
+        return (deadbandSlope * input) + constant;
+
+    return -((-deadbandSlope * input) + constant);
 }
 
 /**

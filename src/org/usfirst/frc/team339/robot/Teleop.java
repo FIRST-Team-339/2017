@@ -127,6 +127,7 @@ public static void init ()
 
     // Hardware.driveGyro.calibrate();
     // Hardware.driveGyro.reset();
+    Hardware.transmission.setGear(0);
 
 } // end Init
 
@@ -372,8 +373,12 @@ public static void periodic ()
     // Driving code
     // =================================================================
 
-    Hardware.transmission.drive(Hardware.leftDriver,
-            Hardware.rightDriver);
+    Hardware.transmission.drive(Hardware.leftDriver);
+
+    if (Hardware.leftDriver.getRawButton(5))
+        Hardware.transmission.setGear(2);
+    else if (Hardware.leftDriver.getRawButton(3))
+        Hardware.transmission.setGear(0);
 
 
     // ----------------------TESTING DRIVE FUNCTIONS--------------------
