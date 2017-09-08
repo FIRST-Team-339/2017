@@ -366,7 +366,7 @@ public void robotInit ()
     // -------------------------------------
     if (Hardware.isRunningOnKilroyXVIII)
         {
-    	Hardware.armSolenoid.setForward(false);
+    	Hardware.gearIntakeSolenoid.setForward(false);
         // CameraServer.getInstance().addAxisCamera("10.3.39.11");
         }
     else

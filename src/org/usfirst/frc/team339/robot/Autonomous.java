@@ -332,7 +332,7 @@ public static void init ()
     Hardware.rightFrontEncoder.reset();
     Hardware.rightRearEncoder.reset();
     
-    Hardware.armSolenoid.setReverse(true);
+    Hardware.gearIntakeSolenoid.setReverse(true);
     // motors
     // Hardware.leftRearMotor.setInverted(true);
     // Hardware.intakeMotor.setInverted(true);
@@ -978,7 +978,7 @@ private static void initializeDriveProgram ()
         }
     Hardware.autoDrive.resetEncoders();
     Hardware.mecanumDrive.drive(0, 0, 0);
-    Hardware.armSolenoid.setReverse(false);
+    Hardware.gearIntakeSolenoid.setReverse(false);
     
 }
 
