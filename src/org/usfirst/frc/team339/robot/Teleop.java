@@ -39,6 +39,7 @@ import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Shooter;
 import org.usfirst.frc.team339.Utils.pidTuning.CanTalonPIDTuner;
 import org.usfirst.frc.team339.Utils.pidTuning.SmartDashboardPIDTunerDevice;
+import edu.wpi.cscore.VideoCamera;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -75,7 +76,12 @@ public static void init ()
     Hardware.rightFrontMotor.set(0.0);
     Hardware.leftFrontMotor.set(0.0);
     Hardware.newClimberMotor.set(0.0);
+    Hardware.gearIntakeMotor.set(0.0);
     // ---------------------------------------
+    // Solenoid Init
+    // ----------------------------------------
+    Hardware.gearIntakeSolenoid.setForward(false);
+    // ----------------------------------------
     // Servo init
     // ---------------------------------------
     // Hardware.cameraservoX.setAngle(HIGHER_CAMERASERVO_POSITIONX);
@@ -310,6 +316,36 @@ public static void periodic ()
 
     // Hardware.newClimberMotor.set(Hardware.rightOperator.getY());
 
+    // @ANE Gear Intake Mechanism
+    // should set rightOperator button 3 to reverse gearintake,
+    // sets rightOperator button 2 to run intake as long as nothing is
+    // setting off the photoswitch, if something is setting off the
+    // photoswitch and the trigger is pressed then set solenoid to the
+    // "down" position and run the motors in reverse at half speed.
+    //
+    //
+    if (Hardware.rightOperator.getRawButton(3) == true)
+        {
+        Hardware.gearIntakeMotor.set(-1.0);
+        }
+    else if ((Hardware.photoSwitch.isOn() == false)
+            && (Hardware.rightOperator.getRawButton(2) == true))
+        {
+        Hardware.gearIntakeMotor.set(1.0);
+        }
+    else if (Hardware.photoSwitch.isOn() == true)
+        {
+        Hardware.gearIntakeMotor.set(0.0);
+        System.out.println("Something in gear intake!?");
+        if (Hardware.leftOperator.getTrigger() == true)
+            {
+            Hardware.gearIntakeSolenoid.setForward(true);
+            Hardware.gearIntakeMotor.set(-.5);
+            }
+        Hardware.gearIntakeSolenoid.setForward(false);
+        }
+
+
     // TESTING SHOOTER
     if (Hardware.rightOperator.getTrigger() == true)
         {
@@ -407,35 +443,15 @@ public static void periodic ()
     // =================================================================
     // CAMERA CODE
     // =================================================================
-    // if (Hardware.cameraServoSwitch.isOnCheckNow() == true)
-    // {
-    // Hardware.cameraservoX.setAngle(190);// TODO find actual value
-    // Hardware.cameraservoY.setAngle(190);
-    // }
-    // else
-    // {
-    // Hardware.cameraservoX.setAngle(0);// TODO find actual value
-    // Hardware.cameraservoY.setAngle(0);
-    // }
 
-    // -----------------------Testing Camera Code-----------------------
-
-    if (Hardware.leftOperator.getRawButton(8))
+    if (Hardware.rightOperator.getRawButton(11))
         {
-        isTestingCamera = true;
+        Hardware.testingProcessor.setCameraSettings(0,
+                VideoCamera.WhiteBalance.kFixedIndoor, 50);
         }
-
-    if (isTestingCamera == true)
+    else if (Hardware.rightOperator.getRawButton(10))
         {
-        alignValue = Hardware.autoDrive.driveToGear(.4, .4, .1212, .05,
-                Hardware.leftOperator.getRawButton(6)
-                        || Hardware.leftOperator.getRawButton(7),
-                .15, .1);
-        // System.out.println(alignValue);
-        if (alignValue == Drive.AlignReturnType.DONE)
-            {
-            isTestingCamera = false;
-            }
+        Hardware.testingProcessor.setDefaultCameraSettings();
         }
 
     Hardware.axisCamera
@@ -796,7 +812,6 @@ public static void printStatements ()
     //
     // System.out.println("USB Cam Brightness: "
     // + "Hardware.camForward.getBrightness()");
-    // Hardware.imageProcessor.processImage();
     // Hardware.imageProcessor.filterBlobsInYRange(1, .9);
     // if (Hardware.imageProcessor.getLargestBlob() != null)
     // {

@@ -21,6 +21,7 @@ import org.usfirst.frc.team339.HardwareInterfaces.HRLVMaxSonarEZ;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyGyro;
+import org.usfirst.frc.team339.HardwareInterfaces.LightSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.RobotPotentiometer;
 import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
@@ -32,7 +33,7 @@ import org.usfirst.frc.team339.Utils.SpeedTester;
 import org.usfirst.frc.team339.vision.ImageProcessor;
 import org.usfirst.frc.team339.vision.VisionScript;
 import org.usfirst.frc.team339.vision.opencv.VisionProcessor;
-import org.usfirst.frc.team339.vision.opencv.VisionProcessor.CameraType;
+import org.usfirst.frc.team339.vision.opencv.VisionProcessor.CameraModel;
 import org.usfirst.frc.team339.vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.vision.operators.ParticleFilter;
@@ -93,7 +94,7 @@ public static final double CAMERA_MOUNT_ANGLE = Math.toRadians(65);
 // DIGITAL I/O CLASSES
 // **********************************************************
 // @ANE add in port number, FORCE ISAAC TO DO IT
-// public static DigitalInput photoSwitch = new DigitalInput();
+public static LightSensor photoSwitch = new LightSensor(18);// 18 as real port
 
 
 // ====================================
@@ -319,8 +320,7 @@ public static ImageProcessor imageProcessor = new ImageProcessor(
         axisCamera, visionScript);
 
 public static VisionProcessor testingProcessor = new VisionProcessor(
-        "http://10.3.39.11/mjpg/video.mjpg",
-        CameraType.AXIS_M1013);
+        "http://10.3.39.11/mjpg/video.mjpg", CameraModel.AXIS_M1013);
 // -------------------------------------
 // declare the USB camera server and the
 // USB camera it serves
@@ -364,7 +364,7 @@ public static Joystick leftOperator = new Joystick(2);
 public static Joystick rightOperator = new Joystick(3);
 
 public static MomentarySwitch ringlightSwitch = new MomentarySwitch(
-        leftOperator, 5, false);
+        leftOperator, 11, false);
 
 public static MomentarySwitch cameraServoSwitch = new MomentarySwitch(
         leftOperator, 10, false);

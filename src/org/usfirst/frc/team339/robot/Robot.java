@@ -250,6 +250,7 @@ public void robotInit ()
     Hardware.leftRearEncoder.reset();
     Hardware.rightFrontEncoder.reset();
     Hardware.rightRearEncoder.reset();
+    Hardware.gearIntakeMotor.set(0.0);
     // change stuff based on kilroy version
     if (Hardware.isRunningOnKilroyXVIII == true)
         {
@@ -280,8 +281,8 @@ public void robotInit ()
         Hardware.leftFrontMotor.setInverted(false);
         Hardware.leftRearMotor.setInverted(true);
         Hardware.newClimberMotor.setInverted(false);
-        //@ANE removed for sanity's sake 
-        //Hardware.intakeMotor.setInverted(true);
+        // @ANE removed for sanity's sake
+        // Hardware.intakeMotor.setInverted(true);
         // mecanum
         Hardware.mecanumDrive
                 .setDeadbandPercentageZone(Hardware.joystickDeadzone);
@@ -326,7 +327,7 @@ public void robotInit ()
         Hardware.rightRearMotor.setInverted(false);
         Hardware.leftFrontMotor.setInverted(false);
         Hardware.leftRearMotor.setInverted(false);
-        //@ANE removed for sanity's sake 
+        // @ANE removed for sanity's sake
         // Hardware.intakeMotor.setInverted(true);
         Hardware.mecanumDrive
                 .setDeadbandPercentageZone(
@@ -371,7 +372,7 @@ public void robotInit ()
         }
     else
         {
-        // CameraServer.getInstance().addAxisCamera("10.13.39.11");
+        // CameraServer.getInstance().addAxisCamera("10.3.39.11");
         }
 
     Hardware.axisCamera.writeColorLevel(50);
@@ -382,10 +383,12 @@ public void robotInit ()
     // USB Camera initialization
     // -------------------------------------
 
+
     Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
     Hardware.ringlightRelay.set(Relay.Value.kOff);
     Hardware.ultraSonic.setOffsetDistanceFromNearestBummper(3);
     Hardware.ultraSonic.setNumberOfItemsToCheckBackwardForValidity(3);
+
     // gimbal motors
     // Hardware.gimbalMotor
     // .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
