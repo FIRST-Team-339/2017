@@ -40,6 +40,7 @@ import org.usfirst.frc.team339.Utils.Shooter;
 import org.usfirst.frc.team339.Utils.pidTuning.CanTalonPIDTuner;
 import org.usfirst.frc.team339.Utils.pidTuning.SmartDashboardPIDTunerDevice;
 import edu.wpi.cscore.VideoCamera;
+import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
@@ -285,6 +286,15 @@ public static void periodic ()
     // OPERATOR CONTROLS
     // =================================================================
 
+    if (Hardware.ringlightSwitch.isOnCheckNow())
+        {
+        Hardware.ringlightRelay.set(Value.kOn);
+        }
+    else
+        {
+        Hardware.ringlightRelay.set(Value.kOff);
+        }
+
     // @ANE Updated motor names
     // rightOperator stuffs
     // If the operator is pressing right button 10
@@ -428,7 +438,10 @@ public static void periodic ()
     // Driving code
     // =================================================================
 
-    Hardware.transmission.drive(Hardware.leftDriver);
+    if (isTestingDrive == false)
+        {
+        Hardware.transmission.drive(Hardware.leftDriver);
+        }
 
     // ----------------------TESTING DRIVE FUNCTIONS--------------------
 
@@ -439,13 +452,16 @@ public static void periodic ()
 
     if (isTestingDrive == true)
         {
+        isTestingDrive = !Hardware.newDrive.driveToGear(.25);
 
-        if (Hardware.leftOperator.getRawButton(6) == true
-                || Hardware.leftOperator.getRawButton(7) == true)
+        if (Hardware.leftDriver.getRawButton(10) == true)
             {
             isTestingDrive = false;
             }
         }
+
+    if (Hardware.leftDriver.getRawButton(8))
+        Hardware.newDrive.driveStraight(.3);
 }
 // end
 // Periodic
@@ -556,8 +572,8 @@ public static void printStatements ()
     // System.out
     // .println("Side Gear Path: " + Hardware.sideGearPath.isOn());
 
-    // System.out.println("UltraSonic distance from bumper: "
-    // + Hardware.ultraSonic.getDistanceFromNearestBumper());
+    System.out.println("UltraSonic distance from bumper: "
+            + Hardware.ultraSonic.getDistanceFromNearestBumper());
     // System.out.println("Right UltraSonic refined distance: "
     // + Hardware.ultraSonic.getRefinedDistanceValue());
     // System.out.println("Right UltraSonic raw distance: "
@@ -660,44 +676,14 @@ public static void printStatements ()
     // Cameras
     // prints any camera information required
     // ---------------------------------
-    // System.out.println("Expected center: " + CAMERA_ALIGN_CENTER);
-    //
-    // System.out.println("USB Cam Brightness: "
-    // + "Hardware.camForward.getBrightness()");
-    // Hardware.imageProcessor.filterBlobsInYRange(1, .9);
-    // if (Hardware.imageProcessor.getLargestBlob() != null)
+    // Hardware.testingProcessor.processImage();
+    // if (Hardware.testingProcessor.getParticleReports().length > 1)
     // {
-    // System.out.println("Center of Mass: " + Hardware.imageProcessor
-    // .getLargestBlob().center_mass_y);
+    // System.out.println("Blob 1: "
+    // + Hardware.testingProcessor.getNthSizeBlob(0).center.x);
+    // System.out.println("Blob 2: "
+    // + Hardware.testingProcessor.getNthSizeBlob(1).center.x);
     // }
-    // else
-    // {
-    // System.out.println("NO BLOBS!");
-    // }
-    // if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
-    // {
-    // System.out.println("Angle to target 1: "
-    // + Hardware.imageProcessor.getYawAngleToTarget(
-    // Hardware.imageProcessor.getLargestBlob()));
-    // System.out.println("Angle to target 2: "
-    // + Hardware.imageProcessor.getYawAngleToTarget(
-    // Hardware.imageProcessor.getNthSizeBlob(1)));
-    // System.out.println("Distance from peg: "
-    // + Hardware.imageProcessor.getZDistanceToGearTarget(
-    // Hardware.imageProcessor.getLargestBlob(),
-    // Hardware.imageProcessor.getNthSizeBlob(1)));
-    // }
-    // if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
-    // System.out
-    // .println("Actual center: " + ((Hardware.imageProcessor
-    // .getNthSizeBlob(0).center_mass_x
-    // + Hardware.imageProcessor
-    // .getNthSizeBlob(1).center_mass_x)
-    // / 2.0)
-    // / Hardware.axisCamera
-    // .getHorizontalResolution());
-    //
-    // System.out.println("Deadband: " + CAMERA_ALIGN_DEADBAND);
     // =================================
     // Driver station
     // =================================

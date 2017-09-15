@@ -391,6 +391,19 @@ public ParticleReport[] getParticleReports ()
 }
 
 /**
+ * @return Whether or not the camera can see any retro-reflective tape
+ */
+public boolean hasBlobs ()
+{
+    if (this.particleReports.length > 0)
+        {
+        return true;
+        }
+
+    return false;
+}
+
+/**
  * Gets a report of the index the user requests.
  * 
  * @param n

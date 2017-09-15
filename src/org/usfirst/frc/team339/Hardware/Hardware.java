@@ -312,7 +312,7 @@ public static ImageProcessor imageProcessor = new ImageProcessor(
         axisCamera, visionScript);
 
 public static VisionProcessor testingProcessor = new VisionProcessor(
-        "http://10.3.39.11/mjpg/video.mjpg", CameraModel.AXIS_M1013);
+        "10.3.39.11", CameraModel.AXIS_M1013);
 // -------------------------------------
 // declare the USB camera server and the
 // USB camera it serves
@@ -410,6 +410,11 @@ public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
 public static Drive autoDrive = new Drive(mecanumDrive, imageProcessor,
         rightFrontEncoder, rightRearEncoder,
         leftFrontEncoder, leftRearEncoder, ultraSonic, driveGyro);
+
+public static org.usfirst.frc.team339.HardwareInterfaces.newtransmission.Drive newDrive = new org.usfirst.frc.team339.HardwareInterfaces.newtransmission.Drive(
+        transmission, leftFrontEncoder, rightFrontEncoder,
+        leftRearEncoder, rightRearEncoder, ultraSonic, driveGyro,
+        testingProcessor);
 
 /**
  * are we using mecanum? set false for tank drive

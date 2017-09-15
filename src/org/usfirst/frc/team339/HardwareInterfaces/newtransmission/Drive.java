@@ -1,9 +1,10 @@
 package org.usfirst.frc.team339.HardwareInterfaces.newtransmission;
 
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyGyro;
+import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.HardwareInterfaces.newtransmission.TransmissionBase.TransmissionType;
+import org.usfirst.frc.team339.vision.opencv.VisionProcessor;
 import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.Ultrasonic;
 
 /**
  * The class that controls autonomous driving functions or
@@ -29,9 +30,11 @@ private MecanumTransmission mecanumTransmission = null;
 private Encoder leftFrontEncoder = null, rightFrontEncoder = null,
         leftRearEncoder = null, rightRearEncoder = null;
 
-private Ultrasonic ultrasonic = null;
+private UltraSonic ultrasonic = null;
 
 private KilroyGyro gyro = null;
+
+private VisionProcessor visionProcessor = null;
 
 private final TransmissionType transmissionType;
 
@@ -54,11 +57,14 @@ private final TransmissionType transmissionType;
  *            The sensor that finds distance using sound
  * @param gyro
  *            A sensor that uses a spinning disk to measure rotation.
+ * @param visionProcessor
+ *            The camera's vision processing code, as a sensor.
  */
 public Drive (TransmissionBase transmission, Encoder leftFrontEncoder,
         Encoder rightFrontEncoder,
         Encoder leftRearEncoder, Encoder rightRearEncoder,
-        Ultrasonic ultrasonic, KilroyGyro gyro)
+        UltraSonic ultrasonic, KilroyGyro gyro,
+        VisionProcessor visionProcessor)
 {
     this.transmissionType = transmission.getType();
     this.leftFrontEncoder = leftFrontEncoder;
@@ -68,6 +74,7 @@ public Drive (TransmissionBase transmission, Encoder leftFrontEncoder,
 
     this.ultrasonic = ultrasonic;
     this.gyro = gyro;
+    this.visionProcessor = visionProcessor;
 
     init(transmission);
 }
@@ -89,7 +96,7 @@ public Drive (TransmissionBase transmission, Encoder leftFrontEncoder,
  *            A sensor that uses a spinning disk to measure rotation.
  */
 public Drive (TransmissionBase transmission, Encoder leftEncoder,
-        Encoder rightEncoder, Ultrasonic ultrasonic,
+        Encoder rightEncoder, UltraSonic ultrasonic,
         KilroyGyro gyro)
 {
     this.transmissionType = transmission.getType();
@@ -301,7 +308,7 @@ public boolean driveInches (int distance, double speed)
         return true;
         }
 
-    this.getTransmission().driveRaw(speed, speed);
+    this.driveStraight(speed);
 
     return false;
 }
@@ -425,6 +432,71 @@ public boolean turnDegrees (int angle, double speed)
 
 private boolean turnDegreesInit = true;
 
+// ================GAME SPECIFIC FUNCTIONS================
+/*
+ * Driving functions that change from game to game, such as using the camera to
+ * score, etc.
+ */
+
+public boolean driveToGear (double speed)
+{
+    // If the ultrasonic reads that we are close enough to the wall, then shut
+    // off the motors and we are done.
+    if (this.ultrasonic
+            .getDistanceFromNearestBumper() < GEAR_AUTO_FINISH_DISTANCE)
+        {
+        this.driveToGearStatus = DriveToGearStatus.DRIVE_WITH_CAMERA;
+        this.getTransmission().driveRaw(0.0, 0.0);
+        return true;
+        }
+    else if (this.ultrasonic
+            .getDistanceFromNearestBumper() < GEAR_AUTO_CUTOFF_DISTANCE)
+        {
+        this.driveToGearStatus = DriveToGearStatus.DRIVE_STRAIGHT;
+        }
+
+    // Only drive with the camera if it's in the right state, and there are
+    // at least 2 blobs available.
+    this.visionProcessor.processImage();
+
+    if (driveToGearStatus == DriveToGearStatus.DRIVE_WITH_CAMERA
+            && visionProcessor.getParticleReports().length > 1)
+        {
+        // The average of the two blob's x values
+        double averageCenter = (visionProcessor
+                .getNthSizeBlob(0).center.x
+                + visionProcessor.getNthSizeBlob(1).center.x) / 2.0;
+
+        if (averageCenter > GEAR_CAMERA_CENTER)// Too far right?
+            {
+            this.getTransmission().driveRaw(
+                    speed + DRIVE_CORRECTION_VALUE,
+                    speed - DRIVE_CORRECTION_VALUE);
+            }
+        else // Too far left?
+            {
+            this.getTransmission().driveRaw(
+                    speed - DRIVE_CORRECTION_VALUE,
+                    speed + DRIVE_CORRECTION_VALUE);
+            }
+        }
+    // Drives straight to the gear after the camera is done.
+    else if (driveToGearStatus == DriveToGearStatus.DRIVE_STRAIGHT)
+        {
+        driveStraight(speed);
+        }
+
+    return false;
+}
+
+private DriveToGearStatus driveToGearStatus = DriveToGearStatus.DRIVE_WITH_CAMERA;
+
+private enum DriveToGearStatus
+    {
+DRIVE_WITH_CAMERA, DRIVE_STRAIGHT
+    }
+
+
 // ================TUNABLES================
 
 // Number of milliseconds that will pass before collecting data on encoders
@@ -435,4 +507,18 @@ private static final int COLLECTION_TIME = 20;
 // 2, in inches. Used in turnDegrees.
 // TODO find this value.
 private static final int TURNING_RADIUS = 24;
+
+// Average between the two gear tape blobs
+private static final int GEAR_CAMERA_CENTER = 58;
+
+// The distance the camera will cutoff and switch to driving straight
+private static final int GEAR_AUTO_CUTOFF_DISTANCE = 40;
+
+private static final double GEAR_AUTO_FINISH_DISTANCE = 12;
+
+private static final double DRIVE_CORRECTION_VALUE = .1;
+
+
+
+
 }
