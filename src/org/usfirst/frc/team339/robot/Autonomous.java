@@ -70,134 +70,134 @@ public class Autonomous
  */
 private static enum MainState
     {
-    /**
-     * Reset Encoder Values, determine alliance, determine delay time,
-     * determine path
-     */
-    INIT,
-    /**
-     * Delays anywhere between 0 and 5 seconds, controlled by a potentiometer on
-     * the robot
-     */
-    DELAY_BEFORE_START,
-    /**
-     * Accelerates so we don't jerk our encoders.
-     */
-    ACCELERATE,
-    /**
-     * Stops, moving to whatever we tell it to afterwards.
-     */
-    BRAKE,
-    /**
-     * Drives part of the way to the center goal, so we don't have to trust the
-     * camera too far away.
-     */
-    STRAFE_TOWARD_TARGET_BEFORE_CAMERA,
-    /**
-     * Drives up the the gear.
-     */
-    DRIVE_FORWARD_TO_CENTER,
-    /**
-     * Drive to the side of the airship at normal speed. See
-     * DRIVE_FORWARD_TO_CENTER.
-     */
-    DRIVE_FORWARD_TO_SIDES,
-    /**
-     * Stops the robot after we've driven to the side of the airship, before we
-     * turn to face the gear peg
-     */
-    BRAKE_BEFORE_TURN_TO_GEAR_PEG,
-    /**
-     * Turn towards the peg deposit place on the airship
-     */
-    TURN_TO_GEAR_PEG,
-    /**
-     * 
-     */
-    DRIVE_STRAIGHT_AFTER_TURN,
-    /**
-     * 
-     */
-    BRAKE_AFTER_DRIVE_STRAIGHT_AFTER_TURN,
-    /**
-     * Stops our angular motion after we turn the the gear so we're at least
-     * partially aligned to the gear
-     */
-    BRAKE_AFTER_TURN_TO_GEAR_PEG,
-    /**
-     * Align with the vision strips to deposit gear
-     */
-    DRIVE_TO_GEAR_WITH_CAMERA,
-    /**
-     * If we don't see any blobs we strafe in without trying to use the camera,
-     * and hope for the best.
-     */
-    STRAFE_TO_GEAR_WITHOUT_CAMERA,
-    /**
-     * Drive up to the gear peg when we don't see any blobs.
-     */
-    DRIVE_CAREFULLY_TO_PEG,
-    /**
-     * Stops us moving up to the peg so we don't spear ourselves on it.
-     */
-    BRAKE_UP_TO_PEG,
-    /**
-     * 
-     */
-    TURN_TURRET_OUT_OF_THE_WAY,
-    /**
-     * Currently unused, may be used to regain vision targets, or make sure the
-     * gear is on the spring. It's a bit of a wildcard at the moment.
-     */
-    WIGGLE_WIGGLE,
-    /**
-     * We've got the gear on the peg (probably), but we're waiting for the human
-     * player to pull the gear out of our thingy.
-     */
-    WAIT_FOR_GEAR_EXODUS,
-    /**
-     * Wait after we detect the gear leaving our mechanism to make sure it's
-     * clear before we try and drive back.
-     */
-    DELAY_AFTER_GEAR_EXODUS,
-    /**
-     * Back away from whatever peg we're currently on.
-     */
-    DRIVE_AWAY_FROM_PEG,
-    /**
-     * On paths where we go for the hopper, Turn so we're facing it
-     */
-    TURN_TO_HOPPER,
-    /**
-     * On paths where we go for the hopper, drive until we slam into it.
-     */
-    DRIVE_UP_TO_HOPPER,
-    /**
-     * Since we drive backwards to get into range, we need to turn around to
-     * fire.
-     */
-    TURN_TO_FACE_GOAL,
-    /**
-     * On paths where we fire, back away from the gear peg and towards the
-     * boiler until we're in range to fire.
-     */
-    DRIVE_TO_FIRERANGE,
-    /**
-     * Use the camera to figure out if we're in range of the top boiler
-     */
-    DRIVE_INTO_RANGE_WITH_CAMERA,
-    /**
-     * Turn the turret so it's facing the boiler
-     */
-    ALIGN_TO_FIRE,
-    /**
-     * Empty out the hopper or fire until time out
-     */
-    FIRE,
-    /**
-     * Quit the path.
-     */
-    DONE
+/**
+ * Reset Encoder Values, determine alliance, determine delay time,
+ * determine path
+ */
+INIT,
+/**
+ * Delays anywhere between 0 and 5 seconds, controlled by a potentiometer on
+ * the robot
+ */
+DELAY_BEFORE_START,
+/**
+ * Accelerates so we don't jerk our encoders.
+ */
+ACCELERATE,
+/**
+ * Stops, moving to whatever we tell it to afterwards.
+ */
+BRAKE,
+/**
+ * Drives part of the way to the center goal, so we don't have to trust the
+ * camera too far away.
+ */
+STRAFE_TOWARD_TARGET_BEFORE_CAMERA,
+/**
+ * Drives up the the gear.
+ */
+DRIVE_FORWARD_TO_CENTER,
+/**
+ * Drive to the side of the airship at normal speed. See
+ * DRIVE_FORWARD_TO_CENTER.
+ */
+DRIVE_FORWARD_TO_SIDES,
+/**
+ * Stops the robot after we've driven to the side of the airship, before we
+ * turn to face the gear peg
+ */
+BRAKE_BEFORE_TURN_TO_GEAR_PEG,
+/**
+ * Turn towards the peg deposit place on the airship
+ */
+TURN_TO_GEAR_PEG,
+/**
+ * 
+ */
+DRIVE_STRAIGHT_AFTER_TURN,
+/**
+ * 
+ */
+BRAKE_AFTER_DRIVE_STRAIGHT_AFTER_TURN,
+/**
+ * Stops our angular motion after we turn the the gear so we're at least
+ * partially aligned to the gear
+ */
+BRAKE_AFTER_TURN_TO_GEAR_PEG,
+/**
+ * Align with the vision strips to deposit gear
+ */
+DRIVE_TO_GEAR_WITH_CAMERA,
+/**
+ * If we don't see any blobs we strafe in without trying to use the camera,
+ * and hope for the best.
+ */
+STRAFE_TO_GEAR_WITHOUT_CAMERA,
+/**
+ * Drive up to the gear peg when we don't see any blobs.
+ */
+DRIVE_CAREFULLY_TO_PEG,
+/**
+ * Stops us moving up to the peg so we don't spear ourselves on it.
+ */
+BRAKE_UP_TO_PEG,
+/**
+ * 
+ */
+TURN_TURRET_OUT_OF_THE_WAY,
+/**
+ * Currently unused, may be used to regain vision targets, or make sure the
+ * gear is on the spring. It's a bit of a wildcard at the moment.
+ */
+WIGGLE_WIGGLE,
+/**
+ * We've got the gear on the peg (probably), but we're waiting for the human
+ * player to pull the gear out of our thingy.
+ */
+WAIT_FOR_GEAR_EXODUS,
+/**
+ * Wait after we detect the gear leaving our mechanism to make sure it's
+ * clear before we try and drive back.
+ */
+DELAY_AFTER_GEAR_EXODUS,
+/**
+ * Back away from whatever peg we're currently on.
+ */
+DRIVE_AWAY_FROM_PEG,
+/**
+ * On paths where we go for the hopper, Turn so we're facing it
+ */
+TURN_TO_HOPPER,
+/**
+ * On paths where we go for the hopper, drive until we slam into it.
+ */
+DRIVE_UP_TO_HOPPER,
+/**
+ * Since we drive backwards to get into range, we need to turn around to
+ * fire.
+ */
+TURN_TO_FACE_GOAL,
+/**
+ * On paths where we fire, back away from the gear peg and towards the
+ * boiler until we're in range to fire.
+ */
+DRIVE_TO_FIRERANGE,
+/**
+ * Use the camera to figure out if we're in range of the top boiler
+ */
+DRIVE_INTO_RANGE_WITH_CAMERA,
+/**
+ * Turn the turret so it's facing the boiler
+ */
+ALIGN_TO_FIRE,
+/**
+ * Empty out the hopper or fire until time out
+ */
+FIRE,
+/**
+ * Quit the path.
+ */
+DONE
     }
 
 /**
@@ -207,36 +207,36 @@ private static enum MainState
  */
 private static enum AutoProgram
     {
-    /**
-     * The state we start in, runs once.
-     */
-    INIT,
+/**
+ * The state we start in, runs once.
+ */
+INIT,
 
-    /**
-     * The path where we start in the middle and (try to) place the gear on the
-     * center peg.
-     */
-    CENTER_GEAR_PLACEMENT,
+/**
+ * The path where we start in the middle and (try to) place the gear on the
+ * center peg.
+ */
+CENTER_GEAR_PLACEMENT,
 
-    /**
-     * The path where we start on the right side of the field and drive
-     * forwards, turn and place the gear, and try and turn around to attempt to
-     * fire. (Based on whether or not we are on the red or blue alliance)
-     */
-    SIDE_GEAR_PATH,
+/**
+ * The path where we start on the right side of the field and drive
+ * forwards, turn and place the gear, and try and turn around to attempt to
+ * fire. (Based on whether or not we are on the red or blue alliance)
+ */
+SIDE_GEAR_PATH,
 
-    /**
-     * The path where we start on the left side of the field and drive
-     * forwards, turn and place the gear, and try and turn around to attempt to
-     * fire. (Based on whether or not we are on the red or blue alliance)
-     */
-    BASELINE_PATH,
+/**
+ * The path where we start on the left side of the field and drive
+ * forwards, turn and place the gear, and try and turn around to attempt to
+ * fire. (Based on whether or not we are on the red or blue alliance)
+ */
+BASELINE_PATH,
 
-    /**
-     * We are done with this auto path! Yay! (or aww depending on if it
-     * worked...)
-     */
-    DONE
+/**
+ * We are done with this auto path! Yay! (or aww depending on if it
+ * worked...)
+ */
+DONE
     }
 
 
@@ -331,7 +331,7 @@ public static void init ()
     Hardware.leftRearEncoder.reset();
     Hardware.rightFrontEncoder.reset();
     Hardware.rightRearEncoder.reset();
-    
+
     Hardware.gearIntakeSolenoid.setReverse(true);
     // motors
     // Hardware.leftRearMotor.setInverted(true);
@@ -654,7 +654,7 @@ private static boolean baselinePath ()
     switch (currentState)
         {
         case INIT:
-        	
+
             Hardware.leftRearMotor.set(0);
             Hardware.leftFrontMotor.set(0);
             Hardware.rightRearMotor.set(0);
@@ -662,7 +662,7 @@ private static boolean baselinePath ()
             Hardware.autoStateTimer.reset();
             Hardware.autoStateTimer.start();
             initializeDriveProgram();
-            Hardware.ringlightRelay.set(Value.kOn);
+            // Hardware.ringlightRelay.set(Value.kOn);
             Hardware.autoStateTimer.start();
             currentState = MainState.DELAY_BEFORE_START;
             break;
@@ -672,7 +672,7 @@ private static boolean baselinePath ()
             Hardware.leftFrontMotor.set(0);
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
-            Hardware.ringlightRelay.set(Value.kOff);
+            Hardware.gearIntakeSolenoid.setReverse(true);
             // wait for timer to run out
             if (Hardware.autoStateTimer.get() >= delayBeforeAuto)
                 {
@@ -694,15 +694,10 @@ private static boolean baselinePath ()
             if (Hardware.autoDrive.driveInches(115,
                     DRIVE_SPEED) == true)
                 {
-                currentState = MainState.BRAKE_UP_TO_PEG;
-                }
-            break;
-        case BRAKE_UP_TO_PEG:
-            if (Hardware.autoDrive.brakeToZero(.3))
-                {
                 currentState = MainState.DONE;
                 }
             break;
+
         default:
         case DONE:
             Hardware.autoDrive.drive(0, 0, 0);
@@ -979,7 +974,7 @@ private static void initializeDriveProgram ()
     Hardware.autoDrive.resetEncoders();
     Hardware.mecanumDrive.drive(0, 0, 0);
     Hardware.gearIntakeSolenoid.setReverse(false);
-    
+
 }
 
 /**

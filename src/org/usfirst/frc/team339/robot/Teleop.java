@@ -80,7 +80,7 @@ public static void init ()
     // ---------------------------------------
     // Solenoid Init
     // ----------------------------------------
-    Hardware.gearIntakeSolenoid.setForward(false);
+    Hardware.gearIntakeSolenoid.setReverse(false);
     // ----------------------------------------
     // Servo init
     // ---------------------------------------
@@ -337,13 +337,15 @@ public static void periodic ()
         {
         Hardware.gearIntakeMotor.set(0.0);
         System.out.println("Something in gear intake!?");
-        if (Hardware.leftOperator.getTrigger() == true)
-            {
-            Hardware.gearIntakeSolenoid.setForward(true);
-            Hardware.gearIntakeMotor.set(-.5);
-            }
-        Hardware.gearIntakeSolenoid.setForward(false);
         }
+
+
+    if (Hardware.leftOperator.getTrigger() == true)
+        {
+        Hardware.gearIntakeSolenoid.setReverse(true);
+        Hardware.gearIntakeMotor.set(-.5);
+        }
+    Hardware.gearIntakeSolenoid.setReverse(false);
 
 
     // TESTING SHOOTER
@@ -591,10 +593,14 @@ public static void periodic ()
                 }
             }
         }
-System.out.println("Right Rear encoder distance: " + Hardware.rightRearEncoder.getDistance());
-System.out.println("Right Front encoder distance: "+ Hardware.rightFrontEncoder.getDistance());
-System.out.println("Left Rear encoder distance: " + Hardware.leftRearEncoder.getDistance());
-System.out.println("Left Front encoder distance: "+ Hardware.leftFrontEncoder.getDistance()); //TODO Take out
+    System.out.println("Right Rear encoder distance: "
+            + Hardware.rightRearEncoder.getDistance());
+    System.out.println("Right Front encoder distance: "
+            + Hardware.rightFrontEncoder.getDistance());
+    System.out.println("Left Rear encoder distance: "
+            + Hardware.leftRearEncoder.getDistance());
+    System.out.println("Left Front encoder distance: "
+            + Hardware.leftFrontEncoder.getDistance()); // TODO Take out
 } // end
   // Periodic
 
