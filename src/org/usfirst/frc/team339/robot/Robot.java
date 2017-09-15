@@ -103,6 +103,7 @@ public void autonomousInit ()
     // setup
     // ---------------------------------------
     System.out.println("Started AutonousInit().");
+    
     // =========================================================
     // User code goes below here
     // =========================================================
@@ -249,6 +250,7 @@ public void robotInit ()
     Hardware.leftRearEncoder.reset();
     Hardware.rightFrontEncoder.reset();
     Hardware.rightRearEncoder.reset();
+    Hardware.gearIntakeMotor.set(0.0);
     // change stuff based on kilroy version
     if (Hardware.isRunningOnKilroyXVIII == true)
         {
@@ -366,6 +368,7 @@ public void robotInit ()
     // -------------------------------------
     if (Hardware.isRunningOnKilroyXVIII)
         {
+    	Hardware.gearIntakeSolenoid.setForward(false);
         // CameraServer.getInstance().addAxisCamera("10.3.39.11");
         }
     else

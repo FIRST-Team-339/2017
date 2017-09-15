@@ -331,6 +331,8 @@ public static void init ()
     Hardware.leftRearEncoder.reset();
     Hardware.rightFrontEncoder.reset();
     Hardware.rightRearEncoder.reset();
+    
+    Hardware.gearIntakeSolenoid.setReverse(true);
     // motors
     // Hardware.leftRearMotor.setInverted(true);
     // Hardware.intakeMotor.setInverted(true);
@@ -652,6 +654,7 @@ private static boolean baselinePath ()
     switch (currentState)
         {
         case INIT:
+        	
             Hardware.leftRearMotor.set(0);
             Hardware.leftFrontMotor.set(0);
             Hardware.rightRearMotor.set(0);
@@ -659,6 +662,7 @@ private static boolean baselinePath ()
             Hardware.autoStateTimer.reset();
             Hardware.autoStateTimer.start();
             initializeDriveProgram();
+            Hardware.ringlightRelay.set(Value.kOn);
             Hardware.autoStateTimer.start();
             currentState = MainState.DELAY_BEFORE_START;
             break;
@@ -668,6 +672,7 @@ private static boolean baselinePath ()
             Hardware.leftFrontMotor.set(0);
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
+            Hardware.ringlightRelay.set(Value.kOff);
             // wait for timer to run out
             if (Hardware.autoStateTimer.get() >= delayBeforeAuto)
                 {
@@ -973,6 +978,8 @@ private static void initializeDriveProgram ()
         }
     Hardware.autoDrive.resetEncoders();
     Hardware.mecanumDrive.drive(0, 0, 0);
+    Hardware.gearIntakeSolenoid.setReverse(false);
+    
 }
 
 /**

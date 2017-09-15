@@ -1,9 +1,12 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 /bin/
 /build/
 /dist/
 =======
 <<<<<<< HEAD
+=======
+>>>>>>> refs/remotes/origin/master
 *.class
 *.html
 ~*
@@ -30,9 +33,13 @@ doc/
 /sysProps.xml
 
 /javadoc.xml
+<<<<<<< HEAD
 =======
 /build/
 /dist/
 /bin/
 >>>>>>> refs/remotes/origin/OpenCV_Testing
+>>>>>>> refs/remotes/origin/master
+=======
+/.classpath
 >>>>>>> refs/remotes/origin/master

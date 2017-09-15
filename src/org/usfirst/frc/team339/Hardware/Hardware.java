@@ -15,11 +15,13 @@
 package org.usfirst.frc.team339.Hardware;
 
 import com.ni.vision.NIVision.MeasurementType;
+import org.usfirst.frc.team339.HardwareInterfaces.DoubleSolenoid;
 import org.usfirst.frc.team339.HardwareInterfaces.DoubleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.HRLVMaxSonarEZ;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyGyro;
+import org.usfirst.frc.team339.HardwareInterfaces.LightSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.RobotPotentiometer;
 import org.usfirst.frc.team339.HardwareInterfaces.SingleThrowSwitch;
@@ -92,7 +94,7 @@ public static final double CAMERA_MOUNT_ANGLE = Math.toRadians(65);
 // DIGITAL I/O CLASSES
 // **********************************************************
 // @ANE add in port number, FORCE ISAAC TO DO IT
-// public static DigitalInput photoSwitch = new DigitalInput();
+public static LightSensor photoSwitch = new LightSensor(18);// 18 as real port
 
 
 // ====================================
@@ -238,7 +240,9 @@ public static Compressor compressor = new Compressor();
 // Double Solenoids
 // ------------------------------------
 
-// public static DoubleSolenoid gearIntakeSolenoid = DoubleSolenoid;
+public static DoubleSolenoid gearIntakeSolenoid = new DoubleSolenoid(0,
+        1);
+
 
 // ------------------------------------
 // Single Solenoids
@@ -410,6 +414,8 @@ public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
 public static Drive autoDrive = new Drive(mecanumDrive, imageProcessor,
         rightFrontEncoder, rightRearEncoder,
         leftFrontEncoder, leftRearEncoder, ultraSonic, driveGyro);
+        
+  
 
 public static org.usfirst.frc.team339.HardwareInterfaces.newtransmission.Drive newDrive = new org.usfirst.frc.team339.HardwareInterfaces.newtransmission.Drive(
         transmission, leftFrontEncoder, rightFrontEncoder,
