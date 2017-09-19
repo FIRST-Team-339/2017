@@ -614,8 +614,8 @@ public static void printStatements ()
     // System.out
     // .println("Side Gear Path: " + Hardware.sideGearPath.isOn());
 
-    System.out.println("UltraSonic distance from bumper: "
-            + Hardware.ultraSonic.getDistanceFromNearestBumper());
+    // System.out.println("UltraSonic distance from bumper: "
+    // + Hardware.ultraSonic.getDistanceFromNearestBumper());
     // System.out.println("Right UltraSonic refined distance: "
     // + Hardware.ultraSonic.getRefinedDistanceValue());
     // System.out.println("Right UltraSonic raw distance: "
