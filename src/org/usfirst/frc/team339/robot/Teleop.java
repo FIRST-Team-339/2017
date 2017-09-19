@@ -69,6 +69,7 @@ public static void init ()
     Hardware.rightFrontEncoder.reset();
     Hardware.rightRearEncoder.reset();
     Hardware.leftRearEncoder.reset();
+
     // --------------------------------------
     // initialize all motors here
     // --------------------------------------

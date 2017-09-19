@@ -103,7 +103,7 @@ public void autonomousInit ()
     // setup
     // ---------------------------------------
     System.out.println("Started AutonousInit().");
-    
+
     // =========================================================
     // User code goes below here
     // =========================================================
@@ -276,8 +276,8 @@ public void robotInit ()
         Hardware.mecanumDrive.setFirstGearPercentage(
                 KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
         // invert motors
-        Hardware.rightFrontMotor.setInverted(true);
-        Hardware.rightRearMotor.setInverted(true);
+        Hardware.rightFrontMotor.setInverted(false);
+        Hardware.rightRearMotor.setInverted(false);
         Hardware.leftFrontMotor.setInverted(false);
         Hardware.leftRearMotor.setInverted(true);
         Hardware.newClimberMotor.setInverted(false);
@@ -368,7 +368,7 @@ public void robotInit ()
     // -------------------------------------
     if (Hardware.isRunningOnKilroyXVIII)
         {
-    	Hardware.gearIntakeSolenoid.setForward(false);
+        Hardware.gearIntakeSolenoid.setForward(false);
         // CameraServer.getInstance().addAxisCamera("10.3.39.11");
         }
     else
