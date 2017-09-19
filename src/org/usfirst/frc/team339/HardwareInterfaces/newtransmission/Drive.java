@@ -437,7 +437,14 @@ private boolean turnDegreesInit = true;
  * Driving functions that change from game to game, such as using the camera to
  * score, etc.
  */
-
+/**
+ * Autonomously drives to the gear using the camera, and when we are too close
+ * to see the targets, then switch to using the ultrasonic.
+ * 
+ * @param speed
+ *            how fast the robot will move
+ * @return whether or not the robot has finished the program.
+ */
 public boolean driveToGear (double speed)
 {
     // If the ultrasonic reads that we are close enough to the wall, then shut
@@ -447,6 +454,7 @@ public boolean driveToGear (double speed)
         {
         this.driveToGearStatus = DriveToGearStatus.DRIVE_WITH_CAMERA;
         this.getTransmission().driveRaw(0.0, 0.0);
+        // We are in place
         return true;
         }
     else if (this.ultrasonic
@@ -486,6 +494,7 @@ public boolean driveToGear (double speed)
         driveStraight(speed);
         }
 
+    // Keep driving, we are not there yet.
     return false;
 }
 

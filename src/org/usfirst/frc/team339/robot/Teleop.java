@@ -356,7 +356,10 @@ public static void periodic ()
         Hardware.gearIntakeSolenoid.setReverse(true);
         Hardware.gearIntakeMotor.set(-.5);
         }
-    Hardware.gearIntakeSolenoid.setReverse(false);
+    else
+        {
+        Hardware.gearIntakeSolenoid.setReverse(false);
+        }
 
 
     // TESTING SHOOTER
