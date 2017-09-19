@@ -354,7 +354,7 @@ public static void periodic ()
     if (Hardware.leftOperator.getTrigger() == true)
         {
         Hardware.gearIntakeSolenoid.setReverse(true);
-        Hardware.gearIntakeMotor.set(-.5);
+        // Hardware.gearIntakeMotor.set(-.5);
         }
     else
         {
