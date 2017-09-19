@@ -480,7 +480,10 @@ public static void periodic ()
 
     if (isTestingDrive == false)
         {
-        Hardware.transmission.drive(Hardware.leftDriver);
+        // Hardware.transmission.drive(Hardware.leftDriver);
+        Hardware.mecanumDrive.drive(Hardware.leftDriver.getMagnitude(),
+                Hardware.leftDriver.getDirectionDegrees(),
+                Hardware.leftDriver.getZ());
         }
 
     // ----------------------TESTING DRIVE FUNCTIONS--------------------
