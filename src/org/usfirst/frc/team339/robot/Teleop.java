@@ -351,7 +351,8 @@ public static void periodic ()
         System.out.println("Something in gear intake!?");
         }
 
-
+    // changes intake state. if not working ask the wirers to reverse the
+    // pnuematics
     if (Hardware.leftOperator.getTrigger() == true)
         {
         Hardware.gearIntakeSolenoid.setReverse(true);
