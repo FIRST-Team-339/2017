@@ -69,6 +69,7 @@ public static void init ()
     Hardware.rightFrontEncoder.reset();
     Hardware.rightRearEncoder.reset();
     Hardware.leftRearEncoder.reset();
+
     // --------------------------------------
     // initialize all motors here
     // --------------------------------------
@@ -81,7 +82,7 @@ public static void init ()
     // ---------------------------------------
     // Solenoid Init
     // ----------------------------------------
-    Hardware.gearIntakeSolenoid.setReverse(false);
+    // Hardware.gearIntakeSolenoid.setReverse(false);
     // ----------------------------------------
     // Servo init
     // ---------------------------------------
@@ -354,7 +355,7 @@ public static void periodic ()
     if (Hardware.leftOperator.getTrigger() == true)
         {
         Hardware.gearIntakeSolenoid.setReverse(true);
-        Hardware.gearIntakeMotor.set(-.5);
+        // Hardware.gearIntakeMotor.set(-.5);
         }
     else
         {
@@ -480,7 +481,10 @@ public static void periodic ()
 
     if (isTestingDrive == false)
         {
-        Hardware.transmission.drive(Hardware.leftDriver);
+        // Hardware.transmission.drive(Hardware.leftDriver);
+        Hardware.mecanumDrive.drive(Hardware.leftDriver.getMagnitude(),
+                Hardware.leftDriver.getDirectionDegrees(),
+                Hardware.leftDriver.getZ());
         }
 
     // ----------------------TESTING DRIVE FUNCTIONS--------------------
@@ -610,8 +614,7 @@ public static void printStatements ()
     // System.out
     // .println("Side Gear Path: " + Hardware.sideGearPath.isOn());
 
-//    System.out.println("UltraSonic distance from bumper: "
-//            + Hardware.ultraSonic.getDistanceFromNearestBumper());
+//github.com/FIRST-Team-339/2017.git
     // System.out.println("Right UltraSonic refined distance: "
     // + Hardware.ultraSonic.getRefinedDistanceValue());
     // System.out.println("Right UltraSonic raw distance: "
