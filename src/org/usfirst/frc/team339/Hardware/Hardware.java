@@ -95,6 +95,7 @@ public static final double CAMERA_MOUNT_ANGLE = Math.toRadians(65);
 // **********************************************************
 // @ANE add in port number, FORCE ISAAC TO DO IT
 public static LightSensor photoSwitch = new LightSensor(18);// 18 as real port
+                                                            // TODO CHANGE
 
 
 // ====================================
@@ -132,7 +133,6 @@ public static TalonSRX leftFrontMotor = new TalonSRX(4);
 // public static Victor elevatorMotor = new Victor(0);// PWM 0
 
 public static Victor newClimberMotor = new Victor(5);// was intake motor
-
 
 public static Victor gearIntakeMotor = new Victor(0); // was agitator motor
                                                       // did this to make
@@ -414,8 +414,8 @@ public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
 public static Drive autoDrive = new Drive(mecanumDrive, imageProcessor,
         rightFrontEncoder, rightRearEncoder,
         leftFrontEncoder, leftRearEncoder, ultraSonic, driveGyro);
-        
-  
+
+
 
 public static org.usfirst.frc.team339.HardwareInterfaces.newtransmission.Drive newDrive = new org.usfirst.frc.team339.HardwareInterfaces.newtransmission.Drive(
         transmission, leftFrontEncoder, rightFrontEncoder,

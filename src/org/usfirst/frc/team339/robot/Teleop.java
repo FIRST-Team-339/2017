@@ -185,6 +185,8 @@ private static CanTalonPIDTuner CanTuner = new CanTalonPIDTuner(
 private static SmartDashboardPIDTunerDevice PIDTuner = new SmartDashboardPIDTunerDevice(
         CanTuner);
 
+private static boolean disableGearMotor = false;
+
 // tune pid loop
 /**
  * User Periodic code for teleop mode should go here. Will be called
@@ -335,7 +337,21 @@ public static void periodic ()
     // "down" position and run the motors in reverse at half speed.
     //
     //
-    if (Hardware.rightOperator.getRawButton(3) == true)
+
+
+
+    if (Hardware.leftOperator.getTrigger() == true
+            && Hardware.photoSwitch.isOn() == false)
+        {
+        Hardware.gearIntakeSolenoid.setReverse(true);
+        Hardware.gearIntakeMotor.set(1.0);
+        }
+    else if (Hardware.leftOperator.getTrigger() == true)
+        {
+        Hardware.gearIntakeMotor.set(0.0);
+        Hardware.gearIntakeSolenoid.setReverse(true);
+        }
+    else if (Hardware.rightOperator.getRawButton(3) == true)
         {
         Hardware.gearIntakeMotor.set(-1.0);
         }
@@ -344,20 +360,9 @@ public static void periodic ()
         {
         Hardware.gearIntakeMotor.set(1.0);
         }
-    else if (Hardware.photoSwitch.isOn() == true)
-        {
-        Hardware.gearIntakeMotor.set(0.0);
-        System.out.println("Something in gear intake!?");
-        }
-
-
-    if (Hardware.leftOperator.getTrigger() == true)
-        {
-        Hardware.gearIntakeSolenoid.setReverse(true);
-        Hardware.gearIntakeMotor.set(-.5);
-        }
     else
         {
+        Hardware.gearIntakeMotor.set(0.0);
         Hardware.gearIntakeSolenoid.setReverse(false);
         }
 
