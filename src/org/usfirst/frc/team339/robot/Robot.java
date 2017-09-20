@@ -366,9 +366,10 @@ public void robotInit ()
     // NOTE: The AXIS Camera getInstance() MUST
     // Preceed the USB camera setResolution() code
     // -------------------------------------
+    Hardware.gearIntakeSolenoid.setForward(false);
     if (Hardware.isRunningOnKilroyXVIII)
         {
-        Hardware.gearIntakeSolenoid.setForward(false);
+
         // CameraServer.getInstance().addAxisCamera("10.3.39.11");
         }
     else

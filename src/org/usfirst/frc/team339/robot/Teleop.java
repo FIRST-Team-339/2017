@@ -82,7 +82,7 @@ public static void init ()
     // ---------------------------------------
     // Solenoid Init
     // ----------------------------------------
-    Hardware.gearIntakeSolenoid.setReverse(false);
+    // Hardware.gearIntakeSolenoid.setReverse(false);
     // ----------------------------------------
     // Servo init
     // ---------------------------------------
