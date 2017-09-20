@@ -76,7 +76,7 @@ public static void init ()
     Hardware.rightRearMotor.set(0.0);
     Hardware.rightFrontMotor.set(0.0);
     Hardware.leftFrontMotor.set(0.0);
-    Hardware.newClimberMotor.set(0.0);
+    //Hardware.newClimberMotor.set(0.0);
     Hardware.gearIntakeMotor.set(0.0);
     // ---------------------------------------
     // Solenoid Init
@@ -553,8 +553,8 @@ public static void printStatements ()
     // Hardware.rightRearMotor.get());
     // System.out.println("Left Rear Motor Controller: " +
     // Hardware.leftRearMotor.get());
-    // System.out.println("Right Front Motor Controller: "
-    // + Hardware.rightFrontMotor.get());
+//     System.out.println("Right Front Motor Controller: "
+//     + Hardware.rightFrontMotor.get());
     // System.out.println("Flywheel thingy thing: "
     // + Hardware.shooter.calculateRPMToMakeGoal(9.25) * .5);
     // System.out.println("Flywheel thingy thing speed really: "
@@ -610,8 +610,8 @@ public static void printStatements ()
     // System.out
     // .println("Side Gear Path: " + Hardware.sideGearPath.isOn());
 
-    System.out.println("UltraSonic distance from bumper: "
-            + Hardware.ultraSonic.getDistanceFromNearestBumper());
+//    System.out.println("UltraSonic distance from bumper: "
+//            + Hardware.ultraSonic.getDistanceFromNearestBumper());
     // System.out.println("Right UltraSonic refined distance: "
     // + Hardware.ultraSonic.getRefinedDistanceValue());
     // System.out.println("Right UltraSonic raw distance: "

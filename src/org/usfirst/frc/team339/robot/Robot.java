@@ -280,7 +280,7 @@ public void robotInit ()
         Hardware.rightRearMotor.setInverted(true);
         Hardware.leftFrontMotor.setInverted(false);
         Hardware.leftRearMotor.setInverted(true);
-        Hardware.newClimberMotor.setInverted(false);
+      //  Hardware.newClimberMotor.setInverted(false);
         // @ANE removed for sanity's sake
         // Hardware.intakeMotor.setInverted(true);
 
