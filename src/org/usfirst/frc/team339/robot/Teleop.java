@@ -69,6 +69,7 @@ public static void init ()
     Hardware.rightFrontEncoder.reset();
     Hardware.rightRearEncoder.reset();
     Hardware.leftRearEncoder.reset();
+
     // --------------------------------------
     // initialize all motors here
     // --------------------------------------
@@ -76,12 +77,12 @@ public static void init ()
     Hardware.rightRearMotor.set(0.0);
     Hardware.rightFrontMotor.set(0.0);
     Hardware.leftFrontMotor.set(0.0);
-    Hardware.newClimberMotor.set(0.0);
+    // Hardware.newClimberMotor.set(0.0);
     Hardware.gearIntakeMotor.set(0.0);
     // ---------------------------------------
     // Solenoid Init
     // ----------------------------------------
-    Hardware.gearIntakeSolenoid.setReverse(false);
+    // Hardware.gearIntakeSolenoid.setReverse(false);
     // ----------------------------------------
     // Servo init
     // ---------------------------------------
@@ -618,8 +619,7 @@ public static void printStatements ()
     // System.out
     // .println("Side Gear Path: " + Hardware.sideGearPath.isOn());
 
-    System.out.println("UltraSonic distance from bumper: "
-            + Hardware.ultraSonic.getDistanceFromNearestBumper());
+    // github.com/FIRST-Team-339/2017.git
     // System.out.println("Right UltraSonic refined distance: "
     // + Hardware.ultraSonic.getRefinedDistanceValue());
     // System.out.println("Right UltraSonic raw distance: "
