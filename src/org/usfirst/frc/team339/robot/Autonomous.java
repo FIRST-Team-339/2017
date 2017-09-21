@@ -275,7 +275,7 @@ private static final double ALIGN_CORRECT_VAR = 30;// 45
  */
 private static final double DRIVE_SPEED = .6;// .45
 
-private static final double ALIGN_SPEED = .4;
+private static final double ALIGN_SPEED = .25;
 
 /**
  * Determines what value we set the motors backwards to in order to brake, in
@@ -516,10 +516,10 @@ private static boolean placeCenterGearPath ()
             initializeDriveProgram();
             Hardware.autoStateTimer.start();
             Hardware.ringlightRelay.set(Value.kOn);
-            if (Hardware.backupOrFireOrHopper.isOn())
-                {
-                backUp = true;
-                }
+            // if (Hardware.backupOrFireOrHopper.isOn())
+            // {
+            // backUp = true;
+            // }
             currentState = MainState.DELAY_BEFORE_START;
             break;
         case DELAY_BEFORE_START:
@@ -532,78 +532,23 @@ private static boolean placeCenterGearPath ()
             if (Hardware.autoStateTimer.get() >= delayBeforeAuto)
                 {
                 // Hardware.axisCamera.saveImagesSafely();
-                currentState = MainState.ACCELERATE;
-                postAccelerateState = MainState.STRAFE_TOWARD_TARGET_BEFORE_CAMERA;
+                currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
                 Hardware.autoStateTimer.reset();
                 Hardware.autoStateTimer.start();
-                }
-            break;
-        case ACCELERATE:
-            // Accelerate towards the center gear peg, to save the encoders
-            cameraState = AlignReturnType.WAITING;
-            if (Hardware.autoDrive.accelerate(
-                    getRealSpeed(DRIVE_SPEED),
-                    TIME_TO_ACCELERATE) == true)
-                {
-                // Not using this in this state machine, only for left/right
-                // side
-                currentState = postAccelerateState;
-                Hardware.axisCamera.saveImagesSafely();
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                }
-            // Purge the ultrasonic of it's current values while we are
-            // accelerating
-            Hardware.ultraSonic.getDistanceFromNearestBumper();
-            break;
-        case BRAKE:
-            cameraState = AlignReturnType.WAITING;
-            if (Hardware.autoDrive.brakeToZero(DRIVE_SPEED / 2.0))
-                {
-                // Not using this in this state machine, only for left/right
-                // side
-                currentState = postBrakeState;
-                Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
-                }
-            // Purge the ultrasonic of it's current values while we are
-            // braking
-            Hardware.ultraSonic.getDistanceFromNearestBumper();
-            break;
-        case STRAFE_TOWARD_TARGET_BEFORE_CAMERA:
-            Hardware.autoDrive.strafeStraight(Direction.LEFT, .5,
-                    DRIVE_SPEED, .05);
-            if (Hardware.autoStateTimer.get() > 1)// TODO random second number
-                {
-                Hardware.autoDrive.drive(0.0, 0.0, 0.0);
-                postBrakeState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
-                currentState = MainState.BRAKE;
                 }
             break;
         case DRIVE_TO_GEAR_WITH_CAMERA:
-            // TODO have the ability to back up afterwards.
-            // Get our return type from the strafe to gear.
-            // NOTE: if the constructor for autoDrive uses a mecanum
-            // transmission,
-            // we will strafe. If it uses a four wheel transmission, it will
-            // wiggle wiggle on it's way to the peg
-            cameraState = Hardware.autoDrive.driveToGear(DRIVE_SPEED,
-                    .4, .121875, .03, Hardware.gearSensor1.isOn()
-                            || Hardware.gearSensor2.isOn(),
-                    .5, .05);
-
-            System.out.println("strafeToGear state: " + cameraState);
-            if (cameraState == AlignReturnType.NO_BLOBS)
+            if (Hardware.newDrive.driveToGear(ALIGN_SPEED) == true)
                 {
-                // If we don't see anything, just drive forwards till we are
-                // close enough
-                currentState = MainState.DONE;
+                currentState = MainState.WAIT_FOR_GEAR_EXODUS;
                 }
-            if (cameraState == AlignReturnType.DONE)
+            break;
+        case WAIT_FOR_GEAR_EXODUS:
+            if (Hardware.photoSwitch.isOn() == false)
                 {
-                // If we are close enough to the wall, stop.
-                postBrakeState = MainState.WAIT_FOR_GEAR_EXODUS;
-                currentState = MainState.BRAKE;
+                currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
+                Hardware.autoStateTimer.reset();
+                Hardware.autoStateTimer.start();
                 }
             break;
         case DELAY_AFTER_GEAR_EXODUS:
@@ -613,28 +558,11 @@ private static boolean placeCenterGearPath ()
             Hardware.rightFrontMotor.set(0);
             if (Hardware.autoStateTimer.get() >= 1.5)
                 {
-                Hardware.axisCamera.saveImagesSafely();
-                Hardware.autoDrive.resetEncoders();
-                if (goForFire)
-                    {
-                    currentState = MainState.DRIVE_AWAY_FROM_PEG;
-                    }
-                else
-                    {
-                    currentState = MainState.DONE;
-                    }
-                }
-            break;
-        case DRIVE_AWAY_FROM_PEG:
-            if (Hardware.autoDrive.driveInches(36.0, getRealSpeed(-.5)))
-                {
                 currentState = MainState.DONE;
                 }
-
             break;
         default:
         case DONE:
-            Hardware.axisCamera.saveImagesSafely();
             return true;
         }
     return false;

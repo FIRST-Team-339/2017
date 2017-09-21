@@ -316,8 +316,8 @@ public static void periodic ()
         // System.out.println("climber speed = "
         // + Hardware.newClimberMotor.getSpeed());
         }
-    else if (Hardware.rightOperator.getRawButton(6) == true
-            && Hardware.rightOperator.getRawButton(7) == true)
+    else if (Hardware.rightOperator.getRawButton(10) == true
+            && Hardware.rightOperator.getRawButton(11) == true)
         {
         Hardware.newClimberMotor.set(reverseClimbingSpeed);
         }
@@ -326,46 +326,44 @@ public static void periodic ()
         Hardware.newClimberMotor.set(0.0);// STOP THE MOTOR
         }
 
-    // Calibration code
 
-    // Hardware.newClimberMotor.set(Hardware.rightOperator.getY());
+    // =================GEAR ARM & MOTOR CONTROLS================
 
-    // @ANE Gear Intake Mechanism
-    // should set rightOperator button 3 to reverse gearintake,
-    // sets rightOperator button 2 to run intake as long as nothing is
-    // setting off the photoswitch, if something is setting off the
-    // photoswitch and the trigger is pressed then set solenoid to the
-    // "down" position and run the motors in reverse at half speed.
-    //
-    //
-
-
-
+    // Trigger: lower arm and turn on wheels if Make-break is not tripped OR
+    // override
     if (Hardware.leftOperator.getTrigger() == true
-            && Hardware.photoSwitch.isOn() == false)
+            && (Hardware.photoSwitch.isOn() == false
+                    || Hardware.leftOperator.getRawButton(2)))
         {
         Hardware.gearIntakeSolenoid.setReverse(true);
         Hardware.gearIntakeMotor.set(1.0);
         }
+    // Trigger: lower arm only (make-break tripped)
     else if (Hardware.leftOperator.getTrigger() == true)
         {
         Hardware.gearIntakeMotor.set(0.0);
         Hardware.gearIntakeSolenoid.setReverse(true);
         }
+    // Right op button 3: Eject gear
     else if (Hardware.rightOperator.getRawButton(3) == true)
         {
         Hardware.gearIntakeMotor.set(-1.0);
         }
-    else if ((Hardware.photoSwitch.isOn() == false)
-            && (Hardware.rightOperator.getRawButton(2) == true))
+    // Right op button 2: Bring in gear (Make-break not tripped OR override)
+    else if ((Hardware.photoSwitch.isOn() == false
+            || Hardware.leftOperator.getRawButton(2))
+            && (Hardware.rightOperator.getRawButton(2)))
         {
         Hardware.gearIntakeMotor.set(1.0);
         }
+    // If nothing else, bring up arm and stop wheels.
     else
         {
         Hardware.gearIntakeMotor.set(0.0);
         Hardware.gearIntakeSolenoid.setReverse(false);
         }
+
+    // ================END GEAR ARM & MOTOR CONTROLS================
 
 
     // TESTING SHOOTER
