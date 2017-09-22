@@ -280,7 +280,7 @@ public void robotInit ()
         Hardware.rightRearMotor.setInverted(false);
         Hardware.leftFrontMotor.setInverted(false);
         Hardware.leftRearMotor.setInverted(true);
-      //  Hardware.newClimberMotor.setInverted(false);
+        // Hardware.newClimberMotor.setInverted(false);
         // @ANE removed for sanity's sake
         // Hardware.intakeMotor.setInverted(true);
 
@@ -366,7 +366,7 @@ public void robotInit ()
     // NOTE: The AXIS Camera getInstance() MUST
     // Preceed the USB camera setResolution() code
     // -------------------------------------
-    Hardware.gearIntakeSolenoid.setForward(false);
+    Hardware.gearIntakeSolenoid.setForward(true);
     if (Hardware.isRunningOnKilroyXVIII)
         {
 

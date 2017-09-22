@@ -173,6 +173,7 @@ public static void init ()
     // Hardware.driveGyro.calibrate();
     // Hardware.driveGyro.reset();
     Hardware.transmission.setGear(0);
+    Hardware.gearIntakeSolenoid.setReverse(false);
 
 } // end Init
 
@@ -329,38 +330,36 @@ public static void periodic ()
 
     // =================GEAR ARM & MOTOR CONTROLS================
 
-    // Trigger: lower arm and turn on wheels if Make-break is not tripped OR
-    // override
-    if (Hardware.leftOperator.getTrigger() == true
+    // INTAKE SOLENOID
+    // Trigger: Brings down arm.
+    if (Hardware.leftOperator.getTrigger())
+        {
+        Hardware.gearIntakeSolenoid.setReverse(true);
+        }
+    // Default: Arm is up.
+    else
+        {
+        Hardware.gearIntakeSolenoid.setReverse(false);
+        }
+
+    // INTAKE MOTOR:
+
+    // Left Op Btn 2: Bring in gear. Right Op Btn 2: override
+    if (Hardware.leftOperator.getRawButton(2)
             && (Hardware.photoSwitch.isOn() == false
-                    || Hardware.leftOperator.getRawButton(2)))
+                    || Hardware.rightOperator.getRawButton(2)))
         {
-        Hardware.gearIntakeSolenoid.setReverse(true);
-        Hardware.gearIntakeMotor.set(1.0);
+        Hardware.gearIntakeMotor.set(1);
         }
-    // Trigger: lower arm only (make-break tripped)
-    else if (Hardware.leftOperator.getTrigger() == true)
+    // Left Op Btn 3: Push out gear.
+    else if (Hardware.leftOperator.getRawButton(3))
         {
-        Hardware.gearIntakeMotor.set(0.0);
-        Hardware.gearIntakeSolenoid.setReverse(true);
+        Hardware.gearIntakeMotor.set(-1);
         }
-    // Right op button 3: Eject gear
-    else if (Hardware.rightOperator.getRawButton(3) == true)
-        {
-        Hardware.gearIntakeMotor.set(-1.0);
-        }
-    // Right op button 2: Bring in gear (Make-break not tripped OR override)
-    else if ((Hardware.photoSwitch.isOn() == false
-            || Hardware.leftOperator.getRawButton(2))
-            && (Hardware.rightOperator.getRawButton(2)))
-        {
-        Hardware.gearIntakeMotor.set(1.0);
-        }
-    // If nothing else, bring up arm and stop wheels.
+    // Default: Motor set to 0.
     else
         {
         Hardware.gearIntakeMotor.set(0.0);
-        Hardware.gearIntakeSolenoid.setReverse(false);
         }
 
     // ================END GEAR ARM & MOTOR CONTROLS================

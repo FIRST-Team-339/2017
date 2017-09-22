@@ -94,8 +94,7 @@ public static final double CAMERA_MOUNT_ANGLE = Math.toRadians(65);
 // DIGITAL I/O CLASSES
 // **********************************************************
 // @ANE add in port number, FORCE ISAAC TO DO IT
-public static LightSensor photoSwitch = new LightSensor(18);// 18 as real port
-                                                            // TODO CHANGE
+public static LightSensor photoSwitch = new LightSensor(18);
 
 
 // ====================================
@@ -133,6 +132,7 @@ public static TalonSRX leftFrontMotor = new TalonSRX(4);
 // public static Victor elevatorMotor = new Victor(0);// PWM 0
 
 public static Victor newClimberMotor = new Victor(5);// was intake motor
+
 
 public static Victor gearIntakeMotor = new Victor(0); // was agitator motor
                                                       // did this to make
@@ -292,7 +292,7 @@ public static final double KILROY_XVII_US_SCALING_FACTOR = .05;// .0493151;
 public static UsbCamera camForward = CameraServer.getInstance()
         .startAutomaticCapture(0);
 
-public static KilroyCamera axisCamera = new KilroyCamera(false);
+public static KilroyCamera axisCamera = new KilroyCamera(true);
 // "10.13.39.11");// TODO change
 
 public static VisionScript visionScript = new VisionScript(

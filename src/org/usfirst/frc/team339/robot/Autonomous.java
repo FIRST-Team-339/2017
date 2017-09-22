@@ -80,6 +80,11 @@ INIT,
  * the robot
  */
 DELAY_BEFORE_START,
+
+/**
+ * Waits for the gear to pick itself up before moving.
+ */
+WAIT_FOR_GEAR_INIT,
 /**
  * Accelerates so we don't jerk our encoders.
  */
@@ -520,7 +525,16 @@ private static boolean placeCenterGearPath ()
             // {
             // backUp = true;
             // }
+            Hardware.gearIntakeSolenoid.setReverse(false);
             currentState = MainState.DELAY_BEFORE_START;
+            break;
+        case WAIT_FOR_GEAR_INIT:
+            Hardware.ultraSonic.getValue(); // Purges the ultrasonic.
+            if (Hardware.autoStateTimer.get() > 1.5)
+                {
+                currentState = MainState.DELAY_BEFORE_START;
+                Hardware.autoStateTimer.reset();
+                }
             break;
         case DELAY_BEFORE_START:
             // stop all the motors to feed the watchdog
@@ -531,20 +545,21 @@ private static boolean placeCenterGearPath ()
             // wait for timer to run out
             if (Hardware.autoStateTimer.get() >= delayBeforeAuto)
                 {
-                // Hardware.axisCamera.saveImagesSafely();
+                Hardware.axisCamera.saveImagesSafely();
                 currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
+                Hardware.autoStateTimer.stop();
                 Hardware.autoStateTimer.reset();
-                Hardware.autoStateTimer.start();
                 }
             break;
         case DRIVE_TO_GEAR_WITH_CAMERA:
             if (Hardware.newDrive.driveToGear(ALIGN_SPEED) == true)
                 {
+                Hardware.gearIntakeSolenoid.setReverse(true);
                 currentState = MainState.WAIT_FOR_GEAR_EXODUS;
                 }
             break;
         case WAIT_FOR_GEAR_EXODUS:
-            if (Hardware.photoSwitch.isOn() == false)
+            if (Hardware.photoSwitch.isOn() == true)
                 {
                 currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
                 Hardware.autoStateTimer.reset();
