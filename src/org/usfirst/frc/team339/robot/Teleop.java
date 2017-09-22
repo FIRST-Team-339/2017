@@ -173,7 +173,6 @@ public static void init ()
     // Hardware.driveGyro.calibrate();
     // Hardware.driveGyro.reset();
     Hardware.transmission.setGear(0);
-    Hardware.gearIntakeSolenoid.setReverse(false);
 
 } // end Init
 
@@ -334,12 +333,12 @@ public static void periodic ()
     // Trigger: Brings down arm.
     if (Hardware.leftOperator.getTrigger())
         {
-        Hardware.gearIntakeSolenoid.setReverse(true);
+        Hardware.gearIntakeSolenoid.setReverse(false);
         }
     // Default: Arm is up.
     else
         {
-        Hardware.gearIntakeSolenoid.setReverse(false);
+        Hardware.gearIntakeSolenoid.setReverse(true);
         }
 
     // INTAKE MOTOR:
@@ -349,12 +348,12 @@ public static void periodic ()
             && (Hardware.photoSwitch.isOn() == false
                     || Hardware.rightOperator.getRawButton(2)))
         {
-        Hardware.gearIntakeMotor.set(1);
+        Hardware.gearIntakeMotor.set(-.3);
         }
     // Left Op Btn 3: Push out gear.
     else if (Hardware.leftOperator.getRawButton(3))
         {
-        Hardware.gearIntakeMotor.set(-1);
+        Hardware.gearIntakeMotor.set(.3);
         }
     // Default: Motor set to 0.
     else

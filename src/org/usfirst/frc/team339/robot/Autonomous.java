@@ -525,7 +525,7 @@ private static boolean placeCenterGearPath ()
             // {
             // backUp = true;
             // }
-            Hardware.gearIntakeSolenoid.setReverse(false);
+            Hardware.gearIntakeSolenoid.setReverse(true);
             currentState = MainState.DELAY_BEFORE_START;
             break;
         case WAIT_FOR_GEAR_INIT:
@@ -554,7 +554,7 @@ private static boolean placeCenterGearPath ()
         case DRIVE_TO_GEAR_WITH_CAMERA:
             if (Hardware.newDrive.driveToGear(ALIGN_SPEED) == true)
                 {
-                Hardware.gearIntakeSolenoid.setReverse(true);
+                Hardware.gearIntakeSolenoid.setReverse(false);
                 currentState = MainState.WAIT_FOR_GEAR_EXODUS;
                 }
             break;

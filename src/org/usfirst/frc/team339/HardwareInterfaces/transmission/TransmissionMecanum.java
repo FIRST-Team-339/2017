@@ -82,7 +82,7 @@ public void drive (final double magnitude, final double direction,
     // than it usually would be in order to make strafing certain directions
     // work; note: the "nasty nasty hack" should be fixed later
     double tempRotation = rotation, tempMagnitude = magnitude,
-            tempDirection = direction, nastyHack = 1.2;
+            tempDirection = direction, nastyHack = .8;
 
     // checks if the deadbands for magnitude or twist have been exceeded so we
     // know if the robot should move
