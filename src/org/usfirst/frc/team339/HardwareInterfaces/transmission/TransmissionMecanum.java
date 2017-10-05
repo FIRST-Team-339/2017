@@ -244,7 +244,7 @@ public void drive (final double magnitude, final double direction,
         final double sinD = Math.sin(dirInRad);
 
         // Calculates the speed to send to each motor.
-        // uses sin for the \\ wheels (for clarification of this notation,
+        // uses sine for the \\ wheels (for clarification of this notation,
         // see Noah's javadoc above); uses cosine for // wheels, then scales
         // them according to the magnitude
         // Also add/ subtracts the rotation value so we can turn while
@@ -265,11 +265,6 @@ public void drive (final double magnitude, final double direction,
                     + tempRotation;
             double rightRearSpeed = (sinD * tempMagnitude)
                     - tempRotation;
-<<<<<<< HEAD
-=======
-
-
->>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
             // System.out.println("leftRearSpeed = " + leftRearSpeed);
             // System.out.println("rightRearSpeed = " + rightRearSpeed);
             // System.out.println("leftFrontSpeed = " + leftFrontSpeed);
