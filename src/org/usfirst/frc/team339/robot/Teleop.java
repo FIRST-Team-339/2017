@@ -169,20 +169,46 @@ public static void init ()
     // Hardware.driveGyro.reset();
     Hardware.transmission.setGear(0);
 
+<<<<<<< HEAD
 } // end Init
+=======
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
 static double tempSetpoint = 0.0;
+=======
+} // end Init
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
 static CANTalon testingTalon = new CANTalon(12);
+=======
+static double tempSetpoint = 0.0;
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
 private static CanTalonPIDTuner CanTuner = new CanTalonPIDTuner(
         testingTalon, 0);
+=======
+static CANTalon testingTalon = new CANTalon(12);
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
 private static SmartDashboardPIDTunerDevice PIDTuner = new SmartDashboardPIDTunerDevice(
         CanTuner);
+=======
+private static CanTalonPIDTuner CanTuner = new CanTalonPIDTuner(
+        testingTalon, 0);
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
 private static boolean disableGearMotor = false;
+=======
+private static SmartDashboardPIDTunerDevice PIDTuner = new SmartDashboardPIDTunerDevice(
+        CanTuner);
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
 // tune pid loop
 /**
  * User Periodic code for teleop mode should go here. Will be called
@@ -191,13 +217,33 @@ private static boolean disableGearMotor = false;
  * @author Nathanial Lydick
  * @written Jan 13, 2015
  */
+=======
+private static boolean disableGearMotor = false;
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
 public static void periodic ()
 {
+=======
+// tune pid loop
+/**
+ * User Periodic code for teleop mode should go here. Will be called
+ * periodically at a regular rate while the robot is in teleop mode.
+ *
+ * @author Nathanial Lydick
+ * @written Jan 13, 2015
+ */
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
     double testDashboard = 0.0;
     double testDashboard2 = 0.0;
+=======
+public static void periodic ()
+{
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
     testDashboard = SmartDashboard.getNumber("DB/Slider 0", 0.0);
     testDashboard2 = SmartDashboard.getNumber("DB/Slider 1", 0.0);
     // ADD IN???
@@ -206,7 +252,12 @@ public static void periodic ()
     // System.out.println(testDashboard);
     // print values from hardware items
     printStatements();
+=======
+    double testDashboard = 0.0;
+    double testDashboard2 = 0.0;
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
     // tune pid loop
     if (tunePIDLoop == true)
         {
@@ -222,12 +273,41 @@ public static void periodic ()
         // Hardware.shooterMotor
         // .set(tempSetpoint);
         }
+=======
+    testDashboard = SmartDashboard.getNumber("DB/Slider 0", 0.0);
+    testDashboard2 = SmartDashboard.getNumber("DB/Slider 1", 0.0);
+    // ADD IN???
+    // System.out.println(testDashboard);
+    // System.out.println(testDashboard);
+    // System.out.println(testDashboard);
+    // print values from hardware items
+    printStatements();
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
     // Hardware.shooterMotor
     // .set(tempSetpoint);
     // printStatements();
     // printStatements();
+=======
+    // tune pid loop
+    if (tunePIDLoop == true)
+        {
+        Robot.shooterP = SmartDashboard.getNumber("P", Robot.shooterP);
+        Robot.shooterI = SmartDashboard.getNumber("I", Robot.shooterI);
+        Robot.shooterD = SmartDashboard.getNumber("D", Robot.shooterD);
+        tempSetpoint = SmartDashboard.getNumber("Setpoint",
+                tempSetpoint);
+        // SmartDashboard.putNumber("Err",
+        // Hardware.shooterMotor.getError());
+        // Hardware.shooterMotor.setPID(Robot.shooterP, Robot.shooterI,
+        // Robot.shooterD);
+        // Hardware.shooterMotor
+        // .set(tempSetpoint);
+        }
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
     // previousFireButton = Hardware.leftDriver.getTrigger();
     //
     // if (fireCount > 0)
@@ -245,7 +325,14 @@ public static void periodic ()
      * System.out.println( "Flywheel speed: " +
      * Hardware.shooterMotor.getSpeed());
      */
+=======
+    // Hardware.shooterMotor
+    // .set(tempSetpoint);
+    // printStatements();
+    // printStatements();
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
     if (tunePIDLoop == true)
         {
         PIDTuner.update();
@@ -259,19 +346,65 @@ public static void periodic ()
         }
     // Hardware.shooterMotor
     // .set(tempSetpoint);
+=======
+    // previousFireButton = Hardware.leftDriver.getTrigger();
+    //
+    // if (fireCount > 0)
+    // {
+    // if (Hardware.shooter.fire())
+    // {
+    // fireCount--;
+    // }
+    // }
+    // else if (preparingToFire == false)
+    // Hardware.shooter.stopFlywheelMotor();
+    /*
+     * System.out.println("Firecount: " + fireCount);
+     * 
+     * System.out.println( "Flywheel speed: " +
+     * Hardware.shooterMotor.getSpeed());
+     */
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
     // gear servo set angles
     // Hardware.gearServo.setAngle(200);
     // Hardware.gearServo.getAngle();
+=======
+    if (tunePIDLoop == true)
+        {
+        PIDTuner.update();
+        System.out.println("Error: " + testingTalon.getError());
+        System.out.println("Setpoint: " + testingTalon.getSetpoint());
+        System.out.println("Velocity: " + testingTalon.getSpeed());
+        System.out.println(
+                "P, I, D: " + testingTalon.getP() + ", "
+                        + testingTalon.getI() + ", "
+                        + testingTalon.getD());
+        }
+    // Hardware.shooterMotor
+    // .set(tempSetpoint);
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
     // TODO delete this shortcut
+=======
+    // gear servo set angles
+    // Hardware.gearServo.setAngle(200);
+    // Hardware.gearServo.getAngle();
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
     // Hardware.leftRearTest.watchJoystick(Hardware.leftOperator.getY());
     // Hardware.leftFrontTest.watchJoystick(Hardware.leftOperator.getY());
     // Hardware.rightRearTest.watchJoystick(Hardware.rightOperator.getY());
     // Hardware.rightFrontTest
     // .watchJoystick(Hardware.rightOperator.getY());
+=======
+    // TODO delete this shortcut
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
     // System.out.println("Left Rear Amps: " +
     // Hardware.pdp.getCurrent(14));
     // System.out.println("Left Front Amps: " +
@@ -283,7 +416,15 @@ public static void periodic ()
     // =================================================================
     // OPERATOR CONTROLS
     // =================================================================
+=======
+    // Hardware.leftRearTest.watchJoystick(Hardware.leftOperator.getY());
+    // Hardware.leftFrontTest.watchJoystick(Hardware.leftOperator.getY());
+    // Hardware.rightRearTest.watchJoystick(Hardware.rightOperator.getY());
+    // Hardware.rightFrontTest
+    // .watchJoystick(Hardware.rightOperator.getY());
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
     if (Hardware.ringlightSwitch.isOnCheckNow())
         {
         Hardware.ringlightRelay.set(Value.kOn);
@@ -292,12 +433,42 @@ public static void periodic ()
         {
         Hardware.ringlightRelay.set(Value.kOff);
         }
+=======
+    // System.out.println("Left Rear Amps: " +
+    // Hardware.pdp.getCurrent(14));
+    // System.out.println("Left Front Amps: " +
+    // Hardware.pdp.getCurrent(12));
+    // System.out.println("Right Rear Amps: " +
+    // Hardware.pdp.getCurrent(15));
+    // System.out.println("Right Front Amps: " +
+    // Hardware.pdp.getCurrent(13));
+    // =================================================================
+    // OPERATOR CONTROLS
+    // =================================================================
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
     // @ANE Updated motor names
     // rightOperator stuffs
     // If the operator is pressing right button 10
+=======
+    if (Hardware.ringlightSwitch.isOnCheckNow())
+        {
+        Hardware.ringlightRelay.set(Value.kOn);
+        }
+    else
+        {
+        Hardware.ringlightRelay.set(Value.kOff);
+        }
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
     Hardware.rightRearMotor.set(0.0);
+=======
+    // @ANE Updated motor names
+    // rightOperator stuffs
+    // If the operator is pressing right button 10
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
     // @ANE add back in
     if (Hardware.rightOperator.getTrigger() == true
@@ -318,10 +489,60 @@ public static void periodic ()
         Hardware.newClimberMotor.set(0.0);// STOP THE MOTOR
         }
 
-
-
+<<<<<<< HEAD
+=======
     // =================GEAR ARM & MOTOR CONTROLS================
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
+=======
+    // // SAVE THIS!!! IMPORTANT!
+    // // INTAKE SOLENOID
+    // // Trigger: Brings down arm.
+    // if (Hardware.leftOperator.getTrigger())
+    // {
+    // Hardware.gearIntakeSolenoid.setReverse(false);
+    // }
+    // // Default: Arm is up.
+    // else
+    // {
+    // Hardware.gearIntakeSolenoid.setReverse(true);
+    // }
+    //
+    // // INTAKE MOTOR:
+    //
+    // // Left Op Btn 2: Bring in gear. Right Op Btn 2: override
+    // if (Hardware.leftOperator.getRawButton(2)
+    // && (Hardware.photoSwitch.isOn() == false ||
+    // Hardware.rightOperator.getRawButton(2)))
+    // {
+    // Hardware.gearIntakeMotor.set(-.5);
+    // }
+    // // Left Op Btn 3: Push out gear.
+    // else if (Hardware.leftOperator.getRawButton(3))
+    // {
+    // Hardware.gearIntakeMotor.set(.5);
+    // }
+    // // Default: Motor set to 0.
+    // else
+    // {
+    // Hardware.gearIntakeMotor.set(0.0);
+    // }// SAVE THIS!!! IMPORTANT & WORKS!
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
+
+<<<<<<< HEAD
+    // =================GEAR ARM & MOTOR CONTROLS================
+=======
+    Hardware.gearIntake.activate(Hardware.leftOperator.getTrigger(),
+            Hardware.photoSwitch.isOn());
+    Hardware.gearIntake
+            .runIntakeWheels(Hardware.leftOperator.getRawButton(2));
+    Hardware.gearIntake
+            .reverseIntakeWheels(Hardware.leftOperator.getRawButton(3));
+    Hardware.gearIntake.controlStopping();
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
+
+<<<<<<< HEAD
     // SAVE THIS!!! IMPORTANT!
     // INTAKE SOLENOID
     // Trigger: Brings down arm.
@@ -354,7 +575,10 @@ public static void periodic ()
     // {
     // Hardware.gearIntakeMotor.set(0.0);
     // }SAVE THIS!!! IMPORTANT & WORKS!
+=======
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
     // TESTING NEW GEAR CODE:
     // Lower arm and spit out gear on TRIGGER
     Hardware.gearIntake.ejectGear(Hardware.leftOperator.getTrigger());
@@ -371,9 +595,13 @@ public static void periodic ()
     Hardware.gearIntake
             .reverseIntakeWheels(Hardware.leftOperator.getRawButton(3)
                     && !Hardware.leftOperator.getRawButton(2));
-
+=======
     // ================END GEAR ARM & MOTOR CONTROLS================
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
+    // ================END GEAR ARM & MOTOR CONTROLS================
+=======
     // TESTING SHOOTER
     if (Hardware.rightOperator.getTrigger() == true)
         {
@@ -392,9 +620,34 @@ public static void periodic ()
         {
         // Hardware.shooter.stopFlywheelMotor();
         }
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
+    // TESTING SHOOTER
+    if (Hardware.rightOperator.getTrigger() == true)
+        {
+        // Hardware.shooter.turnToGoalRaw();
+        // Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
+        // System.out.println(
+        // Hardware.shooterMotor.set(
+        // Hardware.shooter.calculateRPMToMakeGoal(12.25) / 2.0);
+        }
+    else if (Hardware.leftOperator.getTrigger() == true)
+        {
+        // Hardware.shooter.fire(-200 * Hardware.rightOperator.getZ());
+        // Hardware.shooter.loadBalls();
+        }
+    else
+        {
+        // Hardware.shooter.stopFlywheelMotor();
+        }
+=======
     // END SHOOTER TESTING
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
+    // END SHOOTER TESTING
+=======
     // TURRET OVERRIDE
     if (Hardware.rightOperator.getRawButton(2) == true
             && Math.abs(Hardware.rightOperator.getX()) > .2)
@@ -414,11 +667,49 @@ public static void periodic ()
         // Hardware.shooter.stopGimbal();
         }
     // END TURRET OVERRIDE
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
+    // TURRET OVERRIDE
+    if (Hardware.rightOperator.getRawButton(2) == true
+            && Math.abs(Hardware.rightOperator.getX()) > .2)
+        {
+        if (Hardware.rightOperator.getX() > 0)
+            {
+            // Hardware.shooter.turnGimbalSlow(1);
+            }
+        else
+            {
+            // Hardware.shooter
+            // .turnGimbalSlow(-1);
+            }
+        }
+    else if (isTurningGimbal == false && isTurningToGoal == false)
+        {
+        // Hardware.shooter.stopGimbal();
+        }
+    // END TURRET OVERRIDE
+=======
     // SET TURRET TO 0
     if (Hardware.rightOperator.getRawButton(5) == true)
         isTurningGimbal = true;
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
+    // SET TURRET TO 0
+    if (Hardware.rightOperator.getRawButton(5) == true)
+        isTurningGimbal = true;
+=======
+    if (isTurningGimbal == true
+            || turnValue == Shooter.turnReturn.WORKING)
+        {
+        // turnValue = Hardware.shooter.turnToBearing(0);
+        isTurningGimbal = false;
+        }
+    // END SET TURRET TO 0
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
+
+<<<<<<< HEAD
     if (isTurningGimbal == true
             || turnValue == Shooter.turnReturn.WORKING)
         {
@@ -441,7 +732,26 @@ public static void periodic ()
     // ALIGN TURRET
     if (Hardware.leftOperator.getRawButton(4) == true)
         isTurningToGoal = true;
+=======
+    // ELEVATOR OVERRIDE
+    // if (Hardware.rightOperator.getRawButton(3) == true)
+    // Hardware.shooter.loadBalls();
+    // else if (Hardware.rightOperator.getRawButton(4) == true)
+    // Hardware.shooter.reverseLoader();
+    // else if (Hardware.leftOperator.getRawButton(3) == false)
+    // Hardware.shooter.stopLoader();
+    // END ELEVATOR OVERRIDE
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
+<<<<<<< HEAD
+=======
+    // leftOperator stuffs
+
+    // ALIGN TURRET
+    if (Hardware.leftOperator.getRawButton(4) == true)
+        isTurningToGoal = true;
+
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
     if (isTurningToGoal == true)
         {
         // turnToGoalValue = Hardware.shooter.turnToGoal();
@@ -490,6 +800,7 @@ public static void periodic ()
     // Driving code
     // =================================================================
 
+<<<<<<< HEAD
     // if (isTestingDrive == false)
     // {
     // // Hardware.transmission.drive(Hardware.leftDriver);
@@ -497,6 +808,15 @@ public static void periodic ()
     // Hardware.leftDriver.getDirectionDegrees(),
     // Hardware.leftDriver.getZ());
     // }
+=======
+    if (isTestingDrive == false)
+        {
+        // Hardware.transmission.drive(Hardware.leftDriver);
+        Hardware.mecanumDrive.drive(Hardware.leftDriver.getMagnitude(),
+                Hardware.leftDriver.getDirectionDegrees(),
+                Hardware.leftDriver.getZ());
+        }
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
 
     // ----------------------TESTING DRIVE FUNCTIONS--------------------
 

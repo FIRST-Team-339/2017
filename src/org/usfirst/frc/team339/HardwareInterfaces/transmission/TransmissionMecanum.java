@@ -82,7 +82,7 @@ public void drive (final double magnitude, final double direction,
     // than it usually would be in order to make strafing certain directions
     // work; note: the "nasty nasty hack" should be fixed later
     double tempRotation = rotation, tempMagnitude = magnitude,
-            tempDirection = direction, nastyHack = .8;
+            tempDirection = direction, nastyHack = 1.2;
 
     // checks if the deadbands for magnitude or twist have been exceeded so we
     // know if the robot should move
@@ -265,7 +265,15 @@ public void drive (final double magnitude, final double direction,
                     + tempRotation;
             double rightRearSpeed = (sinD * tempMagnitude)
                     - tempRotation;
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> branch 'master' of https://github.com/FIRST-Team-339/2017
             // System.out.println("leftRearSpeed = " + leftRearSpeed);
+            // System.out.println("rightRearSpeed = " + rightRearSpeed);
+            // System.out.println("leftFrontSpeed = " + leftFrontSpeed);
+            // System.out.println("rightFrontSpeed = " + rightFrontSpeed);
             // System.out.println("cosD = " + cosD);
             // System.out.println("sinD = " + sinD);
 

@@ -368,6 +368,8 @@ public static void init ()
     isUsingGyro = Hardware.driveGyro.isConnected();
 } // end Init
 
+private static boolean[] previousMotorInverts;
+
 /**
  * User Periodic code for autonomous mode should go here. Will be called
  * periodically at a regular rate while the robot is in autonomous mode.
@@ -436,6 +438,14 @@ public static void periodic ()
             break;
         // We are done with the auto program!
         case DONE:
+            Hardware.leftFrontMotor
+                    .setInverted(previousMotorInverts[0]);
+            Hardware.leftRearMotor.setInverted(previousMotorInverts[1]);
+            Hardware.rightFrontMotor
+                    .setInverted(previousMotorInverts[2]);
+            Hardware.rightRearMotor
+                    .setInverted(previousMotorInverts[3]);
+
             Hardware.leftRearMotor.set(0);
             Hardware.leftFrontMotor.set(0);
             Hardware.rightRearMotor.set(0);
@@ -572,6 +582,12 @@ private static boolean placeCenterGearPath ()
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
             if (Hardware.autoStateTimer.get() >= 1.5)
+                {
+                currentState = MainState.DRIVE_AWAY_FROM_PEG;
+                }
+            break;
+        case DRIVE_AWAY_FROM_PEG:
+            if (Hardware.newDrive.driveInches(6, -ALIGN_SPEED))
                 {
                 currentState = MainState.DONE;
                 }
