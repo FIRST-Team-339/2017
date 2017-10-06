@@ -352,13 +352,6 @@ public static void periodic ()
     // Hardware.gearIntakeMotor.set(0.0);
     // }// SAVE THIS!!! IMPORTANT & WORKS!
 
-    Hardware.gearIntake.activate(Hardware.leftOperator.getTrigger(),
-            Hardware.photoSwitch.isOn());
-    Hardware.gearIntake
-            .runIntakeWheels(Hardware.leftOperator.getRawButton(2));
-    Hardware.gearIntake
-            .reverseIntakeWheels(Hardware.leftOperator.getRawButton(3));
-    Hardware.gearIntake.controlStopping();
 
 
     // ================END GEAR ARM & MOTOR CONTROLS================
