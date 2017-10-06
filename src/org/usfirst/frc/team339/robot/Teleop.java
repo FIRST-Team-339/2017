@@ -168,6 +168,10 @@ public static void init ()
     // Hardware.driveGyro.calibrate();
     // Hardware.driveGyro.reset();
     Hardware.transmission.setGear(0);
+    // Hardware.leftFrontMotor.setInverted(false);
+    // Hardware.rightFrontMotor.setInverted(false);
+    // Hardware.leftRearMotor.setInverted(false);
+    // Hardware.rightRearMotor.setInverted(false);
 
 } // end Init
 
@@ -502,6 +506,14 @@ public static void periodic ()
             isTestingDrive = false;
             }
         }
+    if (Hardware.autoTest.isOnCheckNow() == true)
+        {
+        Hardware.autoDrive.driveInches(30, .4);
+        }
+    else
+        {
+
+        }
 
 }
 // end
@@ -527,7 +539,7 @@ private static boolean isTestingDrive = false;
  * "deposit" the statement in the correct "bank" do not "withdraw"
  * statements, unless directed to.
  * 
- * NOTE: Keep the groupings below, which coorespond in number and order as
+ * NOTE: Keep the groupings below, which correspond in number and order as
  * the hardware declarations in the HARDWARE class
  * 
  * @author Ashley Espeland

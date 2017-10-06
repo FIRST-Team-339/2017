@@ -366,6 +366,9 @@ public static MomentarySwitch setMotorsZero = new MomentarySwitch(
 public static MomentarySwitch brake = new MomentarySwitch(leftDriver,
         11, false);
 
+public static MomentarySwitch autoTest = new MomentarySwitch(
+        leftOperator, 4, false);
+
 // **********************************************************
 // Kilroy's Ancillary classes
 // **********************************************************
