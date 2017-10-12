@@ -258,17 +258,16 @@ public void drive (final double magnitude, final double direction,
             {
             double leftFrontSpeed = (sinD * tempMagnitude)
                     + tempRotation;
-            // made negative @ANE
-            double rightFrontSpeed = -(cosD * tempMagnitude)
+            double rightFrontSpeed = (cosD * tempMagnitude)
                     - tempRotation;
             double leftRearSpeed = (cosD * tempMagnitude)
                     + tempRotation;
             double rightRearSpeed = (sinD * tempMagnitude)
                     - tempRotation;
-            // System.out.println("leftRearSpeed = " + leftRearSpeed);
-            // System.out.println("rightRearSpeed = " + rightRearSpeed);
-            // System.out.println("leftFrontSpeed = " + leftFrontSpeed);
-            // System.out.println("rightFrontSpeed = " + rightFrontSpeed);
+            System.out.println("leftRearSpeed = " + leftRearSpeed);
+            System.out.println("rightRearSpeed = " + rightRearSpeed);
+            System.out.println("leftFrontSpeed = " + leftFrontSpeed);
+            System.out.println("rightFrontSpeed = " + rightFrontSpeed);
             // System.out.println("cosD = " + cosD);
             // System.out.println("sinD = " + sinD);
 

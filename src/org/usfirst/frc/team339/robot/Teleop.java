@@ -481,6 +481,7 @@ public static void periodic ()
                 Hardware.leftDriver.getZ());
         }
 
+
     // ----------------------TESTING DRIVE FUNCTIONS--------------------
 
     if (Hardware.leftDriver.getRawButton(9) == true)
@@ -627,6 +628,12 @@ public static void printStatements ()
     // prints the distance from the encoders
     // ---------------------------------
 
+    System.out.println(
+            "Actual value right front"
+                    + Hardware.rightFrontEncoder.getRate());
+    System.out.println(
+            "Actual value right rear"
+                    + Hardware.rightRearEncoder.getRate());
     // System.out.println("Right Front Encoder: " +
     // Hardware.rightFrontEncoder.get());
     // System.out.println("Right Front Distance: " +
