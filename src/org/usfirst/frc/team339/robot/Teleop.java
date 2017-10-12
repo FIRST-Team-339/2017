@@ -168,10 +168,6 @@ public static void init ()
     // Hardware.driveGyro.calibrate();
     // Hardware.driveGyro.reset();
     Hardware.transmission.setGear(0);
-    // Hardware.leftFrontMotor.setInverted(false);
-    // Hardware.rightFrontMotor.setInverted(false);
-    // Hardware.leftRearMotor.setInverted(false);
-    // Hardware.rightRearMotor.setInverted(false);
 
 } // end Init
 
@@ -357,6 +353,8 @@ public static void periodic ()
     // Hardware.gearIntakeMotor.set(0.0);
     // }// SAVE THIS!!! IMPORTANT & WORKS!
 
+
+
     // ================END GEAR ARM & MOTOR CONTROLS================
 
     // TESTING SHOOTER
@@ -475,13 +473,6 @@ public static void periodic ()
     // Driving code
     // =================================================================
 
-    // if (isTestingDrive == false)
-    // {
-    // // Hardware.transmission.drive(Hardware.leftDriver);
-    // Hardware.mecanumDrive.drive(Hardware.leftDriver.getMagnitude(),
-    // Hardware.leftDriver.getDirectionDegrees(),
-    // Hardware.leftDriver.getZ());
-    // }
     if (isTestingDrive == false)
         {
         // Hardware.transmission.drive(Hardware.leftDriver);
