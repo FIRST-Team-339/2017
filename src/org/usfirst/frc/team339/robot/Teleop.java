@@ -496,7 +496,6 @@ public static void periodic ()
         {
         isTestingDrive = true;
         }
-
     if (isTestingDrive == true)
         {
         isTestingDrive = !Hardware.newDrive.driveToGear(.25);
