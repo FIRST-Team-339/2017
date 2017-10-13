@@ -482,10 +482,18 @@ public static void periodic ()
 
     if (isTestingDrive == false)
         {
-        // Hardware.transmission.drive(Hardware.leftDriver);
-        Hardware.mecanumDrive.drive(Hardware.leftDriver.getMagnitude(),
-                Hardware.leftDriver.getDirectionDegrees(),
-                Hardware.leftDriver.getZ());
+        if (Hardware.isUsingNewDrive)
+            {
+            Hardware.transmission.drive(Hardware.leftDriver);
+            }
+        else
+            {
+            Hardware.mecanumDrive.drive(
+                    Hardware.leftDriver.getMagnitude(),
+                    Hardware.leftDriver.getDirectionDegrees(),
+                    Hardware.leftDriver.getZ());
+            }
+
         }
 
 
@@ -635,12 +643,12 @@ public static void printStatements ()
     // prints the distance from the encoders
     // ---------------------------------
 
-    System.out.println(
-            "Actual value right front"
-                    + Hardware.rightFrontEncoder.getRate());
-    System.out.println(
-            "Actual value right rear"
-                    + Hardware.rightRearEncoder.getRate());
+    // System.out.println(
+    // "Actual value right front"
+    // + Hardware.rightFrontEncoder.getRate());
+    // System.out.println(
+    // "Actual value right rear"
+    // + Hardware.rightRearEncoder.getRate());
     // System.out.println("Right Front Encoder: " +
     // Hardware.rightFrontEncoder.get());
     // System.out.println("Right Front Distance: " +

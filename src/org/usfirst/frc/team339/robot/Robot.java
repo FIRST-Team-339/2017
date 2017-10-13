@@ -276,10 +276,20 @@ public void robotInit ()
         Hardware.mecanumDrive.setFirstGearPercentage(
                 KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
         // invert motors
-        Hardware.rightFrontMotor.setInverted(false);
-        Hardware.rightRearMotor.setInverted(false);
-        Hardware.leftFrontMotor.setInverted(false);
-        Hardware.leftRearMotor.setInverted(true);
+        if (Hardware.isUsingNewDrive == false)
+            {
+            Hardware.rightFrontMotor.setInverted(false);
+            Hardware.rightRearMotor.setInverted(false);
+            Hardware.leftFrontMotor.setInverted(false);
+            Hardware.leftRearMotor.setInverted(true);
+            }
+        else
+            {
+            Hardware.rightFrontMotor.setInverted(true);
+            Hardware.rightRearMotor.setInverted(true);
+            Hardware.leftFrontMotor.setInverted(false);
+            Hardware.leftRearMotor.setInverted(true);
+            }
         // Hardware.newClimberMotor.setInverted(false);
         // @ANE removed for sanity's sake
         // Hardware.intakeMotor.setInverted(true);

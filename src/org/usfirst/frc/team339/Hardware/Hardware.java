@@ -67,6 +67,7 @@ public class Hardware
 // ------------------------------------
 // Public Constants
 // ------------------------------------
+public static final boolean isUsingNewDrive = true;
 
 public static double joystickDeadzone = .2;
 

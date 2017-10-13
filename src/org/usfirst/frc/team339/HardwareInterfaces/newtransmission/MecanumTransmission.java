@@ -102,14 +102,22 @@ public void drive (Joystick joystick)
         leftFrontMotor
                 .set(inRange(
                         (gearMultiplier * leftFrontVal) + twistVal));
+        System.out.println("Left Front: " + inRange(
+                (gearMultiplier * leftFrontVal) + twistVal));
         leftRearMotor
                 .set(inRange(
                         (gearMultiplier * leftRearVal) + twistVal));
+        System.out.println(" Left Rear: " + inRange(
+                (gearMultiplier * leftRearVal) + twistVal));
         rightFrontMotor.set(
                 inRange((gearMultiplier * rightFrontVal) - twistVal));
+        System.out.println("Right Front: "
+                + inRange((gearMultiplier * rightFrontVal) - twistVal));
         rightRearMotor
                 .set(inRange(
                         (gearMultiplier * rightRearVal) - twistVal));
+        System.out.println("Right Rear: " + inRange(
+                (gearMultiplier * rightRearVal) - twistVal));
 
         }
     else
