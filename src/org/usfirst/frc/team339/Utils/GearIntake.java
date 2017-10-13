@@ -16,9 +16,11 @@ public class GearIntake
  * The amount of time, in milliseconds, to stop reversing the wheels
  * after ejecting the gear.
  */
-private final long GEAR_EJECT_WHEEL_CUTOFF_DELAY = 500;// .5 seconds
+private final double GEAR_EJECT_WHEEL_CUTOFF_DELAY = .8;// .5 seconds
 
-private final double GEAR_INTAKE_WHEEL_SPEED = .3;
+private final double GEAR_INTAKE_WHEEL_SPEED = .5;
+
+private final double GEAR_OUTPUT_WHEEL_SPEED = .25;
 
 private PWMSpeedController intakeMotor = null;
 
@@ -26,12 +28,12 @@ private DoubleSolenoid intakeArm = null;
 
 private Timer intakeTimer = new Timer();
 
-public enum LowerArmState
+public enum ArmState
     {
-INIT, LOWER_AND_REVERSE, LOWER_AND_FORWARD
+LOWER_AND_IN, LOWER_AND_OUT, LOWER_AND_OFF, LOWER_OVERRIDE_OUT, LOWER_OVERRIDE_IN, UP_AND_OFF, LOWER_AND_AUTO_INIT
     }
 
-private LowerArmState lowerArmState = LowerArmState.LOWER_AND_REVERSE;
+private ArmState mainArmState = ArmState.UP_AND_OFF;
 
 /**
  * Creates the Gear Pickup Mechanism object.
@@ -81,7 +83,7 @@ private boolean isRunningWheels = false;
  */
 public void reverseIntakeWheels ()
 {
-    this.intakeMotor.set(GEAR_INTAKE_WHEEL_SPEED);
+    this.intakeMotor.set(GEAR_OUTPUT_WHEEL_SPEED);
 }
 
 /**
@@ -97,66 +99,8 @@ public void stopIntakeWheels ()
     this.intakeMotor.set(0.0);
 }
 
-/**
- * Lowers the arm and ejects gear for a certain amount of time, and then
- * starts running the wheels forward.
- * If the sensor reads there is a gear, stop the intake. Else, run them
- * forwards.
- * 
- * @param sensor
- *            Decides whether there is a gear in the robot (true) or not (false)
- */
-private void activateArm (boolean sensor)
-{
-    // Resets the state machine after the person lets go of the button.
-    if (!actArmRunOnce)
-        lowerArmState = LowerArmState.INIT;
 
-    // Main state machine for lowering the arm.
-    switch (lowerArmState)
-        {
-        // Starts and resets the timer.
-        case INIT:
-            intakeTimer.reset();
-            intakeTimer.start();
-
-            lowerArmState = LowerArmState.LOWER_AND_REVERSE;
-            break;
-        // The state that lowers the arm, and reverses the intake (for x
-        // seconds)
-        case LOWER_AND_REVERSE:
-            // Go to next state if time has elapsed.
-            if (this.intakeTimer.get() > GEAR_EJECT_WHEEL_CUTOFF_DELAY)
-                {
-                lowerArmState = LowerArmState.LOWER_AND_FORWARD;
-                break;
-                }
-
-            this.lowerArm();
-            this.reverseIntakeWheels();
-
-            break;
-
-        default:
-            // The state that lowers the arm and runs the intake "in"
-        case LOWER_AND_FORWARD:
-            // If the sensor does not see a gear, intake and lower arm.
-            if (!sensor)
-                {
-                this.runIntakeWheels();
-                this.lowerArm();
-                }
-            // If it does, stop wheels and lower arm.
-            else
-                {
-                this.stopIntakeWheels();
-                this.lowerArm();
-                }
-        }
-
-}
-
-private boolean actArmRunOnce = false;
+private boolean armRunOnce = false;
 
 /**
  * Runs the Gear Intake Mechanism based on the buttons input.
@@ -175,31 +119,89 @@ public void runGearIntake (boolean lowerArmButton,
         boolean spinWheelsButton, boolean reverseWheelsButton,
         boolean sensor)
 {
-    // Run the "lower arm and wheels" function
-    if (lowerArmButton)
+    // override pull in
+    if (lowerArmButton && spinWheelsButton)
         {
-        this.activateArm(sensor);
+        this.mainArmState = ArmState.LOWER_OVERRIDE_IN;
         }
-    // Intake the gear
-    else if (spinWheelsButton)
+    // override push out
+    else if (lowerArmButton && reverseWheelsButton)
         {
-        this.runIntakeWheels();
+        this.mainArmState = ArmState.LOWER_OVERRIDE_OUT;
         }
-    // Eject the gear
-    else if (reverseWheelsButton)
+    // Eject the gear then run intake
+    else if (lowerArmButton && armRunOnce == false)
         {
-        this.reverseIntakeWheels();
+        this.mainArmState = ArmState.LOWER_AND_AUTO_INIT;
         }
     // Raise the arm and stop the wheels.
-    else
+    else if (lowerArmButton && mainArmState != ArmState.LOWER_AND_IN
+            && mainArmState != ArmState.LOWER_AND_OUT
+            && mainArmState != ArmState.LOWER_AND_AUTO_INIT)
         {
-        this.raiseArm();
-        this.stopIntakeWheels();
+        this.mainArmState = ArmState.LOWER_AND_OFF;
+        }
+    else if (!lowerArmButton)
+        {
+        this.mainArmState = ArmState.UP_AND_OFF;
+        }
+
+    switch (mainArmState)
+        {
+        // Lowers the arm and pulls in the gear, regardless of the sensor.
+        case LOWER_OVERRIDE_IN:
+            this.lowerArm();
+            this.runIntakeWheels();
+            break;
+        // Lowers the arm and pushes out the gear
+        case LOWER_OVERRIDE_OUT:
+            this.lowerArm();
+            this.reverseIntakeWheels();
+            break;
+        // Start the timer for the "push out, then pull in" function
+        case LOWER_AND_AUTO_INIT:
+            this.intakeTimer.reset();
+            this.intakeTimer.start();
+            this.mainArmState = ArmState.LOWER_AND_OUT;
+            // CONTINUE TO NEXT STATE
+            // Push out until the timer trips
+        case LOWER_AND_OUT:
+            this.lowerArm();
+            this.reverseIntakeWheels();
+            if (this.intakeTimer.get() > GEAR_EJECT_WHEEL_CUTOFF_DELAY)
+                {
+                this.intakeTimer.stop();
+                this.mainArmState = ArmState.LOWER_AND_IN;
+                }
+            break;
+        // Pulls in the intake wheels based on the sensor.
+        case LOWER_AND_IN:
+            this.lowerArm();
+            if (sensor)
+                {
+                this.stopIntakeWheels();
+                }
+            else
+                {
+                this.runIntakeWheels();
+                }
+            break;
+        // Lowers the arm and turns off the intake wheels.
+        case LOWER_AND_OFF:
+            this.lowerArm();
+            this.stopIntakeWheels();
+            break;
+        // Brings up the gear, and turns off the intake wheels
+        default:
+        case UP_AND_OFF:
+            this.raiseArm();
+            this.stopIntakeWheels();
+            break;
         }
 
     // Makes sure that the "activate arm" only initializes on the first
     // time the button is pushed.
-    actArmRunOnce = lowerArmButton;
+    armRunOnce = lowerArmButton;
 
 }
 
