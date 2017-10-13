@@ -516,7 +516,7 @@ private static boolean goForHopper = false;
 
 private static boolean backUp = false;
 
-private static boolean onNewDrive = true; // TODO change
+private static boolean onNewDrive = false; // TODO change
 
 /**
  * The auto path where we start in the center position, and try and strafe

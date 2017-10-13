@@ -324,9 +324,9 @@ public void robotInit ()
         // mecanum
         Hardware.mecanumDrive.setFirstGearPercentage(
                 Robot.KILROY_XVII_SECOND_GEAR_PERCENTAGE);
-        Hardware.rightFrontMotor.setInverted(true);
+        Hardware.rightFrontMotor.setInverted(false);
         Hardware.rightRearMotor.setInverted(true);
-        Hardware.leftFrontMotor.setInverted(false);
+        Hardware.leftFrontMotor.setInverted(true);
         Hardware.leftRearMotor.setInverted(true);
         // @ANE removed for sanity's sake
         // Hardware.intakeMotor.setInverted(true);

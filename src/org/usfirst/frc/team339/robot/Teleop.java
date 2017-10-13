@@ -117,6 +117,7 @@ public static void init ()
         // auto drive values
         Hardware.autoDrive.setDriveCorrection(.3);
         Hardware.autoDrive.setEncoderSlack(1);
+        Hardware.rightFrontMotor.setInverted(false);
         }
     // PID smartdashboard
     // if (tunePIDLoop == true)
