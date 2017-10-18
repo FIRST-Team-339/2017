@@ -13,190 +13,211 @@ import edu.wpi.first.wpilibj.SpeedController;
 public class MecanumTransmission extends TransmissionBase
 {
 
-	private final SpeedController leftFrontMotor;
+private final SpeedController leftFrontMotor;
 
-	private final SpeedController rightFrontMotor;
+private final SpeedController rightFrontMotor;
 
-	private final SpeedController leftRearMotor;
+private final SpeedController leftRearMotor;
 
-	private final SpeedController rightRearMotor;
+private final SpeedController rightRearMotor;
 
-	private double directionalDeadband = .2;
+private final double strafeCusion = .4;
 
-	/**
-	 * Creates the MecanumTransmission object.
-	 * 
-	 * @param leftFrontMotor
-	 *            The left front motor controller
-	 * @param rightFrontMotor
-	 *            The right front motor controller
-	 * @param leftRearMotor
-	 *            The left rear motor controller
-	 * @param rightRearMotor
-	 *            The right rear motor controller
-	 */
-	public MecanumTransmission(SpeedController leftFrontMotor, SpeedController rightFrontMotor,
-			SpeedController leftRearMotor, SpeedController rightRearMotor)
-	{
-		this.leftFrontMotor = leftFrontMotor;
-		this.rightFrontMotor = rightFrontMotor;
-		this.leftRearMotor = leftRearMotor;
-		this.rightRearMotor = rightRearMotor;
+private double directionalDeadband = .2;
 
-		super.type = TransmissionType.MECANUM;
-	}
+/**
+ * Creates the MecanumTransmission object.
+ * 
+ * @param leftFrontMotor
+ *            The left front motor controller
+ * @param rightFrontMotor
+ *            The right front motor controller
+ * @param leftRearMotor
+ *            The left rear motor controller
+ * @param rightRearMotor
+ *            The right rear motor controller
+ */
+public MecanumTransmission (SpeedController leftFrontMotor,
+        SpeedController rightFrontMotor,
+        SpeedController leftRearMotor, SpeedController rightRearMotor)
+{
+    this.leftFrontMotor = leftFrontMotor;
+    this.rightFrontMotor = rightFrontMotor;
+    this.leftRearMotor = leftRearMotor;
+    this.rightRearMotor = rightRearMotor;
 
-	/**
-	 * Drives the robot with the aid of a joystick deadband, directional deadbands, and software gear
-	 * ratios.
-	 * 
-	 * The equation for mecanum drive is:
-	 * y = m * (cos(d + (PI/4)) + z) where d is the direction, m is the magnitude,
-	 * and z is the rotation,
-	 * for the front left and back right wheels.
-	 * 
-	 * y = m * (cos(d - (PI/4)) + z)
-	 * for the front right and back left wheels.
-	 * 
-	 * values must be cut off at one, so a higher or lower z may push it over 1.0 or
-	 * under -1.0.
-	 * In this case, the function inRange makes those cutoffs.
-	 * 
-	 * @param joystick
-	 *            A 3-axis joystick to control 2 axis movement plus turning.
-	 */
-	public void drive(Joystick joystick)
-	{
-		double magnitude = joystick.getMagnitude();
-		double direction = joystick.getDirectionRadians();
-		double twistVal = 0;
+    super.type = TransmissionType.MECANUM;
+}
 
-		// Directional Deadband calculation
-		// Check the Y axis, and snap to the 90.
-		if (Math.abs(joystick.getY()) < this.directionalDeadband)
-		{
-			if (joystick.getX() > 0)
-				direction = Math.PI / 2.0;// 90 degrees
-			else
-				direction = -Math.PI / 2.0;// -90 degrees
-		}
-		// Directional Deadband calculation
-		// Check the X axis, and snap to the 90.
-		if (Math.abs(joystick.getX()) < this.directionalDeadband)
-		{
-			if (joystick.getY() > 0)
-				direction = Math.PI;// 180 degrees
-			else
-				direction = 0;
-		}
+/**
+ * Drives the robot with the aid of a joystick deadband, directional deadbands,
+ * and software gear
+ * ratios.
+ * 
+ * The equation for mecanum drive is:
+ * y = m * (cos(d + (PI/4)) + z) where d is the direction, m is the magnitude,
+ * and z is the rotation,
+ * for the front left and back right wheels.
+ * 
+ * y = m * (cos(d - (PI/4)) + z)
+ * for the front right and back left wheels.
+ * 
+ * values must be cut off at one, so a higher or lower z may push it over 1.0 or
+ * under -1.0.
+ * In this case, the function inRange makes those cutoffs.
+ * 
+ * @param joystick
+ *            A 3-axis joystick to control 2 axis movement plus turning.
+ */
+public void drive (Joystick joystick)
+{
+    double magnitude = joystick.getMagnitude();
+    double direction = -1 * joystick.getDirectionRadians();
+    double twistVal = 0;
 
-		double leftFrontVal = Math.cos(direction + (Math.PI / 4.0));
-		double rightFrontVal = Math.cos(direction - (Math.PI / 4.0));
-		double rightRearVal = leftFrontVal;// The corner's equations are
-		double leftRearVal = rightFrontVal;// equal to each other.
+    double gearMultiplier = magnitude
+            * super.gearRatios[super.currentGear];
 
-		double gearMultiplier = magnitude * super.gearRatios[super.currentGear];
+    // Directional Deadband calculation
+    // Check the Y axis, and snap to the 90.
+    if (Math.abs(joystick.getY()) < this.directionalDeadband)
+        {
+        gearMultiplier += this.strafeCusion;
+        if (joystick.getX() < 0)
+            {
+            direction = Math.PI / 2.0;// 90 degrees
+            }
+        else
+            {
+            direction = -Math.PI / 2.0;// -90 degrees
+            }
+        }
+    // Directional Deadband calculation
+    // Check the X axis, and snap to the 90.
+    if (Math.abs(joystick.getX()) < this.directionalDeadband)
+        {
+        if (joystick.getY() > 0)
+            direction = Math.PI;// 180 degrees
+        else
+            direction = 0;
+        }
 
-		// Check for the trigger first. Only add the Z value if it is pressed
-		// and above the deadband.
-		if (magnitude > super.joystickDeadband || joystick.getTrigger() == true)
-		{
-			// Only use the joystick's z axis if the trigger is pressed and its
-			// within the deadband.
-			if (joystick.getTrigger() == true && Math.abs(joystick.getZ()) > super.joystickDeadband)
-			{
-				twistVal = super.gearRatios[super.currentGear] * joystick.getZ();
-			}
+    double leftFrontVal = Math.cos(direction + (Math.PI / 4.0));
+    double rightFrontVal = Math.cos(direction - (Math.PI / 4.0));
+    double rightRearVal = leftFrontVal;// The corner's equations are
+    double leftRearVal = rightFrontVal;// equal to each other.
 
-			// Checks each value to either one or zero to make sure all values
-			// are between -1 and 1.
+    // Check for the trigger first. Only add the Z value if it is pressed
+    // and above the deadband.
+    if (magnitude > super.joystickDeadband
+            || joystick.getTrigger() == true)
+        {
+        // Only use the joystick's z axis if the trigger is pressed and its
+        // within the deadband.
+        if (joystick.getTrigger() == true
+                && Math.abs(joystick.getZ()) > super.joystickDeadband)
+            {
+            twistVal = super.gearRatios[super.currentGear]
+                    * joystick.getZ();
+            }
 
-			// Because the z axis increases as you twist clockwise, it is added
-			// to the left motors and subtracted from the right.
+        // Checks each value to either one or zero to make sure all values
+        // are between -1 and 1.
 
-			leftFrontMotor.set(inRange((gearMultiplier * leftFrontVal) + twistVal));
-			leftRearMotor.set(inRange((gearMultiplier * leftRearVal) + twistVal));
-			rightFrontMotor.set(inRange((gearMultiplier * rightFrontVal) - twistVal));
-			rightRearMotor.set(inRange((gearMultiplier * rightRearVal) - twistVal));
+        // Because the z axis increases as you twist clockwise, it is added
+        // to the left motors and subtracted from the right.
 
-		} else
-		{
-			this.driveRaw(0.0, 0.0, 0.0);
-		}
-	}
+        leftFrontMotor.set(
+                inRange((gearMultiplier * leftFrontVal) + twistVal));
+        leftRearMotor.set(
+                inRange((gearMultiplier * leftRearVal) + twistVal));
+        rightFrontMotor.set(
+                inRange((gearMultiplier * rightFrontVal) - twistVal));
+        rightRearMotor.set(
+                inRange((gearMultiplier * rightRearVal) - twistVal));
 
-	/**
-	 * Drives the robot without the use of deadbands and gear ratios. The value
-	 * input is the value that is passed to the motors (after going through the
-	 * formula for mecanum drive)
-	 * 
-	 * @param magnitude
-	 *            How fast the robot moves (0 to 1.0)
-	 * @param direction
-	 *            which direction the robot will travel in degrees. (0 is front, 180
-	 *            is back)
-	 * @param rotation
-	 *            How fast the robot should turn( -1.0 to 1.0, zero is straight)
-	 */
-	public void driveRaw(double magnitude, double direction, double rotation)
-	{
+        }
+    else
+        {
+        this.driveRaw(0.0, 0.0, 0.0);
+        }
+}
 
-		double leftFrontVal = Math.cos(Math.toRadians(direction) + (Math.PI / 4.0));
-		double rightFrontVal = Math.cos(Math.toRadians(direction) - (Math.PI / 4.0));
-		double rightRearVal = leftFrontVal;// The corner's equations are
-		double leftRearVal = rightFrontVal;// equal to each other.
+/**
+ * Drives the robot without the use of deadbands and gear ratios. The value
+ * input is the value that is passed to the motors (after going through the
+ * formula for mecanum drive)
+ * 
+ * @param magnitude
+ *            How fast the robot moves (0 to 1.0)
+ * @param direction
+ *            which direction the robot will travel in degrees. (0 is front, 180
+ *            is back)
+ * @param rotation
+ *            How fast the robot should turn( -1.0 to 1.0, zero is straight)
+ */
+public void driveRaw (double magnitude, double direction,
+        double rotation)
+{
 
-		leftFrontMotor.set(magnitude * inRange(leftFrontVal + rotation));
-		leftRearMotor.set(magnitude * inRange(leftRearVal + rotation));
-		rightFrontMotor.set(magnitude * inRange(rightFrontVal - rotation));
-		rightRearMotor.set(magnitude * inRange(rightRearVal - rotation));
+    double leftFrontVal = Math
+            .cos(Math.toRadians(direction) + (Math.PI / 4.0));
+    double rightFrontVal = Math
+            .cos(Math.toRadians(direction) - (Math.PI / 4.0));
+    double rightRearVal = leftFrontVal;// The corner's equations are
+    double leftRearVal = rightFrontVal;// equal to each other.
 
-	}
+    leftFrontMotor.set(magnitude * inRange(leftFrontVal + rotation));
+    leftRearMotor.set(magnitude * inRange(leftRearVal + rotation));
+    rightFrontMotor.set(magnitude * inRange(rightFrontVal - rotation));
+    rightRearMotor.set(magnitude * inRange(rightRearVal - rotation));
 
-	/**
-	 * Sets the percentage where the direction snaps to a 90 degree angle.
-	 * 
-	 * @param value
-	 * 			Percentage value to set to directionalDeadband
-	 */
-	public void setDirectionalDeadband(double value)
-	{
-		this.directionalDeadband = value;
-	}
+}
 
-	/**
-	 * Checks if the value input is in between -1 and 1 to keep it in range for
-	 * motor inputs.
-	 * 
-	 * @param val
-	 *            The input value
-	 * @return The correctly ranged value
-	 */
-	private double inRange(double val)
-	{
-		if (val > 1)
-			return 1;
-		else if (val < -1)
-			return -1;
+/**
+ * Sets the percentage where the direction snaps to a 90 degree angle.
+ * 
+ * @param value
+ *            Percentage value to set to directionalDeadband
+ */
+public void setDirectionalDeadband (double value)
+{
+    this.directionalDeadband = value;
+}
 
-		return val;
-	}
+/**
+ * Checks if the value input is in between -1 and 1 to keep it in range for
+ * motor inputs.
+ * 
+ * @param val
+ *            The input value
+ * @return The correctly ranged value
+ */
+private double inRange (double val)
+{
+    if (val > 1)
+        return 1;
+    else if (val < -1)
+        return -1;
 
-	@Override
-	public void driveRaw(double leftVal, double rightVal)
-	{
-		this.leftFrontMotor.set(leftVal);
-		this.rightFrontMotor.set(rightVal);
-		this.leftRearMotor.set(leftVal);
-		this.rightRearMotor.set(rightVal);
-	}
+    return val;
+}
 
-	@Override
-	public void stop()
-	{
-		this.leftFrontMotor.set(0.0);
-		this.rightFrontMotor.set(0.0);
-		this.leftRearMotor.set(0.0);
-		this.rightRearMotor.set(0.0);
-	}
+@Override
+public void driveRaw (double leftVal, double rightVal)
+{
+    this.leftFrontMotor.set(leftVal);
+    this.rightFrontMotor.set(rightVal);
+    this.leftRearMotor.set(leftVal);
+    this.rightRearMotor.set(rightVal);
+}
+
+@Override
+public void stop ()
+{
+    this.leftFrontMotor.set(0.0);
+    this.rightFrontMotor.set(0.0);
+    this.leftRearMotor.set(0.0);
+    this.rightRearMotor.set(0.0);
+}
 }

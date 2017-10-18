@@ -10,7 +10,7 @@ package org.usfirst.frc.team339.HardwareInterfaces.newtransmission;
 public abstract class TransmissionBase
 {
 protected final double[] gearRatios =
-    {.5, .7, 1};
+    {.6, .7, 1};
 
 // Will default to the highest gear available
 protected int currentGear = gearRatios.length - 1;
