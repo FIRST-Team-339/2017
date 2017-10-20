@@ -331,22 +331,6 @@ private static final double TIME_TO_ACCELERATE = .4;
 
 public static void init ()
 {
-    // reset encoders
-
-    if (onNewDrive == true)
-        {
-        Hardware.leftFrontMotor.setInverted(false);
-        Hardware.rightFrontMotor.setInverted(false);
-        Hardware.leftRearMotor.setInverted(false);
-        Hardware.rightRearMotor.setInverted(false);
-        }
-    else
-        {
-        Hardware.leftFrontMotor.setInverted(false);
-        Hardware.rightFrontMotor.setInverted(false);
-        Hardware.leftRearMotor.setInverted(false);
-        Hardware.rightRearMotor.setInverted(false);
-        }
     Hardware.leftFrontEncoder.reset();
     Hardware.leftRearEncoder.reset();
     Hardware.rightFrontEncoder.reset();
@@ -589,6 +573,7 @@ private static boolean placeCenterGearPath ()
                 if (Hardware.newDrive.driveToGear(ALIGN_SPEED) == true)
                     {
                     Hardware.gearIntake.lowerArm();
+                    Hardware.gearIntake.reverseIntakeWheels();
                     currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
                     Hardware.autoStateTimer.reset();
                     Hardware.autoStateTimer.start();
@@ -601,7 +586,7 @@ private static boolean placeCenterGearPath ()
             Hardware.leftFrontMotor.set(0);
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
-            if (Hardware.autoStateTimer.get() >= 1.5)
+            if (Hardware.autoStateTimer.get() >= .5)
                 {
                 currentState = MainState.DRIVE_AWAY_FROM_PEG;
                 }
@@ -609,14 +594,14 @@ private static boolean placeCenterGearPath ()
         case DRIVE_AWAY_FROM_PEG:
             if (onNewDrive == false)
                 {
-                if (Hardware.autoDrive.driveInches(6, -ALIGN_SPEED))
+                if (Hardware.autoDrive.driveInches(11, -ALIGN_SPEED))
                     {
                     currentState = MainState.DONE;
                     }
                 }
             else
                 {
-                if (Hardware.newDrive.driveInches(6, -ALIGN_SPEED))
+                if (Hardware.newDrive.driveInches(11, -ALIGN_SPEED))
                     {
                     currentState = MainState.DONE;
                     }
@@ -624,6 +609,7 @@ private static boolean placeCenterGearPath ()
             break;
         default:
         case DONE:
+            Hardware.gearIntake.stopIntakeWheels();
             return true;
         }
     return false;
@@ -648,6 +634,7 @@ private static boolean baselinePath ()
             Hardware.leftFrontMotor.set(0);
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
+            Hardware.gearIntake.stopIntakeWheels();
             Hardware.autoStateTimer.reset();
             Hardware.autoStateTimer.start();
             initializeDriveProgram();
@@ -661,7 +648,7 @@ private static boolean baselinePath ()
             Hardware.leftFrontMotor.set(0);
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
-            Hardware.gearIntakeSolenoid.setReverse(true);
+            Hardware.gearIntake.raiseArm();
             // wait for timer to run out
             if (Hardware.autoStateTimer.get() >= delayBeforeAuto)
                 {

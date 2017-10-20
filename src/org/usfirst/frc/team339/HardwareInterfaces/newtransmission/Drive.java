@@ -308,7 +308,7 @@ public boolean driveInches (int distance, double speed)
         return true;
         }
 
-    this.driveStraight(speed);
+    this.getTransmission().driveRaw(speed, speed);
 
     return false;
 }
@@ -518,12 +518,12 @@ private static final int COLLECTION_TIME = 20;
 private static final int TURNING_RADIUS = 24;
 
 // Average between the two gear tape blobs
-private static final int GEAR_CAMERA_CENTER = 58;
+private static final int GEAR_CAMERA_CENTER = 80;
 
 // The distance the camera will cutoff and switch to driving straight
 private static final int GEAR_AUTO_CUTOFF_DISTANCE = 40;
 
-private static final double GEAR_AUTO_FINISH_DISTANCE = 12;
+private static final double GEAR_AUTO_FINISH_DISTANCE = 14;
 
 private static final double DRIVE_CORRECTION_VALUE = .1;
 
