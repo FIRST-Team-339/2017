@@ -392,7 +392,7 @@ private long driveStraightOldTime = 0;
  * 
  * @param angle
  *            How far the robot should turn. Negative angle turns left, positive
- *            turns right.
+ *            turns right. (In Degrees)
  * @param speed
  *            How fast the robot should turn (0 to 1.0)
  * @return Whether or not the robot has finished turning
@@ -475,7 +475,13 @@ public boolean driveToGear (double speed)
                 .getNthSizeBlob(0).center.x
                 + visionProcessor.getNthSizeBlob(1).center.x) / 2.0;
 
-        if (averageCenter > GEAR_CAMERA_CENTER)// Too far right?
+        if (averageCenter > GEAR_CAMERA_CENTER - DRIVE_TO_GEAR_DEADBAND
+                && averageCenter < GEAR_CAMERA_CENTER
+                        + DRIVE_TO_GEAR_DEADBAND)
+            {
+            this.getTransmission().driveRaw(speed, speed);
+            }
+        else if (averageCenter > GEAR_CAMERA_CENTER)// Too far right?
             {
             this.getTransmission().driveRaw(
                     speed + DRIVE_CORRECTION_VALUE,
@@ -526,6 +532,8 @@ private static final int GEAR_AUTO_CUTOFF_DISTANCE = 40;
 private static final double GEAR_AUTO_FINISH_DISTANCE = 14;
 
 private static final double DRIVE_CORRECTION_VALUE = .1;
+
+private static final double DRIVE_TO_GEAR_DEADBAND = 8;// in pixels
 
 
 

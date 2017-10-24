@@ -339,6 +339,7 @@ public void saveImage (ImageType type)
             fileName = "proc_image_" + processedImageNum++ + ".png";
             // Only process the image if it is chosen as the image type.
             super.process(tempImage);
+            tempImage = super.hslThresholdOutput();
             break;
         default:
             // Should not run, but will if another imageType is added and

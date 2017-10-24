@@ -468,10 +468,7 @@ public static void periodic ()
         Hardware.testingProcessor.setDefaultCameraSettings();
         }
 
-    Hardware.axisCamera
-            .takeSinglePicture(Hardware.leftOperator.getRawButton(8)
-                    || Hardware.rightOperator.getRawButton(8)
-                    || Hardware.leftOperator.getRawButton(11));
+
     // =================================================================
     // Driving code
     // =================================================================
@@ -736,14 +733,14 @@ public static void printStatements ()
     // Cameras
     // prints any camera information required
     // ---------------------------------
-    Hardware.testingProcessor.processImage();
-    if (Hardware.testingProcessor.getParticleReports().length > 1)
-        {
-        System.out.println("Blob 1: "
-                + Hardware.testingProcessor.getNthSizeBlob(0).center.x);
-        System.out.println("Blob 2: "
-                + Hardware.testingProcessor.getNthSizeBlob(1).center.x);
-        }
+    // HaRDWARE.TESTINGPROCESSOR.PROCESSIMAGE();
+    // IF (HARDWARE.TESTINGPROCESSOR.GETPARTICLEREPORTS().LENGTH > 1)
+    // {
+    // SYSTEM.OUT.PRINTLN("BLOB 1: "
+    // + HARDWARE.TESTINGPROCESSOR.GETNTHSIZEBLOB(0).CENTER.X);
+    // SYSTEM.OUT.PRINTLN("BLOB 2: "
+    // + HARDWARE.TESTINGPROCESSOR.GETNTHSIZEBLOB(1).CENTER.X);
+    // }
     // =================================
     // Driver station
     // =================================
