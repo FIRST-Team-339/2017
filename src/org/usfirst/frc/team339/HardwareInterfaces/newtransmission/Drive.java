@@ -521,7 +521,7 @@ private static final int COLLECTION_TIME = 20;
 // The distance from the left side wheel to the right-side wheel divided by
 // 2, in inches. Used in turnDegrees.
 // TODO find this value.
-private static final int TURNING_RADIUS = 24;
+private static final int TURNING_RADIUS = 16;
 
 // Average between the two gear tape blobs
 private static final int GEAR_CAMERA_CENTER = 80;

@@ -533,6 +533,13 @@ private static boolean placeCenterGearPath ()
             Hardware.gearIntakeSolenoid.setReverse(true);
             Hardware.testingProcessor.saveImage(ImageType.PROCESSED);
             Hardware.testingProcessor.saveImage(ImageType.RAW);
+            Hardware.testingProcessor.processImage();
+            for (int i = 0; i < Hardware.testingProcessor
+                    .getParticleReports().length; i++)
+                {
+                System.out.println(i + ": " + Hardware.testingProcessor
+                        .getParticleReports()[i].center.x);
+                }
             currentState = MainState.DELAY_BEFORE_START;
             break;
         case WAIT_FOR_GEAR_INIT:
@@ -553,7 +560,7 @@ private static boolean placeCenterGearPath ()
             if (Hardware.autoStateTimer.get() >= delayBeforeAuto)
                 {
                 // Hardware.axisCamera.saveImagesSafely();
-                currentState = MainState.DRIVE_FORWARD_TO_CENTER;
+                currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
                 Hardware.newDrive.resetEncoders();
                 Hardware.autoStateTimer.stop();
                 Hardware.autoStateTimer.reset();

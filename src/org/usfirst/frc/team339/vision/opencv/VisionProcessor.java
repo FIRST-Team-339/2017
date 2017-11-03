@@ -257,7 +257,11 @@ public void processImage ()
     // filterContours function.
     this.createParticleReports(super.filterContoursOutput());
     // Sort the particles from largest to smallest
-    Arrays.sort(particleReports, Comparator.reverseOrder());
+    Arrays.sort(particleReports);
+    // for (int i = 0; i < particleReports.length; i++)
+    // {
+    // System.out.println(i + " " + particleReports[i].area);
+    // }
 }
 
 /**

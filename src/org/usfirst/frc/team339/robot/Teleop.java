@@ -508,7 +508,9 @@ public static void periodic ()
     if (isTestingDrive == true)
         {
 
-        if (Hardware.leftDriver.getRawButton(10) == true)
+        // isTestingDrive = !Hardware.newDrive.turnDegrees(90, .35);
+
+        if (true)// Hardware.leftDriver.getRawButton(10) == true)
             {
             isTestingDrive = false;
             }
@@ -713,8 +715,8 @@ public static void printStatements ()
     // System.out.println(
     // "Gyro Is Connected: " + Hardware.driveGyro.isConnected());
     // =================
-    System.out.println("Ultrasonic = "
-            + Hardware.ultraSonic.getRefinedDistanceValue());
+    // System.out.println("Ultrasonic = "
+    // + Hardware.ultraSonic.getRefinedDistanceValue());
     // System.out.println("Ultrasonic = "
     // + Hardware.ultraSonic2.getRefinedDistanceValue());
     // System.out.println("Ultrasonic refined: "
@@ -733,7 +735,7 @@ public static void printStatements ()
     // Cameras
     // prints any camera information required
     // ---------------------------------
-    // HaRDWARE.TESTINGPROCESSOR.PROCESSIMAGE();
+    // Hardware.testingProcessor.processImage();
     // IF (HARDWARE.TESTINGPROCESSOR.GETPARTICLEREPORTS().LENGTH > 1)
     // {
     // SYSTEM.OUT.PRINTLN("BLOB 1: "
