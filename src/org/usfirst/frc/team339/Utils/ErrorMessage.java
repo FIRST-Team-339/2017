@@ -28,7 +28,7 @@ public class ErrorMessage
  */
 public static enum PrintsTo
     {
-    driverStation, roboRIO, driverStationAndRoboRIO
+driverStation, roboRIO, driverStationAndRoboRIO
     }
 
 /**
@@ -149,7 +149,7 @@ public ErrorMessage (PrintsTo PrintsTo)
         final int lastSlash = this.errorlogLocation.lastIndexOf('/');
         final String errorlogDirectory = this.errorlogLocation
                 .substring(0, lastSlash);
-
+        // ADD BACK IN TO TEST @ANE
         try
             {
             Runtime.getRuntime()
@@ -758,26 +758,32 @@ public String getLocation ()
  */
 public void printError (String errorMessage)
 {
+    // ADD BACK IN @ANE
     String appendedErrorMessage;
-    rioTime = getDate();
+    rioTime = this.getDate();
     matchTime = Hardware.driverStation.getMatchTime();
 
     if (appendTimeStamp == true)
+        {
         appendedErrorMessage = appendErrorMessage(errorMessage);
+        }
     else
+        {
         appendedErrorMessage = errorMessage;
+        }
 
     // if the error must print to the Drivers' Station
     if (defaultPrintDevice == PrintsTo.driverStation ||
             defaultPrintDevice == PrintsTo.driverStationAndRoboRIO)
         {
         final String dsReport = appendErrorMessage(errorMessage);
-        DriverStation.reportError(dsReport, false);
+        // TRY TO FIX @ANE
+        // Hardware.driverStation.reportError(dsReport, false);
         }
-    // if the error must print to the errorlog on the rio.
-    if (defaultPrintDevice == PrintsTo.roboRIO ||
-            defaultPrintDevice == PrintsTo.driverStationAndRoboRIO)
-        PrintsToRIO(appendedErrorMessage);
+    // // if the error must print to the errorlog on the rio.
+    // if (defaultPrintDevice == PrintsTo.roboRIO ||
+    // defaultPrintDevice == PrintsTo.driverStationAndRoboRIO)
+    // PrintsToRIO(appendedErrorMessage);
 }
 
 /**
