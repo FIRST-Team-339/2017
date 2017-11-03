@@ -430,7 +430,11 @@ public boolean turnDegrees (int angle, double speed)
     return false;
 }
 
+// variable to determine if it is the first time running a method
 private boolean turnDegreesInit = true;
+
+// TODO ANE create function to set ticks per encoder for all motors at
+// once and one for individual motors, use an enum
 
 // ================GAME SPECIFIC FUNCTIONS================
 /*

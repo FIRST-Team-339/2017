@@ -317,6 +317,10 @@ public static void periodic ()
         Hardware.newClimberMotor.set(0.0);// STOP THE MOTOR
         }
 
+    // Hardware.errorMessage.printError("CATSCATSCATS");
+
+
+
     // =================GEAR ARM & MOTOR CONTROLS================
 
     // // SAVE THIS!!! IMPORTANT!
