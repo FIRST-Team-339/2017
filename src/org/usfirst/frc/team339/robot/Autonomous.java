@@ -33,8 +33,7 @@ package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
-import org.usfirst.frc.team339.Utils.Drive.AlignReturnType;
-import org.usfirst.frc.team339.Utils.Drive.Direction;
+import org.usfirst.frc.team339.vision.opencv.VisionProcessor.ImageType;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Relay.Value;
 
@@ -278,7 +277,7 @@ private static final double ALIGN_CORRECT_VAR = 30;// 45
 /**
  * How fast we will be driving during all of auto, in percent.
  */
-private static final double DRIVE_SPEED = .6;// .45
+private static final double DRIVE_SPEED = .3;// .45
 
 private static final double ALIGN_SPEED = .25;
 
@@ -522,6 +521,7 @@ private static boolean placeCenterGearPath ()
     switch (currentState)
         {
         case INIT:
+            Hardware.ultraSonic.getRefinedDistanceValue();
             // zero out all the sensors, reset timers, etc.
             initializeDriveProgram();
             Hardware.autoStateTimer.start();
@@ -531,6 +531,8 @@ private static boolean placeCenterGearPath ()
             // backUp = true;
             // }
             Hardware.gearIntakeSolenoid.setReverse(true);
+            Hardware.testingProcessor.saveImage(ImageType.PROCESSED);
+            Hardware.testingProcessor.saveImage(ImageType.RAW);
             currentState = MainState.DELAY_BEFORE_START;
             break;
         case WAIT_FOR_GEAR_INIT:
@@ -550,8 +552,9 @@ private static boolean placeCenterGearPath ()
             // wait for timer to run out
             if (Hardware.autoStateTimer.get() >= delayBeforeAuto)
                 {
-                Hardware.axisCamera.saveImagesSafely();
-                currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
+                // Hardware.axisCamera.saveImagesSafely();
+                currentState = MainState.DRIVE_FORWARD_TO_CENTER;
+                Hardware.newDrive.resetEncoders();
                 Hardware.autoStateTimer.stop();
                 Hardware.autoStateTimer.reset();
                 }
@@ -577,17 +580,36 @@ private static boolean placeCenterGearPath ()
                     currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
                     Hardware.autoStateTimer.reset();
                     Hardware.autoStateTimer.start();
+                    Hardware.testingProcessor.saveImage(ImageType.RAW);
+                    Hardware.testingProcessor
+                            .saveImage(ImageType.PROCESSED);
                     }
 
                 }
             break;
+
+        case DRIVE_FORWARD_TO_CENTER:
+
+            Hardware.newDrive.driveStraight(DRIVE_SPEED);
+
+            if (Hardware.ultraSonic
+                    .getRefinedDistanceValue() < STOP_DISTANCE_TO_GEAR)
+                {
+                currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
+                Hardware.autoStateTimer.reset();
+                Hardware.autoStateTimer.start();
+                }
+            break;
         case DELAY_AFTER_GEAR_EXODUS:
+            Hardware.gearIntake.lowerArm();
+            Hardware.gearIntake.reverseIntakeWheels();
             Hardware.leftRearMotor.set(0);
             Hardware.leftFrontMotor.set(0);
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
             if (Hardware.autoStateTimer.get() >= .5)
                 {
+                Hardware.newDrive.resetEncoders();
                 currentState = MainState.DRIVE_AWAY_FROM_PEG;
                 }
             break;
@@ -652,7 +674,7 @@ private static boolean baselinePath ()
             // wait for timer to run out
             if (Hardware.autoStateTimer.get() >= delayBeforeAuto)
                 {
-                Hardware.axisCamera.saveImagesSafely();
+                // Hardware.axisCamera.saveImagesSafely();
                 // currentState = MainState.ACCELERATE;
                 currentState = MainState.DRIVE_FORWARD_TO_CENTER;
                 Hardware.autoStateTimer.reset();
@@ -722,235 +744,37 @@ private static boolean sideGearPath ()
             // wait for timer to run out
             if (Hardware.autoStateTimer.get() >= delayBeforeAuto)
                 {
-                // Start accelerating towards the left side of the goal.
-                // currentState = MainState.ACCELERATE;
-                // Tell the accelerate state that we want to drive to the sides
-                // after it's done.
-                currentState = MainState.DRIVE_FORWARD_TO_SIDES;
-                if (isRedAlliance == true)
-                    {
-                    accelerateDirection = 1;
-                    }
-                else
-                    {
-                    accelerateDirection = -1;
-                    }
+                Hardware.newDrive.resetEncoders();
                 }
             break;
-        // case ACCELERATE:
-        // // accelerate to our target drive speed over .4 seconds
-        // if (Hardware.autoDrive.accelerate(
-        // DRIVE_SPEED * accelerateDirection,
-        // TIME_TO_ACCELERATE) == true)
-        // {
-        // // go to the state the state that I came from told me to
-        // // once I was done.
-        // currentState = postAccelerateState;
-        // }
-        // break;
         case DRIVE_FORWARD_TO_SIDES:
-            // System.out.println("Encoders: "
-            // + Hardware.autoDrive.getAveragedEncoderValues());
-            if (isRedAlliance == true)// If we're the red alliance...
+
+            if (Hardware.newDrive.driveInches(94, DRIVE_SPEED))
                 {
-                // According to Cole's numbers, we drive forward 77.9 inches as
-                // the first step in our auto program.
-                if (onNewDrive == false)
-                    {
-                    if (Hardware.autoDrive.driveStraightInches(91,// 77.9
-                            DRIVE_SPEED, .1) == true)
-                        {
-                        // keep going
-                        currentState = MainState.BRAKE_BEFORE_TURN_TO_GEAR_PEG;
-                        }
-                    // System.out.println("Left Front: "
-                    // + Hardware.leftFrontEncoder.getDistance());
-                    // System.out.println("Left Rear: "
-                    // + Hardware.leftRearEncoder.getDistance());
-                    // System.out.println("Right Front: "
-                    // + Hardware.rightFrontEncoder.getDistance());
-                    // System.out.println("Right Rear"
-                    // + Hardware.rightRearEncoder.getDistance());
-                    }
-                else
-                    {
-                    if (Hardware.newDrive.driveInches(91,// 77.9
-                            DRIVE_SPEED) == true)
-                        {
-                        // keep going
-                        currentState = MainState.BRAKE_BEFORE_TURN_TO_GEAR_PEG;
-                        }
-                    }
-                }
-            else// If we're the blue alliance...
-                {
-                // if we're red we have to drive backwards.
-                if (Hardware.autoDrive.driveStraightInches(91,// 77.9
-                        -DRIVE_SPEED, .1) == true)
-                    {
-                    currentState = MainState.BRAKE_BEFORE_TURN_TO_GEAR_PEG;
-                    }
-                // System.out.println("Left Front: "
-                // + Hardware.leftFrontEncoder.getDistance());
-                // System.out.println("Left Rear: "
-                // + Hardware.leftRearEncoder.getDistance());
-                // System.out.println("Right Front: "
-                // + Hardware.rightFrontEncoder.getDistance());
-                // System.out.println("Right Rear"
-                // + Hardware.rightRearEncoder.getDistance());
-                }
-            break;
-        case BRAKE_BEFORE_TURN_TO_GEAR_PEG:
-            // TODO check to make sure this works
-            // If we're done stopping
-            if (onNewDrive == false)
-                {
-                if (Hardware.autoDrive.brakeToZero(BRAKE_SPEED) == true)
-                    {
-                    // move on to the turn
-                    currentState = MainState.TURN_TO_GEAR_PEG;
-                    }
-                }
-            else
-                {
-                if (Hardware.autoDrive.brakeToZero(BRAKE_SPEED) == true)
-                    {
-                    // move on to the turn
-                    currentState = MainState.TURN_TO_GEAR_PEG;
-                    }
+                currentState = MainState.TURN_TO_GEAR_PEG;
                 }
             break;
         case TURN_TO_GEAR_PEG:
-            // If we're red (in the face because the code isn't working)
-            if (isRedAlliance == true)
+
+            if (Hardware.backupOrFireOrHopper.isOn() == true)
                 {
-                if (isUsingGyro == true)
+                if (Hardware.newDrive.turnDegrees(-120, DRIVE_SPEED))
                     {
-                    if (Hardware.autoDrive.turnDegreesByGyro(28,
-                            .4) == true)
-                        {
-                        currentState = MainState.BRAKE_AFTER_TURN_TO_GEAR_PEG;
-                        }
-                    }
-                else if (Hardware.autoDrive.turnDegrees(28, .4) == true)
-                    {
-                    currentState = MainState.BRAKE_AFTER_TURN_TO_GEAR_PEG;
+                    currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
                     }
                 }
-            /*
-             * If we're blue (in the face because we've stopped breathing;
-             * it just isn't worth it anymore)
-             */
             else
                 {
-                if (isUsingGyro == true)
+                if (Hardware.newDrive.turnDegrees(120, DRIVE_SPEED))
                     {
-                    if (Hardware.autoDrive.turnDegreesByGyro(-28,
-                            .4) == true)
-                        {
-                        currentState = MainState.BRAKE_AFTER_TURN_TO_GEAR_PEG;
-                        }
+                    currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
                     }
-                else
-                    {
-                    if (Hardware.autoDrive.turnDegrees(-28, .4) == true)
-                        {
-                        currentState = MainState.BRAKE_AFTER_TURN_TO_GEAR_PEG;
-                        }
-                    }
-                }
-            break;
-        case BRAKE_AFTER_TURN_TO_GEAR_PEG:
-            // If we're done stopping
-            if (Hardware.autoDrive.brakeToZero(BRAKE_SPEED) == true)
-                {
-                // Take a picture and filter the bottom 10% of it out to drop
-                // the gear blobs
-                Hardware.imageProcessor.processImage();
-                // TODO may be able to remove this in the future, given
-                // our new camera position
-                Hardware.axisCamera.saveImagesSafely();
-                Hardware.imageProcessor.filterBlobsInYRange(1, .9);
-                currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;// BYPASSING
-                                                                   // DRIVE
-                                                                   // STRAIGHT
-                                                                   // AFTER TURN
-                }
-            break;
-        case DRIVE_STRAIGHT_AFTER_TURN:
-            if (isRedAlliance == true)// If we're red (as tomatoes)
-                {
-                // TODO completely random number, Hurry up Cole!
-                if (Hardware.autoDrive.driveStraightInches(16,
-                        DRIVE_SPEED, .1) == true)
-                    {
-                    Hardware.autoDrive.drive(0.0, 0.0, 0.0);
-                    currentState = MainState.BRAKE_AFTER_DRIVE_STRAIGHT_AFTER_TURN;
-                    }
-                }
-            else// If we're blue (as the sea)
-                {
-                if (Hardware.autoDrive.driveStraightInches(16,
-                        -DRIVE_SPEED, .1) == true)
-                    {
-                    Hardware.autoDrive.drive(0.0, 0.0, 0.0);
-                    currentState = MainState.BRAKE_AFTER_DRIVE_STRAIGHT_AFTER_TURN;
-                    }
-                }
-            break;
-        case BRAKE_AFTER_DRIVE_STRAIGHT_AFTER_TURN:
-            // If we're red (like the sunset) or blue(like kool-aid) we always
-            // brake, we don't see color here.
-            if (Hardware.autoDrive.brakeToZero(BRAKE_SPEED) == true)
-                {
-                Hardware.autoDrive.drive(0.0, 0.0, 0.0);
-                currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
                 }
             break;
         case DRIVE_TO_GEAR_WITH_CAMERA:
-            // Make sure we have the most recent blob info
-            Hardware.imageProcessor.processImage();
-            // If at any time we lose our target blob number
-            if (Hardware.imageProcessor.getNthSizeBlob(1) != null)
+            if (Hardware.newDrive.driveToGear(DRIVE_SPEED))
                 {
-                // TODO magic numbers and need to be tuned.
-                // If we're close enough to the gear wall to quit...
-                // TODO find a new relative center
-                cameraState = Hardware.autoDrive.driveToGear(
-                        ALIGN_SPEED,
-                        ALIGN_SPEED, .121875, .07,
-                        (Hardware.ultraSonic
-                                .getDistanceFromNearestBumper() <= 12),
-                        .7, .15);
-                if (cameraState == AlignReturnType.DONE)
-                    {
-                    // Stop and wait for Mr. Human player to pull out our gear.
-                    Hardware.autoDrive.drive(0.0, 0.0, 0.0);
-                    Hardware.axisCamera.saveImagesSafely();
-                    currentState = MainState.DONE;
-                    }
-                else if (cameraState == AlignReturnType.ALIGNED)
-                    {
-                    Hardware.axisCamera.saveImagesSafely();
-                    }
-                }
-            else
-                {
-                Hardware.autoDrive.drive(0.0, 0.0, 0.0);
-                currentState = MainState.STRAFE_TO_GEAR_WITHOUT_CAMERA;
-                Hardware.axisCamera.saveImagesSafely();
-                }
-            break;
-        case STRAFE_TO_GEAR_WITHOUT_CAMERA:
-            if (Hardware.ultraSonic.getDistanceFromNearestBumper() > 12)
-                {
-                Hardware.autoDrive.strafeStraight(
-                        Direction.LEFT, .7, DRIVE_SPEED, .15);
-                }
-            else
-                {
-                currentState = MainState.DONE;
-                Hardware.axisCamera.saveImagesSafely();
+                currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
                 }
             break;
         default:
