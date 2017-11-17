@@ -762,21 +762,21 @@ private static boolean sideGearPath ()
                 }
             break;
         case TURN_TO_GEAR_PEG:
-
-            if (Hardware.backupOrFireOrHopper.isOn() == true)
-                {
-                if (Hardware.newDrive.turnDegrees(-120, DRIVE_SPEED))
-                    {
-                    currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
-                    }
-                }
-            else
-                {
-                if (Hardware.newDrive.turnDegrees(120, DRIVE_SPEED))
-                    {
-                    currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
-                    }
-                }
+            // REMOVED BY ANE
+            // if (Hardware.backupOrFireOrHopper.isOn() == true)
+            // {
+            // if (Hardware.newDrive.turnDegrees(-120, DRIVE_SPEED))
+            // {
+            // currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
+            // }
+            // }
+            // else
+            // {
+            // if (Hardware.newDrive.turnDegrees(120, DRIVE_SPEED))
+            // {
+            // currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
+            // }
+            // }
             break;
         case DRIVE_TO_GEAR_WITH_CAMERA:
             if (Hardware.newDrive.driveToGear(DRIVE_SPEED))

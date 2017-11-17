@@ -168,6 +168,8 @@ public static void init ()
     // thread2.start();
     // Hardware.driveGyro.calibrate();
     // Hardware.driveGyro.reset();
+    Hardware.transmission.setGearPercentage(0, Math.min(
+            Hardware.delayPot.get(0.0, 1.0), 1));
     Hardware.transmission.setGear(0);
 
 } // end Init
@@ -488,16 +490,29 @@ public static void periodic ()
             else
                 Hardware.transmission.setGear(0);// Low Gear
 
+
             Hardware.transmission.drive(Hardware.leftDriver);
             }
         else
             {
-            Hardware.mecanumDrive.drive(
-                    Hardware.leftDriver.getMagnitude(),
-                    Hardware.leftDriver.getDirectionDegrees(),
-                    Hardware.leftDriver.getZ());
+            if (Hardware.inDemo.get() == false)
+                {
+                Hardware.mecanumDrive.drive(
+                        Hardware.leftDriver.getMagnitude(),
+                        Hardware.leftDriver.getDirectionDegrees(),
+                        Hardware.leftDriver.getZ());
+                }
+            else
+                {
+                Hardware.mecanumDrive.drive(
+                        (Hardware.leftDriver.getMagnitude() * Math.min(
+                                Hardware.delayPot.get(0.0, 1.0), 1)),
+                        Hardware.leftDriver.getDirectionDegrees(),
+                        Hardware.leftDriver.getZ());
+                }
             }
         }
+
 
     if (Hardware.leftDriver.getRawButton(2))
         Hardware.autoDrive.resetEncoders();
@@ -566,9 +581,10 @@ public static void printStatements ()
     // prints value of the motors
     // =================================
 
-    // System.out.println("Delay Pot: " + Hardware.delayPot.get(0, 5));
-    // System.out.println("Left Front Motor Controller: " +
-    // Hardware.leftFrontMotor.get());
+
+    // System.out.println("Delay Pot: " + Hardware.delayPot.get(0, 1));// 5
+    System.out.println("Left Front Motor Controller: " +
+            Hardware.leftFrontMotor.get());
     // System.out.println("Right Rear Motor Controller: " +
     // Hardware.rightRearMotor.get());
     // System.out.println("Left Rear Motor Controller: " +
@@ -761,6 +777,8 @@ public static void printStatements ()
     // System.out.println("Right Operator: " +
     // Hardware.rightOperator.getDirectionDegrees());
     // System.out.println("Twist: " + Hardware.leftDriver.getTwist());
+    System.out.println("leftDriver Magnitude = "
+            + Hardware.leftDriver.getMagnitude());
     // =================================
     // Driver station
     // =================================
