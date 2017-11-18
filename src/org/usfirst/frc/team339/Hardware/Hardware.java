@@ -166,13 +166,15 @@ public static Relay ringlightRelay = new Relay(0);
 // ------------------------------------
 // Single and double throw switches
 // ------------------------------------
-public static SingleThrowSwitch backupOrFireOrHopper = new SingleThrowSwitch(
-        3);
+// public static SingleThrowSwitch backupOrFireOrHopper = new SingleThrowSwitch(
+// 3);
 
 public static SingleThrowSwitch sideGearPath = new SingleThrowSwitch(7);
 
 public static SingleThrowSwitch autoBaseLinePath = new SingleThrowSwitch(
         8);
+
+public static SingleThrowSwitch inDemo = new SingleThrowSwitch(20);
 
 public static DoubleThrowSwitch pathSelector = new DoubleThrowSwitch(
         sideGearPath, autoBaseLinePath);
