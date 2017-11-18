@@ -173,7 +173,11 @@ LEFT_SIDE,
 /**
  * Both front and back on the right side
  */
-RIGHT_SIDE
+RIGHT_SIDE,
+/**
+ * Both left and right rear wheels
+ */
+REAR
     }
 
 /**
@@ -248,6 +252,9 @@ public double getEncoderDistanceAverage (WheelGroups encoderGroup)
         case RIGHT_SIDE:
             return (Math.abs(rightFrontEncoder.getDistance())
                     + Math.abs(rightRearEncoder.getDistance())) / 2.0;
+        case REAR:
+            return (Math.abs(leftRearEncoder.getDistance())
+                    + Math.abs(rightRearEncoder.getDistance())) / 2.0;
         default:
             return 0.0;
         }
@@ -291,7 +298,7 @@ private boolean driveInchesInit = true;
  *            How fast the robot should travel
  * @return Whether or not the robot has finished traveling that given distance.
  */
-public boolean driveInches (int distance, double speed)
+public boolean driveStraightInches (int distance, double speed)
 {
     // Runs once when the method runs the first time, and does not run again
     // until after the method returns true.
@@ -301,14 +308,31 @@ public boolean driveInches (int distance, double speed)
         driveInchesInit = false;
         }
 
-    if (isAnyEncoderLargerThan(distance))
+    // Check encoders to see if the distance has been driven
+    if (this.transmissionType == TransmissionType.MECANUM
+            || this.transmissionType == TransmissionType.TANK)
         {
-        this.getTransmission().stop();
-        driveInchesInit = true;
-        return true;
+        // Check all encoders if it is a four wheel drive system.
+        if (this.getEncoderDistanceAverage(WheelGroups.ALL) > distance)
+            {
+            this.getTransmission().stop();
+            driveInchesInit = true;
+            return true;
+            }
+        }
+    else
+        {
+        // Only check the rear encoders if it is a two wheel drive system.
+        if (this.getEncoderDistanceAverage(WheelGroups.REAR) > distance)
+            {
+            this.getTransmission().stop();
+            driveInchesInit = true;
+            return true;
+            }
         }
 
-    this.getTransmission().driveRaw(speed, speed);
+    // Drive straight if we have not reached the distance
+    this.driveStraight(speed);
 
     return false;
 }
@@ -379,11 +403,12 @@ private int leftChange = 1, rightChange = 1;
 
 private int[] prevEncoderValues =
     {1, 1};
-// {Left encoder, Right encoder}
 // Preset to 1 to avoid divide by zero errors.
 
 // Used for calculating how much time has passed for driveStraight
 private long driveStraightOldTime = 0;
+
+
 
 /**
  * TODO Test this!
@@ -406,14 +431,35 @@ public boolean turnDegrees (int angle, double speed)
         turnDegreesInit = false;
         }
 
+
     // Tests whether any encoder has driven the arc-length of the angle
-    // (angle x radius)
-    if (isAnyEncoderLargerThan(
-            Math.toRadians(Math.abs(angle)) * TURNING_RADIUS) == true)
+    // (angle x radius)// took out +15 on Nov 4
+    if (this.transmissionType == TransmissionType.MECANUM
+            || this.transmissionType == TransmissionType.TANK)
         {
-        this.getTransmission().stop();
-        turnDegreesInit = true;
-        return true;
+        // Only check 4 encoders if we have a four wheel drive system
+        if (this.getEncoderDistanceAverage(
+                WheelGroups.ALL) > Math.toRadians(Math.abs(angle))
+                        * TURNING_RADIUS)
+            {
+            // We have finished turning!
+            this.getTransmission().stop();
+            turnDegreesInit = true;
+            return true;
+            }
+        }
+    else
+        {
+        // Only check 2 encoders if we have a two wheel drive system
+        if (this.getEncoderDistanceAverage(
+                WheelGroups.REAR) > Math.toRadians(Math.abs(angle))
+                        * TURNING_RADIUS)
+            {
+            // We have finished turning!
+            this.getTransmission().stop();
+            turnDegreesInit = true;
+            return true;
+            }
         }
 
     // Change which way the robot turns based on whether the angle is
@@ -525,6 +571,7 @@ private static final int COLLECTION_TIME = 20;
 // The distance from the left side wheel to the right-side wheel divided by
 // 2, in inches. Used in turnDegrees.
 // TODO find this value.
+// Nov 4 changed from 16 to 17
 private static final int TURNING_RADIUS = 16;
 
 // Average between the two gear tape blobs

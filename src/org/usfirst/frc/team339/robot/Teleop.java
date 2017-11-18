@@ -39,7 +39,6 @@ import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.Shooter;
 import org.usfirst.frc.team339.Utils.pidTuning.CanTalonPIDTuner;
 import org.usfirst.frc.team339.Utils.pidTuning.SmartDashboardPIDTunerDevice;
-import edu.wpi.cscore.VideoCamera;
 import edu.wpi.first.wpilibj.Relay.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -462,15 +461,15 @@ public static void periodic ()
     // CAMERA CODE
     // =================================================================
 
-    if (Hardware.rightOperator.getRawButton(11))
-        {
-        Hardware.testingProcessor.setCameraSettings(0,
-                VideoCamera.WhiteBalance.kFixedIndoor, 50);
-        }
-    else if (Hardware.rightOperator.getRawButton(10))
-        {
-        Hardware.testingProcessor.setDefaultCameraSettings();
-        }
+    // if (Hardware.rightOperator.getRawButton(11))
+    // {
+    // Hardware.testingProcessor.setCameraSettings(0,
+    // VideoCamera.WhiteBalance.kFixedIndoor, 50);
+    // }
+    // else if (Hardware.rightOperator.getRawButton(10))
+    // {
+    // Hardware.testingProcessor.setDefaultCameraSettings();
+    // }
 
 
     // =================================================================
@@ -512,14 +511,14 @@ public static void periodic ()
     if (isTestingDrive == true)
         {
 
-        // isTestingDrive = !Hardware.newDrive.turnDegrees(90, .35);
+        isTestingDrive = !Hardware.newDrive.turnDegrees(90, .35);
 
-        if (true)// Hardware.leftDriver.getRawButton(10) == true)
+
+        if (Hardware.leftDriver.getRawButton(10) == true)
             {
             isTestingDrive = false;
             }
         }
-
 }
 // end
 // Periodic
@@ -666,7 +665,7 @@ public static void printStatements ()
     // Hardware.autoDrive.getLeftRearEncoderDistance());
     // Hardware.rightFrontEncoder.get());
     // System.out.println("Right Front Encoder Distance: " +
-    // Hardware.autoDrive.getRightRearEncoderDistance());
+    // Hardware.autoDrive.getRightFrontEncoderDistance());
     // System.out.println("Right Rear Encoder: " +
     // Hardware.rightRearEncoder.get());
     // System.out.println("Right Rear Encoder Distance: " +
@@ -678,7 +677,7 @@ public static void printStatements ()
     // System.out.println("Left Rear Encoder: " +
     // Hardware.leftRearEncoder.get());
     // System.out.println("Left Rear Encoder Distance: " +
-    // Hardware.autoDrive.getLeftFrontEncoderDistance());
+    // Hardware.autoDrive.getLeftRearEncoderDistance());
     // ---------------------------------
     // Red Light/IR Sensors
     // prints the state of the sensor

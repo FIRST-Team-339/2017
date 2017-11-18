@@ -79,7 +79,8 @@ public void drive (Joystick joystick)
 
     // Directional Deadband calculation
     // Check the Y axis, and snap to the 90.
-    if (Math.abs(joystick.getY()) < this.directionalDeadband)
+    if (Math.abs(joystick.getY()) < this.directionalDeadband
+            && magnitude > this.joystickDeadband)
         {
         // Increase the speed of the motors while strafing.
         gearMultiplier += this.strafeCusion;
@@ -94,7 +95,8 @@ public void drive (Joystick joystick)
         }
     // Directional Deadband calculation
     // Check the X axis, and snap to the 90.
-    if (Math.abs(joystick.getX()) < this.directionalDeadband)
+    if (Math.abs(joystick.getX()) < this.directionalDeadband
+            && magnitude > this.joystickDeadband)
         {
         if (joystick.getY() > 0)
             direction = Math.PI;// 180 degrees

@@ -630,7 +630,7 @@ private static boolean placeCenterGearPath ()
                 }
             else
                 {
-                if (Hardware.newDrive.driveInches(11, -ALIGN_SPEED))
+                if (Hardware.newDrive.driveStraightInches(11, -ALIGN_SPEED))
                     {
                     currentState = MainState.DONE;
                     }
@@ -700,7 +700,7 @@ private static boolean baselinePath ()
                 }
             else
                 {
-                if (Hardware.newDrive.driveInches(115,
+                if (Hardware.newDrive.driveStraightInches(115,
                         DRIVE_SPEED) == true)
                     {
                     currentState = MainState.DONE;
@@ -730,6 +730,9 @@ private static boolean sideGearPath ()
             Hardware.leftFrontMotor.set(0);
             Hardware.rightRearMotor.set(0);
             Hardware.rightFrontMotor.set(0);
+
+            Hardware.gearIntake.raiseArm();
+            Hardware.gearIntake.stopIntakeWheels();
             // Resets the encoders, gyro, motors, and timer.
             // leaves the timer stopped.
             initializeDriveProgram();
@@ -756,7 +759,7 @@ private static boolean sideGearPath ()
             break;
         case DRIVE_FORWARD_TO_SIDES:
 
-            if (Hardware.newDrive.driveInches(94, DRIVE_SPEED))
+            if (Hardware.newDrive.driveStraightInches(68, DRIVE_SPEED))
                 {
                 currentState = MainState.TURN_TO_GEAR_PEG;
                 }
@@ -765,14 +768,14 @@ private static boolean sideGearPath ()
 
             if (Hardware.backupOrFireOrHopper.isOn() == true)
                 {
-                if (Hardware.newDrive.turnDegrees(-120, DRIVE_SPEED))
+                if (Hardware.newDrive.turnDegrees(-60, DRIVE_SPEED))
                     {
                     currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
                     }
                 }
             else
                 {
-                if (Hardware.newDrive.turnDegrees(120, DRIVE_SPEED))
+                if (Hardware.newDrive.turnDegrees(60, DRIVE_SPEED))
                     {
                     currentState = MainState.DRIVE_TO_GEAR_WITH_CAMERA;
                     }
@@ -782,11 +785,42 @@ private static boolean sideGearPath ()
             if (Hardware.newDrive.driveToGear(DRIVE_SPEED))
                 {
                 currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
+                Hardware.autoStateTimer.reset();
+                Hardware.autoStateTimer.start();
+                }
+            break;
+        case DELAY_AFTER_GEAR_EXODUS:
+            Hardware.gearIntake.lowerArm();
+            Hardware.gearIntake.reverseIntakeWheels();
+            Hardware.leftRearMotor.set(0);
+            Hardware.leftFrontMotor.set(0);
+            Hardware.rightRearMotor.set(0);
+            Hardware.rightFrontMotor.set(0);
+            if (Hardware.autoStateTimer.get() >= .5)
+                {
+                Hardware.newDrive.resetEncoders();
+                currentState = MainState.DRIVE_AWAY_FROM_PEG;
+                }
+            break;
+        case DRIVE_AWAY_FROM_PEG:
+            if (onNewDrive == false)
+                {
+                if (Hardware.autoDrive.driveInches(11, -ALIGN_SPEED))
+                    {
+                    currentState = MainState.DONE;
+                    }
+                }
+            else
+                {
+                if (Hardware.newDrive.driveStraightInches(11, -ALIGN_SPEED))
+                    {
+                    currentState = MainState.DONE;
+                    }
                 }
             break;
         default:
-            currentState = MainState.DONE;
         case DONE:
+            Hardware.gearIntake.stopIntakeWheels();
             return true;
         }
     return false;

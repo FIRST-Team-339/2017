@@ -554,7 +554,7 @@ public static final double KILROY_XVII_SECOND_GEAR_PERCENTAGE = 1.0;
  * Distance per pulse for kilroy XVIII
  */
 
-public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.069;
+public static final double ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII = 0.0637;
 
 /**
  * Distance per pulse on kilroy XVII
