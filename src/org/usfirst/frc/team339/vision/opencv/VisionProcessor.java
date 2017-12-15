@@ -158,7 +158,7 @@ private final VideoCamera camera;
  * Creates the object and starts the camera servera
  * 
  * @param ip
- *            the IP of the .mjpg the axis camera outputs
+ *            the IP of the the axis camera (usually 10.3.39.11)
  * @param camera
  *            the brand / model of the camera
  */
