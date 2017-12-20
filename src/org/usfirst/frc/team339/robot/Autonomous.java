@@ -335,7 +335,7 @@ public static void init ()
     Hardware.rightFrontEncoder.reset();
     Hardware.rightRearEncoder.reset();
 
-    Hardware.gearIntakeSolenoid.setReverse(true);
+    // Hardware.gearIntakeSolenoid.setReverse(true);
     // motors
     // Hardware.leftRearMotor.setInverted(true);
     // Hardware.intakeMotor.setInverted(true);
@@ -530,7 +530,7 @@ private static boolean placeCenterGearPath ()
             // {
             // backUp = true;
             // }
-            Hardware.gearIntakeSolenoid.setReverse(true);
+            // Hardware.gearIntakeSolenoid.setReverse(true);
             Hardware.testingProcessor.saveImage(ImageType.PROCESSED);
             Hardware.testingProcessor.saveImage(ImageType.RAW);
             Hardware.testingProcessor.processImage();
@@ -630,7 +630,8 @@ private static boolean placeCenterGearPath ()
                 }
             else
                 {
-                if (Hardware.newDrive.driveStraightInches(11, -ALIGN_SPEED))
+                if (Hardware.newDrive.driveStraightInches(11,
+                        -ALIGN_SPEED))
                     {
                     currentState = MainState.DONE;
                     }
@@ -813,7 +814,8 @@ private static boolean sideGearPath ()
                 }
             else
                 {
-                if (Hardware.newDrive.driveStraightInches(11, -ALIGN_SPEED))
+                if (Hardware.newDrive.driveStraightInches(11,
+                        -ALIGN_SPEED))
                     {
                     currentState = MainState.DONE;
                     }
@@ -842,7 +844,7 @@ private static void initializeDriveProgram ()
         }
     Hardware.autoDrive.resetEncoders();
     Hardware.mecanumDrive.drive(0, 0, 0);
-    Hardware.gearIntakeSolenoid.setReverse(false);
+    // Hardware.gearIntakeSolenoid.setReverse(false);
 
 }
 

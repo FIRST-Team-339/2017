@@ -15,7 +15,6 @@
 package org.usfirst.frc.team339.Hardware;
 
 import com.ni.vision.NIVision.MeasurementType;
-import org.usfirst.frc.team339.HardwareInterfaces.DoubleSolenoid;
 import org.usfirst.frc.team339.HardwareInterfaces.DoubleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.HRLVMaxSonarEZ;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
@@ -47,9 +46,7 @@ import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PowerDistributionPanel;
 import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.TalonSRX;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Victor;
 
@@ -120,13 +117,13 @@ public static LightSensor photoSwitch = new LightSensor(18);
 // ------------------------------------
 
 // changed these to kilroy equipment list 2017
-public static TalonSRX rightRearMotor = new TalonSRX(2);
+public static Victor rightRearMotor = new Victor(2);
 
-public static TalonSRX rightFrontMotor = new TalonSRX(1);
+public static Victor rightFrontMotor = new Victor(1);
 
-public static TalonSRX leftRearMotor = new TalonSRX(3);
+public static Victor leftRearMotor = new Victor(3);
 
-public static TalonSRX leftFrontMotor = new TalonSRX(4);
+public static Victor leftFrontMotor = new Victor(4);
 
 // ------------------------------------
 // Victor classes
@@ -147,8 +144,8 @@ public static Victor gearIntakeMotor = new Victor(0); // was agitator motor
 // ====================================
 // CAN classes
 // ====================================
-public static PowerDistributionPanel pdp = new PowerDistributionPanel(
-        0);
+// public static PowerDistributionPanel pdp = new PowerDistributionPanel(
+// 0);
 
 // public static CANTalon gimbalMotor = new CANTalon(11);
 
@@ -242,8 +239,8 @@ public static Compressor compressor = new Compressor();
 // Double Solenoids
 // ------------------------------------
 
-public static DoubleSolenoid gearIntakeSolenoid = new DoubleSolenoid(0,
-        1);
+// public static DoubleSolenoid gearIntakeSolenoid = new DoubleSolenoid(0,
+// 1);
 
 // ------------------------------------
 // Single Solenoids
@@ -448,7 +445,7 @@ public static boolean twoJoystickControl = false;
 // agitatorMotor);
 
 public static final GearIntake gearIntake = new GearIntake(
-        gearIntakeMotor, gearIntakeSolenoid);
+        gearIntakeMotor, null);
 
 // ------------------------------------
 // Utility classes
