@@ -1,5 +1,7 @@
 package org.usfirst.frc.team339.HardwareInterfaces.newtransmission;
 
+import edu.wpi.first.wpilibj.SpeedController;
+
 /**
  * Contains necessary functions that must be included in
  * each transmission type class created.
@@ -53,6 +55,13 @@ public abstract class TransmissionBase
 	{
 		return type;
 	}
+
+	public enum MotorPosition
+	{
+		LEFT_FRONT, LEFT_REAR, RIGHT_FRONT, RIGHT_REAR
+	}
+
+	public abstract SpeedController getSpeedController(MotorPosition position);
 
 	/**
 	 * TODO Test gear system

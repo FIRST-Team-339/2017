@@ -194,4 +194,23 @@ public class MecanumTransmission extends TransmissionBase
 		this.leftRearMotor.set(0.0);
 		this.rightRearMotor.set(0.0);
 	}
+
+	@Override
+	public SpeedController getSpeedController(MotorPosition position)
+	{
+		switch (position)
+		{
+		case LEFT_FRONT:
+			return this.leftFrontMotor;
+		case LEFT_REAR:
+			return this.leftRearMotor;
+		case RIGHT_FRONT:
+			return this.rightFrontMotor;
+		case RIGHT_REAR:
+			return this.rightRearMotor;
+		default:
+			return null;
+		}
+	}
+
 }

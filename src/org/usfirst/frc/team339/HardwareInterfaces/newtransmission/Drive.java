@@ -2,6 +2,7 @@ package org.usfirst.frc.team339.HardwareInterfaces.newtransmission;
 
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyGyro;
 import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
+import org.usfirst.frc.team339.HardwareInterfaces.newtransmission.TransmissionBase.MotorPosition;
 import org.usfirst.frc.team339.HardwareInterfaces.newtransmission.TransmissionBase.TransmissionType;
 import org.usfirst.frc.team339.vision.opencv.VisionProcessor;
 
@@ -269,6 +270,77 @@ public class Drive
 	}
 
 	// ================DRIVING FUNCTIONS================
+
+	/**
+	 * Stops the robot suddenly, to prevent drifting during autonomous functions, and increase the precision.
+	 * @return
+	 * 		Whether or not the robot has stopped moving.
+	 */
+	public boolean brake()
+	{
+		if (this.brakeInit)
+		{
+			// Get the initial powers sent to the motors, to reverse them while
+			// braking.
+			this.brakeMotorVals[0] = this.getTransmission().getSpeedController(MotorPosition.LEFT_FRONT).get();
+			this.brakeMotorVals[1] = this.getTransmission().getSpeedController(MotorPosition.LEFT_REAR).get();
+			this.brakeMotorVals[2] = this.getTransmission().getSpeedController(MotorPosition.RIGHT_FRONT).get();
+			this.brakeMotorVals[3] = this.getTransmission().getSpeedController(MotorPosition.RIGHT_REAR).get();
+
+			this.brakeInit = false;
+		}
+
+		// Only test the encoders every (COLLECTION_TIME) milliseconds.
+		if (System.currentTimeMillis() - this.previousBrakeTime > COLLECTION_TIME)
+		{
+			// Compare the previous encoder values to the current ones, and stop
+			// each wheel separately based on if it is below the deadband.
+			if (this.leftFrontEncoder.get() - this.prevBrakeVals[0] < BRAKE_DEADBAND)
+				brakeMotorVals[0] = 0;
+			if (this.leftRearEncoder.get() - this.prevBrakeVals[1] < BRAKE_DEADBAND)
+				brakeMotorVals[1] = 0;
+			if (this.rightFrontEncoder.get() - this.prevBrakeVals[2] < BRAKE_DEADBAND)
+				brakeMotorVals[2] = 0;
+			if (this.rightRearEncoder.get() - this.prevBrakeVals[3] < BRAKE_DEADBAND)
+				brakeMotorVals[3] = 0;
+
+			// By the time that all motors are set to zero, we have finished
+			// braking.
+			if (brakeMotorVals[0] == 0 && brakeMotorVals[1] == 0 && brakeMotorVals[2] == 0 && brakeMotorVals[3] == 0)
+			{
+				this.getTransmission().stop();
+				brakeInit = true;
+				return true;
+			}
+
+			// Store the values of the encoders for next time.
+			this.prevBrakeVals[0] = this.leftFrontEncoder.get();
+			this.prevBrakeVals[1] = this.leftRearEncoder.get();
+			this.prevBrakeVals[2] = this.rightFrontEncoder.get();
+			this.prevBrakeVals[3] = this.rightRearEncoder.get();
+
+			this.previousBrakeTime = System.currentTimeMillis();
+		}
+
+		// If we have not finished braking, then set the motors to their
+		// opposites.
+		this.getTransmission().getSpeedController(MotorPosition.LEFT_FRONT).set(-brakeMotorVals[0]);
+		this.getTransmission().getSpeedController(MotorPosition.LEFT_REAR).set(-brakeMotorVals[1]);
+		this.getTransmission().getSpeedController(MotorPosition.RIGHT_FRONT).set(-brakeMotorVals[2]);
+		this.getTransmission().getSpeedController(MotorPosition.RIGHT_REAR).set(-brakeMotorVals[3]);
+
+		return false;
+	}
+
+	private boolean brakeInit = true;
+
+	private long previousBrakeTime = 1;
+
+	private double[] brakeMotorVals =
+	{ 0, 0, 0, 0 };
+
+	private int[] prevBrakeVals =
+	{ 1, 1, 1, 1 };
 
 	/**
 	 * Drives the robot a certain distance without encoder correction.
@@ -550,8 +622,11 @@ public class Drive
 	// ================TUNABLES================
 
 	// Number of milliseconds that will pass before collecting data on encoders
-	// for driveStraight
+	// for driveStraight and brake
 	private static final int COLLECTION_TIME = 20;
+
+	// The change in encoder ticks where the robot is considered "stopped".
+	private static final int BRAKE_DEADBAND = 10;
 
 	// The distance from the left side wheel to the right-side wheel divided by
 	// 2, in inches. Used in turnDegrees.

@@ -2,6 +2,7 @@ package org.usfirst.frc.team339.HardwareInterfaces.newtransmission;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PWMSpeedController;
+import edu.wpi.first.wpilibj.SpeedController;
 
 /**
  * The most basic of drive systems: contains 2 motor controllers,
@@ -72,6 +73,24 @@ public class TractionTransmission extends TransmissionBase
 	{
 		this.leftMotor.set(0.0);
 		this.rightMotor.set(0.0);
+	}
+
+	@Override
+	public SpeedController getSpeedController(MotorPosition position)
+	{
+		switch (position)
+		{
+		case LEFT_FRONT:
+			return this.leftMotor;
+		case LEFT_REAR:
+			return this.leftMotor;
+		case RIGHT_FRONT:
+			return this.rightMotor;
+		case RIGHT_REAR:
+			return this.rightMotor;
+		default:
+			return null;
+		}
 	}
 
 }
