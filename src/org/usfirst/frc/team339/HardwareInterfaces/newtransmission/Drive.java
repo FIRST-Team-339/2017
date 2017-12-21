@@ -179,6 +179,23 @@ public class Drive
 	}
 
 	/**
+	 * Calculates the appropriate Distance Per Pulse for the encoders, using:
+	 * dpp = (Encoder Teeth / Output Teeth) * (wheel Diameter) / (pulses per revolution).
+	 * The default pulses per revolution on Kilroy's normal optical encoders is 1,440.
+	 * 
+	 * @param pulsesPerRotation
+	 * 			How many times the encoder pulses in one rotation of the ENCODER.
+	 * @param gearRatio
+	 * 			The gear ratio of the Encoder:Wheel (Encoder Teeth / Output Teeth)
+	 * @param wheelDiameter
+	 * 			The size of the drive wheels.
+	 */
+	public void setEncoderDistancePerPulse(double pulsesPerRotation, double gearRatio, double wheelDiameter)
+	{
+		this.setEncoderDistancePerPulse((gearRatio * wheelDiameter) / pulsesPerRotation);
+	}
+
+	/**
 	 * Sets how far the robot has driven per pulse the encoder reads.
 	 * This value should be much lower than one, as there are usually
 	 * hundreds of pulses per rotation.
@@ -269,7 +286,18 @@ public class Drive
 
 	}
 
-	// ================DRIVING FUNCTIONS================
+	// ================ DRIVE METHODS ================
+
+	/**
+	 * Resets the Drive class's functions, in case they were cut short.
+	 */
+	public void reset()
+	{
+		this.brakeInit = true;
+		this.driveInchesInit = true;
+		this.driveStraightInchesInit = true;
+		this.turnDegreesInit = true;
+	}
 
 	/**
 	 * Stops the robot suddenly, to prevent drifting during autonomous functions, and increase the precision.
@@ -319,6 +347,7 @@ public class Drive
 			this.prevBrakeVals[2] = this.rightFrontEncoder.get();
 			this.prevBrakeVals[3] = this.rightRearEncoder.get();
 
+			// Reset the "Timer"
 			this.previousBrakeTime = System.currentTimeMillis();
 		}
 
@@ -547,6 +576,24 @@ public class Drive
 
 	// variable to determine if it is the first time running a method
 	private boolean turnDegreesInit = true;
+
+	public boolean turnDegreesGyro(int degrees, double speed)
+	{
+		if (turnDegreesGyroInit)
+		{
+			this.gyro.reset();
+			turnDegreesGyroInit = false;
+		}
+
+		if (Math.abs(this.gyro.getAngle()) > Math.abs(degrees))
+		{
+
+		}
+
+		return false;
+	}
+
+	private boolean turnDegreesGyroInit = true;
 
 	// TODO ANE create function to set ticks per encoder for all motors at
 	// once and one for individual motors, use an enum
