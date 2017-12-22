@@ -108,7 +108,7 @@ public static void periodic ()
 
         if (state == 0)
             {
-            if (Hardware.newDrive.driveStraightInches(48, .6, true))
+            if (Hardware.newDrive.driveStraightInches(48, .6))
                 state++;
             }
         else if (state == 1)

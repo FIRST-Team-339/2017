@@ -56,11 +56,20 @@ public abstract class TransmissionBase
 		return type;
 	}
 
+	/**
+	 * Describes which corner a motor is in when identifying it.
+	 * 
+	 * @author Ryan McGee
+	 */
 	public enum MotorPosition
 	{
-		LEFT_FRONT, LEFT_REAR, RIGHT_FRONT, RIGHT_REAR
+		LEFT_FRONT, LEFT_REAR, RIGHT_FRONT, RIGHT_REAR, ALL
 	}
 
+	/**
+	 * @param position which corner the motor is in
+	 * @return the motor controller object
+	 */
 	public abstract SpeedController getSpeedController(MotorPosition position);
 
 	/**
@@ -78,6 +87,11 @@ public abstract class TransmissionBase
 			this.currentGear = gear;
 	}
 
+	/**
+	 * Sets the percent multiplied by Transmission.
+	 * @param gear Which gear should be changed: 0 is lowest, increasing.
+	 * @param value Percent decimal form: between 0 and 1.0
+	 */
 	public void setGearPercentage(int gear, double value)
 	{
 		if (value < 1 && value > 0 && gear < gearRatios.length && gear >= 0)

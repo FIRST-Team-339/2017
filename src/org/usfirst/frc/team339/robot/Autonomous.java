@@ -630,7 +630,7 @@ private static boolean placeCenterGearPath ()
             else
                 {
                 if (Hardware.newDrive.driveStraightInches(11,
-                        -ALIGN_SPEED, false))
+                        -ALIGN_SPEED))
                     {
                     currentState = MainState.DONE;
                     }
@@ -701,7 +701,7 @@ private static boolean baselinePath ()
             else
                 {
                 if (Hardware.newDrive.driveStraightInches(115,
-                        DRIVE_SPEED, false) == true)
+                        DRIVE_SPEED) == true)
                     {
                     currentState = MainState.DONE;
                     }
@@ -759,8 +759,7 @@ private static boolean sideGearPath ()
             break;
         case DRIVE_FORWARD_TO_SIDES:
 
-            if (Hardware.newDrive.driveStraightInches(68, DRIVE_SPEED,
-                    false))
+            if (Hardware.newDrive.driveStraightInches(68, DRIVE_SPEED))
                 {
                 currentState = MainState.TURN_TO_GEAR_PEG;
                 }
@@ -815,7 +814,7 @@ private static boolean sideGearPath ()
             else
                 {
                 if (Hardware.newDrive.driveStraightInches(11,
-                        -ALIGN_SPEED, false))
+                        -ALIGN_SPEED))
                     {
                     currentState = MainState.DONE;
                     }
