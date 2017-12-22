@@ -61,9 +61,6 @@ package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
 import edu.wpi.first.wpilibj.IterativeRobot;
-import edu.wpi.first.wpilibj.Relay;
-import edu.wpi.first.wpilibj.vision.AxisCamera.Resolution;
-import edu.wpi.first.wpilibj.vision.AxisCamera.WhiteBalance;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -251,160 +248,19 @@ public void robotInit ()
     Hardware.rightFrontEncoder.reset();
     Hardware.rightRearEncoder.reset();
     Hardware.gearIntakeMotor.set(0.0);
-    // change stuff based on kilroy version
-    if (Hardware.isRunningOnKilroyXVIII == true)
-        {
-        // encoder direction
-        Hardware.rightFrontEncoder.setReverseDirection(true);
-        Hardware.rightRearEncoder.setReverseDirection(false);
-        Hardware.leftFrontEncoder.setReverseDirection(true);
-        Hardware.leftRearEncoder.setReverseDirection(false);
-        // distance per pulses
-        Hardware.rightRearEncoder.setDistancePerPulse(
-                ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-        Hardware.leftRearEncoder.setDistancePerPulse(
-                ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-        Hardware.rightFrontEncoder.setDistancePerPulse(
-                ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-        Hardware.leftFrontEncoder.setDistancePerPulse(
-                ENCODER_DISTANCE_PER_PULSE_KILROY_XVIII);
-        // gear percentages
-        Hardware.tankDrive.setGearPercentage(1,
-                KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
-        Hardware.tankDrive.setGearPercentage(2,
-                KILROY_XVIII_SECOND_GEAR_PERCENTAGE);
-        Hardware.mecanumDrive.setFirstGearPercentage(
-                KILROY_XVIII_FIRST_GEAR_PERCENTAGE);
-        // invert motors
-        if (Hardware.isUsingNewDrive == false)
-            {
-            Hardware.rightFrontMotor.setInverted(false);
-            Hardware.rightRearMotor.setInverted(false);
-            Hardware.leftFrontMotor.setInverted(false);
-            Hardware.leftRearMotor.setInverted(true);
-            }
-        else
-            {
-            Hardware.rightFrontMotor.setInverted(true);
-            Hardware.rightRearMotor.setInverted(true);
-            Hardware.leftFrontMotor.setInverted(false);
-            Hardware.leftRearMotor.setInverted(false);
-            }
-        // Hardware.newClimberMotor.setInverted(false);
-        // @ANE removed for sanity's sake
-        // Hardware.intakeMotor.setInverted(true);
 
-        // mecanum
-        Hardware.mecanumDrive
-                .setDeadbandPercentageZone(Hardware.joystickDeadzone);
-        Hardware.mecanumDrive.setDirectionalDeadzone(20.0);
-        Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-        // motor safty
-        // Hardware.rightFrontMotorSafety.setExpiration(.5);
-        // Hardware.rightRearMotorSafety.setExpiration(.5);
-        // Hardware.leftFrontMotorSafety.setExpiration(.5);
-        // Hardware.leftRearMotorSafety.setExpiration(1.0);
-        // Sets the scaling factor and general ultrasonic stuff
-        Hardware.ultraSonic.setScalingFactor(
-                Hardware.KILROY_XVIII_US_SCALING_FACTOR);
-        }
-    // kilroy XVII is below this statement of commented code in code
-    else
-        {
-        // encoders
-        // Hardware.rightFrontEncoder.setReverseDirection(true);
-        // Hardware.rightRearEncoder.setReverseDirection(false);
-        // Hardware.leftFrontEncoder.setReverseDirection(true);
-        // Hardware.leftRearEncoder.setReverseDirection(false);
-        // distance per pulses
-        Hardware.rightRearEncoder.setDistancePerPulse(
-                ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-        Hardware.leftRearEncoder.setDistancePerPulse(
-                ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-        Hardware.leftFrontEncoder.setDistancePerPulse(
-                ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-        Hardware.rightFrontEncoder.setDistancePerPulse(
-                ENCODER_DISTANCE_PER_PULSE_KILROY_XVII);
-        // gear percentages
-        // tank
-        Hardware.tankDrive.setGearPercentage(1,
-                Robot.KILROY_XVII_FIRST_GEAR_PERCENTAGE);
-        Hardware.tankDrive.setGearPercentage(2,
-                Robot.KILROY_XVII_SECOND_GEAR_PERCENTAGE);
-        // mecanum
-        Hardware.mecanumDrive.setFirstGearPercentage(
-                Robot.KILROY_XVII_SECOND_GEAR_PERCENTAGE);
-        Hardware.rightFrontMotor.setInverted(false);
-        Hardware.rightRearMotor.setInverted(true);
-        Hardware.leftFrontMotor.setInverted(true);
-        Hardware.leftRearMotor.setInverted(true);
-        // @ANE removed for sanity's sake
-        // Hardware.intakeMotor.setInverted(true);
-        Hardware.mecanumDrive
-                .setDeadbandPercentageZone(
-                        Hardware.KILROY_XVII_JOYSTICK_DEADZONE);
-        Hardware.mecanumDrive.setDirectionalDeadzone(
-                Hardware.KILROY_XVII_JOYSTICK_DIRECTIONAL_DEADZONE);
-        Hardware.mecanumDrive.setMecanumJoystickReversed(false);
-        // Sets the scaling factor and general ultrasonic stuff
-        Hardware.ultraSonic.setScalingFactor(
-                Hardware.KILROY_XVII_US_SCALING_FACTOR);
-        }
-    // -------------------------------------
-    // motor initialization
-    // -------------------------------------
-    // Hardware.leftRearMotorSafety.setSafetyEnabled(true);
-    // Hardware.rightRearMotorSafety.setSafetyEnabled(true);
-    // Hardware.leftFrontMotorSafety.setSafetyEnabled(true);
-    // Hardware.rightFrontMotorSafety.setSafetyEnabled(true);
-    // Hardware.tankDrive.setRightJoystickReversed(true);
-    // initialize PID values and set the motor to 0.0 because it isn't safe
-    // if
-    // we don't.
-    // Hardware.shooterMotor.changeControlMode(TalonControlMode.Speed);
-    // // put back in once finished testing!!!
-    // Hardware.shooterMotor.configPeakOutputVoltage(12f, 0f);
-    // Hardware.shooterMotor.configNominalOutputVoltage(0f, 0f);
-    // Hardware.shooterMotor
-    // .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-    // Hardware.shooterMotor.configEncoderCodesPerRev(1024);
-    // Hardware.shooterMotor.setPID(shooterP, shooterI, shooterD);
-    // Hardware.shooterMotor.setSetpoint(0.0);
-    // Hardware.shooterMotor.reverseSensor(true);
-    // -------------------------------------
-    // AXIS Camera initialization
-    // NOTE: The AXIS Camera getInstance() MUST
-    // Preceed the USB camera setResolution() code
-    // -------------------------------------
-    // Hardware.gearIntakeSolenoid.setForward(false);
-    if (Hardware.isRunningOnKilroyXVIII)
-        {
+    Hardware.rightFrontEncoder.setReverseDirection(true);
+    Hardware.rightRearEncoder.setReverseDirection(false);
+    Hardware.leftFrontEncoder.setReverseDirection(true);
+    Hardware.leftRearEncoder.setReverseDirection(false);
 
-        // CameraServer.getInstance().addAxisCamera("10.3.39.11");
-        }
-    else
-        {
-        // CameraServer.getInstance().addAxisCamera("10.3.39.11");
-        }
+    Hardware.rightFrontMotor.setInverted(true);
+    Hardware.rightRearMotor.setInverted(true);
+    Hardware.leftFrontMotor.setInverted(false);
+    Hardware.leftRearMotor.setInverted(false);
 
-    Hardware.axisCamera.writeColorLevel(50);
-    Hardware.axisCamera.writeBrightness(0);
-    Hardware.axisCamera.writeResolution(Resolution.k320x240);
-    Hardware.axisCamera.writeWhiteBalance(WhiteBalance.kFixedOutdoor2);
-    // -------------------------------------
-    // USB Camera initialization
-    // -------------------------------------
+    Hardware.newDrive.setEncoderDistancePerPulse(.0179054369);
 
-
-    Hardware.ringlightRelay.setDirection(Relay.Direction.kForward);
-    Hardware.ringlightRelay.set(Relay.Value.kOff);
-    Hardware.ultraSonic.setOffsetDistanceFromNearestBummper(3);
-    Hardware.ultraSonic.setNumberOfItemsToCheckBackwardForValidity(3);
-
-    // gimbal motors
-    // Hardware.gimbalMotor
-    // .setFeedbackDevice(FeedbackDevice.CtreMagEncoder_Relative);
-    // Hardware.gimbalMotor.setEncPosition(0);
     Hardware.driveGyro.calibrate();// @AHK
     // =========================================================
     // User code goes above here

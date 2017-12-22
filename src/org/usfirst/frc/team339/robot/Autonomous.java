@@ -33,7 +33,6 @@ package org.usfirst.frc.team339.robot;
 
 import org.usfirst.frc.team339.Hardware.Hardware;
 import org.usfirst.frc.team339.Utils.Drive;
-import org.usfirst.frc.team339.vision.opencv.VisionProcessor.ImageType;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Relay.Value;
 
@@ -298,8 +297,8 @@ private static final double BRAKE_TIME = .2;
  * Change the pixel value, and the /getHorizontalResolution will change it to
  * relative coordinates.
  */
-private static final double ALIGN_DEADBAND = 7 // +/- pixels
-        / Hardware.axisCamera.getHorizontalResolution();
+// private static final double ALIGN_DEADBAND = 7 // +/- pixels
+// / Hardware.axisCamera.getHorizontalResolution();
 
 /**
  * Where we say the "center" of the camera is / where we want to correct TO.
@@ -515,7 +514,7 @@ private static boolean placeCenterGearPath ()
     System.out.println("CurrentState = " + currentState);
     System.out.println("Right US: "
             + Hardware.ultraSonic.getDistanceFromNearestBumper());
-    System.out.println(Hardware.autoDrive.getAveragedEncoderValues());
+    // System.out.println(Hardware.autoDrive.getAveragedEncoderValues());
     System.out.println(
             "Gear " + Hardware.mecanumDrive.getCurrentGearPercentage());
     switch (currentState)
@@ -526,20 +525,20 @@ private static boolean placeCenterGearPath ()
             initializeDriveProgram();
             Hardware.autoStateTimer.start();
             Hardware.ringlightRelay.set(Value.kOn);
-            // if (Hardware.backupOrFireOrHopper.isOn())
-            // {
-            // backUp = true;
-            // }
-            // Hardware.gearIntakeSolenoid.setReverse(true);
-            Hardware.testingProcessor.saveImage(ImageType.PROCESSED);
-            Hardware.testingProcessor.saveImage(ImageType.RAW);
-            Hardware.testingProcessor.processImage();
-            for (int i = 0; i < Hardware.testingProcessor
-                    .getParticleReports().length; i++)
-                {
-                System.out.println(i + ": " + Hardware.testingProcessor
-                        .getParticleReports()[i].center.x);
-                }
+        // if (Hardware.backupOrFireOrHopper.isOn())
+        // {
+        // backUp = true;
+        // }
+        // Hardware.gearIntakeSolenoid.setReverse(true);
+        // Hardware.testingProcessor.saveImage(ImageType.PROCESSED);
+        // Hardware.testingProcessor.saveImage(ImageType.RAW);
+        // Hardware.testingProcessor.processImage();
+        // for (int i = 0; i < Hardware.testingProcessor
+        // .getParticleReports().length; i++)
+            {
+            // System.out.println(i + ": " + Hardware.testingProcessor
+            // .getParticleReports()[i].center.x);
+            }
             currentState = MainState.DELAY_BEFORE_START;
             break;
         case WAIT_FOR_GEAR_INIT:
@@ -587,9 +586,9 @@ private static boolean placeCenterGearPath ()
                     currentState = MainState.DELAY_AFTER_GEAR_EXODUS;
                     Hardware.autoStateTimer.reset();
                     Hardware.autoStateTimer.start();
-                    Hardware.testingProcessor.saveImage(ImageType.RAW);
-                    Hardware.testingProcessor
-                            .saveImage(ImageType.PROCESSED);
+                    // Hardware.testingProcessor.saveImage(ImageType.RAW);
+                    // Hardware.testingProcessor
+                    // .saveImage(ImageType.PROCESSED);
                     }
 
                 }
@@ -623,7 +622,7 @@ private static boolean placeCenterGearPath ()
         case DRIVE_AWAY_FROM_PEG:
             if (onNewDrive == false)
                 {
-                if (Hardware.autoDrive.driveInches(11, -ALIGN_SPEED))
+                // if (Hardware.autoDrive.driveInches(11, -ALIGN_SPEED))
                     {
                     currentState = MainState.DONE;
                     }
@@ -631,7 +630,7 @@ private static boolean placeCenterGearPath ()
             else
                 {
                 if (Hardware.newDrive.driveStraightInches(11,
-                        -ALIGN_SPEED))
+                        -ALIGN_SPEED, false))
                     {
                     currentState = MainState.DONE;
                     }
@@ -645,15 +644,15 @@ private static boolean placeCenterGearPath ()
     return false;
 }
 
-private static int wiggleWiggleCount = 0;
+// private static int wiggleWiggleCount = 0;
 
 private static boolean runWiggleWiggleSetup = true;
 
 private static boolean baselinePath ()
 {
     System.out.println("Current State = " + currentState);
-    System.out.println("Encoder Val: "
-            + Hardware.autoDrive.getAveragedEncoderValues());
+    // System.out.println("Encoder Val: "
+    // + Hardware.autoDrive.getAveragedEncoderValues());
     // System.out.println("Delayval: " + delayBeforeAuto);
     // System.out.println("Timer val: " + Hardware.autoStateTimer.get());
     switch (currentState)
@@ -693,8 +692,8 @@ private static boolean baselinePath ()
             // baseline is 94 inches from wall, so drive a little bit further
             if (onNewDrive == false)
                 {
-                if (Hardware.autoDrive.driveInches(115,
-                        DRIVE_SPEED) == true)
+                // if (Hardware.autoDrive.driveInches(115,
+                // DRIVE_SPEED) == true)
                     {
                     currentState = MainState.DONE;
                     }
@@ -702,7 +701,7 @@ private static boolean baselinePath ()
             else
                 {
                 if (Hardware.newDrive.driveStraightInches(115,
-                        DRIVE_SPEED) == true)
+                        DRIVE_SPEED, false) == true)
                     {
                     currentState = MainState.DONE;
                     }
@@ -710,7 +709,7 @@ private static boolean baselinePath ()
             break;
         default:
         case DONE:
-            Hardware.autoDrive.drive(0, 0, 0);
+            // Hardware.autoDrive.drive(0, 0, 0);
             Hardware.ringlightRelay.set(Value.kOff);
             return true;
         }
@@ -760,7 +759,8 @@ private static boolean sideGearPath ()
             break;
         case DRIVE_FORWARD_TO_SIDES:
 
-            if (Hardware.newDrive.driveStraightInches(68, DRIVE_SPEED))
+            if (Hardware.newDrive.driveStraightInches(68, DRIVE_SPEED,
+                    false))
                 {
                 currentState = MainState.TURN_TO_GEAR_PEG;
                 }
@@ -807,7 +807,7 @@ private static boolean sideGearPath ()
         case DRIVE_AWAY_FROM_PEG:
             if (onNewDrive == false)
                 {
-                if (Hardware.autoDrive.driveInches(11, -ALIGN_SPEED))
+                // if (Hardware.autoDrive.driveInches(11, -ALIGN_SPEED))
                     {
                     currentState = MainState.DONE;
                     }
@@ -815,7 +815,7 @@ private static boolean sideGearPath ()
             else
                 {
                 if (Hardware.newDrive.driveStraightInches(11,
-                        -ALIGN_SPEED))
+                        -ALIGN_SPEED, false))
                     {
                     currentState = MainState.DONE;
                     }
@@ -842,7 +842,7 @@ private static void initializeDriveProgram ()
         {
         Hardware.driveGyro.reset();
         }
-    Hardware.autoDrive.resetEncoders();
+    // Hardware.autoDrive.resetEncoders();
     Hardware.mecanumDrive.drive(0, 0, 0);
     // Hardware.gearIntakeSolenoid.setReverse(false);
 

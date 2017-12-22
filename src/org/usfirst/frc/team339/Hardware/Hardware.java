@@ -18,7 +18,6 @@ import com.ni.vision.NIVision.MeasurementType;
 import org.usfirst.frc.team339.HardwareInterfaces.DoubleThrowSwitch;
 import org.usfirst.frc.team339.HardwareInterfaces.HRLVMaxSonarEZ;
 import org.usfirst.frc.team339.HardwareInterfaces.IRSensor;
-import org.usfirst.frc.team339.HardwareInterfaces.KilroyCamera;
 import org.usfirst.frc.team339.HardwareInterfaces.KilroyGyro;
 import org.usfirst.frc.team339.HardwareInterfaces.LightSensor;
 import org.usfirst.frc.team339.HardwareInterfaces.MomentarySwitch;
@@ -28,20 +27,14 @@ import org.usfirst.frc.team339.HardwareInterfaces.UltraSonic;
 import org.usfirst.frc.team339.HardwareInterfaces.newtransmission.MecanumTransmission;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionFourWheel;
 import org.usfirst.frc.team339.HardwareInterfaces.transmission.TransmissionMecanum;
-import org.usfirst.frc.team339.Utils.Drive;
 import org.usfirst.frc.team339.Utils.ErrorMessage;
 import org.usfirst.frc.team339.Utils.GearIntake;
 import org.usfirst.frc.team339.Utils.SpeedTester;
-import org.usfirst.frc.team339.vision.ImageProcessor;
 import org.usfirst.frc.team339.vision.VisionScript;
-import org.usfirst.frc.team339.vision.opencv.VisionProcessor;
-import org.usfirst.frc.team339.vision.opencv.VisionProcessor.CameraModel;
 import org.usfirst.frc.team339.vision.operators.ConvexHullOperator;
 import org.usfirst.frc.team339.vision.operators.HSLColorThresholdOperator;
 import org.usfirst.frc.team339.vision.operators.ParticleFilter;
 import org.usfirst.frc.team339.vision.operators.RemoveSmallObjectsOperator;
-import edu.wpi.cscore.UsbCamera;
-import edu.wpi.first.wpilibj.CameraServer;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Encoder;
@@ -190,9 +183,9 @@ public static Encoder leftRearEncoder = new Encoder(10, 11);
 
 public static Encoder rightRearEncoder = new Encoder(12, 13);
 
-public static Encoder leftFrontEncoder = new Encoder(14, 15);
+public static Encoder leftFrontEncoder = new Encoder(15, 14);
 
-public static Encoder rightFrontEncoder = new Encoder(16, 17);
+public static Encoder rightFrontEncoder = new Encoder(17, 16);
 
 // -----------------------
 // Wiring diagram
@@ -287,10 +280,10 @@ public static final double KILROY_XVII_US_SCALING_FACTOR = .05;// .0493151;
 // Note: If causing problems, replace "USB_Camera_0" w/ "cam0", and
 // "USB_Camera_1" w/ "cam1"
 
-public static UsbCamera camForward = CameraServer.getInstance()
-        .startAutomaticCapture(0);
+// public static UsbCamera camForward = CameraServer.getInstance()
+// .startAutomaticCapture(0);
 
-public static KilroyCamera axisCamera = new KilroyCamera(true);
+// public static KilroyCamera axisCamera = new KilroyCamera(false);
 // "10.13.39.11");// TODO change
 
 public static VisionScript visionScript = new VisionScript(
@@ -308,11 +301,11 @@ public static VisionScript visionScript = new VisionScript(
         // 50,255),
         new ConvexHullOperator(false));
 
-public static ImageProcessor imageProcessor = new ImageProcessor(
-        axisCamera, visionScript);
+// public static ImageProcessor imageProcessor = new ImageProcessor(
+// axisCamera, visionScript);
 
-public static VisionProcessor testingProcessor = new VisionProcessor(
-        "10.3.39.11", CameraModel.AXIS_M1013);
+// public static VisionProcessor testingProcessor = new VisionProcessor(
+// "10.3.39.11", CameraModel.AXIS_M1013);
 // -------------------------------------
 // declare the USB camera server and the
 // USB camera it serves
@@ -412,14 +405,14 @@ public static TransmissionFourWheel tankDrive = new TransmissionFourWheel(
 // Drive classes
 // =====================================================================
 
-public static Drive autoDrive = new Drive(mecanumDrive, imageProcessor,
-        rightFrontEncoder, rightRearEncoder,
-        leftFrontEncoder, leftRearEncoder, ultraSonic, driveGyro);
+// public static Drive autoDrive = new Drive(mecanumDrive, imageProcessor,
+// rightFrontEncoder, rightRearEncoder,
+// leftFrontEncoder, leftRearEncoder, ultraSonic, driveGyro);
 
 public static org.usfirst.frc.team339.HardwareInterfaces.newtransmission.Drive newDrive = new org.usfirst.frc.team339.HardwareInterfaces.newtransmission.Drive(
         transmission, leftFrontEncoder, rightFrontEncoder,
         leftRearEncoder, rightRearEncoder, ultraSonic, driveGyro,
-        testingProcessor);
+        null);
 
 /**
  * are we using mecanum? set false for tank drive
