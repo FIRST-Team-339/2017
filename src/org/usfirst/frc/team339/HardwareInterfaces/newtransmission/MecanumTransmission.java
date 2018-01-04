@@ -21,9 +21,9 @@ private final SpeedController leftRearMotor;
 
 private final SpeedController rightRearMotor;
 
-private double strafeCusion = .4;
+private double strafeCushion = .2;
 
-private double directionalDeadband = .2;
+private double directionalDeadband = Math.toRadians(0);// Disabled by default.
 
 /**
  * Creates the MecanumTransmission object.
@@ -53,6 +53,69 @@ public MecanumTransmission (SpeedController leftFrontMotor,
  * Drives the robot with the aid of a joystick deadband, directional deadbands,
  * and software gear ratios.
  * 
+ * @param joystick
+ *            A 3-axis joystick to control 2 axis movement plus turning.
+ */
+public void drive (Joystick joystick)
+{
+    if (joystick.getTrigger() == true)
+        this.drive(joystick.getMagnitude(),
+                joystick.getDirectionRadians(),
+                joystick.getZ());
+    else
+        this.drive(joystick.getMagnitude(),
+                joystick.getDirectionRadians(),
+                0);
+}
+
+/**
+ * Drives the robot with mecanum with raw values, taking into account
+ * joystick deadbands and gear ratios.
+ * 
+ * 
+ * @param magnitude
+ *            The magnitude of the joystick, (0.0 to 1.0)
+ * @param direction
+ *            The direction of the joystick in radians (-PI to PI)
+ * @param rotation
+ *            The rotation of the joystick, (-1.0 to 1.0)
+ */
+public void drive (double magnitude, double direction, double rotation)
+{
+    double altMagnitude, altDirection, altRotation;
+
+    altMagnitude = super.scaleJoystickForDeadband(magnitude)
+            * super.gearRatios[super.currentGear];
+    altDirection = direction;
+    altRotation = super.scaleJoystickForDeadband(rotation)
+            * super.gearRatios[super.currentGear];
+
+    // Check between the deadbands for the strafing cushion and and 90
+    // degree "snap".
+    if (direction > (-Math.PI / 2.0) - (directionalDeadband / 2.0)
+            && direction < (-Math.PI / 2.0)
+                    + (directionalDeadband / 2.0))
+        {
+        altDirection = -Math.PI / 2.0;
+        altMagnitude += this.strafeCushion;
+        }
+    else if (direction > (Math.PI / 2.0) - (directionalDeadband / 2.0)
+            && direction < (Math.PI / 2.0)
+                    + (directionalDeadband / 2.0))
+        {
+        altDirection = Math.PI / 2.0;
+        altMagnitude += this.strafeCushion;
+        }
+
+    this.driveRaw(altMagnitude, altDirection, altRotation);
+
+}
+
+/**
+ * Drives the robot without the use of deadbands and gear ratios. The value
+ * input is the value that is passed to the motors (after going through the
+ * formula for mecanum drive)
+ * 
  * The equation for mecanum drive is:
  * y = m * (cos(d + (PI/4)) + z) where d is the direction, m is the magnitude,
  * and z is the rotation,
@@ -65,95 +128,11 @@ public MecanumTransmission (SpeedController leftFrontMotor,
  * under -1.0.
  * In this case, the function inRange makes those cutoffs.
  * 
- * @param joystick
- *            A 3-axis joystick to control 2 axis movement plus turning.
- */
-public void drive (Joystick joystick)
-{
-    double magnitude = joystick.getMagnitude();
-    double direction = -1 * joystick.getDirectionRadians();
-    double twistVal = 0;
-
-    double gearMultiplier = magnitude
-            * super.gearRatios[super.currentGear];
-
-    // Directional Deadband calculation
-    // Check the Y axis, and snap to the 90.
-    if (Math.abs(joystick.getY()) < this.directionalDeadband
-            && magnitude > this.joystickDeadband)
-        {
-        // Increase the speed of the motors while strafing.
-        gearMultiplier += this.strafeCusion;
-        if (joystick.getX() < 0)
-            {
-            direction = Math.PI / 2.0;// 90 degrees
-            }
-        else
-            {
-            direction = -Math.PI / 2.0;// -90 degrees
-            }
-        }
-    // Directional Deadband calculation
-    // Check the X axis, and snap to the 90.
-    if (Math.abs(joystick.getX()) < this.directionalDeadband
-            && magnitude > this.joystickDeadband)
-        {
-        if (joystick.getY() > 0)
-            direction = Math.PI;// 180 degrees
-        else
-            direction = 0;
-        }
-
-    double leftFrontVal = Math.cos(direction + (Math.PI / 4.0));
-    double rightFrontVal = Math.cos(direction - (Math.PI / 4.0));
-    double rightRearVal = leftFrontVal;// The corner's equations are
-    double leftRearVal = rightFrontVal;// equal to each other.
-
-    // Check for the trigger first. Only add the Z value if it is pressed
-    // and above the deadband.
-    if (magnitude > super.joystickDeadband
-            || joystick.getTrigger() == true)
-        {
-        // Only use the joystick's z axis if the trigger is pressed and its
-        // within the deadband.
-        if (joystick.getTrigger() == true
-                && Math.abs(joystick.getZ()) > super.joystickDeadband)
-            {
-            twistVal = (super.gearRatios[super.currentGear] / 2.0)
-                    * joystick.getZ();
-            }
-
-        // Checks each value to either one or zero to make sure all values
-        // are between -1 and 1.
-
-        // Because the z axis increases as you twist clockwise, it is added
-        // to the left motors and subtracted from the right.
-
-        leftFrontMotor.set(
-                inRange((gearMultiplier * leftFrontVal) + twistVal));
-        leftRearMotor.set(
-                inRange((gearMultiplier * leftRearVal) + twistVal));
-        rightFrontMotor.set(
-                inRange((gearMultiplier * rightFrontVal) - twistVal));
-        rightRearMotor.set(
-                inRange((gearMultiplier * rightRearVal) - twistVal));
-
-        }
-    else
-        {
-        this.driveRaw(0.0, 0.0, 0.0);
-        }
-}
-
-/**
- * Drives the robot without the use of deadbands and gear ratios. The value
- * input is the value that is passed to the motors (after going through the
- * formula for mecanum drive)
- * 
  * @param magnitude
  *            How fast the robot moves (0 to 1.0)
  * @param direction
- *            which direction the robot will travel in degrees. (0 is front, 180
+ *            which direction the robot will travel in radians. (0 is front, PI
+ *            or -PI
  *            is back)
  * @param rotation
  *            How fast the robot should turn( -1.0 to 1.0, zero is straight)
@@ -162,43 +141,41 @@ public void driveRaw (double magnitude, double direction,
         double rotation)
 {
 
-    double leftFrontVal = Math
-            .cos(Math.toRadians(direction) + (Math.PI / 4.0));
-    double rightFrontVal = Math
-            .cos(Math.toRadians(direction) - (Math.PI / 4.0));
+    double leftFrontVal = Math.cos(direction - (Math.PI / 4.0));
+    double rightFrontVal = Math.cos(direction + (Math.PI / 4.0));
     double rightRearVal = leftFrontVal;// The corner's equations are
     double leftRearVal = rightFrontVal;// equal to each other.
 
-    leftFrontMotor.set(magnitude * inRange(leftFrontVal + rotation));
-    leftRearMotor.set(magnitude * inRange(leftRearVal + rotation));
-    rightFrontMotor.set(magnitude * inRange(rightFrontVal - rotation));
-    rightRearMotor.set(magnitude * inRange(rightRearVal - rotation));
+    leftFrontMotor.set(inRange((magnitude * leftFrontVal) + rotation));
+    leftRearMotor.set(inRange((magnitude * leftRearVal) + rotation));
+    rightFrontMotor
+            .set(inRange((magnitude * rightFrontVal) - rotation));
+    rightRearMotor.set(inRange((magnitude * rightRearVal) - rotation));
 
 }
 
 /**
- * Sets the percentage where the direction snaps to a 90 degree angle.
- * Default is .2.
+ * Sets the angle deadband where the direction snaps to a 90 degree angle.
  * 
  * @param value
- *            Percentage value to set to directionalDeadband
+ *            deadband, in degrees
  */
 public void setDirectionalDeadband (double value)
 {
-    this.directionalDeadband = value;
+    this.directionalDeadband = Math.toRadians(value);
 }
 
 /**
  * Sets the percentage added to the magnitude while strafing.
  * This is only used inside the directional deadband, so if it is set to 0,
- * then it will not take affect. Default is .4.
+ * then it will not take affect.
  * 
  * @param value
  *            The value that strafeCusion will be set to.
  */
 public void setStrafeCusion (double value)
 {
-    this.strafeCusion = value;
+    this.strafeCushion = value;
 }
 
 /**
@@ -236,4 +213,23 @@ public void stop ()
     this.leftRearMotor.set(0.0);
     this.rightRearMotor.set(0.0);
 }
+
+@Override
+public SpeedController getSpeedController (MotorPosition position)
+{
+    switch (position)
+        {
+        case LEFT_FRONT:
+            return this.leftFrontMotor;
+        case LEFT_REAR:
+            return this.leftRearMotor;
+        case RIGHT_FRONT:
+            return this.rightFrontMotor;
+        case RIGHT_REAR:
+            return this.rightRearMotor;
+        default:
+            return null;
+        }
+}
+
 }
